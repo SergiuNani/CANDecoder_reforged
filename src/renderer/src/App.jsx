@@ -1,142 +1,41 @@
-import Versions from './components/Versions'
-import icons from './assets/icons.svg'
-
+import { useState } from 'react'
+import { HashRouter, Routes, Route } from 'react-router-dom'
+import Topbar from './scenes/global/topbar'
+import Sidebar from './scenes/global/Sidebar'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { ColorModeContext, useMode } from './theme'
+import StartMenu from './scenes/StartMenu'
 function App() {
+  const [theme, colorMode] = useMode()
+  const [isSidebar, setIsSidebar] = useState(true)
+
   return (
-    <div className="container">
-      <Versions></Versions>
-
-      <svg className="hero-logo" viewBox="0 0 900 300">
-        <use xlinkHref={`${icons}#electron`} />
-      </svg>
-      <h2 className="hero-text">You{"'"}ve successfully created an Electron project with React</h2>
-      <p className="hero-tagline">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-
-      <div className="links">
-        <div className="link-item">
-          <a target="_blank" href="https://electron-vite.org" rel="noopener noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="link-item link-dot">•</div>
-        <div className="link-item">
-          <a
-            target="_blank"
-            href="https://github.com/alex8088/electron-vite"
-            rel="noopener noreferrer"
-          >
-            Getting Help
-          </a>
-        </div>
-        <div className="link-item link-dot">•</div>
-        <div className="link-item">
-          <a
-            target="_blank"
-            href="https://github.com/alex8088/quick-start/tree/master/packages/create-electron"
-            rel="noopener noreferrer"
-          >
-            create-electron
-          </a>
-        </div>
-      </div>
-
-      <div className="features">
-        <div className="feature-item">
-          <article>
-            <h2 className="title">Configuring</h2>
-            <p className="detail">
-              Config with <span>electron.vite.config.ts</span> and refer to the{' '}
-              <a target="_blank" href="https://electron-vite.org/config" rel="noopener noreferrer">
-                config guide
-              </a>
-              .
-            </p>
-          </article>
-        </div>
-        <div className="feature-item">
-          <article>
-            <h2 className="title">HMR</h2>
-            <p className="detail">
-              Edit <span>src/renderer</span> files to test HMR. See{' '}
-              <a
-                target="_blank"
-                href="https://electron-vite.org/guide/hmr.html"
-                rel="noopener noreferrer"
-              >
-                docs
-              </a>
-              .
-            </p>
-          </article>
-        </div>
-        <div className="feature-item">
-          <article>
-            <h2 className="title">Hot Reloading</h2>
-            <p className="detail">
-              Run{' '}
-              <span>
-                {"'"}electron-vite dev --watch{"'"}
-              </span>{' '}
-              to enable. See{' '}
-              <a
-                target="_blank"
-                href="https://electron-vite.org/guide/hot-reloading.html"
-                rel="noopener noreferrer"
-              >
-                docs
-              </a>
-              .
-            </p>
-          </article>
-        </div>
-        <div className="feature-item">
-          <article>
-            <h2 className="title">Debugging</h2>
-            <p className="detail">
-              Check out <span>.vscode/launch.json</span>. See{' '}
-              <a
-                target="_blank"
-                href="https://electron-vite.org/guide/debugging.html"
-                rel="noopener noreferrer"
-              >
-                docs
-              </a>
-              .
-            </p>
-          </article>
-        </div>
-        <div className="feature-item">
-          <article>
-            <h2 className="title">Source Code Protection</h2>
-            <p className="detail">
-              Supported via built-in plugin <span>bytecodePlugin</span>. See{' '}
-              <a
-                target="_blank"
-                href="https://electron-vite.org/guide/source-code-protection.html"
-                rel="noopener noreferrer"
-              >
-                docs
-              </a>
-              .
-            </p>
-          </article>
-        </div>
-        <div className="feature-item">
-          <article>
-            <h2 className="title">Packaging</h2>
-            <p className="detail">
-              Use{' '}
-              <a target="_blank" href="https://www.electron.build" rel="noopener noreferrer">
-                electron-builder
-              </a>{' '}
-              and pre-configured to pack your app.
-            </p>
-          </article>
-        </div>
-      </div>
-    </div>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <HashRouter>
+          <div className="app">
+            <Sidebar isSidebar={isSidebar} />
+            <main className="Topbar_Routes_container">
+              <Topbar setIsSidebar={setIsSidebar} />
+              <Routes>
+                <Route path="/" element={<StartMenu />} />
+                {/* <Route path="/team" element={<Team />} /> */}
+                {/* <Route path="/contacts" element={<Contacts />} /> */}
+                {/* <Route path="/invoices" element={<Invoices />} /> */}
+                {/* <Route path="/form" element={<Form />} /> */}
+                {/* <Route path="/bar" element={<Bar />} /> */}
+                {/* <Route path="/pie" element={<Pie />} /> */}
+                {/* <Route path="/line" element={<Line />} /> */}
+                {/* <Route path="/faq" element={<FAQ />} /> */}
+                {/* <Route path="/calendar" element={<Calendar />} /> */}
+                {/* <Route path="/geography" element={<Geography />} /> */}
+              </Routes>
+            </main>
+          </div>
+        </HashRouter>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   )
 }
 
