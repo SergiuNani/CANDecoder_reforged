@@ -5,6 +5,7 @@ import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
 import StartMenu from './scenes/StartMenu'
+
 function App() {
   const [theme, colorMode] = useMode()
   const [isSidebar, setIsSidebar] = useState(true)
@@ -17,7 +18,9 @@ function App() {
           <div className="app">
             <Sidebar isSidebar={isSidebar} />
             <main className="Topbar_Routes_container">
+              {/* <div className="sticky"> */}
               <Topbar setIsSidebar={setIsSidebar} />
+              {/* </div> */}
               <Routes>
                 <Route path="/" element={<StartMenu />} />
                 {/* <Route path="/team" element={<Team />} /> */}

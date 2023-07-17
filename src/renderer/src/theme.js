@@ -211,3 +211,37 @@ export const useMode = () => {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode])
   return [theme, colorMode]
 }
+
+export const colors = {
+  primary: {
+    100: '#d0d1d5',
+    200: '#a1a4ab',
+    300: '#727681'
+    // Rest of the values...
+  },
+  greenAccent: {
+    100: '#dbf5ee',
+    200: '#b7ebde',
+    300: '#94e2cd'
+    // Rest of the values...
+  },
+  redAccent: {
+    100: '#f8dcdb',
+    200: '#f1b9b7',
+    300: '#e99592'
+    // Rest of the values...
+  },
+  blueAccent: {
+    100: '#e1e2fe',
+    200: '#c3c6fd',
+    300: '#a4a9fc'
+    // Rest of the values...
+  }
+}
+
+export const cssVariables = Object.entries(colors).reduce((acc, [key, value]) => {
+  Object.entries(value).forEach(([subKey, subValue]) => {
+    acc[`--color-${key}-${subKey}`] = subValue
+  })
+  return acc
+}, {})

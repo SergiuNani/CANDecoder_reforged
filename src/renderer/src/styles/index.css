@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../theme.js';
+
+.app {
+  display: flex;
+}
+.Topbar_Routes_container {
+  flex-grow: 1;
+  position: relative;
+  height: 100%;
+}
+
+.TOPBAR {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem;
+}
+.border {
+  border: 1px solid red;
+  padding: 1rem;
+}
+.xx {
+  padding: 100px;
+}

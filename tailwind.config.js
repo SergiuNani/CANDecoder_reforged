@@ -6,5 +6,3 @@ module.exports = {
   },
   plugins: []
 }
-// src\renderer\index.html
-// src\renderer\src\theme.js
