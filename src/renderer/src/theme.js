@@ -27,7 +27,7 @@ export const tokens = (mode) => ({
           800: '#080b12',
           900: '#040509'
         },
-        greenAccent: {
+        green: {
           100: '#dbf5ee',
           200: '#b7ebde',
           300: '#94e2cd',
@@ -38,7 +38,7 @@ export const tokens = (mode) => ({
           800: '#1e5245',
           900: '#0f2922'
         },
-        redAccent: {
+        red: {
           100: '#f8dcdb',
           200: '#f1b9b7',
           300: '#e99592',
@@ -49,7 +49,7 @@ export const tokens = (mode) => ({
           800: '#58201e',
           900: '#2c100f'
         },
-        blueAccent: {
+        blue: {
           100: '#e1e2fe',
           200: '#c3c6fd',
           300: '#a4a9fc',
@@ -84,7 +84,7 @@ export const tokens = (mode) => ({
           800: '#a1a4ab',
           900: '#d0d1d5'
         },
-        greenAccent: {
+        green: {
           100: '#0f2922',
           200: '#1e5245',
           300: '#2e7c67',
@@ -95,7 +95,7 @@ export const tokens = (mode) => ({
           800: '#b7ebde',
           900: '#dbf5ee'
         },
-        redAccent: {
+        red: {
           100: '#2c100f',
           200: '#58201e',
           300: '#832f2c',
@@ -106,7 +106,7 @@ export const tokens = (mode) => ({
           800: '#f1b9b7',
           900: '#f8dcdb'
         },
-        blueAccent: {
+        blue: {
           100: '#151632',
           200: '#2a2d64',
           300: '#3e4396',
@@ -133,7 +133,7 @@ export const themeSettings = (mode) => {
               main: colors.primary[500]
             },
             secondary: {
-              main: colors.greenAccent[500]
+              main: colors.green[500]
             },
             neutral: {
               dark: colors.grey[700],
@@ -150,7 +150,7 @@ export const themeSettings = (mode) => {
               main: colors.primary[100]
             },
             secondary: {
-              main: colors.greenAccent[500]
+              main: colors.green[500]
             },
             neutral: {
               dark: colors.grey[700],
@@ -219,19 +219,19 @@ export const colors = {
     300: '#727681'
     // Rest of the values...
   },
-  greenAccent: {
+  green: {
     100: '#dbf5ee',
     200: '#b7ebde',
     300: '#94e2cd'
     // Rest of the values...
   },
-  redAccent: {
+  red: {
     100: '#f8dcdb',
     200: '#f1b9b7',
     300: '#e99592'
     // Rest of the values...
   },
-  blueAccent: {
+  blue: {
     100: '#e1e2fe',
     200: '#c3c6fd',
     300: '#a4a9fc'

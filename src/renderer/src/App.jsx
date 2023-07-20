@@ -4,7 +4,7 @@ import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
-import StartMenu from './scenes/StartMenu'
+import HOME from './scenes/HOME'
 
 function App() {
   const [theme, colorMode] = useMode()
@@ -22,7 +22,7 @@ function App() {
               <Topbar setIsSidebar={setIsSidebar} />
               {/* </div> */}
               <Routes>
-                <Route path="/" element={<StartMenu />} />
+                <Route path="/" element={<HOME />} />
                 {/* <Route path="/team" element={<Team />} /> */}
                 {/* <Route path="/contacts" element={<Contacts />} /> */}
                 {/* <Route path="/invoices" element={<Invoices />} /> */}
