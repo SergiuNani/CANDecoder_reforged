@@ -5,7 +5,9 @@ import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
 import HOME from './scenes/HOME'
-
+import RenderExpandCellGrid from './scenes/DataGrid'
+import Decode_CAN_LOG from './scenes/Decode_CAN_LOG'
+import React_Logic from './scenes/React_logic'
 function App() {
   const [theme, colorMode] = useMode()
   const [isSidebar, setIsSidebar] = useState(true)
@@ -19,20 +21,13 @@ function App() {
             <Sidebar isSidebar={isSidebar} />
             <main className="Topbar_Routes_container">
               {/* <div className="sticky"> */}
-              <Topbar setIsSidebar={setIsSidebar} />
+              <Topbar />
               {/* </div> */}
               <Routes>
-                <Route path="/" element={<HOME />} />
-                {/* <Route path="/team" element={<Team />} /> */}
-                {/* <Route path="/contacts" element={<Contacts />} /> */}
-                {/* <Route path="/invoices" element={<Invoices />} /> */}
-                {/* <Route path="/form" element={<Form />} /> */}
-                {/* <Route path="/bar" element={<Bar />} /> */}
-                {/* <Route path="/pie" element={<Pie />} /> */}
-                {/* <Route path="/line" element={<Line />} /> */}
-                {/* <Route path="/faq" element={<FAQ />} /> */}
-                {/* <Route path="/calendar" element={<Calendar />} /> */}
-                {/* <Route path="/geography" element={<Geography />} /> */}
+                <Route path="/" element={<React_Logic />} />
+                <Route path="/HOME" element={<HOME />} />
+                <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
+                <Route path="/React_Logic" element={<React_Logic />} />
               </Routes>
             </main>
           </div>

@@ -14,6 +14,8 @@ import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import ListAltIcon from '@mui/icons-material/ListAlt'
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -37,7 +39,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 const Sidebar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
   const [selected, setSelected] = useState('HOME')
 
   return (
@@ -118,7 +120,7 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Decode CAN-Log"
-              to="/form"
+              to="/Decode_CAN_LOG"
               icon={<ReceiptLongIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -148,6 +150,13 @@ const Sidebar = () => {
               title="Help"
               to="/bar"
               icon={<HelpIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="React_Logic"
+              to="/React_Logic"
+              icon={<DragIndicatorIcon />}
               selected={selected}
               setSelected={setSelected}
             />

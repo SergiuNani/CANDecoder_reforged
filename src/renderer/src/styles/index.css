@@ -17,3 +17,14 @@
 .danger {
   color: #ff7782;
 }
+.button {
+  padding: 0.6rem;
+  color: #ff7782;
+  background-color: rgb(25, 70, 70);
+  display: inline-block;
+  border: 1px solid rgb(116, 221, 29);
+  margin: 0.2rem;
+}
+.button:hover {
+  cursor: pointer;
+}
