@@ -1,6 +1,14 @@
 import { Header } from '../components/header'
 import { Typography } from '@mui/material'
-import { useState, useReducer, createContext, useContext, useRef, forwardRef } from 'react'
+import {
+  useState,
+  useReducer,
+  createContext,
+  useContext,
+  useRef,
+  forwardRef,
+  useEffect
+} from 'react'
 import { flushSync } from 'react-dom'
 import { createPortal } from 'react-dom'
 
@@ -1190,6 +1198,168 @@ function ModalContent({ onClose }) {
     </div>
   )
 }
+// -------------------------------------------------------------------------------------------------------------
+
+function Element20() {
+  console.log('Element20 Rendering')
+  const [planetList, planetID, setPlanetID] = useSelectOption('/planets')
+  const [placesList, placeID, setPlaceID] = useSelectOption(
+    planetID ? `/planets/${planetID}/places` : null
+  )
+
+  return (
+    <div className="border danger">
+      <Typography variant="h3" className="text-indigo-300">
+        Element 20 - simulating responses from Server, useEffect, customHook
+      </Typography>
+      <label>
+        Pick a planet:{' '}
+        <select
+          value={planetID}
+          onChange={(e) => {
+            setPlanetID(e.target.value)
+          }}
+        >
+          {planetList?.map((planet) => (
+            <option key={planet.id} value={planet.id}>
+              {planet.name}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <label>
+        Pick a place:{' '}
+        <select value={placeID} onChange={(e) => setPlaceID(e.target.value)}>
+          {placesList?.map((place) => (
+            <option key={place.id} value={place.id}>
+              {place.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p>
+        You wanna go to : {placeID || '??'} which is located on {planetID || '??'}
+      </p>
+    </div>
+  )
+}
+
+function useSelectOption(url) {
+  const [list, setList] = useState(null)
+  const [selectedID, setSelectedID] = useState('')
+
+  useEffect(() => {
+    if (url === null) {
+      return
+    }
+    let ignore = false
+    fetchData(url).then((resolve) => {
+      console.log('🚀 ~ file: React_logic.jsx:1210 ~ fetchData ~ ignore:', ignore)
+      if (!ignore) {
+        setList(resolve)
+        setSelectedID(resolve[0].id)
+      }
+    })
+
+    return () => {
+      ignore = true
+    }
+  }, [url])
+
+  return [list, selectedID, setSelectedID]
+}
+
+function fetchData(url) {
+  if (url === '/planets') {
+    return fetchPlanets()
+  } else if (url.startsWith('/planets/')) {
+    const match = url.match(/^\/planets\/([\w-]+)\/places(\/)?$/)
+    if (!match || !match[1] || !match[1].length) {
+      throw Error('Expected URL like "/planets/earth/places". Received: "' + url + '".')
+    }
+    return fetchPlaces(match[1])
+  } else
+    throw Error('Expected URL like "/planets" or "/planets/earth/places". Received: "' + url + '".')
+}
+
+async function fetchPlanets() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: 'earth',
+          name: 'Earth'
+        },
+        {
+          id: 'venus',
+          name: 'Venus'
+        },
+        {
+          id: 'mars',
+          name: 'Mars'
+        }
+      ])
+    }, 1000)
+  })
+}
+async function fetchPlaces(planetId) {
+  if (typeof planetId !== 'string') {
+    console.log(
+      'fetchPlaces(planetId) expects a string argument. ' + 'Instead received: ' + planetId + '.'
+    )
+  }
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      if (planetId === 'earth') {
+        resolve([
+          {
+            id: 'laos',
+            name: 'Laos'
+          },
+          {
+            id: 'spain',
+            name: 'Spain'
+          },
+          {
+            id: 'vietnam',
+            name: 'Vietnam'
+          }
+        ])
+      } else if (planetId === 'venus') {
+        resolve([
+          {
+            id: 'aurelia',
+            name: 'Aurelia'
+          },
+          {
+            id: 'diana-chasma',
+            name: 'Diana Chasma'
+          },
+          {
+            id: 'kumsong-vallis',
+            name: 'Kŭmsŏng Vallis'
+          }
+        ])
+      } else if (planetId === 'mars') {
+        resolve([
+          {
+            id: 'aluminum-city',
+            name: 'Aluminum City'
+          },
+          {
+            id: 'new-new-york',
+            name: 'New New York'
+          },
+          {
+            id: 'vishniac',
+            name: 'Vishniac'
+          }
+        ])
+      } else console.log('Unknown planet ID: ' + planetId)
+    }, 1000)
+  })
+}
 
 // -------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------
@@ -1218,6 +1388,7 @@ const React_Logic = () => {
       <Element18 />
       <Element19 />
       <Element22 />
+      <Element20 />
     </>
   )
 }
