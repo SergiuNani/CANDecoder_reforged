@@ -161,6 +161,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
+              title="React_Logic2"
+              to="/React_Logic2"
+              icon={<DragIndicatorIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title="Debug"
               to="/bar"
               icon={<AdbIcon />}
