@@ -2,6 +2,7 @@ import { Header } from '../components/header'
 import { Typography } from '@mui/material'
 import { useState, useReducer, createContext, useContext, useRef, forwardRef } from 'react'
 import { flushSync } from 'react-dom'
+import { createPortal } from 'react-dom'
 
 const Item = ({ isPacked, name }) => {
   if (isPacked) {
@@ -1144,6 +1145,53 @@ for (let i = 0; i < 10; i++) {
 }
 
 // -------------------------------------------------------------------------------------------------------------
+
+function Element22() {
+  return (
+    <div className="border danger">
+      <Typography variant="h3" className="text-indigo-300">
+        Element 20 - MODALS , createPortal react-dom
+      </Typography>
+
+      <div className="clipping-container">
+        <NoPortalExample />
+      </div>
+      <div className="clipping-container">
+        <PortalExample />
+      </div>
+    </div>
+  )
+}
+function NoPortalExample() {
+  const [showModal, setShowModal] = useState(false)
+  return (
+    <>
+      <button onClick={() => setShowModal(true)}>Show modal without a portal</button>
+      {showModal && <ModalContent onClose={() => setShowModal(false)} />}
+    </>
+  )
+}
+function PortalExample() {
+  const [showModal, setShowModal] = useState(false)
+  return (
+    <>
+      <button onClick={() => setShowModal(true)}>Show modal using a portal</button>
+      {showModal &&
+        createPortal(<ModalContent onClose={() => setShowModal(false)} />, document.body)}
+    </>
+  )
+}
+
+function ModalContent({ onClose }) {
+  return (
+    <div className="modal">
+      <div>I'm a modal dialog</div>
+      <button onClick={onClose}>Close</button>
+    </div>
+  )
+}
+
+// -------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------
 
 const React_Logic = () => {
@@ -1169,6 +1217,7 @@ const React_Logic = () => {
       <Element17 />
       <Element18 />
       <Element19 />
+      <Element22 />
     </>
   )
 }
