@@ -157,7 +157,7 @@ const rows = [
 export default function RenderExpandCellGrid() {
   return (
     <div style={{ height: '70vh', width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} />
+      <DataGrid rows={rows} columns={columns} showCellVerticalBorder autoHeight />
     </div>
   )
 }

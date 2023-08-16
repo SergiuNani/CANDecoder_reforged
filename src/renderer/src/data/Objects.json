@@ -1,0 +1,75 @@
+{
+  "Objects": {
+    "Object": [
+      {
+        "Index": "#x1000",
+        "Name": "Device type",
+        "Type": "UDINT",
+        "BitSize": 32
+      },
+      {
+        "Index": "#x1001",
+        "Name": "Device type",
+        "Type": "UDINT",
+        "BitSize": 32
+      },
+
+      {
+        "Index": "#x1002",
+        "Name": "Device type",
+        "Type": "UDINT",
+        "BitSize": 32
+      },
+      {
+        "Index": "#x1018",
+        "Name": "Identity Object",
+        "Type": "DT1018",
+        "BitSize": 144,
+        "Info": {
+          "SubItem": [
+            {
+              "Index": "#x1018_00",
+              "Name": "Number of entries",
+              "BitSize": 8,
+              "Info": {
+                "DefaultData": 1
+              }
+            },
+            {
+              "Index": "#x1018_01",
+              "Name": "Vendor ID",
+              "BitSize": 32,
+              "Info": {
+                "DefaultData": "000001A3h"
+              }
+            },
+            {
+              "Index": "#x1018_02",
+              "Name": "Product Code",
+              "BitSize": 32,
+              "Info": {
+                "DefaultData": 0
+              }
+            },
+            {
+              "Index": "#x1018_03",
+              "Name": "Revision number",
+              "BitSize": 32,
+              "Info": {
+                "DefaultData": "0x30313030 (ASCII 0100)"
+              }
+            },
+            {
+              "Index": "#x1018_04",
+              "Name": "Serial number",
+              "BitSize": 32,
+              "Info": {
+                "DefaultData": "Unique number"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
