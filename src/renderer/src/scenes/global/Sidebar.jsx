@@ -102,8 +102,8 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Registers"
-              to="/team"
-              icon={<ViewListIcon />}
+              to="/Registers"
+              icon={<ListAltIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -121,14 +121,14 @@ const Sidebar = () => {
             <Item
               title="Decode CAN-Log"
               to="/Decode_CAN_LOG"
-              icon={<ReceiptLongIcon />}
+              icon={<AttachFileIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Decode Messages"
               to="/form"
-              icon={<ListAltIcon />}
+              icon={<ReceiptLongIcon />}
               selected={selected}
               setSelected={setSelected}
             />

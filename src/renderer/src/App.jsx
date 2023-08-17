@@ -5,10 +5,11 @@ import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
 import HOME from './scenes/HOME'
-import RenderExpandCellGrid from './scenes/DataGrid'
 import Decode_CAN_LOG from './scenes/Decode_CAN_LOG'
+import { RegisterWindow } from './scenes/global/Register'
 import React_Logic from './scenes/React_logic'
 import React_Logic2 from './scenes/React_Logic2'
+
 function App() {
   const [theme, colorMode] = useMode()
   const [isSidebar, setIsSidebar] = useState(true)
@@ -25,9 +26,10 @@ function App() {
               <Topbar />
               {/* </div> */}
               <Routes>
-                <Route path="/" element={<React_Logic2 />} />
+                <Route path="/" element={<RegisterWindow />} />
                 <Route path="/HOME" element={<HOME />} />
                 <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
+                <Route path="/Registers" element={<RegisterWindow />} />
                 <Route path="/React_Logic" element={<React_Logic />} />
                 <Route path="/React_Logic2" element={<React_Logic2 />} />
               </Routes>

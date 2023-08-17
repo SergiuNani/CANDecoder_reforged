@@ -12,7 +12,7 @@ import {
 } from 'react'
 import { flushSync } from 'react-dom'
 import { createPortal } from 'react-dom'
-
+import { Objects_collection } from '../data/BigData.js'
 // -------------------------------------------------------------------------------------------------------------
 function Element22() {
   return (
@@ -119,6 +119,27 @@ function TooltipContainer({ children, x, y, contentRef }) {
 }
 
 // -------------------------------------------------------------------------------------------------------------
+
+const Element23 = () => {
+  const Objects = Objects_collection
+  console.log('🚀 ~ file: React_Logic2.jsx:125 ~ Element23 ~ Objects:', Objects)
+
+  return (
+    <div className="border danger ">
+      <ul>
+        {Objects.map((object, index) => (
+          <li>
+            {index + 1}. {object.Index}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+// -------------------------------------------------------------------------------------------------------------
+
+// -------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------------------
 
 const React_Logic2 = () => {
@@ -126,6 +147,7 @@ const React_Logic2 = () => {
     <>
       <Header title="React Logic 2" />
       <Element22 />
+      <Element23 />
     </>
   )
 }
