@@ -6,7 +6,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
 import HOME from './scenes/HOME'
 import Decode_CAN_LOG from './scenes/Decode_CAN_LOG'
-import { RegisterWindow } from './scenes/global/Register'
+import { RegisterWindow } from './scenes/global/RegisterWindow'
 import React_Logic from './scenes/React_logic'
 import React_Logic2 from './scenes/React_Logic2'
 

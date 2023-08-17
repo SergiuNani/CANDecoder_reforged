@@ -77,9 +77,27 @@ const Sidebar = () => {
             }}
           >
             {!isCollapsed && (
-              <Box display="flex" justifyContent="space-between" alignItems="center" ml="1rem">
-                <Typography variant="h4" color={colors.green[500]}>
-                  CAN <span>DECODER</span>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                ml="1rem"
+                style={{
+                  transition: 'color 1s', // Adding transition for smooth color change
+                  ':hover': {
+                    color: 'green' // Desired color on hover
+                  }
+                }}
+              >
+                <Typography variant="h4">
+                  CAN{' '}
+                  <span
+                    style={{
+                      color: colors.red[500]
+                    }}
+                  >
+                    DECODER
+                  </span>
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
