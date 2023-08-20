@@ -13,6 +13,8 @@ import {
 import { flushSync } from 'react-dom'
 import { createPortal } from 'react-dom'
 import { Objects_collection } from '../data/BigData.js'
+import DrawerComponent from '../components/Drawer'
+
 // -------------------------------------------------------------------------------------------------------------
 function Element22() {
   return (
@@ -78,7 +80,6 @@ function Tooltip({ children, targetRect }) {
   useLayoutEffect(() => {
     const { height } = ref.current.getBoundingClientRect()
     setTooltipHeight(height)
-    console.log('Measured tooltip height: ' + height)
   }, [])
 
   let tooltipX = 0
@@ -122,13 +123,11 @@ function TooltipContainer({ children, x, y, contentRef }) {
 
 const Element23 = () => {
   const Objects = Objects_collection
-  console.log('🚀 ~ file: React_Logic2.jsx:125 ~ Element23 ~ Objects:', Objects)
-
   return (
     <div className="border danger ">
       <ul>
         {Objects.map((object, index) => (
-          <li>
+          <li key={`${object}+${index}`}>
             {index + 1}. {object.Index}
           </li>
         ))}

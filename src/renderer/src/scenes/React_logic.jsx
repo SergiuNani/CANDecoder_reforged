@@ -31,8 +31,6 @@ const Item2 = ({ isPacked, name }) => {
   )
 }
 const Element1 = () => {
-  console.log('Element 1 render')
-
   return (
     <div className=" m-8 border-orange-400 border-2 p-1">
       <Typography variant="h4">
@@ -100,7 +98,6 @@ const Element2 = () => {
       </li>
     )
   })
-  console.log('Element 2 render')
   return (
     <div className="border">
       <Typography variant="h3">Element 2</Typography>
@@ -160,7 +157,6 @@ function Element3() {
       }
     })
   }
-  console.log('Element 3 render')
 
   return (
     <div className="border mt-9 ">
@@ -225,7 +221,6 @@ function Element4() {
   function UploadButton() {
     return <Button onClick={() => alert('Uploading!')}>Upload Image</Button>
   }
-  console.log('Element 4 render')
   return (
     <div className="border mt-8">
       <Typography variant="h3" className="text-indigo-300">
@@ -278,7 +273,6 @@ function Element6() {
     setPending((p) => p - 1)
     setCompleted((c) => c + 1)
   }
-  console.log('Element 6 rendering')
   return (
     <div className="border ">
       <Typography variant="h3" className="text-indigo-300">
@@ -733,7 +727,6 @@ const Element15 = () => {
   const contact = initialDataArray15.find((contact) => {
     return contact.id == state.selectedId
   })
-  console.log('Element 15 rendering')
   return (
     <div className="border danger">
       <Typography variant="h3" className="text-indigo-300">
@@ -783,7 +776,6 @@ function ReducerFct(state, action) {
     }
 
     default: {
-      console.log('THIS IS BULLSHIT')
     }
   }
 }
@@ -1156,7 +1148,6 @@ for (let i = 0; i < 10; i++) {
 // -------------------------------------------------------------------------------------------------------------
 
 function Element20() {
-  console.log('Element20 Rendering')
   const [planetList, planetID, setPlanetID] = useSelectOption('/planets')
   const [placesList, placeID, setPlaceID] = useSelectOption(
     planetID ? `/planets/${planetID}/places` : null
@@ -1210,7 +1201,6 @@ function useSelectOption(url) {
     }
     let ignore = false
     fetchData(url).then((resolve) => {
-      console.log('🚀 ~ file: React_logic.jsx:1210 ~ fetchData ~ ignore:', ignore)
       if (!ignore) {
         setList(resolve)
         setSelectedID(resolve[0].id)
@@ -1260,9 +1250,6 @@ async function fetchPlanets() {
 }
 async function fetchPlaces(planetId) {
   if (typeof planetId !== 'string') {
-    console.log(
-      'fetchPlaces(planetId) expects a string argument. ' + 'Instead received: ' + planetId + '.'
-    )
   }
   return new Promise((resolve) => {
     setTimeout(() => {

@@ -2,11 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar {
+  width: 1rem;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 1000px;
+  background-color: #c1c1c1;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #525252;
+}
+
+/* Firefox and other browsers */
+/* Customize the scrollbar width and color */
+/* Note: Firefox does not support customizing the track color directly */
+/* You can use scrollbar-color to set thumb and track colors */
+/* Example: scrollbar-color: thumbColor trackColor; */
+/* body {
+  scrollbar-width: thin;
+  scrollbar-color: #a0a0a0 #f0f0f0;
+} */
+
 @import '../theme.js';
 .app {
   display: flex;
 }
 
+.drawerComponenet {
+  position: fixed;
+  right: 0;
+  border: 1px solid rgb(40, 168, 18);
+
+  width: 30rem;
+  background-color: #333;
+  color: white;
+  border-radius: 1rem;
+  height: 95vh;
+  padding: 20px;
+  box-shadow: 5px 0px 15px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease-in-out;
+  overflow: auto;
+}
 .border {
   border: 1px solid red;
   /* padding: 1rem; */
@@ -16,9 +54,6 @@
   /* padding: 1rem; */
 }
 
-.xx {
-  padding: 100px;
-}
 .danger {
   color: #ff7782;
 }
@@ -32,4 +67,16 @@
 }
 .button:hover {
   cursor: pointer;
+}
+
+.XX {
+  top: 0;
+}
+.YY {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  zoom: 3;
+  border: 1px solid rgb(40, 168, 18);
 }

@@ -2456,7 +2456,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x608F_00',
+          Index: '#x608F_00',
           Name: 'Number of entries',
           BitSize: 8,
           Info: {
@@ -2465,7 +2465,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x608F_01',
+          Index: '#x608F_01',
           Name: 'Encoder increments',
           BitSize: 32,
           Info: {
@@ -2474,7 +2474,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x608F_02',
+          Index: '#x608F_02',
           Name: 'Motor revolutions',
           BitSize: 32,
           Info: {
@@ -2493,7 +2493,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x6091_00',
+          Index: '#x6091_00',
           Name: 'Number of entries',
           BitSize: 8,
           Info: {
@@ -2502,7 +2502,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6091_01',
+          Index: '#x6091_01',
           Name: 'Motor shaft revolution',
           BitSize: 32,
           Info: {
@@ -2511,7 +2511,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6091_02',
+          Index: '#x6091_02',
           Name: 'Driving shaft revolution',
           Info: {
             BitSize: 32,
@@ -2530,7 +2530,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x6092_00',
+          Index: '#x6092_00',
           Name: 'Number of entries',
           BitSize: 8,
           Info: {
@@ -2539,7 +2539,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6092_01',
+          Index: '#x6092_01',
           Name: 'Feed',
           BitSize: 32,
           Info: {
@@ -2548,7 +2548,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6092_02',
+          Index: '#x6092_02',
           Name: 'Shaft revolution',
           Info: {
             BitSize: 32,
@@ -2567,7 +2567,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x6093_00',
+          Index: '#x6093_00',
           Name: 'Number of entries',
           BitSize: 8,
           Info: {
@@ -2576,7 +2576,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6093_01',
+          Index: '#x6093_01',
           Name: 'Poition factor Numerator',
           BitSize: 32,
           Info: {
@@ -2585,7 +2585,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6092_02',
+          Index: '#x6092_02',
           Name: 'Position factor Division',
           Info: {
             BitSize: 32,
@@ -2604,7 +2604,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x6094_00',
+          Index: '#x6094_00',
           Name: 'Number of entries',
           BitSize: 8,
           Info: {
@@ -2613,7 +2613,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6094_01',
+          Index: '#x6094_01',
           Name: 'Velocity encider factor Numerator',
           BitSize: 32,
           Info: {
@@ -2622,7 +2622,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6094_02',
+          Index: '#x6094_02',
           Name: 'Velocity encoder factor Divisor',
           Info: {
             BitSize: 32,
@@ -2641,7 +2641,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x6096_00',
+          Index: '#x6096_00',
           Name: 'Number of entries',
           BitSize: 8,
           Info: {
@@ -2650,7 +2650,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6096_01',
+          Index: '#x6096_01',
           Name: 'Velocity factor Numerator',
           BitSize: 32,
           Info: {
@@ -2658,7 +2658,7 @@ export const Objects_collection = [
           }
         },
         {
-          index: '#x6096_02',
+          Index: '#x6096_02',
           Name: 'Velocity factor Divisor',
           BitSize: 32,
           Info: {
@@ -2677,7 +2677,7 @@ export const Objects_collection = [
       SubItem: [
         {
           '#text': '>',
-          index: '#x6097_00',
+          Index: '#x6097_00',
           Name: 'Nuumber of entries',
           BitSize: 8,
           Info: {
@@ -2686,7 +2686,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6097_01',
+          Index: '#x6097_01',
           Name: 'Acceleration factor Numerator',
           BitSize: 32,
           Info: {
@@ -2695,7 +2695,7 @@ export const Objects_collection = [
         },
         {
           '#text': '>',
-          index: '#x6097_02',
+          Index: '#x6097_02',
           Name: 'Acceleration factor Divisor',
           Info: {
             BitSize: 32,
@@ -6120,7 +6120,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'CCR',
+    Index: 'CCR',
     Title: 'Communication Control Register (command, R/W)',
     BitInfo: [
       {
@@ -6140,7 +6140,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'ICR',
+    Index: 'ICR',
     Title: 'Interrupts Control Register (command, R/W)',
     BitInfo: [
       {
@@ -6235,7 +6235,7 @@ export const Registers_THS = [
   },
 
   {
-    index: 'MCR',
+    Index: 'MCR',
     Title: 'Motion Command Register (command, RO)',
     BitInfo: [
       {
@@ -6384,7 +6384,7 @@ export const Registers_THS = [
   },
 
   {
-    index: 'PCR',
+    Index: 'PCR',
     Title: 'Protections Control Register (command/status, R/W)',
     BitInfo: [
       {
@@ -6486,7 +6486,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'AAR',
+    Index: 'AAR',
     Title: 'Axis Addresses Register (status, RO)',
     BitInfo: [
       {
@@ -6510,7 +6510,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'CBR',
+    Index: 'CBR',
     Title: 'CAN baud rate Register (status, R/W)',
     BitInfo: [
       {
@@ -6524,7 +6524,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'CER',
+    Index: 'CER',
     Title: 'Communication Error Register (status, RO)',
     BitInfo: [
       {
@@ -6606,7 +6606,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'CSR',
+    Index: 'CSR',
     Title: 'Communication Status Register (status, RO)',
     BitInfo: [
       {
@@ -6656,7 +6656,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'DER',
+    Index: 'DER',
     Title: 'Detailed Error Register (status, RO)',
     BitInfo: [
       { bit: '15-14', info: 'Reserved' },
@@ -6748,7 +6748,7 @@ export const Registers_THS = [
   },
 
   {
-    index: 'DER2',
+    Index: 'DER2',
     Title: 'Detailed Error Register 2 (status, RO)',
     BitInfo: [
       { bit: '15-7', info: 'Reserved' },
@@ -6797,7 +6797,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'ISR',
+    Index: 'ISR',
     Title: 'Interrupts Status Register (status, RO)',
     BitInfo: [
       { bit: '15-13', info: 'Reserved' },
@@ -6882,7 +6882,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'MER',
+    Index: 'MER',
     Title: 'Motion Error Register (status, RO)',
     BitInfo: [
       {
@@ -6984,7 +6984,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'MSR',
+    Index: 'MSR',
     Title: 'Motion Status Register (status, RO)',
     BitInfo: [
       {
@@ -7077,7 +7077,7 @@ export const Registers_THS = [
   },
 
   {
-    index: 'SRL',
+    Index: 'SRL',
     Title: 'Status Register Low part (status, RO)',
     BitInfo: [
       {
@@ -7116,7 +7116,7 @@ export const Registers_THS = [
     ]
   },
   {
-    index: 'SRH',
+    Index: 'SRH',
     Title: 'Status Register High part (status, RO)',
     BitInfo: [
       {
@@ -7219,7 +7219,7 @@ export const Registers_THS = [
   },
 
   {
-    index: 'SSR',
+    Index: 'SSR',
     Title: 'Slave Status Register (status, RO)',
     BitInfo: [
       {

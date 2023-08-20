@@ -7,6 +7,7 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
 import SearchIcon from '@mui/icons-material/Search'
+import PaletteIcon from '@mui/icons-material/Palette'
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -30,7 +31,7 @@ const Topbar = () => {
           <SettingsOutlinedIcon />
         </IconButton>
         <IconButton>
-          <PersonOutlinedIcon />
+          <PaletteIcon />
         </IconButton>
       </Box>
     </Box>

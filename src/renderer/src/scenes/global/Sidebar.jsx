@@ -187,7 +187,7 @@ const Sidebar = () => {
             />
             <Item
               title="Debug"
-              to="/bar"
+              to="/DebugScene"
               icon={<AdbIcon />}
               selected={selected}
               setSelected={setSelected}
