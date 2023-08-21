@@ -1,0 +1,8 @@
+!!!!!!!!!!!!!!#Potential issues 
+ 1. In the code, in order to find out the resolution of the Registers im looking 
+ at  Registers_THS.BitInfo[0].bit property - THE first one - so if you wanna add 
+ the option to edit those Registers In real time you might put the first column to
+ last because if pure code bs, so be careful what objects you will be creating.
+
+
+ 

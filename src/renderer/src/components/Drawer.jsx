@@ -32,7 +32,7 @@ const DrawerComponent = ({ title, component }) => {
       <Box
         className="drawerComponenet "
         style={{
-          background: `${colors.primary[600]}`,
+          background: `${colors.primary[100]}`,
           border: `1px solid ${colors.grey[500]}`,
           right: isDrawerOpen ? '0' : '-200rem'
         }}

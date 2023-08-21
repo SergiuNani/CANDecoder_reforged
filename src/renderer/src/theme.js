@@ -16,7 +16,7 @@ export const tokens = (mode) => ({
           800: '#292929',
           900: '#141414'
         },
-        primary: {
+        primary1: {
           100: '#d0d1d5',
           200: '#a1a4ab',
           300: '#727681',
@@ -43,7 +43,7 @@ export const tokens = (mode) => ({
           200: '#f1b9b7',
           300: '#e99592',
           400: '#e2726e',
-          500: '#db4f4a',
+          500: '#FF5252',
           600: '#af3f3b',
           700: '#832f2c',
           800: '#58201e',
@@ -59,6 +59,18 @@ export const tokens = (mode) => ({
           700: '#3e4396',
           800: '#2a2d64',
           900: '#151632'
+        },
+        purple: {
+          100: '#252943',
+          200: '#4C5285',
+          300: '#575FB7'
+        },
+        primary: {
+          100: '#16181D',
+          200: '#23272F',
+          300: '#343A46',
+          400: '#149ECA',
+          500: '#1C84A8'
         }
       }
     : {
@@ -73,7 +85,7 @@ export const tokens = (mode) => ({
           800: '#c2c2c2',
           900: '#e0e0e0'
         },
-        primary: {
+        primary1: {
           100: '#040509',
           200: '#080b12',
           300: '#0c101b',
@@ -116,6 +128,11 @@ export const tokens = (mode) => ({
           700: '#a4a9fc',
           800: '#c3c6fd',
           900: '#e1e2fe'
+        },
+        purple: {
+          100: '#252943',
+          200: '#4C5285',
+          300: '#575FB7'
         }
       })
 })
@@ -141,7 +158,7 @@ export const themeSettings = (mode) => {
               light: colors.grey[100]
             },
             background: {
-              default: colors.primary[500]
+              default: colors.primary[200]
             }
           }
         : {

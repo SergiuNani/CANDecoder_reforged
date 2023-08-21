@@ -13,7 +13,7 @@ const Topbar = () => {
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
   return (
-    <Box className="TOPBAR" sx={{ bgcolor: colors.primary[400] }}>
+    <Box className="TOPBAR" sx={{ bgcolor: colors.primary[200] }}>
       {/* SEARCH BAR */}
       <Box>
         <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />

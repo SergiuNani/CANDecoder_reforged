@@ -1,12 +1,17 @@
 import { Header } from '../components/header'
-import { Box, Typography } from '@mui/material'
-import { useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
+import { Registers_THS, Registers_CANopen } from '../data/BigData'
+import {
+  getMaxNumberFromStringRange,
+  getRangeNumberFromStringRange
+} from '../functions/NumberConversion'
 const DebugScene = () => {
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>
+      {/* <Registers_logic /> */}
     </>
   )
 }
@@ -55,4 +60,21 @@ export const ColorsComponent = () => {
       </Box>
     </Box>
   )
+}
+
+export const Registers_logic = () => {
+  for (let i = 0; i < Registers_THS.length; i++) {
+    console.log(
+      Registers_THS[i].BitInfo[0].bit +
+        ` ---- ` +
+        getRangeNumberFromStringRange(Registers_THS[i].BitInfo[0].bit)
+    )
+  }
+  for (let i = 0; i < Registers_CANopen.length; i++) {
+    console.log(
+      Registers_CANopen[i].BitInfo[0].bit +
+        ' --- ' +
+        getRangeNumberFromStringRange(Registers_CANopen[i].BitInfo[0].bit)
+    )
+  }
 }
