@@ -14,9 +14,31 @@ const RegisterComponent = ({ register, value }) => {
   var valueInBinary = hex2bin(value, resolution + 1)
   valueInBinary = valueInBinary.split('')
 
+  function MultipleBitsChoise2JSX(rowValue, rowBit, register, index) {
+    var copyArray = [...valueInBinary]
+    var range = getRangeNumberFromStringRange(rowBit)
+    copyArray = copyArray.splice(0, range).join('')
+    const findResult = register.BitInfo[index].value.findIndex((iterate) => {
+      return iterate.bitValue === copyArray
+    })
+
+    return rowValue.map((member, index) => (
+      <Box
+        key={member.bitValue}
+        display="flex"
+        color={findResult === index ? `${colors.red[500]}` : 'inherit'}
+      >
+        {member.bitValue && <p style={{ color: `${colors.blue[400]}` }}>{member.bitValue}</p>}
+        <p>&nbsp;-&nbsp;</p>
+        {member.info && <p>{member.info}</p>}
+      </Box>
+    ))
+  }
+
   function SliceBitsGiveJSX(range) {
     range = getRangeNumberFromStringRange(range)
     var sliced = valueInBinary.splice(0, range)
+
     var export1 = sliced.map((el, index) => (
       <p
         key={range + el + index}
@@ -51,7 +73,8 @@ const RegisterComponent = ({ register, value }) => {
             display: 'flex',
             fontSize: '1.2rem',
             color: `${colors.green[300]}`,
-            justifyContent: 'center'
+            justifyContent: 'center',
+            textAlign: 'center'
           }}
         >
           <h3>
@@ -60,7 +83,7 @@ const RegisterComponent = ({ register, value }) => {
         </Box>
 
         {/* {'One full Line  */}
-        {register.BitInfo.map((row) => (
+        {register.BitInfo.map((row, index) => (
           <Box
             key={row.bit}
             style={{
@@ -87,22 +110,49 @@ const RegisterComponent = ({ register, value }) => {
             </Box>
             {/* {'Element 2-  Bit description'} */}
             {row.value ? (
-              <Box>
-                {row.value.map((member) => (
-                  <Box key={member.bitValue} display="flex">
-                    {member.bitValue && (
-                      <p style={{ color: `${colors.blue[400]}` }}>{member.bitValue}</p>
-                    )}
-                    <p>&nbsp;-&nbsp;</p>
-                    {member.info && <p>{member.info}</p>}
-                  </Box>
-                ))}
-              </Box>
+              <Box>{MultipleBitsChoise2JSX(row.value, row.bit, register, index)}</Box>
             ) : (
               <Box>
-                {row.info && <p>{row.info}</p>}
-                {row.zero && <p>{row.zero}</p>}
-                {row.one && <p>{row.one}</p>}
+                {row.info && (
+                  <p
+                    style={{
+                      color: `${colors.blue[200]}`
+                      // textAlign: 'center'
+                    }}
+                  >
+                    {row.info}
+                  </p>
+                )}
+                {row.zero && (
+                  <p>
+                    <span
+                      style={{
+                        color: `${colors.primary[400]}`,
+                        fontSize: '0.9rem',
+                        marginLeft: '0.5rem',
+                        fontWeight: '750'
+                      }}
+                    >
+                      0{'  '}
+                    </span>
+                    {row.zero}
+                  </p>
+                )}
+                {row.one && (
+                  <p>
+                    <span
+                      style={{
+                        color: `${colors.primary[400]}`,
+                        fontSize: '0.9rem',
+                        marginLeft: '0.5rem',
+                        fontWeight: '750'
+                      }}
+                    >
+                      1{'  '}
+                    </span>
+                    {row.one}
+                  </p>
+                )}
               </Box>
             )}
             {/* {'Element 3-  Bit value from prop'} */}
