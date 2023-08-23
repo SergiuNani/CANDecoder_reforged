@@ -1,3 +1,56 @@
+export const xx = [
+  {
+    Index: '#x1018',
+    Name: 'Identity Object',
+    Type: 'DT1018',
+    BitSize: 144,
+    Info: {
+      SubItem: [
+        {
+          Index: '#x1018_00',
+          Name: 'Number of entries',
+          BitSize: 8,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#x1018_01',
+          Name: 'Vendor ID',
+          BitSize: 32,
+          Info: {
+            DefaultData: '000001A3h'
+          }
+        },
+        {
+          Index: '#x1018_02',
+          Name: 'Product Code',
+          BitSize: 32,
+          Info: {
+            DefaultData: 0
+          }
+        },
+        {
+          Index: '#x1018_03',
+          Name: 'Revision number',
+          BitSize: 32,
+          Info: {
+            DefaultData: '0x30313030 (ASCII 0100)'
+          }
+        },
+        {
+          Index: '#x1018_04',
+          Name: 'Serial number',
+          BitSize: 32,
+          Info: {
+            DefaultData: 'Unique number'
+          }
+        }
+      ]
+    }
+  }
+]
+
 export const Objects_collection = [
   {
     Index: '#x1000',
@@ -1041,55 +1094,84 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
+          Index: '#x1C32_00',
           Name: 'Number of entries',
+          BitSize: 8,
           Info: {
             DefaultData: 12
           }
         },
         {
+          Index: '#x1C32_01',
           Name: 'Synchronization Type',
+          BitSize: 16,
           Info: {
             DefaultData: 200
           }
         },
         {
+          Index: '#x1C32_02',
+
           Name: 'Cycle Time',
+          BitSize: 32,
           Info: {
             DefaultData: '40420F00'
           }
         },
         {
+          Index: '#x1C32_04',
+
           Name: 'Synchronization Types supported',
+          BitSize: 16,
+
           Info: {
             DefaultData: 300
           }
         },
         {
+          Index: '#x1C32_05',
+
           Name: 'Minimum Cycle Time',
+          BitSize: 32,
+
           Info: {
             DefaultData: 0
           }
         },
         {
+          Index: '#x1C32_06',
+
           Name: 'Calc and Copy Time',
+          BitSize: 32,
           Info: {
             DefaultData: 0
           }
         },
         {
+          Index: '#x1C32_09',
+
           Name: 'Delay Time',
+          BitSize: 32,
+
           Info: {
             DefaultData: 0
           }
         },
         {
+          Index: '#x1C32_12',
+
           Name: 'Cycle Time Too Small',
+          BitSize: 16,
+
           Info: {
             DefaultData: 0
           }
         },
         {
-          Name: 'Sync Error'
+          Index: '#x1C32_32',
+
+          Name: 'Sync Error',
+          BitSize: 1
         }
       ]
     }

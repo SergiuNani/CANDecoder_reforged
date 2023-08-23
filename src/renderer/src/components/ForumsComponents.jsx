@@ -14,12 +14,22 @@ export function AutocompleteInput({ options, typeInput }) {
   const inputRef = useRef()
 
   const filterOptions = (value) => {
-    return options.filter((option) => {
-      // Search in all properties of each object
-      return Object.values(option).some((propertyValue) =>
+    const flatOptions = []
+
+    function flatten(obj) {
+      if (obj.Info && Array.isArray(obj.Info.SubItem)) {
+        obj.Info.SubItem.forEach((subItem) => flatten(subItem))
+      }
+      if (obj.Info == undefined || obj.Info.SubItem == undefined) flatOptions.push(obj)
+    }
+
+    options.forEach((option) => flatten(option))
+
+    return flatOptions.filter((option) =>
+      Object.values(option).some((propertyValue) =>
         propertyValue.toString().toLowerCase().includes(value.toLowerCase())
       )
-    })
+    )
   }
 
   const handleInputChange = (event) => {
@@ -50,7 +60,7 @@ export function AutocompleteInput({ options, typeInput }) {
         setIsFocused(false)
         setFilteredOptions([]) // Hide options when blurred
       }
-    }, 100)
+    }, 200)
   }
 
   const arrowIconStyles = {
