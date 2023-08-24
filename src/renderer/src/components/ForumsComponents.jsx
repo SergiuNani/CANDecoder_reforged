@@ -2,7 +2,8 @@ import React, { useState, useRef } from 'react'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection } from '../data/BigData'
-export function AutocompleteInput({ title }) {
+import { filterHex } from '../functions/NumberConversion'
+export function AutocompleteInput_AllObjects({ title, placeholder }) {
   var options = Objects_collection
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -105,7 +106,7 @@ export function AutocompleteInput({ title }) {
     <div
       ref={inputRef}
       style={{
-        overflow: 'auto',
+        // overflow: 'auto',
         width: '15rem',
         position: 'relative'
       }}
@@ -113,7 +114,7 @@ export function AutocompleteInput({ title }) {
       <p
         style={{
           fontSize: '1rem',
-          color: `${colors.red[100]}`
+          color: `${colors.primary1[200]}`
         }}
       >
         {title}
@@ -130,14 +131,15 @@ export function AutocompleteInput({ title }) {
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          placeholder="Type to search..."
+          placeholder={placeholder}
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
             borderRadius: '2rem',
-            color: `${colors.red[100]}`,
+            color: `${colors.red[200]}`,
             outline: 'none',
-            margin: '0.2rem 0 0 1rem'
+            margin: '0.2rem 0 0 1rem',
+            fontSize: '1rem'
           }}
         />
         <span style={arrowIconStyles}>▼</span>
@@ -148,14 +150,14 @@ export function AutocompleteInput({ title }) {
           style={{
             zIndex: '2',
             position: 'absolute',
-            top: '60%',
+            top: '100%',
             width: '100%',
             maxHeight: '75vh',
-            overflowY: 'auto',
-            backgroundColor: `${colors.primary[300]}`,
+            // backgroundColor: `${colors.primary[100]}`,
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            border: '1px solid yellow'
+            // border: '1px solid yellow',
+            overflow: 'auto'
           }}
         >
           {filteredOptions.map((option, index) => (
@@ -165,14 +167,13 @@ export function AutocompleteInput({ title }) {
               style={{
                 backgroundColor:
                   selectedOptionIndex === index
-                    ? `${colors.primary[500]}`
-                    : `${colors.primary[100]}`,
+                    ? `${colors.primary[400]}`
+                    : `${colors.primary[300]}`,
 
                 padding: '0.5rem 1rem',
-                border: `1px solid ${colors.grey[100]}`,
-                borderRadius: '4rem',
-                cursor: 'pointer',
-                transition: 'background-color 0.3s'
+                // border: `1px solid ${colors.red[500]}`,
+                // borderRadius: '4rem',
+                cursor: 'pointer'
               }}
               className="hover"
             >
@@ -181,6 +182,57 @@ export function AutocompleteInput({ title }) {
           ))}
         </ul>
       )}
+    </div>
+  )
+}
+
+export function Input_Autocomplete({ title, placeholder, variant, array }) {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const [inputValue, setInputValue] = useState('')
+
+  function handleInputChange(e) {
+    setInputValue(filterHex(e.target.value, 16))
+  }
+
+  return (
+    <div
+      style={{
+        // overflow: 'auto',
+        width: '15rem',
+        position: 'relative'
+      }}
+    >
+      <p
+        style={{
+          fontSize: '1rem',
+          color: `${colors.primary1[200]}`
+        }}
+      >
+        {title}
+      </p>
+      <label
+        style={{
+          position: 'relative'
+        }}
+      >
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder={placeholder}
+          style={{
+            backgroundColor: `${colors.primary[300]}`,
+            padding: '0.5rem 1rem',
+            borderRadius: '2rem',
+            color: `${colors.red[200]}`,
+            outline: 'none',
+            margin: '0.2rem 0 0 1rem',
+            fontSize: '1rem'
+          }}
+        />
+      </label>
     </div>
   )
 }

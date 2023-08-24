@@ -83,7 +83,7 @@
 
 .hover:hover {
   /* margin: 1rem; */
-  /* background: #ff7782; */
-  border: 20px solid yellow;
-  margin: 0.05rem;
+  border: 1px solid #a6b3ce;
+  background-color: #ff7782;
+  color: #d4a6a4;
 }

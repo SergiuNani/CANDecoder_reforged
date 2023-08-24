@@ -1,6 +1,15 @@
 /*******************************************************************************/
 /*---------------------Number transformation functions------------------------ */
 /*******************************************************************************/
+
+export function filterHex(hexString, resolution) {
+  const filteredHex = hexString.replace(/[^0-9A-Fa-f]/g, '')
+  if (resolution === 0) {
+    return filteredHex
+  }
+  return filteredHex.substring(0, resolution / 4)
+}
+
 export function hex2bin(hex, resolution) {
   var exit = ''
   if (resolution == 16) {
@@ -114,8 +123,112 @@ function hex_to_ascii(str1) {
   return str
 }
 
-//checks if the arr has any elements which are not hexa and returns the arr without the bad elements
-//can be limited to 16 or 32 bits
+//checks if the arr has any elements which are not dec and returns the arr without
+// the bad elements, unsigned 16 or 32 and we not cycling (going to + - then +) , definite limits
+//We not accounting for 4.5
+function check_validity_decimal(string, resolution) {
+  if (string == '') {
+    return ''
+  }
+  string = string.split('')
+  var keepMinus = ''
+  if (string[0] == '-') {
+    keepMinus = '-'
+  }
+  for (var i = 0; i < string.length; i++) {
+    if (isNaN(parseInt(string[i], 10))) {
+      string[i] = ''
+    }
+  }
+  string = string.join('')
+  string = keepMinus.concat(string)
+  if (string.length == 1 && string[0] == '-') {
+    return string
+  }
+  if (string == '') {
+    return string
+  }
+  if (resolution == 16) {
+    string = parseInt(string, 10)
+    var a = 32767
+    if (string > a) {
+      a = a.toString()
+      return a
+    }
+    if (string < -a - 1) {
+      string = -a - 1
+      string = string.toString()
+      return string
+    }
+    string = string.toString()
+    return string
+  } else if (resolution == 32) {
+    string = parseInt(string, 10)
+    var a = 2147483647
+    if (string > a) {
+      a = a.toString()
+      return a
+    } else if (string < -a - 1) {
+      string = -a - 1
+      string = string.toString()
+      return string
+    }
+    string = string.toString()
+    return string
+  } else if (resolution == 0) {
+    //No filtration infinite access
+    string = parseInt(string, 10).toString()
+    return string
+  }
+}
+
+function checkVal_dec_comma(str, resolution) {
+  var aux = str.indexOf('.')
+  var aux2 = str.split('.')
+  var aux3 = aux2[0]
+  var aux4 = ''
+  if (aux2.length > 1) {
+    for (var i = 1; i < aux2.length; i++) {
+      aux4 = aux4.concat(aux2[i])
+    }
+  }
+  if (aux4 != '') {
+    aux4 = aux4.split('')
+    for (var k = 0; k < aux4.length; k++) {
+      if (isNaN(parseInt(aux4[k], 10))) {
+        aux4[k] = ''
+      }
+    }
+    aux4 = aux4.join('')
+    if (parseInt(aux4) > 99899) {
+      aux4 = '99899'
+    }
+  }
+
+  if (resolution == '16') {
+    aux3 = check_validity_decimal(aux3, 16)
+  } else if (resolution == '32') {
+    aux3 = check_validity_decimal(aux3, 32)
+  } else if (resolution == '0') {
+    var temp = ''
+    if (aux3 == '--') {
+      aux3 = '='
+    }
+    if (aux3[0] == '-' && aux3 != '-' && aux3[1] == '0') {
+      temp = '-'
+    }
+    aux3 = check_validity_decimal(aux3, 0)
+    aux3 = temp.concat(aux3)
+  }
+
+  if (aux != -1) {
+    aux3 = aux3 + '.' + aux4
+
+    return aux3
+  } else {
+    return aux3
+  }
+}
 function check_validity_hex(arr, type) {
   if (typeof arr == 'object') {
     arr.forEach((el) => {
@@ -165,115 +278,5 @@ function check_validity_hex(arr, type) {
     if (type == 0) {
       return arr
     }
-  }
-}
-
-//checks if the arr has any elements which are not dec and returns the arr without
-// the bad elements, unsigned 16 or 32 and we not cycling (going to + - then +) , definite limits
-//We not accounting for 4.5
-function check_validity_decimal(arr, resolution) {
-  if (arr == '') {
-    return ''
-  }
-  arr = arr.split('')
-  var aux = ''
-  if (arr[0] == '-') {
-    aux = '-'
-  }
-  for (var i = 0; i < arr.length; i++) {
-    if (isNaN(parseInt(arr[i], 10))) {
-      arr[i] = ''
-    }
-  }
-  arr = arr.join('')
-  arr = aux.concat(arr)
-  if (arr.length == 1 && arr[0] == '-') {
-    return arr
-  }
-  if (arr == '') {
-    return arr
-  }
-  if (resolution == 16) {
-    arr = parseInt(arr, 10)
-    var a = 32767
-    if (arr > a) {
-      a = a.toString()
-      return a
-    }
-    if (arr < -a - 1) {
-      arr = -a - 1
-      arr = arr.toString()
-      return arr
-    }
-    arr = arr.toString()
-    return arr
-  }
-  if (resolution == 32) {
-    arr = parseInt(arr, 10)
-    var a = 2147483647
-    if (arr > a) {
-      a = a.toString()
-      return a
-    }
-    if (arr < -a - 1) {
-      arr = -a - 1
-      arr = arr.toString()
-      return arr
-    }
-    arr = arr.toString()
-    return arr
-  }
-  //No filtration infinite access
-  if (resolution == 0) {
-    arr = parseInt(arr, 10).toString()
-    return arr
-  }
-}
-
-function checkVal_dec_comma(str, resolution) {
-  var aux = str.indexOf('.')
-  var aux2 = str.split('.')
-  var aux3 = aux2[0]
-  var aux4 = ''
-  if (aux2.length > 1) {
-    for (var i = 1; i < aux2.length; i++) {
-      aux4 = aux4.concat(aux2[i])
-    }
-  }
-  if (aux4 != '') {
-    aux4 = aux4.split('')
-    for (var k = 0; k < aux4.length; k++) {
-      if (isNaN(parseInt(aux4[k], 10))) {
-        aux4[k] = ''
-      }
-    }
-    aux4 = aux4.join('')
-    if (parseInt(aux4) > 99899) {
-      aux4 = '99899'
-    }
-  }
-
-  if (resolution == '16') {
-    aux3 = check_validity_decimal(aux3, 16)
-  } else if (resolution == '32') {
-    aux3 = check_validity_decimal(aux3, 32)
-  } else if (resolution == '0') {
-    var temp = ''
-    if (aux3 == '--') {
-      aux3 = '='
-    }
-    if (aux3[0] == '-' && aux3 != '-' && aux3[1] == '0') {
-      temp = '-'
-    }
-    aux3 = check_validity_decimal(aux3, 0)
-    aux3 = temp.concat(aux3)
-  }
-
-  if (aux != -1) {
-    aux3 = aux3 + '.' + aux4
-
-    return aux3
-  } else {
-    return aux3
   }
 }
