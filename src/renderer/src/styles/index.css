@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* @import '../theme.js'; */
 
 ::-webkit-scrollbar {
   width: 0.7rem;
@@ -25,7 +26,6 @@
   scrollbar-color: #a0a0a0 #f0f0f0;
 } */
 
-@import '../theme.js';
 .app {
   display: flex;
 }
@@ -79,4 +79,11 @@
   right: 0;
   zoom: 3;
   border: 1px solid rgb(40, 168, 18);
+}
+
+.hover:hover {
+  /* margin: 1rem; */
+  /* background: #ff7782; */
+  border: 20px solid yellow;
+  margin: 0.05rem;
 }

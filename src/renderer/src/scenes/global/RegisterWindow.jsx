@@ -6,8 +6,16 @@ export const RegisterWindow = () => {
   return (
     <div className="border1 flex">
       <Typography variant="h3">RegistersWINDOW</Typography>
-      <AutocompleteInput options={xx} typeInput="1" />
-      <AutocompleteInput options={Objects_collection} typeInput="1" />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}
+      >
+        <AutocompleteInput title="SDO object one foffffffffffffffffffffffffffffffffffr the..." />
+        <AutocompleteInput title="MANAAAAAAAA" />
+      </div>
       {/* <RegisterComponent register={Registers_THS[10]} value={1234} /> */}
     </div>
   )

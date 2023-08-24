@@ -1184,55 +1184,100 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
+          Index: '#x1c33_00',
+
           Name: 'Number of entries',
+          BitSize: 8,
+
           Info: {
             DefaultData: 12
           }
         },
         {
+          Index: '#x1c33_01',
+
           Name: 'Synchronization Type',
+          BitSize: 16,
+
           Info: {
             DefaultData: 200
           }
         },
         {
+          Index: '#x1c33_02',
+
           Name: 'Cycle Time',
+          BitSize: 200,
+
           Info: {
             DefaultData: '40420F00'
           }
         },
         {
+          Index: '#x1c33_04',
+
           Name: 'Synchronization Types supported',
+          BitSize: 16,
+
           Info: {
             DefaultData: 300
           }
         },
         {
+          Index: '#x1c33_05',
+
           Name: 'Minimum Cycle Time',
+          BitSize: 32,
+
           Info: {
             DefaultData: 0
           }
         },
         {
+          Index: '#x1c33_06',
+
           Name: 'Calc and Copy Time',
+          BitSize: 32,
+
           Info: {
             DefaultData: 0
           }
         },
         {
+          Index: '#x1c33_09',
+
           Name: 'Delay Time',
+          BitSize: 32,
+
           Info: {
             DefaultData: 0
           }
         },
         {
+          Index: '#x1c33_11',
+
+          Name: 'SM-Event Missed',
+          BitSize: 16,
+
+          Info: {
+            DefaultData: 0
+          }
+        },
+        {
+          Index: '#x1c33_12',
+
           Name: 'Cycle Time Too Small',
+          BitSize: 16,
+
           Info: {
             DefaultData: 0
           }
         },
         {
-          Name: 'Sync Error'
+          Index: '#x1c33_32',
+
+          Name: 'Sync Error',
+          BitSize: 1
         }
       ]
     }
@@ -2100,19 +2145,28 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
+          Index: '#x210E_00',
           Name: 'Number of entries',
+          BitSize: 8,
+
           Info: {
             DefaultData: 3
           }
         },
         {
-          Name: 'IP Address'
+          Index: '#x210E_01',
+          Name: 'IP Address',
+          BitSize: 32
         },
         {
-          Name: 'Subnet Mask'
+          Index: '#x210E_02',
+          Name: 'Subnet Mask',
+          BitSize: 32
         },
         {
-          Name: 'Default Gateway'
+          Index: '#x210E_03',
+          Name: 'Default Gateway',
+          BitSize: 32
         }
       ]
     }
