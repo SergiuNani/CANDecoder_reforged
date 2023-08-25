@@ -55,7 +55,6 @@ const RegisterComponent = ({ register, value }) => {
     return export1
   }
 
-  console.log('Start-+----------------------------------')
   return (
     <Box width="30%" m="2rem">
       <Box

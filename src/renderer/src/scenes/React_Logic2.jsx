@@ -1,20 +1,16 @@
 import { Header } from '../components/header'
 import { Typography } from '@mui/material'
-import {
-  useState,
-  useReducer,
-  createContext,
-  useContext,
-  useRef,
-  forwardRef,
-  useEffect,
-  useLayoutEffect
-} from 'react'
-import { flushSync } from 'react-dom'
+import { useState, useRef, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { Objects_collection } from '../data/BigData.js'
-import DrawerComponent from '../components/Drawer'
-
+import {
+  Input_AutoFormat,
+  AutocompleteInput_AllObjects,
+  Input_ChooseOption
+} from '../components/ForumsComponents'
+import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
+import RegisterComponent from '../components/Register'
+import { Registers_THS } from '../data/BigData'
+import { Types_of_Msgs_array } from '../data/SmallData'
 // -------------------------------------------------------------------------------------------------------------
 function Element22() {
   return (
@@ -121,17 +117,101 @@ function TooltipContainer({ children, x, y, contentRef }) {
 
 // -------------------------------------------------------------------------------------------------------------
 
-const Element23 = () => {
-  const Objects = Objects_collection
+const TestWindow = () => {
   return (
-    <div className="border danger ">
-      <ul>
-        {Objects.map((object, index) => (
-          <li key={`${object}+${index}`}>
-            {index + 1}. {object.Index}
-          </li>
-        ))}
-      </ul>
+    <div className="border1 flex">
+      <Typography variant="h3">TestWINDOW</Typography>
+      <RegisterComponent register={Registers_THS[10]} value={1234} />
+      {/* ------------------------------------------------ */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}
+      >
+        <AutocompleteInput_AllObjects
+          placeholder="search object"
+          title="SDO object one foffffffffffffffffffffffffffffffffffr the..."
+        />
+        <AutocompleteInput_AllObjects title="MANAAAAAAAA" />
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}
+      >
+        <Input_AutoFormat
+          placeholder="FilterHex 16"
+          title="FilterHex 16"
+          callback={filterHex}
+          resolution="16"
+        />
+        <Input_AutoFormat
+          placeholder="FilterHex 16"
+          title="FilterHex 32"
+          callback={filterHex}
+          resolution="32"
+        />
+        <Input_AutoFormat
+          placeholder="FilterHex 0"
+          title="FilterHex 0"
+          callback={filterHex}
+          resolution="0"
+        />
+        <Input_AutoFormat
+          placeholder="filterDecimal 0"
+          title="filterDecimal 0"
+          callback={filterDecimal}
+          resolution="0"
+        />
+        <Input_AutoFormat
+          placeholder="filterDecimal 16"
+          title="filterDecimal 16"
+          callback={filterDecimal}
+          resolution="16"
+        />
+        <Input_AutoFormat
+          placeholder="filterDecimal 32"
+          title="filterDecimal 32"
+          callback={filterDecimal}
+          resolution="32"
+        />
+        <Input_AutoFormat
+          placeholder="filterDecimalWithComma 32"
+          title="filterDecimalWithComma 32"
+          callback={filterDecimalWithComma}
+          resolution="32"
+        />
+        <Input_AutoFormat
+          placeholder="filterDecimalWithComma 16"
+          title="filterDecimalWithComma 16"
+          callback={filterDecimalWithComma}
+          resolution="16"
+        />
+        <Input_AutoFormat
+          placeholder="filterDecimalWithComma 0"
+          title="filterDecimalWithComma 0"
+          callback={filterDecimalWithComma}
+          resolution="0"
+        />
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative'
+        }}
+      >
+        <Input_ChooseOption
+          title="SDO object one foffffffffffffffffffffffffffffffffffr the..."
+          options={Types_of_Msgs_array}
+        />
+
+        <Input_ChooseOption title="MANAAAAAAAA" options={Types_of_Msgs_array} />
+      </div>
     </div>
   )
 }
@@ -145,8 +225,8 @@ const React_Logic2 = () => {
   return (
     <>
       <Header title="React Logic 2" />
+      <TestWindow />
       <Element22 />
-      <Element23 />
     </>
   )
 }

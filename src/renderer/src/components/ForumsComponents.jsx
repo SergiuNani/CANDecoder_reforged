@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection } from '../data/BigData'
-import { filterHex } from '../functions/NumberConversion'
+import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
 export function AutocompleteInput_AllObjects({ title, placeholder }) {
   var options = Objects_collection
   const theme = useTheme()
@@ -186,14 +186,14 @@ export function AutocompleteInput_AllObjects({ title, placeholder }) {
   )
 }
 
-export function Input_Autocomplete({ title, placeholder, variant, array }) {
+export function Input_AutoFormat({ title, placeholder, callback, resolution }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
   const [inputValue, setInputValue] = useState('')
 
   function handleInputChange(e) {
-    setInputValue(filterHex(e.target.value, 16))
+    setInputValue(callback(e.target.value, resolution))
   }
 
   return (
@@ -232,6 +232,98 @@ export function Input_Autocomplete({ title, placeholder, variant, array }) {
             fontSize: '1rem'
           }}
         />
+      </label>
+    </div>
+  )
+}
+export function Input_ChooseOption({ title, options }) {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const [isFocused, setIsFocused] = useState(false)
+  const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
+
+  const handleFocus = () => {
+    setIsFocused(true)
+  }
+
+  const handleBlur = () => {
+    setIsFocused(false)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setIsFocused(true)
+      setSelectedOptionIndex((prevIndex) =>
+        prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
+      )
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setIsFocused(true)
+      setSelectedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
+    }
+  }
+
+  const handleSelectChange = (event) => {
+    setSelectedOptionIndex(event.target.selectedIndex)
+  }
+
+  return (
+    <div
+      style={{
+        width: '15rem',
+        position: 'relative'
+      }}
+    >
+      <p
+        style={{
+          fontSize: '1rem',
+          color: `${colors.primary1[200]}`
+        }}
+      >
+        {title}
+      </p>
+      <label
+        style={{
+          position: 'relative'
+        }}
+      >
+        <select
+          onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleSelectChange}
+          value={selectedOptionIndex}
+          style={{
+            backgroundColor: `${colors.primary[300]}`,
+            padding: '0.5rem 1rem',
+            borderRadius: '2rem',
+            color: `${colors.red[200]}`,
+            // outlineStyle: 'none',
+            margin: '0.2rem 0 0 1rem',
+            fontSize: '1rem'
+          }}
+        >
+          {/* <option value={-1}>Select an option</option> */}
+          {options.map((option, index) => (
+            <option
+              key={index}
+              value={index}
+              styple={{
+                backgroundColor: `${colors.primary[300]}`,
+
+                padding: '0.5rem 1rem',
+                // border: `1px solid ${colors.red[500]}`,
+                // borderRadius: '4rem',
+                cursor: 'pointer'
+              }}
+              className="selectOption"
+            >
+              {option}
+            </option>
+          ))}
+        </select>
       </label>
     </div>
   )
