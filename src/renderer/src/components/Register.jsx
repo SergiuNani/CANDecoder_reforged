@@ -56,109 +56,107 @@ const RegisterComponent = ({ register, value }) => {
   }
 
   return (
-    <Box width="30%" m="2rem">
+    <Box
+      style={{
+        border: `1px solid ${colors.grey[500]}`,
+        width: '100%',
+        overflow: 'auto',
+        height: '75vh',
+        background: `${colors.primary[300]}`
+      }}
+    >
+      {/* {'Index + Title  */}
       <Box
         style={{
-          border: `1px solid ${colors.grey[500]}`,
-          width: '100%',
-          overflow: 'auto',
-          height: '75vh',
-          background: `${colors.primary[300]}`
+          display: 'flex',
+          fontSize: '1.2rem',
+          color: `${colors.green[300]}`,
+          justifyContent: 'center',
+          textAlign: 'center'
         }}
       >
-        {/* {'Index + Title  */}
+        <h3>
+          -- {register.Index} - {register.Title}
+        </h3>
+      </Box>
+
+      {/* {'One full Line  */}
+      {register.BitInfo.map((row, index) => (
         <Box
+          key={row.bit}
           style={{
-            display: 'flex',
-            fontSize: '1.2rem',
-            color: `${colors.green[300]}`,
-            justifyContent: 'center',
-            textAlign: 'center'
+            border: `1px solid ${colors.grey[500]}`,
+            display: 'grid',
+            gridTemplateColumns: '3.2rem auto 2rem',
+            borderBottom: 'none',
+            justifyContent: 'baseline',
+            alignItems: 'center',
+            padding: '0.3rem',
+            marginRight: '0.3rem'
           }}
         >
-          <h3>
-            -- {register.Index} - {register.Title}
-          </h3>
-        </Box>
-
-        {/* {'One full Line  */}
-        {register.BitInfo.map((row, index) => (
+          {/* {'Element 1 -  Logical bit order'} */}
           <Box
-            key={row.bit}
             style={{
-              border: `1px solid ${colors.grey[500]}`,
-              display: 'grid',
-              gridTemplateColumns: '3.2rem auto 2rem',
-              borderBottom: 'none',
-              justifyContent: 'baseline',
-              alignItems: 'center',
-              padding: '0.3rem',
-              marginRight: '0.3rem'
+              fontSize: ' 1.3rem',
+              color: `${colors.green[300]}`,
+              textAlign: 'center',
+              fontWeight: '1500'
             }}
           >
-            {/* {'Element 1 -  Logical bit order'} */}
-            <Box
-              style={{
-                fontSize: ' 1.3rem',
-                color: `${colors.green[300]}`,
-                textAlign: 'center',
-                fontWeight: '1500'
-              }}
-            >
-              {row.bit}
-            </Box>
-            {/* {'Element 2-  Bit description'} */}
-            {row.value ? (
-              <Box>{MultipleBitsChoise2JSX(row.value, row.bit, register, index)}</Box>
-            ) : (
-              <Box>
-                {row.info && (
-                  <p
+            {row.bit}
+          </Box>
+          {/* {'Element 2-  Bit description'} */}
+          {row.value ? (
+            <Box>{MultipleBitsChoise2JSX(row.value, row.bit, register, index)}</Box>
+          ) : (
+            <Box>
+              {row.info && (
+                <p
+                  style={{
+                    color: `${colors.blue[200]}`
+                    // textAlign: 'center'
+                  }}
+                >
+                  {row.info}
+                </p>
+              )}
+              {row.zero && (
+                <p>
+                  <span
                     style={{
-                      color: `${colors.blue[200]}`
-                      // textAlign: 'center'
+                      color: `${colors.primary[400]}`,
+                      fontSize: '0.9rem',
+                      marginLeft: '0.5rem',
+                      fontWeight: '750'
                     }}
                   >
-                    {row.info}
-                  </p>
-                )}
-                {row.zero && (
-                  <p>
-                    <span
-                      style={{
-                        color: `${colors.primary[400]}`,
-                        fontSize: '0.9rem',
-                        marginLeft: '0.5rem',
-                        fontWeight: '750'
-                      }}
-                    >
-                      0{'  '}
-                    </span>
-                    {row.zero}
-                  </p>
-                )}
-                {row.one && (
-                  <p>
-                    <span
-                      style={{
-                        color: `${colors.primary[400]}`,
-                        fontSize: '0.9rem',
-                        marginLeft: '0.5rem',
-                        fontWeight: '750'
-                      }}
-                    >
-                      1{'  '}
-                    </span>
-                    {row.one}
-                  </p>
-                )}
-              </Box>
-            )}
-            {/* {'Element 3-  Bit value from prop'} */}
-            <Box>{SliceBitsGiveJSX(row.bit)}</Box>
-          </Box>
-        ))}
-      </Box>
+                    0{'  '}
+                  </span>
+                  {row.zero}
+                </p>
+              )}
+              {row.one && (
+                <p>
+                  <span
+                    style={{
+                      color: `${colors.primary[400]}`,
+                      fontSize: '0.9rem',
+                      marginLeft: '0.5rem',
+                      fontWeight: '750'
+                    }}
+                  >
+                    1{'  '}
+                  </span>
+                  {row.one}
+                </p>
+              )}
+            </Box>
+          )}
+          {/* {'Element 3-  Bit value from prop'} */}
+          <Box>{SliceBitsGiveJSX(row.bit)}</Box>
+        </Box>
+      ))}
     </Box>
   )
 }

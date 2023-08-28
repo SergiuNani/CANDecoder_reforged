@@ -191,9 +191,16 @@ const TestWindow = () => {
           callback={filterDecimalWithComma}
           resolution="16"
         />
+
         <Input_AutoFormat
           placeholder="filterDecimalWithComma 0"
           title="filterDecimalWithComma 0"
+          callback={filterDecimalWithComma}
+          resolution="0"
+        />
+        <Input_AutoFormat
+          placeholder="XXXXfilterDecimalWithComma 0"
+          title="XXXfilterDecimalWithComma 0"
           callback={filterDecimalWithComma}
           resolution="0"
         />
@@ -201,12 +208,11 @@ const TestWindow = () => {
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          position: 'relative'
+          flexDirection: 'column'
         }}
       >
         <Input_ChooseOption
-          title="SDO object one foffffffffffffffffffffffffffffffffffr the..."
+          title="xxxSDO object one foffffffffffffffffffffffffffffffffffr the..."
           options={Types_of_Msgs_array}
         />
 
@@ -226,7 +232,6 @@ const React_Logic2 = () => {
     <>
       <Header title="React Logic 2" />
       <TestWindow />
-      <Element22 />
     </>
   )
 }
