@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection } from '../data/BigData'
 import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
+import { Registers_THS, Registers_CANopen } from '../data/BigData'
 export function AutocompleteInput_AllObjects({ title, placeholder }) {
   var options = Objects_collection
   const theme = useTheme()
@@ -200,7 +201,7 @@ export function Input_AutoFormat({ title, placeholder, callback, resolution }) {
     <div
       style={{
         // overflow: 'auto',
-        width: '15rem',
+        width: '5rem',
         position: 'relative'
       }}
     >
@@ -229,7 +230,8 @@ export function Input_AutoFormat({ title, placeholder, callback, resolution }) {
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
-            fontSize: '1rem'
+            fontSize: '1rem',
+            width: '5rem'
           }}
         />
       </label>
@@ -327,8 +329,13 @@ export function Input_ChooseOption({ title, options }) {
   )
 }
 
-export function AutocompleteInput_Custom({ title, placeholder, type }) {
-  var options = Objects_collection
+export function AutocompleteInput_RegisterList({ title, placeholder, type }) {
+  var options = []
+  if (type == '1') {
+    options = Registers_CANopen
+  } else if (type == '2') {
+    options = Registers_THS
+  }
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -340,19 +347,9 @@ export function AutocompleteInput_Custom({ title, placeholder, type }) {
 
   const inputRef = useRef()
   const ulRef = useRef()
+
   const filterOptions = (value) => {
-    const flatOptions = []
-
-    function flatten(obj) {
-      if (obj.Info && Array.isArray(obj.Info.SubItem)) {
-        obj.Info.SubItem.forEach((subItem) => flatten(subItem))
-      }
-      if (obj.Info == undefined || obj.Info.SubItem == undefined) flatOptions.push(obj)
-    }
-
-    options.forEach((option) => flatten(option))
-
-    return flatOptions.filter((option) =>
+    return options.filter((option) =>
       Object.values(option).some((propertyValue) =>
         propertyValue.toString().toLowerCase().includes(value.toLowerCase())
       )
@@ -431,8 +428,9 @@ export function AutocompleteInput_Custom({ title, placeholder, type }) {
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: '15rem',
+        width: '5rem',
         position: 'relative'
+        // border: '1px solid yellow'
       }}
     >
       <p
@@ -463,7 +461,8 @@ export function AutocompleteInput_Custom({ title, placeholder, type }) {
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
-            fontSize: '1rem'
+            width: '5rem'
+            // fontSize: '1rem'
           }}
         />
         <span style={arrowIconStyles}>▼</span>
@@ -472,7 +471,6 @@ export function AutocompleteInput_Custom({ title, placeholder, type }) {
         <ul
           ref={ulRef}
           style={{
-            zIndex: '2',
             position: 'absolute',
             top: '100%',
             width: '100%',
@@ -481,7 +479,8 @@ export function AutocompleteInput_Custom({ title, placeholder, type }) {
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             // border: '1px solid yellow',
-            overflow: 'auto'
+            overflow: 'auto',
+            width: '450%'
           }}
         >
           {filteredOptions.map((option, index) => (
@@ -501,7 +500,7 @@ export function AutocompleteInput_Custom({ title, placeholder, type }) {
               }}
               className="hover"
             >
-              {option.Index} - {option.Name}
+              {option.Index} - {option.Title}
             </li>
           ))}
         </ul>
