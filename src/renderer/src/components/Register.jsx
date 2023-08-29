@@ -8,6 +8,9 @@ import {
   getRangeNumberFromStringRange
 } from '../functions/NumberConversion'
 const RegisterComponent = ({ register, value }) => {
+  if (register == null) {
+    return <p></p>
+  }
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const resolution = getMaxNumberFromStringRange(register.BitInfo[0].bit)

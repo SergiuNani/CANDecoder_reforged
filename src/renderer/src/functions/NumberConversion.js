@@ -109,9 +109,9 @@ export function filterDecimal(string, resolution) {
 export function filterHex(hexString, resolution) {
   const filteredHex = hexString.replace(/[^0-9A-Fa-f]/g, '')
   if (resolution === '0') {
-    return filteredHex
+    return filteredHex.toUpperCase()
   }
-  return filteredHex.substring(0, resolution / 4)
+  return filteredHex.substring(0, resolution / 4).toUpperCase()
 }
 
 export function hex2bin(hex, resolution) {

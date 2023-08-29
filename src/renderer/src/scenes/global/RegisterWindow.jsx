@@ -9,13 +9,12 @@ import { filterDecimalWithComma, filterDecimal, filterHex } from '../../function
 import { AutocompleteInput_RegisterList, Input_AutoFormat } from '../../components/ForumsComponents'
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate } from 'react-router-dom'
+import { AlignVerticalCenter } from '@mui/icons-material'
 
-export const RegisterWindow = ({ navigateTo }) => {
+export const RegisterWindow = () => {
   const navigate = useNavigate()
 
   const [windowsNumber, setWindowsNumber] = useState(1)
-  console.log('🚀 ~ file: RegisterWindow.jsx:82 ~ RegisterWindow ~ windowsNumber:', windowsNumber)
-
   const IncrementWindows = () => {
     if (windowsNumber > 3) return
     else {
@@ -27,7 +26,10 @@ export const RegisterWindow = ({ navigateTo }) => {
       //TODO: change the icon color accordingly
       return navigate('/React_logic2')
     } else {
-      setWindowsNumber((prev) => prev - 1)
+      setTimeout(() => {
+        //If there are three windows, then the animation is sent to the upcoming one
+        setWindowsNumber((prev) => prev - 1)
+      }, 300)
     }
   }
   return (
@@ -67,10 +69,24 @@ export const RegisterWindow = ({ navigateTo }) => {
 
 const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
   const [registerSelected, setRegisterSelected] = useState(null)
-  const [valueRegister, setValueRegister] = useState(null)
-
+  const [valueRegister, setValueRegister] = useState('')
+  const [listType, setListType] = useState('CANopen')
+  const [inputType, setInputType] = useState('HEX')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+
+  function handleChangeType() {
+    if (listType == 'CANopen') setListType('TECHNOSOFT')
+    else setListType('CANopen')
+  }
+  function handleInputType() {
+    if (inputType == 'HEX') setInputType('DEC')
+    else setInputType('HEX')
+  }
+
+  function tellParentRegisterChanged(e) {
+    setRegisterSelected(e)
+  }
   return (
     <div
       style={{
@@ -82,7 +98,7 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
         backgroundColor: `${colors.primary[200]}`
       }}
     >
-      {/* Title and CloseBTS */}
+      {/* Title and CloseBTS ----------------------------------------------------*/}
       <Box
         style={{
           // display: 'flex',
@@ -105,40 +121,58 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
         </IconButton>
         <Typography variant="h4">Register Bit Representation</Typography>
       </Box>
-      {/* Inputs line */}
+      {/* Inputs line ---------------------------------------------------- */}
       <Box
         sx={{
           display: 'flex',
           gap: '0.8rem',
-          marginBottom: '1rem'
+          marginBottom: '1rem',
+          justifyContent: 'center'
         }}
       >
-        <AutocompleteInput_RegisterList type="1" />
+        {listType == 'CANopen' ? (
+          <AutocompleteInput_RegisterList
+            type="1"
+            listType={listType}
+            tellParentRegisterChanged={tellParentRegisterChanged}
+          />
+        ) : (
+          <AutocompleteInput_RegisterList
+            type="2"
+            listType={listType}
+            tellParentRegisterChanged={tellParentRegisterChanged}
+          />
+        )}
         <Button
           sx={{
-            border: '1px solid yellow',
+            // border: '1px solid yellow',
             color: `${colors.grey[100]}`
           }}
+          onClick={handleInputType}
         >
-          Hex:
+          {inputType} :
         </Button>
-
-        <Input_AutoFormat callback={filterHex} resolution="16" />
+        {inputType == 'HEX' ? (
+          <Input_AutoFormat callback={filterHex} resolution="16" inputType={inputType} />
+        ) : (
+          <Input_AutoFormat callback={filterHex} resolution="16" inputType={inputType} />
+        )}
         <Button
+          onClick={handleChangeType}
           sx={{
-            border: '1px solid yellow',
+            // border: '1px solid yellow',
             color: `${colors.grey[100]}`
           }}
         >
-          Technosoft
+          {listType}
         </Button>
 
         <IconButton onClick={IncrementWindows}>
           <AddIcon />
         </IconButton>
       </Box>
-      {/* Register Painting */}
-      <RegisterComponent register={Registers_THS[10]} value={1234} />
+      {/* Register Painting ----------------------------------------------------*/}
+      <RegisterComponent register={registerSelected} value={1234} />
     </div>
   )
 }
