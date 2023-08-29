@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Typography, Box, IconButton } from '@mui/material'
+import { Typography, Box, IconButton, Button } from '@mui/material'
 import { Registers_THS, Registers_CANopen } from '../../data/BigData'
 import RegisterComponent from '../../components/Register'
 import { useTheme } from '@mui/material'
@@ -8,6 +8,62 @@ import CloseIcon from '@mui/icons-material/Close'
 import { filterDecimalWithComma, filterDecimal, filterHex } from '../../functions/NumberConversion'
 import { AutocompleteInput_RegisterList, Input_AutoFormat } from '../../components/ForumsComponents'
 import AddIcon from '@mui/icons-material/Add'
+import { useNavigate } from 'react-router-dom'
+
+export const RegisterWindow = ({ navigateTo }) => {
+  const navigate = useNavigate()
+
+  const [windowsNumber, setWindowsNumber] = useState(1)
+  console.log('🚀 ~ file: RegisterWindow.jsx:82 ~ RegisterWindow ~ windowsNumber:', windowsNumber)
+
+  const IncrementWindows = () => {
+    if (windowsNumber > 3) return
+    else {
+      setWindowsNumber((prev) => prev + 1)
+    }
+  }
+  const DecrementWindows = () => {
+    if (windowsNumber < 1) {
+      //TODO: change the icon color accordingly
+      return navigate('/React_logic2')
+    } else {
+      setWindowsNumber((prev) => prev - 1)
+    }
+  }
+  return (
+    <div className="border1 ">
+      <Typography variant="h3">RegistersWINDOW</Typography>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '3rem'
+          // border: '1px solid yellow'
+        }}
+      >
+        {windowsNumber > 0 && (
+          <RegisterSelectionComponent
+            IncrementWindows={IncrementWindows}
+            DecrementWindows={DecrementWindows}
+          />
+        )}
+        {windowsNumber > 1 && (
+          <RegisterSelectionComponent
+            IncrementWindows={IncrementWindows}
+            DecrementWindows={DecrementWindows}
+          />
+        )}
+        {windowsNumber > 2 && (
+          <RegisterSelectionComponent
+            IncrementWindows={IncrementWindows}
+            DecrementWindows={DecrementWindows}
+          />
+        )}
+      </div>
+      {/* ------------------------------------------------ */}
+    </div>
+  )
+}
 
 const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
   const [registerSelected, setRegisterSelected] = useState(null)
@@ -53,19 +109,29 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
       <Box
         sx={{
           display: 'flex',
-          gap: '1.5rem',
+          gap: '0.8rem',
           marginBottom: '1rem'
         }}
       >
         <AutocompleteInput_RegisterList type="1" />
+        <Button
+          sx={{
+            border: '1px solid yellow',
+            color: `${colors.grey[100]}`
+          }}
+        >
+          Hex:
+        </Button>
+
         <Input_AutoFormat callback={filterHex} resolution="16" />
-        <button
-          style={{
-            border: '1px solid yellow'
+        <Button
+          sx={{
+            border: '1px solid yellow',
+            color: `${colors.grey[100]}`
           }}
         >
           Technosoft
-        </button>
+        </Button>
 
         <IconButton onClick={IncrementWindows}>
           <AddIcon />
@@ -73,57 +139,6 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
       </Box>
       {/* Register Painting */}
       <RegisterComponent register={Registers_THS[10]} value={1234} />
-    </div>
-  )
-}
-
-export const RegisterWindow = ({ navigateTo }) => {
-  const [windowsNumber, setWindowsNumber] = useState(1)
-  console.log('🚀 ~ file: RegisterWindow.jsx:82 ~ RegisterWindow ~ windowsNumber:', windowsNumber)
-
-  const IncrementWindows = () => {
-    if (windowsNumber > 3) return
-    else {
-      setWindowsNumber((prev) => prev + 1)
-    }
-  }
-  const DecrementWindows = () => {
-    if (windowsNumber < 1) navigateTo('/HOME')
-    else {
-      setWindowsNumber((prev) => prev - 1)
-    }
-  }
-  return (
-    <div className="border1 ">
-      <Typography variant="h3">RegistersWINDOW</Typography>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '3rem'
-          // border: '1px solid yellow'
-        }}
-      >
-        {windowsNumber > 0 && (
-          <RegisterSelectionComponent
-            IncrementWindows={IncrementWindows}
-            DecrementWindows={DecrementWindows}
-          />
-        )}
-        {windowsNumber > 1 && (
-          <RegisterSelectionComponent
-            IncrementWindows={IncrementWindows}
-            DecrementWindows={DecrementWindows}
-          />
-        )}
-        {windowsNumber > 2 && (
-          <RegisterSelectionComponent
-            IncrementWindows={IncrementWindows}
-            DecrementWindows={DecrementWindows}
-          />
-        )}
-      </div>
-      {/* ------------------------------------------------ */}
     </div>
   )
 }

@@ -4,6 +4,7 @@ import { tokens } from '../theme'
 import { Objects_collection } from '../data/BigData'
 import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
 import { Registers_THS, Registers_CANopen } from '../data/BigData'
+
 export function AutocompleteInput_AllObjects({ title, placeholder }) {
   var options = Objects_collection
   const theme = useTheme()
@@ -229,7 +230,7 @@ export function Input_AutoFormat({ title, placeholder, callback, resolution }) {
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
             outline: 'none',
-            margin: '0.2rem 0 0 1rem',
+            // margin: '0.2rem 0 0 1rem',
             fontSize: '1rem',
             width: '5rem'
           }}
@@ -461,7 +462,7 @@ export function AutocompleteInput_RegisterList({ title, placeholder, type }) {
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
-            width: '5rem'
+            width: '5.5rem'
             // fontSize: '1rem'
           }}
         />

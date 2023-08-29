@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
@@ -16,11 +16,6 @@ import { ColorsComponent } from './scenes/debug'
 function App() {
   const [theme, colorMode] = useMode()
   const [isSidebar, setIsSidebar] = useState(true)
-  const navigate = useNavigate()
-
-  const navigateTo = (path) => {
-    navigate(path)
-  }
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -36,7 +31,7 @@ function App() {
                 <Route path="/" element={<RegisterWindow />} />
                 <Route path="/HOME" element={<HOME />} />
                 <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
-                <Route path="/Registers" element={<RegisterWindow navigateTo={navigateTo} />} />
+                <Route path="/Registers" element={<RegisterWindow />} />
                 <Route path="/React_Logic" element={<React_Logic />} />
                 <Route path="/React_Logic2" element={<React_Logic2 />} />
                 <Route path="/DebugScene" element={<DebugScene />} />
