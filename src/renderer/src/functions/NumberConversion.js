@@ -141,83 +141,30 @@ export function getRangeNumberFromStringRange(input) {
   if (numbers.length > 1) return Math.abs(numbers[0] - numbers[1]) + 1
   else return 1
 }
-//---UNtested
-function hexToDec(arr, resolution) {
-  if (typeof arr == 'number') {
-    arr = arr.toString()
-    return hexToDec(arr, resolution)
-  }
-  if (typeof arr == 'string') {
-    arr = check_validity_hex(arr, resolution)
-    var aux
-
-    if (arr == '') {
-      return 0
-    }
-    aux = parseInt(arr, 16)
-    if (resolution == 32) {
-      if (aux - Math.pow(2, 31) < 0) {
-        return aux
-      } else {
-        return aux - Math.pow(2, 32)
-      }
-    }
-    if (resolution == 16) {
-      if (aux - Math.pow(2, 15) < 0) {
-        return aux
-      } else {
-        return aux - Math.pow(2, 16)
-      }
-    }
-  }
-  if (typeof arr == 'object') {
-    arr = arr.map((x) => {
-      return hexToDec(x, resolution)
-    })
-    return arr
-  }
-}
-//small problem: in: number the 16 bit rez dont work cause checkValidity inp is string
-function decToHex(arr, resolution) {
-  if (typeof arr == 'number') {
-    if (resolution == 32) {
-      if (arr < 0) {
-        arr = 4294967296 + arr
-
-        return arr.toString(16).toUpperCase()
-      } else {
-        return (arr = arr.toString(16).toUpperCase())
-      }
-    }
-    if (resolution == 16) {
-      if (arr < 0) {
-        arr = 65536 + arr
-
-        return arr.toString(16).toUpperCase()
-      } else {
-        return (arr = arr.toString(16).toUpperCase())
-      }
-    }
-  }
-  if (typeof arr == 'string') {
-    if (arr == '-' || arr == '') {
-      return 0
-    }
-    arr = check_validity_decimal(arr, resolution)
-    return decToHex(parseInt(arr, 10), resolution)
-  }
-  if (typeof arr == 'object') {
-    arr = arr.map((x) => {
-      return decToHex(x, resolution)
-    })
-  }
-
-  return arr
-}
-
-function bin2hex(bin) {
+export function bin2hex(bin) {
   return parseInt(bin, 2).toString(16).toUpperCase()
 }
+export function decToHex(num, resolution) {
+  if (typeof num === 'string') {
+    num = parseInt(num, 10)
+  }
+
+  if (typeof num !== 'number' || isNaN(num)) {
+    return 0 // Handle invalid input
+  }
+
+  let maxValue = Math.pow(2, resolution)
+
+  if (num < 0) {
+    num = maxValue + (num % maxValue)
+  }
+
+  return num.toString(16).toUpperCase()
+}
+//---UNtested
+
+//small problem: in: number the 16 bit rez dont work cause checkValidity inp is string
+
 function hex_to_ascii(str1) {
   var hex = str1.toString()
   var str = ''
@@ -225,4 +172,27 @@ function hex_to_ascii(str1) {
     str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
   }
   return str
+}
+
+export function hexToDec(hex, resolution) {
+  if (typeof hex === 'number') {
+    hex = hex.toString()
+  }
+
+  if (typeof hex !== 'string') {
+    return 0 // Handle invalid input
+  }
+
+  if (hex === '') {
+    return 0
+  }
+
+  const intValue = parseInt(hex, 16)
+  const maxValue = Math.pow(2, resolution - 1)
+
+  if (intValue < maxValue) {
+    return intValue
+  } else {
+    return intValue - Math.pow(2, resolution)
+  }
 }

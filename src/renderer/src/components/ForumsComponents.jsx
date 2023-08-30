@@ -301,6 +301,7 @@ export function AutocompleteInput_RegisterList({
         // overflow: 'auto',
         width: '5rem',
         position: 'relative'
+        // marginLeft: '1rem'
         // border: '1px solid yellow'
       }}
     >
@@ -385,33 +386,43 @@ export function Input_AutoFormat({
   callback,
   resolution,
   offset = false,
-  inputType
+  inputType,
+  tellParentValueChanged,
+  registerChanged,
+  valueRegisterFromParent
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
   const [inputValue, setInputValue] = useState('')
-
   useEffect(() => {
     setInputValue('')
-  }, [inputType])
+    tellParentValueChanged('')
+  }, [inputType, registerChanged])
+
+  useEffect(() => {
+    //This is when this component is integrated into a RegisterComponent and somebody clicks on the BitsBoxes to change the value
+    setInputValue(valueRegisterFromParent)
+  }, [valueRegisterFromParent])
 
   function handleInputChange(e) {
-    setInputValue(callback(e.target.value, resolution))
+    var sorted = callback(e.target.value, resolution)
+    setInputValue(sorted)
+    tellParentValueChanged(sorted)
   }
 
   return (
     <div
       style={{
         // overflow: 'auto',
-        width: '5rem',
         position: 'relative'
       }}
     >
       <p
         style={{
           fontSize: '1rem',
-          color: `${colors.primary1[200]}`
+          color: `${colors.primary1[200]}`,
+          margin: '0'
         }}
       >
         {title}
@@ -434,7 +445,7 @@ export function Input_AutoFormat({
             outline: 'none',
             margin: offset ? '0.2rem 0 0 1rem' : '0',
             fontSize: '1rem',
-            width: '5rem'
+            width: '7rem'
           }}
         />
       </label>

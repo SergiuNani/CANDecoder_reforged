@@ -5,12 +5,17 @@ import RegisterComponent from '../../components/Register'
 import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'
 import CloseIcon from '@mui/icons-material/Close'
-import { filterDecimalWithComma, filterDecimal, filterHex } from '../../functions/NumberConversion'
+import {
+  filterDecimalWithComma,
+  filterDecimal,
+  filterHex,
+  hexToDec,
+  decToHex,
+  getMaxNumberFromStringRange
+} from '../../functions/NumberConversion'
 import { AutocompleteInput_RegisterList, Input_AutoFormat } from '../../components/ForumsComponents'
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate } from 'react-router-dom'
-import { AlignVerticalCenter } from '@mui/icons-material'
-
 export const RegisterWindow = () => {
   const navigate = useNavigate()
 
@@ -69,13 +74,20 @@ export const RegisterWindow = () => {
 
 const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
   const [registerSelected, setRegisterSelected] = useState(null)
+  const [registerResolution, setRegisterResolution] = useState(0)
   const [valueRegister, setValueRegister] = useState('')
   const [listType, setListType] = useState('CANopen')
   const [inputType, setInputType] = useState('HEX')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  function handleChangeType() {
+  console.log(
+    '🚀 ~ file: RegisterWindow.jsx:86 ~ RegisterSelectionComponent ~ ',
+    decToHex('-1', 16)
+  )
+
+  function handleChangeListType() {
+    setRegisterSelected(null)
     if (listType == 'CANopen') setListType('TECHNOSOFT')
     else setListType('CANopen')
   }
@@ -84,8 +96,18 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
     else setInputType('HEX')
   }
 
-  function tellParentRegisterChanged(e) {
-    setRegisterSelected(e)
+  function tellParentRegisterChanged(register) {
+    //this will be a child prop
+    setRegisterSelected(register)
+    setRegisterResolution(parseInt(getMaxNumberFromStringRange(register.BitInfo[0].bit) + 1))
+  }
+  function tellParentValueChanged(value) {
+    if (inputType == 'DEC') {
+      //TODO: fix this
+      // value = decToHex(value, registerResolution)
+    }
+
+    setValueRegister(value)
   }
   return (
     <div
@@ -94,7 +116,9 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
         border: `1px solid `,
         padding: '0 0.3rem 0.4rem 0.3rem ',
         borderRadius: '1rem',
-        width: '30%',
+        width: '27rem',
+        // minHeight: '20vh',
+        // overflow: 'auto',
         backgroundColor: `${colors.primary[200]}`
       }}
     >
@@ -125,7 +149,7 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
       <Box
         sx={{
           display: 'flex',
-          gap: '0.8rem',
+          gap: '0.7rem',
           marginBottom: '1rem',
           justifyContent: 'center'
         }}
@@ -135,33 +159,59 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
             type="1"
             listType={listType}
             tellParentRegisterChanged={tellParentRegisterChanged}
+            placeholder="Select"
           />
         ) : (
           <AutocompleteInput_RegisterList
             type="2"
             listType={listType}
             tellParentRegisterChanged={tellParentRegisterChanged}
+            placeholder="Select"
           />
         )}
         <Button
           sx={{
             // border: '1px solid yellow',
-            color: `${colors.grey[100]}`
+            color: `${colors.grey[100]}`,
+            fontSize: '0.9rem'
+            // marginLeft: '1rem'
           }}
           onClick={handleInputType}
         >
           {inputType} :
         </Button>
         {inputType == 'HEX' ? (
-          <Input_AutoFormat callback={filterHex} resolution="16" inputType={inputType} />
+          <Input_AutoFormat
+            callback={filterHex}
+            resolution={registerResolution}
+            inputType={inputType}
+            placeholder="Value"
+            tellParentValueChanged={tellParentValueChanged}
+            registerChanged={registerSelected}
+            valueRegisterFromParent={
+              inputType == 'HEX' ? valueRegister : hexToDec(valueRegister, registerResolution)
+            }
+          />
         ) : (
-          <Input_AutoFormat callback={filterHex} resolution="16" inputType={inputType} />
+          <Input_AutoFormat
+            callback={filterDecimal}
+            resolution={registerResolution}
+            inputType={inputType}
+            placeholder="Value"
+            tellParentValueChanged={tellParentValueChanged}
+            registerChanged={registerSelected}
+            valueRegisterFromParent={
+              inputType == 'HEX' ? valueRegister : hexToDec(valueRegister, registerResolution)
+            }
+          />
         )}
         <Button
-          onClick={handleChangeType}
+          onClick={handleChangeListType}
           sx={{
             // border: '1px solid yellow',
-            color: `${colors.grey[100]}`
+            color: `${colors.grey[100]}`,
+            fontSize: '0.9rem',
+            marginLeft: '0.5rem '
           }}
         >
           {listType}
@@ -172,7 +222,12 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
         </IconButton>
       </Box>
       {/* Register Painting ----------------------------------------------------*/}
-      <RegisterComponent register={registerSelected} value={1234} />
+      <RegisterComponent
+        register={registerSelected}
+        value={valueRegister}
+        allowClickBox={true}
+        tellParentValueChanged={tellParentValueChanged}
+      />
     </div>
   )
 }

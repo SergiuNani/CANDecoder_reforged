@@ -1,19 +1,25 @@
+import { useRef } from 'react'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
-import { hex2bin } from '../functions/NumberConversion'
 import {
+  hex2bin,
   getMaxNumberFromStringRange,
-  getRangeNumberFromStringRange
+  getRangeNumberFromStringRange,
+  bin2hex
 } from '../functions/NumberConversion'
-const RegisterComponent = ({ register, value }) => {
+const RegisterComponent = ({ register, value, allowClickBox = false, tellParentValueChanged }) => {
   if (register == null) {
     return <p></p>
   }
+  if (value == '') value = 0
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const RegisterBodyRef = useRef()
+
   const resolution = getMaxNumberFromStringRange(register.BitInfo[0].bit)
+
   var valueInBinary = hex2bin(value, resolution + 1)
   valueInBinary = valueInBinary.split('')
 
@@ -45,11 +51,15 @@ const RegisterComponent = ({ register, value }) => {
     var export1 = sliced.map((el, index) => (
       <p
         key={range + el + index}
+        onClick={handleBitBoxClick}
+        //Used to quicly search for each bit value in case of their change when clicking on one
+        className="ClickableBit"
         style={{
           border: `1px solid ${colors.green[300]}`,
           textAlign: 'center',
           fontSize: '1.2rem',
-          color: el == 1 ? `${colors.red[500]}` : 'inherit'
+          color: el == 1 ? `${colors.red[400]}` : 'inherit',
+          cursor: allowClickBox ? 'pointer' : 'default'
         }}
       >
         {el}
@@ -57,18 +67,35 @@ const RegisterComponent = ({ register, value }) => {
     ))
     return export1
   }
+  // When you clock one of those boxes and the value turns into 1 or 0
+  function handleBitBoxClick(e) {
+    if (allowClickBox) {
+      if (e.target.innerText == '1') {
+        e.target.innerText = '0'
+      } else {
+        e.target.innerText = '1'
+      }
+
+      var newValue = ''
+      RegisterBodyRef.current.querySelectorAll('.ClickableBit').forEach((el) => {
+        newValue = newValue.concat(el.innerText)
+      })
+      tellParentValueChanged(bin2hex(newValue))
+    }
+  }
 
   return (
     <Box
+      ref={RegisterBodyRef}
       style={{
         border: `1px solid ${colors.grey[500]}`,
         width: '100%',
         overflow: 'auto',
-        height: '75vh',
+        height: '70vh',
         background: `${colors.primary[300]}`
       }}
     >
-      {/* {'Index + Title  */}
+      {/* {'Index + Title  ----------------------------------------*/}
       <Box
         style={{
           display: 'flex',
@@ -83,7 +110,7 @@ const RegisterComponent = ({ register, value }) => {
         </h3>
       </Box>
 
-      {/* {'One full Line  */}
+      {/* {'One full Line  ------------------------------*/}
       {register.BitInfo.map((row, index) => (
         <Box
           key={row.bit}
