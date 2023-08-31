@@ -144,6 +144,7 @@ export function getRangeNumberFromStringRange(input) {
 export function bin2hex(bin) {
   return parseInt(bin, 2).toString(16).toUpperCase()
 }
+//TODO: test decToHex and hexToDec
 export function decToHex(num, resolution) {
   if (typeof num === 'string') {
     num = parseInt(num, 10)

@@ -9,6 +9,7 @@ import {
   getRangeNumberFromStringRange,
   bin2hex
 } from '../functions/NumberConversion'
+
 const RegisterComponent = ({ register, value, allowClickBox = false, tellParentValueChanged }) => {
   if (register == null) {
     return <p></p>
@@ -67,7 +68,7 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
     ))
     return export1
   }
-  // When you clock one of those boxes and the value turns into 1 or 0
+  // When you click one of those boxes and the value turns into 1 or 0
   function handleBitBoxClick(e) {
     if (allowClickBox) {
       if (e.target.innerText == '1') {
@@ -80,7 +81,7 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
       RegisterBodyRef.current.querySelectorAll('.ClickableBit').forEach((el) => {
         newValue = newValue.concat(el.innerText)
       })
-      tellParentValueChanged(bin2hex(newValue))
+      tellParentValueChanged(bin2hex(newValue), e.target.localName)
     }
   }
 

@@ -2,7 +2,12 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection } from '../data/BigData'
-import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
+import {
+  filterHex,
+  filterDecimal,
+  filterDecimalWithComma,
+  hexToDec
+} from '../functions/NumberConversion'
 import { Registers_THS, Registers_CANopen } from '../data/BigData'
 
 export function AutocompleteInput_AllObjects({ title, placeholder }) {
@@ -395,20 +400,24 @@ export function Input_AutoFormat({
   const colors = tokens(theme.palette.mode)
 
   const [inputValue, setInputValue] = useState('')
+
   useEffect(() => {
     setInputValue('')
-    tellParentValueChanged('')
   }, [inputType, registerChanged])
 
   useEffect(() => {
-    //This is when this component is integrated into a RegisterComponent and somebody clicks on the BitsBoxes to change the value
-    setInputValue(valueRegisterFromParent)
+    //When user clicks on the multiBitBoxes to change the value
+    if (inputType == 'DEC') {
+      setInputValue(hexToDec(valueRegisterFromParent, resolution))
+    } else {
+      setInputValue(valueRegisterFromParent)
+    }
   }, [valueRegisterFromParent])
 
   function handleInputChange(e) {
     var sorted = callback(e.target.value, resolution)
     setInputValue(sorted)
-    tellParentValueChanged(sorted)
+    tellParentValueChanged(sorted, e.target.localName)
   }
 
   return (
