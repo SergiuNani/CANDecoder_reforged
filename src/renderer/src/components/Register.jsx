@@ -56,10 +56,11 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
         //Used to quicly search for each bit value in case of their change when clicking on one
         className="ClickableBit"
         style={{
-          border: `1px solid ${colors.green[300]}`,
+          border: `1px solid ${colors.green[400]}`,
           textAlign: 'center',
-          fontSize: '1.2rem',
-          color: el == 1 ? `${colors.red[400]}` : 'inherit',
+          fontSize: el == 1 ? '1.2rem' : '1.1rem',
+          fontWeight: el == 1 ? '500' : 'inherit',
+          color: el == 1 ? `${colors.red[500]}` : `${colors.primary[600]}`,
           cursor: allowClickBox ? 'pointer' : 'default'
         }}
       >
@@ -100,15 +101,16 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
       <Box
         style={{
           display: 'flex',
-          fontSize: '1.2rem',
-          color: `${colors.green[300]}`,
+          fontSize: '1.12rem',
+          color: `${colors.yellow[400]}`,
+
           justifyContent: 'center',
           textAlign: 'center'
         }}
       >
-        <h3>
+        <h5>
           -- {register.Index} - {register.Title}
-        </h3>
+        </h5>
       </Box>
 
       {/* {'One full Line  ------------------------------*/}
@@ -123,14 +125,17 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
             justifyContent: 'baseline',
             alignItems: 'center',
             padding: '0.3rem',
-            marginRight: '0.3rem'
+            marginRight: '0.3rem',
+            fontSize: '0.9rem',
+            color: `${colors.primary[600]}`
           }}
         >
           {/* {'Element 1 -  Logical bit order'} */}
           <Box
             style={{
               fontSize: ' 1.3rem',
-              color: `${colors.green[300]}`,
+              color: `${colors.yellow[500]}`,
+              // color: `${colors.red[200]}`,
               textAlign: 'center',
               fontWeight: '1500'
             }}
@@ -145,8 +150,9 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
               {row.info && (
                 <p
                   style={{
-                    color: `${colors.blue[200]}`
+                    color: `${colors.personal[900]}`
                     // textAlign: 'center'
+                    // fontSize: '1rem'
                   }}
                 >
                   {row.info}
@@ -156,8 +162,10 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
                 <p>
                   <span
                     style={{
+                      //0 and 1 bits detailing
                       color: `${colors.primary[400]}`,
-                      fontSize: '0.9rem',
+                      // color: `${colors.yellow[500]}`,
+                      fontSize: '1rem',
                       marginLeft: '0.5rem',
                       fontWeight: '750'
                     }}
@@ -172,7 +180,9 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
                   <span
                     style={{
                       color: `${colors.primary[400]}`,
-                      fontSize: '0.9rem',
+                      // color: `${colors.personal[100]}`,
+
+                      fontSize: '1rem',
                       marginLeft: '0.5rem',
                       fontWeight: '750'
                     }}

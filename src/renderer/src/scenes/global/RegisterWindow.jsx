@@ -31,10 +31,7 @@ export const RegisterWindow = () => {
       //TODO: change the icon color accordingly
       return navigate('/React_logic2')
     } else {
-      setTimeout(() => {
-        //If there are three windows, then the animation is sent to the upcoming one
-        setWindowsNumber((prev) => prev - 1)
-      }, 300)
+      setWindowsNumber((prev) => prev - 1)
     }
   }
   return (
@@ -78,6 +75,9 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
   const [valueRegister, setValueRegister] = useState('')
   const [listType, setListType] = useState('CANopen')
   const [inputType, setInputType] = useState('HEX')
+  // This is added because of the useEffect of the Input_AutoFormat component
+  const [valueRegister4Child, setvalueRegister4Child] = useState('')
+
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -97,26 +97,28 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
     //this will be a child prop
     setRegisterSelected(register)
     setRegisterResolution(parseInt(getMaxNumberFromStringRange(register.BitInfo[0].bit) + 1))
+    setValueRegister('')
   }
   function tellParentValueChanged(value, htmlType) {
     if (htmlType == 'input') {
-      if (listType == 'DEC') {
+      if (inputType == 'DEC') {
         setValueRegister(decToHex(value, registerResolution))
       } else {
         setValueRegister(value)
       }
-    } else {
+    } else if (htmlType == 'p') {
       setValueRegister(value)
+      setvalueRegister4Child(value)
     }
   }
   return (
     <div
       style={{
         // display: 'flex',
-        border: `1px solid `,
+        border: `1px solid  ${colors.red[200]}`,
         padding: '0 0.3rem 0.4rem 0.3rem ',
         borderRadius: '1rem',
-        width: '27rem',
+        width: '27.5rem',
         // minHeight: '20vh',
         // overflow: 'auto',
         backgroundColor: `${colors.primary[200]}`
@@ -143,7 +145,15 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
         >
           <CloseIcon />
         </IconButton>
-        <Typography variant="h4">Register Bit Representation</Typography>
+        <Typography
+          variant="h4"
+          sx={{
+            color: `${colors.primary1[100]}`
+            // textAlign: 'center'
+          }}
+        >
+          Register Bit Representation
+        </Typography>
       </Box>
       {/* Inputs line ---------------------------------------------------- */}
       <Box
@@ -188,7 +198,7 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
             placeholder="Value"
             tellParentValueChanged={tellParentValueChanged}
             registerChanged={registerSelected}
-            valueRegisterFromParent={valueRegister}
+            valueRegisterFromParent={valueRegister4Child}
           />
         ) : (
           <Input_AutoFormat
@@ -198,7 +208,7 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
             placeholder="Value"
             tellParentValueChanged={tellParentValueChanged}
             registerChanged={registerSelected}
-            valueRegisterFromParent={valueRegister}
+            valueRegisterFromParent={valueRegister4Child}
           />
         )}
         <Button

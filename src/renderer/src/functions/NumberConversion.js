@@ -29,6 +29,8 @@ export function filterDecimalWithComma(str, resolution) {
     aux3 = filterDecimal(aux3, 16)
   } else if (resolution == '32') {
     aux3 = filterDecimal(aux3, 32)
+  } else if (resolution == '8') {
+    aux3 = filterDecimal(aux3, 8)
   } else if (resolution == '0') {
     var temp = ''
     if (aux3 == '--') {
@@ -75,6 +77,20 @@ export function filterDecimal(string, resolution) {
   if (resolution == '16') {
     string = parseInt(string, 10)
     var a = 32767
+    if (string > a) {
+      a = a.toString()
+      return a
+    }
+    if (string < -a - 1) {
+      string = -a - 1
+      string = string.toString()
+      return string
+    }
+    string = string.toString()
+    return string
+  } else if (resolution == '8') {
+    string = parseInt(string, 10)
+    var a = 127
     if (string > a) {
       a = a.toString()
       return a
@@ -144,8 +160,10 @@ export function getRangeNumberFromStringRange(input) {
 export function bin2hex(bin) {
   return parseInt(bin, 2).toString(16).toUpperCase()
 }
-//TODO: test decToHex and hexToDec
 export function decToHex(num, resolution) {
+  if (![8, 16, 32].includes(resolution)) {
+    return 0
+  }
   if (typeof num === 'string') {
     num = parseInt(num, 10)
   }
@@ -155,36 +173,27 @@ export function decToHex(num, resolution) {
   }
 
   let maxValue = Math.pow(2, resolution)
-
+  let maxValuePos = Math.pow(2, resolution - 1)
+  if (num >= maxValuePos - 1) {
+    num = maxValuePos - 1
+  } else if (num < 0 && -num >= maxValuePos) {
+    num = -maxValuePos
+  }
   if (num < 0) {
     num = maxValue + (num % maxValue)
   }
 
   return num.toString(16).toUpperCase()
 }
-//---UNtested
-
-//small problem: in: number the 16 bit rez dont work cause checkValidity inp is string
-
-function hex_to_ascii(str1) {
-  var hex = str1.toString()
-  var str = ''
-  for (var n = 0; n < hex.length; n += 2) {
-    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
-  }
-  return str
-}
 
 export function hexToDec(hex, resolution) {
+  if (![8, 16, 32].includes(resolution) || typeof hex !== 'string' || hex === '') {
+    return 0
+  }
   if (typeof hex === 'number') {
     hex = hex.toString()
   }
-
-  if (typeof hex !== 'string') {
-    return 0 // Handle invalid input
-  }
-
-  if (hex === '') {
+  if (hex.length > resolution / 4) {
     return 0
   }
 
@@ -196,4 +205,12 @@ export function hexToDec(hex, resolution) {
   } else {
     return intValue - Math.pow(2, resolution)
   }
+}
+function hex_to_ascii(str1) {
+  var hex = str1.toString()
+  var str = ''
+  for (var n = 0; n < hex.length; n += 2) {
+    str += String.fromCharCode(parseInt(hex.substr(n, 2), 16))
+  }
+  return str
 }

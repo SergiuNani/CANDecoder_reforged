@@ -5,7 +5,10 @@ import { useMemo } from 'react'
 import { Registers_THS, Registers_CANopen } from '../data/BigData'
 import {
   getMaxNumberFromStringRange,
-  getRangeNumberFromStringRange
+  getRangeNumberFromStringRange,
+  decToHex,
+  hexToDec,
+  filterDecimal
 } from '../functions/NumberConversion'
 const DebugScene = () => {
   return (
@@ -62,7 +65,7 @@ export const ColorsComponent = () => {
   )
 }
 
-export const Registers_logic = () => {
+const Registers_logic = () => {
   for (let i = 0; i < Registers_THS.length; i++) {
     console.log(
       Registers_THS[i].BitInfo[0].bit +
