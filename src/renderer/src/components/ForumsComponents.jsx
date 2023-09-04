@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { useTheme } from '@mui/material'
+import { useTheme, Typography } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection } from '../data/BigData'
 import {
@@ -10,7 +10,7 @@ import {
 } from '../functions/NumberConversion'
 import { Registers_THS, Registers_CANopen } from '../data/BigData'
 
-export function AutocompleteInput_AllObjects({ title, placeholder }) {
+export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObjectChanged }) {
   var options = Objects_collection
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -55,6 +55,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder }) {
     setInputValue(option.Index || '')
     setSelectedOption(option)
     setFilteredOptions([])
+    tellParentObjectChanged(option)
   }
 
   const handleFocus = () => {
@@ -105,8 +106,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder }) {
     right: '0.3rem',
     transform: `translateY(-50%) rotate(${isFocused ? '180deg' : '0deg'})`,
     transition: 'transform 0.2s ease',
-    color: `${colors.blue[500]}`
-    // zoom: '1.1'
+    color: `${colors.green[200]}`
   }
 
   return (
@@ -114,18 +114,19 @@ export function AutocompleteInput_AllObjects({ title, placeholder }) {
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: '15rem',
+        width: '25rem',
         position: 'relative'
       }}
     >
-      <p
+      <Typography
+        variant="h5"
         style={{
-          fontSize: '1rem',
-          color: `${colors.primary1[200]}`
+          fontSize: '1.1rem'
+          // color: `${colors.primary1[200]}`
         }}
       >
         {title}
-      </p>
+      </Typography>
       <label
         style={{
           position: 'relative'
@@ -146,6 +147,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder }) {
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
+            width: '6.6rem',
             fontSize: '1rem'
           }}
         />
@@ -295,8 +297,7 @@ export function AutocompleteInput_RegisterList({
     right: '0.3rem',
     transform: `translateY(-50%) rotate(${isFocused ? '180deg' : '0deg'})`,
     transition: 'transform 0.2s ease',
-    color: `${colors.blue[500]}`
-    // zoom: '1.1'
+    color: `${colors.green[200]}`
   }
 
   return (
@@ -304,20 +305,21 @@ export function AutocompleteInput_RegisterList({
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: extendStyle ? '35rem' : '5rem',
+        width: extendStyle ? '25rem' : '5rem',
         position: 'relative'
         // marginLeft: '1rem'
         // border: '1px solid yellow'
       }}
     >
-      <p
+      <Typography
+        variant="h5"
         style={{
-          fontSize: '1.1rem',
-          color: `${colors.primary1[200]}`
+          fontSize: '1.1rem'
+          // color: `${colors.primary1[200]}`
         }}
       >
         {title}
-      </p>
+      </Typography>
       <label
         style={{
           position: 'relative'
@@ -338,7 +340,7 @@ export function AutocompleteInput_RegisterList({
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: extendStyle ? '0.2rem 0 0 1rem' : '0',
-            width: '5.6rem',
+            width: extendStyle ? '6.6rem' : '5.6rem',
             fontSize: '1rem'
           }}
         />
