@@ -197,8 +197,8 @@ export function AutocompleteInput_RegisterList({
   title,
   placeholder,
   type,
-  offset = false,
-  tellParentRegisterChanged
+  tellParentRegisterChanged,
+  extendStyle = false
 }) {
   var options = []
   if (type == '1') {
@@ -304,7 +304,7 @@ export function AutocompleteInput_RegisterList({
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: '5rem',
+        width: extendStyle ? '35rem' : '5rem',
         position: 'relative'
         // marginLeft: '1rem'
         // border: '1px solid yellow'
@@ -312,7 +312,7 @@ export function AutocompleteInput_RegisterList({
     >
       <p
         style={{
-          fontSize: '1rem',
+          fontSize: '1.1rem',
           color: `${colors.primary1[200]}`
         }}
       >
@@ -337,8 +337,8 @@ export function AutocompleteInput_RegisterList({
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
             outline: 'none',
-            margin: offset ? '0.2rem 0 0 1rem' : '0',
-            width: '5.5rem',
+            margin: extendStyle ? '0.2rem 0 0 1rem' : '0',
+            width: '5.6rem',
             fontSize: '1rem'
           }}
         />
@@ -350,14 +350,14 @@ export function AutocompleteInput_RegisterList({
           style={{
             position: 'absolute',
             top: '100%',
-            width: '100%',
+            width: extendStyle ? '80%' : '450%',
             maxHeight: '75vh',
             // backgroundColor: `${colors.primary[100]}`,
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             // border: '1px solid yellow',
-            overflow: 'auto',
-            width: '450%'
+            overflow: 'auto'
+            // width: '450%'
           }}
         >
           {filteredOptions.map((option, index) => (

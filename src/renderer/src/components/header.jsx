@@ -5,8 +5,8 @@ export const Header = ({ title, subtitle }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
-    <Box m="1rem 0" textAlign="center">
-      <Typography variant="h3" color={colors.grey[100]} fontWeight="bold" sx={{ m: '0 0 1rem 0' }}>
+    <Box mb="1rem" textAlign="center">
+      <Typography variant="h3" color={colors.grey[100]} fontWeight="bold" sx={{ mb: '0.1rem' }}>
         {title}
       </Typography>
       <Typography variant="h5" color={colors.green[400]}>

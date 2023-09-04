@@ -8,10 +8,15 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined'
 import SearchIcon from '@mui/icons-material/Search'
 import PaletteIcon from '@mui/icons-material/Palette'
+import CreateIcon from '@mui/icons-material/Create'
+import { useNavigate } from 'react-router-dom'
+
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
+  const navigate = useNavigate()
+
   return (
     <Box className="TOPBAR" sx={{ bgcolor: colors.primary[200] }}>
       {/* SEARCH BAR */}
@@ -32,6 +37,13 @@ const Topbar = () => {
         </IconButton>
         <IconButton>
           <PaletteIcon />
+        </IconButton>
+        <IconButton
+          onClick={() => {
+            navigate('/EditDataWindow')
+          }}
+        >
+          <CreateIcon />
         </IconButton>
       </Box>
     </Box>

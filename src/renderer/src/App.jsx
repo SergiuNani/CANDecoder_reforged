@@ -12,7 +12,7 @@ import React_Logic2 from './scenes/React_Logic2'
 import DebugScene from './scenes/debug'
 import DrawerComponent from './components/Drawer'
 import { ColorsComponent } from './scenes/debug'
-
+import EditDataWindow from './scenes/EditDataWindow'
 function App() {
   const [theme, colorMode] = useMode()
   const [isSidebar, setIsSidebar] = useState(true)
@@ -35,6 +35,7 @@ function App() {
                 <Route path="/React_Logic" element={<React_Logic />} />
                 <Route path="/React_Logic2" element={<React_Logic2 />} />
                 <Route path="/DebugScene" element={<DebugScene />} />
+                <Route path="/EditDataWindow" element={<EditDataWindow />} />
               </Routes>
             </main>
           </div>
