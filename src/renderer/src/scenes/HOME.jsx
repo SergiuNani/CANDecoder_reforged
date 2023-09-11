@@ -1,4 +1,4 @@
-import { Header } from '../components/header.jsx'
+import { Header } from '../components/SmallComponents.jsx'
 import { Typography, Box, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 

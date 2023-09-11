@@ -1,4 +1,4 @@
-import { Header } from '../components/header'
+import { Button1, Header } from '../components/SmallComponents'
 import { useRef, useState } from 'react'
 import {
   AutocompleteInput_RegisterList,
@@ -13,10 +13,14 @@ import { Typography } from '@mui/material'
 
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
+
 const EditDataWindow = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
   //Origin: objects , ths, canopen
   const [dataCategory, setDataCategory] = useState('objectList')
-  const [selectedItem4Edit, setSelectedItem4Edit] = useState(null)
+  const [selectedItem4Edit, setSelectedItem4Edit] = useState('')
 
   const TextAreaRef = useRef()
 
@@ -36,7 +40,10 @@ const EditDataWindow = () => {
           display: 'flex',
           // flexDirection: 'column',
           justifyContent: 'space-between',
-          padding: ' 0 2rem'
+          alignItems: 'center',
+          // alignContent: 'center',
+          padding: ' 0 2rem',
+          marginBottom: '1rem'
         }}
       >
         <RowRadioButtonsGroup tellParent={tellParentCheckBoxChanged} defaultValue={dataCategory} />
@@ -65,20 +72,34 @@ const EditDataWindow = () => {
             listType={dataCategory}
           />
         )}
+        <Button1>Restore </Button1>
+        <Button1>Restore</Button1>
+        <Button1>SAVE</Button1>
       </div>
       {/* EDITOR AREA----------- */}
 
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          fontSize: '1.2rem'
+        }}
+      >
         <textarea
           ref={TextAreaRef}
           name=""
           id=""
-          cols="130"
-          rows="10"
+          cols="120"
           value={selectedItem4Edit}
+          onChange={(e) => {
+            setSelectedItem4Edit(e.target.value)
+          }}
           style={{
-            background: 'inherit',
-            border: '1px solid yellow'
+            background: `${colors.primary[300]}`,
+            color: `${colors.yellow[600]}`,
+            border: `1px solid ${colors.green[400]}`,
+            height: '70vh',
+            width: '80%'
           }}
         ></textarea>
       </div>
@@ -103,6 +124,7 @@ function RowRadioButtonsGroup({ tellParent, defaultValue }) {
       sx={{
         zoom: '1.1',
         userSelect: 'none'
+        // border: '1px solid yellow'
       }}
     >
       <Typography variant="h5">Choose the data category you wish to modify. </Typography>

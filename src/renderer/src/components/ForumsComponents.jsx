@@ -114,7 +114,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObj
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: '25rem',
+        width: '20rem',
         position: 'relative'
       }}
     >
@@ -305,7 +305,7 @@ export function AutocompleteInput_RegisterList({
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: extendStyle ? '25rem' : '5rem',
+        width: extendStyle ? '20rem' : '5rem',
         position: 'relative'
         // marginLeft: '1rem'
         // border: '1px solid yellow'
@@ -499,7 +499,7 @@ export function Input_ChooseOption({ title, options }) {
   return (
     <div
       style={{
-        width: '15rem',
+        width: '20rem',
         position: 'relative'
       }}
     >

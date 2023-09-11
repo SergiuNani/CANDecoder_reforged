@@ -16,6 +16,7 @@ import {
 import { AutocompleteInput_RegisterList, Input_AutoFormat } from '../../components/ForumsComponents'
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate } from 'react-router-dom'
+import { Header } from '../../components/SmallComponents'
 export const RegisterWindow = () => {
   const navigate = useNavigate()
 
@@ -35,8 +36,8 @@ export const RegisterWindow = () => {
     }
   }
   return (
-    <div className="border1 ">
-      <Typography variant="h3">RegistersWINDOW</Typography>
+    <div>
+      <Header title="Registers Window " subtitle="Look up any register" />
       <div
         style={{
           display: 'flex',

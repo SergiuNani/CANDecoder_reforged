@@ -58,10 +58,10 @@ const Sidebar = () => {
           padding: '0.5rem 1rem 0.2rem 1rem !important'
         },
         '& .pro-inner-item:hover': {
-          color: '#868dfb !important'
+          color: `${colors.primary[400]} !important`
         },
         '& .pro-menu-item.active': {
-          color: '#6870fa !important'
+          color: `${colors.green[400]} !important`
         }
       }}
     >
@@ -72,28 +72,17 @@ const Sidebar = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
-              margin: '0.5rem 0rem 0rem 0.4rem',
-              color: colors.grey[100]
+              margin: '0.5rem 0rem 0rem 0.4rem'
+              // color: colors.grey[100]
             }}
           >
             {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="1rem"
-                style={{
-                  transition: 'color 1s', // Adding transition for smooth color change
-                  ':hover': {
-                    color: 'green' // Desired color on hover
-                  }
-                }}
-              >
+              <Box display="flex" justifyContent="space-between" alignItems="center" ml="1rem">
                 <Typography variant="h4">
                   CAN{' '}
                   <span
                     style={{
-                      color: colors.red[500]
+                      color: colors.red[400]
                     }}
                   >
                     DECODER

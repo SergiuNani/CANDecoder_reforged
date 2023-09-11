@@ -1,4 +1,4 @@
-import { Header } from '../components/header'
+import { Header } from '../components/SmallComponents'
 import { Typography } from '@mui/material'
 import {
   useState,

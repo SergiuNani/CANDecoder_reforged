@@ -1,163 +1,130 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
+import IconButton from '@mui/material/IconButton'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
-import Popper from '@mui/material/Popper'
-import { DataGrid } from '@mui/x-data-grid'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
-function isOverflown(element) {
-  return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth
+function createData(name, calories, fat, carbs, protein, price) {
+  return {
+    name,
+    calories,
+    fat,
+    carbs,
+    protein,
+    price,
+    history: [
+      {
+        date: '2020-01-05',
+        customerId: '11091700',
+        amount: 3
+      },
+      {
+        date: '2020-01-02',
+        customerId: 'Anonymous',
+        amount: 1
+      }
+    ]
+  }
 }
 
-const GridCellExpand = React.memo(function GridCellExpand(props) {
-  const { width, value } = props
-  const wrapper = React.useRef(null)
-  const cellDiv = React.useRef(null)
-  const cellValue = React.useRef(null)
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [showFullCell, setShowFullCell] = React.useState(false)
-  const [showPopper, setShowPopper] = React.useState(false)
-
-  const handleMouseEnter = () => {
-    const isCurrentlyOverflown = isOverflown(cellValue.current)
-    setShowPopper(isCurrentlyOverflown)
-    setAnchorEl(cellDiv.current)
-    setShowFullCell(true)
-  }
-
-  const handleMouseLeave = () => {
-    setShowFullCell(false)
-  }
-
-  React.useEffect(() => {
-    if (!showFullCell) {
-      return undefined
-    }
-
-    function handleKeyDown(nativeEvent) {
-      // IE11, Edge (prior to using Bink?) use 'Esc'
-      if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
-        setShowFullCell(false)
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [setShowFullCell, showFullCell])
+function Row(props) {
+  const { row } = props
+  const [open, setOpen] = useState(false)
 
   return (
-    <Box
-      ref={wrapper}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      sx={{
-        alignItems: 'center',
-        lineHeight: '24px',
-        width: '100%',
-        height: '100%',
-        position: 'relative',
-        display: 'flex'
-      }}
-    >
-      <Box
-        ref={cellDiv}
-        sx={{
-          height: '100%',
-          width,
-          display: 'block',
-          position: 'absolute',
-          top: 0
-        }}
-      />
-      <Box
-        ref={cellValue}
-        sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
-      >
-        {value}
-      </Box>
-      {showPopper && (
-        <Popper
-          open={showFullCell && anchorEl !== null}
-          anchorEl={anchorEl}
-          style={{ width, marginLeft: -17 }}
-        >
-          <Paper elevation={1} style={{ minHeight: wrapper.current.offsetHeight - 3 }}>
-            <Typography variant="body2" style={{ padding: 8 }}>
-              {value}
-            </Typography>
-          </Paper>
-        </Popper>
-      )}
-    </Box>
+    <>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="right">{row.calories}</TableCell>
+        <TableCell align="right">{row.fat}</TableCell>
+        <TableCell align="right">{row.carbs}</TableCell>
+        <TableCell align="right">{row.protein}</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                History
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Date</TableCell>
+                    <TableCell>Customer</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Total price ($)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.history.map((historyRow) => (
+                    <TableRow key={historyRow.date}>
+                      <TableCell component="th" scope="row">
+                        {historyRow.date}
+                      </TableCell>
+                      <TableCell>{historyRow.customerId}</TableCell>
+                      <TableCell align="right">{historyRow.amount}</TableCell>
+                      <TableCell align="right">
+                        {Math.round(historyRow.amount * row.price * 100) / 100}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
   )
-})
-
-function renderCellExpand(params) {
-  return <GridCellExpand value={params.value || ''} width={params.colDef.computedWidth} />
 }
 
-const columns = [
-  { field: 'col1', headerName: 'Column 1', width: 80, renderCell: renderCellExpand },
-  {
-    field: 'col2',
-    headerName: 'Column 2',
-    width: '4rem',
-    renderCell: renderCellExpand
-  },
-  {
-    field: 'col3',
-    headerName: 'Column 3',
-    width: 150,
-    renderCell: renderCellExpand
-  }
-]
-
 const rows = [
-  {
-    id: 1,
-    col1: 'Hello',
-    col2: 'World',
-    col3: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used.'
-  },
-  {
-    id: 2,
-    col1: 'DataGridPro',
-    col2: 'is Awesome',
-    col3: 'In publishing and graphic design, Lorem ipsum is a placeholder text or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.'
-  },
-  {
-    id: 3,
-    col1: 'MUI',
-    col2: 'is Amazing',
-    col3: 'Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.'
-  },
-  {
-    id: 4,
-    col1: 'Hello',
-    col2: 'World',
-    col3: 'In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form.'
-  },
-  {
-    id: 5,
-    col1: 'DataGridPro',
-    col2: 'is Awesome',
-    col3: 'Typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available.'
-  },
-  {
-    id: 6,
-    col1: 'MUI',
-    col2: 'is Amazing',
-    col3: 'Lorem ipsum may be used as a placeholder before final copy is available.'
-  }
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
+  createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5)
 ]
 
 export default function RenderExpandCellGrid() {
   return (
-    <div style={{ height: '70vh', width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} showCellVerticalBorder autoHeight />
-    </div>
+    <TableContainer component={Paper}>
+      <Table aria-label="collapsible table">
+        <TableHead>
+          <TableRow>
+            <TableCell />
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Fat&nbsp;(g)</TableCell>
+            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <Row key={row.name} row={row} />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   )
 }
+
+// RenderExpandCellGrid
