@@ -77,7 +77,6 @@ const EditDataWindow = () => {
         <Button1>SAVE</Button1>
       </div>
       {/* EDITOR AREA----------- */}
-
       <div
         style={{
           display: 'flex',

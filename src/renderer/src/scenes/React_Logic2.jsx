@@ -9,7 +9,7 @@ import {
 } from '../components/ForumsComponents'
 import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
 import RegisterComponent from '../components/Register'
-import { Registers_THS } from '../data/BigData'
+import { Registers_THS_LS } from '../App'
 import { Types_of_Msgs_array } from '../data/SmallData'
 // -------------------------------------------------------------------------------------------------------------
 function Element22() {
@@ -121,7 +121,7 @@ const TestWindow = () => {
   return (
     <div className="border1 flex">
       <Typography variant="h3">TestWINDOW</Typography>
-      <RegisterComponent register={Registers_THS[10]} value={1234} />
+      <RegisterComponent register={Registers_THS_LS[10]} value={1234} />
       {/* ------------------------------------------------ */}
       <div
         style={{

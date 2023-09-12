@@ -2,7 +2,7 @@ import { Header } from '../components/SmallComponents'
 import { Box, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
-import { Registers_THS, Registers_CANopen } from '../data/BigData'
+import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
 import {
   getMaxNumberFromStringRange,
   getRangeNumberFromStringRange,
@@ -66,18 +66,18 @@ export const ColorsComponent = () => {
 }
 
 const Registers_logic = () => {
-  for (let i = 0; i < Registers_THS.length; i++) {
+  for (let i = 0; i < Registers_THS_LS.length; i++) {
     console.log(
-      Registers_THS[i].BitInfo[0].bit +
+      Registers_THS_LS[i].BitInfo[0].bit +
         ` ---- ` +
-        getRangeNumberFromStringRange(Registers_THS[i].BitInfo[0].bit)
+        getRangeNumberFromStringRange(Registers_THS_LS[i].BitInfo[0].bit)
     )
   }
-  for (let i = 0; i < Registers_CANopen.length; i++) {
+  for (let i = 0; i < Registers_CANopen_LS.length; i++) {
     console.log(
-      Registers_CANopen[i].BitInfo[0].bit +
+      Registers_CANopen_LS[i].BitInfo[0].bit +
         ' --- ' +
-        getRangeNumberFromStringRange(Registers_CANopen[i].BitInfo[0].bit)
+        getRangeNumberFromStringRange(Registers_CANopen_LS[i].BitInfo[0].bit)
     )
   }
 }

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Typography, Box, IconButton, Button } from '@mui/material'
-import { Registers_THS, Registers_CANopen } from '../../data/BigData'
 import RegisterComponent from '../../components/Register'
 import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'

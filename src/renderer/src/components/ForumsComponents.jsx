@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useTheme, Typography } from '@mui/material'
 import { tokens } from '../theme'
-import { Objects_collection } from '../data/BigData'
+import { Objects_collection_LS } from '../App'
 import {
   filterHex,
   filterDecimal,
   filterDecimalWithComma,
   hexToDec
 } from '../functions/NumberConversion'
-import { Registers_THS, Registers_CANopen } from '../data/BigData'
+import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
 
 export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObjectChanged }) {
-  var options = Objects_collection
+  var options = Objects_collection_LS
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -100,6 +100,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObj
       })
     }
   }
+
   const arrowIconStyles = {
     position: 'absolute',
     top: '50%',
@@ -108,7 +109,6 @@ export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObj
     transition: 'transform 0.2s ease',
     color: `${colors.green[200]}`
   }
-
   return (
     <div
       ref={inputRef}
@@ -204,9 +204,9 @@ export function AutocompleteInput_RegisterList({
 }) {
   var options = []
   if (type == '1') {
-    options = Registers_CANopen
+    options = Registers_CANopen_LS
   } else if (type == '2') {
-    options = Registers_THS
+    options = Registers_THS_LS
   }
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
