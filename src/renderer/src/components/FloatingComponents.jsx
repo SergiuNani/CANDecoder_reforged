@@ -56,13 +56,24 @@ export const DrawerComponent = ({ title, component }) => {
   )
 }
 
-export function ConfirmationModal() {
+export function ConfirmationModal({
+  isModalOpen,
+  tellParentModalClosed,
+  tellParentModalConfirmed
+}) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const [open, setOpen] = useState(isModalOpen)
+  const handleClose = () => {
+    setOpen(false)
+    tellParentModalClosed()
+  }
+
+  useEffect(() => {
+    setOpen(isModalOpen)
+  }, [isModalOpen])
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -79,7 +90,6 @@ export function ConfirmationModal() {
   }
   return (
     <div>
-      <Button onClick={handleOpen}>Open modal</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -102,7 +112,14 @@ export function ConfirmationModal() {
             Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
           </Typography>
           <Box sx={{ mt: '0.2rem' }}>
-            <Button1>Confirm</Button1>
+            <Button1
+              onClick={() => {
+                handleClose()
+                tellParentModalConfirmed()
+              }}
+            >
+              Confirm
+            </Button1>
             <Button2 onClick={handleClose}>Cancel</Button2>
           </Box>
         </Box>

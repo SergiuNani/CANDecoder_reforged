@@ -25,7 +25,7 @@ const EditDataWindow = () => {
   const [dataCategory, setDataCategory] = useState('objectList')
   const [indexBeingEdited, setIndexBeingEdited] = useState(null)
   const [selectedItem4Edit, setSelectedItem4Edit] = useState('')
-
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const TextAreaRef = useRef()
 
   function tellParentCheckBoxChanged(e) {
@@ -106,47 +106,79 @@ const EditDataWindow = () => {
   }
 
   function handleSAVE() {
-    const userInput = JSON.parse(TextAreaRef.current.value)
-
-    if (indexBeingEdited) {
-      var IndexIndicator = null
-
-      if (dataCategory == 'thsRegisters') {
-        const result = Registers_THS_LS.findIndex((option) => {
-          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
-        })
-        // setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
-        console.log(result)
-        console.log(Registers_THS_LS[result])
-      } else if (dataCategory == 'CANopenRegisters') {
-        const result = Registers_CANopen_LS.filter((option) => {
-          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
-        })
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
-      } else if (dataCategory == 'objectList') {
-        var temp = ''
-        var result
-        if (indexBeingEdited.length > 6) {
-          //in case of  "Index": "#x1011_01" we gon search for 1011
-          temp = indexBeingEdited.slice(0, 6)
-        } else temp = indexBeingEdited
-
-        result = Objects_collection_LS.filter((option) => {
-          return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
-        })
-        if (indexBeingEdited.length > 6) {
-          result = result[0].Info.SubItem.filter((option) => {
-            return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
-          })
-        }
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
-      }
+    if (!TextAreaRef.current.value == '') {
+      setIsModalOpen(true)
     }
   }
 
+  function tellParentModalClosed() {
+    setIsModalOpen(false)
+  }
+  function tellParentModalConfirmed() {
+    // User has selected confirm on the Modal pop window
+    var userInput = JSON.parse(TextAreaRef.current.value)
+
+    if (dataCategory == 'thsRegisters') {
+      const indexFound = Registers_THS_LS.findIndex((iteration) => {
+        return iteration.Index == userInput.Index
+      })
+      //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
+      if (indexFound == -1) {
+        Registers_THS_LS.push(userInput)
+      } else {
+        Registers_THS_LS[indexFound] = userInput
+      }
+      localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS_LS))
+    } else if (dataCategory == 'CANopenRegisters') {
+      const indexFound = Registers_CANopen_LS.findIndex((iteration) => {
+        return iteration.Index == userInput.Index
+      })
+      //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
+      if (indexFound == -1) {
+        Registers_CANopen_LS.push(userInput)
+      } else {
+        Registers_CANopen_LS[indexFound] = userInput
+      }
+      localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen_LS))
+    } else if (dataCategory == 'objectList') {
+      if (userInput.Index.length > 6) {
+        const temp = userInput.Index.slice(0, 6)
+        const indexFound = Objects_collection_LS.findIndex((iteration) => {
+          return iteration.Index == temp
+        })
+        console.log(Objects_collection_LS[indexFound].Info.SubItem)
+        const subIndexFound = Objects_collection_LS[indexFound].Info.SubItem.findIndex(
+          (iteration) => {
+            return iteration.Index == userInput.Index
+          }
+        )
+        //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
+        if (indexFound == -1) {
+          console.log(`BS`)
+          Objects_collection_LS[indexFound].Info.SubItem.push(userInput)
+        } else {
+          console.log(`BS2`)
+          Objects_collection_LS[indexFound].Info.SubItem[subIndexFound] = userInput
+        }
+        localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection_LS))
+
+        console.log(`---------`)
+      } else {
+        const indexFound = Objects_collection_LS.findIndex((iteration) => {
+          return iteration.Index == userInput.Index
+        })
+        //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
+        if (indexFound == -1) {
+          Objects_collection_LS.push(userInput)
+        } else {
+          Objects_collection_LS[indexFound] = userInput
+        }
+        localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection_LS))
+      }
+    }
+  }
   return (
     <div>
-      <ConfirmationModal />
       <Header title="Edit Menu" subtitle="Edit any Objects or Registers"></Header>
       {/* DATA category and Search option menu----------- */}
       <div
@@ -186,6 +218,12 @@ const EditDataWindow = () => {
             listType={dataCategory}
           />
         )}
+        <ConfirmationModal
+          isModalOpen={isModalOpen}
+          tellParentModalClosed={tellParentModalClosed}
+          tellParentModalConfirmed={tellParentModalConfirmed}
+        />
+
         <div>
           <Button1 onClick={handleRestoreDefault}>Restore Default </Button1>
           <Button1 onClick={handleRestoreLastSave}>Restore Last Save</Button1>

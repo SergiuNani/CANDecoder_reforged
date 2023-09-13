@@ -66,7 +66,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObj
   const handleBlur = () => {
     // Delay hiding the options to give time for a click to register
     setTimeout(() => {
-      if (!inputRef.current.contains(document.activeElement)) {
+      if (inputRef.current && !inputRef.current.contains(document.activeElement)) {
         setIsFocused(false)
         setFilteredOptions([]) // Hide options when blurred
       }
@@ -257,7 +257,7 @@ export function AutocompleteInput_RegisterList({
   const handleBlur = () => {
     // Delay hiding the options to give time for a click to register
     setTimeout(() => {
-      if (!inputRef.current.contains(document.activeElement)) {
+      if (inputRef.current && !inputRef.current.contains(document.activeElement)) {
         setIsFocused(false)
         setFilteredOptions([]) // Hide options when blurred
       }

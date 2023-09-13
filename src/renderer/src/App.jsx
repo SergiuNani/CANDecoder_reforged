@@ -23,13 +23,12 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true)
 
   //TODO: after you have validated the objects and registers add that if below
-  // if (!localStorage.getItem('Objects_collection_LS')) {
-
-  // First Write in Local Storage if there is nothing there
-  localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection))
-  localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen))
-  localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS))
-
+  if (!localStorage.getItem('Objects_collection_LS')) {
+    // First Write in Local Storage if there is nothing there
+    localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection))
+    localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen))
+    localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS))
+  }
   Objects_collection_LS = JSON.parse(localStorage.getItem('Objects_collection_LS'))
   Registers_CANopen_LS = JSON.parse(localStorage.getItem('Registers_CANopen_LS'))
   Registers_THS_LS = JSON.parse(localStorage.getItem('Registers_THS_LS'))
