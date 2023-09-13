@@ -17,20 +17,46 @@ export const Header = ({ title, subtitle }) => {
   )
 }
 
-export const Button1 = ({ children }) => {
+export const Button1 = ({ children, onClick }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
     <Button
       variant="contained"
+      onClick={onClick}
       sx={{
         height: '2.7rem',
-        margin: '0 2rem',
+        margin: '1rem 2rem',
         fontSize: '1rem',
         background: `${colors.primary[300]}`,
         '&:hover': {
+          background: `${colors.primary[200]}`,
           color: `${colors.red[200]}`
-        }
+        },
+        textTransform: 'none'
+      }}
+    >
+      {children}
+    </Button>
+  )
+}
+export const Button2 = ({ children, onClick }) => {
+  //Cancel button
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Button
+      variant="contained"
+      onClick={onClick}
+      sx={{
+        height: '2.7rem',
+        margin: '1rem 2rem',
+        fontSize: '1rem',
+        background: `${colors.red[400]}`,
+        '&:hover': {
+          background: `${colors.red[500]}`
+        },
+        textTransform: 'none'
       }}
     >
       {children}

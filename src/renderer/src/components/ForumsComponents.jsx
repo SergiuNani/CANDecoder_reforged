@@ -147,7 +147,7 @@ export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObj
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
-            width: '6.6rem',
+            width: '7rem',
             fontSize: '1rem'
           }}
         />

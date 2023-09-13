@@ -13,13 +13,17 @@ import { Typography } from '@mui/material'
 
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
+import { Objects_collection_LS, Registers_CANopen_LS, Registers_THS_LS } from '../App'
+import { Objects_collection, Registers_THS, Registers_CANopen } from '../data/BigData'
 
+import { ConfirmationModal } from '../components/FloatingComponents'
 const EditDataWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
   //Origin: objects , ths, canopen
   const [dataCategory, setDataCategory] = useState('objectList')
+  const [indexBeingEdited, setIndexBeingEdited] = useState(null)
   const [selectedItem4Edit, setSelectedItem4Edit] = useState('')
 
   const TextAreaRef = useRef()
@@ -29,17 +33,127 @@ const EditDataWindow = () => {
     setSelectedItem4Edit('')
   }
   function tellParentAutoCompleteValueChanged(e) {
+    setIndexBeingEdited(e.Index)
     setSelectedItem4Edit(JSON.stringify(e, null, 2))
   }
+
+  function handleRestoreDefault() {
+    // Here we will look at the original data saved inside the BigData.js file to restore the default info
+    if (indexBeingEdited) {
+      if (dataCategory == 'thsRegisters') {
+        const result = Registers_THS.filter((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      } else if (dataCategory == 'CANopenRegisters') {
+        const result = Registers_CANopen.filter((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      } else if (dataCategory == 'objectList') {
+        var temp = ''
+        var result
+        if (indexBeingEdited.length > 6) {
+          //in case of  "Index": "#x1011_01" we gon search for 1011
+          temp = indexBeingEdited.slice(0, 6)
+        } else temp = indexBeingEdited
+
+        result = Objects_collection.filter((option) => {
+          return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
+        })
+        if (indexBeingEdited.length > 6) {
+          result = result[0].Info.SubItem.filter((option) => {
+            return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+          })
+        }
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      }
+    }
+  }
+
+  function handleRestoreLastSave() {
+    // Here we will look at the original data saved inside the LocalServer file to restore the last saved info
+    if (indexBeingEdited) {
+      if (dataCategory == 'thsRegisters') {
+        const result = Registers_THS_LS.filter((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      } else if (dataCategory == 'CANopenRegisters') {
+        const result = Registers_CANopen_LS.filter((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      } else if (dataCategory == 'objectList') {
+        var temp = ''
+        var result
+        if (indexBeingEdited.length > 6) {
+          //in case of  "Index": "#x1011_01" we gon search for 1011
+          temp = indexBeingEdited.slice(0, 6)
+        } else temp = indexBeingEdited
+
+        result = Objects_collection_LS.filter((option) => {
+          return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
+        })
+        if (indexBeingEdited.length > 6) {
+          result = result[0].Info.SubItem.filter((option) => {
+            return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+          })
+        }
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      }
+    }
+  }
+
+  function handleSAVE() {
+    const userInput = JSON.parse(TextAreaRef.current.value)
+
+    if (indexBeingEdited) {
+      var IndexIndicator = null
+
+      if (dataCategory == 'thsRegisters') {
+        const result = Registers_THS_LS.findIndex((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+        // setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+        console.log(result)
+        console.log(Registers_THS_LS[result])
+      } else if (dataCategory == 'CANopenRegisters') {
+        const result = Registers_CANopen_LS.filter((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      } else if (dataCategory == 'objectList') {
+        var temp = ''
+        var result
+        if (indexBeingEdited.length > 6) {
+          //in case of  "Index": "#x1011_01" we gon search for 1011
+          temp = indexBeingEdited.slice(0, 6)
+        } else temp = indexBeingEdited
+
+        result = Objects_collection_LS.filter((option) => {
+          return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
+        })
+        if (indexBeingEdited.length > 6) {
+          result = result[0].Info.SubItem.filter((option) => {
+            return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+          })
+        }
+        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      }
+    }
+  }
+
   return (
     <div>
+      <ConfirmationModal />
       <Header title="Edit Menu" subtitle="Edit any Objects or Registers"></Header>
       {/* DATA category and Search option menu----------- */}
       <div
         style={{
           display: 'flex',
-          // flexDirection: 'column',
           justifyContent: 'space-between',
+          // flexDirection: 'column',
           alignItems: 'center',
           // alignContent: 'center',
           padding: ' 0 2rem',
@@ -72,9 +186,11 @@ const EditDataWindow = () => {
             listType={dataCategory}
           />
         )}
-        <Button1>Restore </Button1>
-        <Button1>Restore</Button1>
-        <Button1>SAVE</Button1>
+        <div>
+          <Button1 onClick={handleRestoreDefault}>Restore Default </Button1>
+          <Button1 onClick={handleRestoreLastSave}>Restore Last Save</Button1>
+          <Button1 onClick={handleSAVE}>SAVE</Button1>
+        </div>
       </div>
       {/* EDITOR AREA----------- */}
       <div
