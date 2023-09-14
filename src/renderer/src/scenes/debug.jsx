@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Header } from '../components/SmallComponents'
 import { Box, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
@@ -10,11 +11,33 @@ import {
   hexToDec,
   filterDecimal
 } from '../functions/NumberConversion'
+import { SnackBarMessage } from '../components/FloatingComponents'
+import { Button1 } from '../components/SmallComponents'
+
 const DebugScene = () => {
+  const [openSnackBar, setOpenSnackBar] = useState(false)
+
+  function handleDebugClick() {
+    //ADD logic here to be tested
+
+    setOpenSnackBar(true)
+  }
+  function closeSnackBarParent() {
+    setOpenSnackBar(false)
+  }
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>
+      <Button1 onClick={handleDebugClick}>DEBUG</Button1>
       {/* <Registers_logic /> */}
+      {openSnackBar && (
+        <SnackBarMessage
+          message="This is Snackbar 1"
+          severity="success"
+          isOpen={openSnackBar}
+          closeSnackBarParent={closeSnackBarParent}
+        />
+      )}
     </>
   )
 }

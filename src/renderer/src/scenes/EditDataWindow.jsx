@@ -17,6 +17,7 @@ import { Objects_collection_LS, Registers_CANopen_LS, Registers_THS_LS } from '.
 import { Objects_collection, Registers_THS, Registers_CANopen } from '../data/BigData'
 
 import { ConfirmationModal } from '../components/FloatingComponents'
+
 const EditDataWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -61,7 +62,7 @@ const EditDataWindow = () => {
         result = Objects_collection.filter((option) => {
           return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
         })
-        if (indexBeingEdited.length > 6) {
+        if (result[0].Info && indexBeingEdited.length > 6) {
           result = result[0].Info.SubItem.filter((option) => {
             return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
           })
@@ -115,67 +116,91 @@ const EditDataWindow = () => {
     setIsModalOpen(false)
   }
   function tellParentModalConfirmed() {
-    // User has selected confirm on the Modal pop window
-    var userInput = JSON.parse(TextAreaRef.current.value)
+    function updateLocalStorage(userInput, localStorageKey, dataCollection) {
+      const indexFound = dataCollection.findIndex((iteration) => {
+        return iteration.Index === userInput.Index
+      })
 
-    if (dataCategory == 'thsRegisters') {
-      const indexFound = Registers_THS_LS.findIndex((iteration) => {
-        return iteration.Index == userInput.Index
-      })
-      //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
-      if (indexFound == -1) {
-        Registers_THS_LS.push(userInput)
+      if (indexFound === -1) {
+        dataCollection.push(userInput)
       } else {
-        Registers_THS_LS[indexFound] = userInput
+        dataCollection[indexFound] = userInput
       }
-      localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS_LS))
-    } else if (dataCategory == 'CANopenRegisters') {
-      const indexFound = Registers_CANopen_LS.findIndex((iteration) => {
-        return iteration.Index == userInput.Index
-      })
-      //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
-      if (indexFound == -1) {
-        Registers_CANopen_LS.push(userInput)
-      } else {
-        Registers_CANopen_LS[indexFound] = userInput
-      }
-      localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen_LS))
-    } else if (dataCategory == 'objectList') {
+
+      localStorage.setItem(localStorageKey, JSON.stringify(dataCollection))
+    }
+
+    function handleObjectList(userInput) {
       if (userInput.Index.length > 6) {
         const temp = userInput.Index.slice(0, 6)
         const indexFound = Objects_collection_LS.findIndex((iteration) => {
-          return iteration.Index == temp
+          return iteration.Index === temp
         })
-        console.log(Objects_collection_LS[indexFound].Info.SubItem)
-        const subIndexFound = Objects_collection_LS[indexFound].Info.SubItem.findIndex(
-          (iteration) => {
-            return iteration.Index == userInput.Index
-          }
-        )
-        //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
-        if (indexFound == -1) {
-          console.log(`BS`)
-          Objects_collection_LS[indexFound].Info.SubItem.push(userInput)
-        } else {
-          console.log(`BS2`)
-          Objects_collection_LS[indexFound].Info.SubItem[subIndexFound] = userInput
-        }
-        localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection_LS))
 
-        console.log(`---------`)
-      } else {
-        const indexFound = Objects_collection_LS.findIndex((iteration) => {
-          return iteration.Index == userInput.Index
-        })
-        //TODO: the user might write some BS , make sure the dude doesnt write shit to break the code
-        if (indexFound == -1) {
-          Objects_collection_LS.push(userInput)
+        if (indexFound !== -1) {
+          //Adding a new subindex to the existing Index
+
+          if (!Objects_collection_LS[indexFound].Info) {
+            Objects_collection_LS[indexFound].Info = {}
+          }
+          if (!Objects_collection_LS[indexFound].Info.SubItem) {
+            Objects_collection_LS[indexFound].Info.SubItem = []
+          }
+          const subIndexFound = Objects_collection_LS[indexFound].Info.SubItem.findIndex(
+            (iteration) => {
+              return iteration.Index === userInput.Index
+            }
+          )
+
+          if (subIndexFound === -1) {
+            //Adding a new subIndex
+            Objects_collection_LS[indexFound].Info.SubItem.push(userInput)
+          } else {
+            //Modifying the existing one
+            Objects_collection_LS[indexFound].Info.SubItem[subIndexFound] = userInput
+          }
         } else {
-          Objects_collection_LS[indexFound] = userInput
+          //Creating a new index and subindex
+
+          const ObjectAdd = {
+            Index: `${temp}`,
+            Name: '',
+            Type: '',
+            BitSize: 0,
+            Info: {
+              SubItem: []
+            }
+          }
+          ObjectAdd.Info.SubItem.push(userInput)
+          Objects_collection_LS.push(ObjectAdd)
         }
+
         localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection_LS))
+      } else {
+        updateLocalStorage(userInput, 'Objects_collection_LS', Objects_collection_LS)
       }
     }
+
+    function handleDataCategory(dataCategory, userInput) {
+      switch (dataCategory) {
+        case 'thsRegisters':
+          updateLocalStorage(userInput, 'Registers_THS_LS', Registers_THS_LS)
+          break
+        case 'CANopenRegisters':
+          updateLocalStorage(userInput, 'Registers_CANopen_LS', Registers_CANopen_LS)
+          break
+        case 'objectList':
+          handleObjectList(userInput)
+          break
+        default:
+          // Handle other data categories if needed
+          break
+      }
+    }
+
+    var userInput = JSON.parse(TextAreaRef.current.value)
+    //TODO: Add preventions so that when the user edits the text the app dont break
+    handleDataCategory(dataCategory, userInput)
   }
   return (
     <div>
@@ -222,8 +247,8 @@ const EditDataWindow = () => {
           isModalOpen={isModalOpen}
           tellParentModalClosed={tellParentModalClosed}
           tellParentModalConfirmed={tellParentModalConfirmed}
+          message="Are you sure you want to modify this Object/Register ? "
         />
-
         <div>
           <Button1 onClick={handleRestoreDefault}>Restore Default </Button1>
           <Button1 onClick={handleRestoreLastSave}>Restore Last Save</Button1>
