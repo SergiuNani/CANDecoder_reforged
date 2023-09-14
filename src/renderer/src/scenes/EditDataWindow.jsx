@@ -26,7 +26,8 @@ const EditDataWindow = () => {
   const [dataCategory, setDataCategory] = useState('objectList')
   const [indexBeingEdited, setIndexBeingEdited] = useState(null)
   const [selectedItem4Edit, setSelectedItem4Edit] = useState('')
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const TextAreaRef = useRef()
 
   function tellParentCheckBoxChanged(e) {
@@ -75,19 +76,18 @@ const EditDataWindow = () => {
   function handleRestoreLastSave() {
     // Here we will look at the original data saved inside the LocalServer file to restore the last saved info
     if (indexBeingEdited) {
+      var result
       if (dataCategory == 'thsRegisters') {
-        const result = Registers_THS_LS.filter((option) => {
+        result = Registers_THS_LS.filter((option) => {
           return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
         })
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
       } else if (dataCategory == 'CANopenRegisters') {
-        const result = Registers_CANopen_LS.filter((option) => {
+        result = Registers_CANopen_LS.filter((option) => {
           return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
         })
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
       } else if (dataCategory == 'objectList') {
         var temp = ''
-        var result
+
         if (indexBeingEdited.length > 6) {
           //in case of  "Index": "#x1011_01" we gon search for 1011
           temp = indexBeingEdited.slice(0, 6)
@@ -101,21 +101,22 @@ const EditDataWindow = () => {
             return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
           })
         }
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
       }
+      setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
     }
   }
 
+  //-------------------HANDLE SAVE------------------------ //
   function handleSAVE() {
     if (!TextAreaRef.current.value == '') {
-      setIsModalOpen(true)
+      setIsSaveModalOpen(true)
     }
   }
 
   function tellParentModalClosed() {
-    setIsModalOpen(false)
+    setIsSaveModalOpen(false)
   }
-  function tellParentModalConfirmed() {
+  function handleConfirmationSAVE() {
     function updateLocalStorage(userInput, localStorageKey, dataCollection) {
       const indexFound = dataCollection.findIndex((iteration) => {
         return iteration.Index === userInput.Index
@@ -202,6 +203,50 @@ const EditDataWindow = () => {
     //TODO: Add preventions so that when the user edits the text the app dont break
     handleDataCategory(dataCategory, userInput)
   }
+  //-------------------HANDLE DELETE------------------------ //
+
+  function handleDelete() {
+    if (indexBeingEdited) {
+      setIsDeleteModalOpen(true)
+    }
+  }
+  function tellParentDeleteModalClosed() {
+    setIsDeleteModalOpen(false)
+  }
+
+  function handleConfirmationDelete() {
+    var result
+    if (dataCategory == 'thsRegisters') {
+      result = Registers_THS_LS.findIndex((option) => {
+        return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+      })
+      if (result != -1) {
+        Registers_THS_LS.splice(result, 1)
+        return localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS_LS))
+      }
+    } else if (dataCategory == 'CANopenRegisters') {
+      result = Registers_CANopen_LS.findIndex((option) => {
+        return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+      })
+    } else if (dataCategory == 'objectList') {
+      var temp = ''
+
+      if (indexBeingEdited.length > 6) {
+        //in case of  "Index": "#x1011_01" we gon search for 1011
+        temp = indexBeingEdited.slice(0, 6)
+      } else temp = indexBeingEdited
+
+      result = Objects_collection_LS.findIndex((option) => {
+        return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
+      })
+      if (indexBeingEdited.length > 6) {
+        result = result[0].Info.SubItem.findIndex((option) => {
+          return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
+        })
+      }
+    }
+  }
+
   return (
     <div>
       <Header title="Edit Menu" subtitle="Edit any Objects or Registers"></Header>
@@ -244,12 +289,19 @@ const EditDataWindow = () => {
           />
         )}
         <ConfirmationModal
-          isModalOpen={isModalOpen}
+          isModalOpen={isSaveModalOpen}
           tellParentModalClosed={tellParentModalClosed}
-          tellParentModalConfirmed={tellParentModalConfirmed}
+          tellParentModalConfirmed={handleConfirmationSAVE}
           message="Are you sure you want to modify this Object/Register ? "
         />
+        <ConfirmationModal
+          isModalOpen={isDeleteModalOpen}
+          tellParentModalClosed={tellParentDeleteModalClosed}
+          tellParentModalConfirmed={handleConfirmationDelete}
+          message="Are you sure you want to permanently remove this Object/Register ? "
+        />
         <div>
+          <Button1 onClick={handleDelete}>Delete Obj/Reg </Button1>
           <Button1 onClick={handleRestoreDefault}>Restore Default </Button1>
           <Button1 onClick={handleRestoreLastSave}>Restore Last Save</Button1>
           <Button1 onClick={handleSAVE}>SAVE</Button1>
