@@ -17,7 +17,7 @@ import { Objects_collection_LS, Registers_CANopen_LS, Registers_THS_LS } from '.
 import { Objects_collection, Registers_THS, Registers_CANopen } from '../data/BigData'
 
 import { ConfirmationModal } from '../components/FloatingComponents'
-
+import { SnackBarMessage } from '../components/FloatingComponents'
 const EditDataWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -28,7 +28,14 @@ const EditDataWindow = () => {
   const [selectedItem4Edit, setSelectedItem4Edit] = useState('')
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [openSnackBarSuccess, setOpenSnackBarSuccess] = useState(false)
+  const [openSnackBarError, setOpenSnackBarError] = useState(false)
+  const [messageSnackbar, setMessageSnackbar] = useState('')
+
+  const [resetValueofInput, setResetValueofInput] = useState(0)
   const TextAreaRef = useRef()
+
+  var SnackbarMessageGlobal
 
   function tellParentCheckBoxChanged(e) {
     setDataCategory(e.target.value)
@@ -42,19 +49,18 @@ const EditDataWindow = () => {
   function handleRestoreDefault() {
     // Here we will look at the original data saved inside the BigData.js file to restore the default info
     if (indexBeingEdited) {
+      var result
       if (dataCategory == 'thsRegisters') {
-        const result = Registers_THS.filter((option) => {
+        result = Registers_THS.filter((option) => {
           return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
         })
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
       } else if (dataCategory == 'CANopenRegisters') {
-        const result = Registers_CANopen.filter((option) => {
+        result = Registers_CANopen.filter((option) => {
           return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
         })
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
       } else if (dataCategory == 'objectList') {
         var temp = ''
-        var result
+
         if (indexBeingEdited.length > 6) {
           //in case of  "Index": "#x1011_01" we gon search for 1011
           temp = indexBeingEdited.slice(0, 6)
@@ -68,8 +74,13 @@ const EditDataWindow = () => {
             return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
           })
         }
-        setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
       }
+      setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      setMessageSnackbar('Object/Register successfully restored from the Default DataBase ')
+      setOpenSnackBarSuccess(true)
+    } else {
+      setMessageSnackbar('Please select an Object/Register before restoring anything ! ')
+      setOpenSnackBarError(true)
     }
   }
 
@@ -103,6 +114,11 @@ const EditDataWindow = () => {
         }
       }
       setSelectedItem4Edit(JSON.stringify(result[0], null, 2))
+      setMessageSnackbar('Object/Register successfully restored from your local Data ')
+      setOpenSnackBarSuccess(true)
+    } else {
+      setMessageSnackbar('Please select an Object/Register before restoring anything ! ')
+      setOpenSnackBarError(true)
     }
   }
 
@@ -110,6 +126,9 @@ const EditDataWindow = () => {
   function handleSAVE() {
     if (!TextAreaRef.current.value == '') {
       setIsSaveModalOpen(true)
+    } else {
+      setMessageSnackbar('There is nothing to save ! ')
+      setOpenSnackBarError(true)
     }
   }
 
@@ -127,7 +146,8 @@ const EditDataWindow = () => {
       } else {
         dataCollection[indexFound] = userInput
       }
-
+      setMessageSnackbar('The Object/Register was successfully saved ')
+      setOpenSnackBarSuccess(true)
       localStorage.setItem(localStorageKey, JSON.stringify(dataCollection))
     }
 
@@ -175,7 +195,8 @@ const EditDataWindow = () => {
           ObjectAdd.Info.SubItem.push(userInput)
           Objects_collection_LS.push(ObjectAdd)
         }
-
+        setMessageSnackbar('The subIndex of the Object was successfully saved !')
+        setOpenSnackBarSuccess(true)
         localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection_LS))
       } else {
         updateLocalStorage(userInput, 'Objects_collection_LS', Objects_collection_LS)
@@ -198,10 +219,14 @@ const EditDataWindow = () => {
           break
       }
     }
-
-    var userInput = JSON.parse(TextAreaRef.current.value)
+    try {
+      var userInput = JSON.parse(TextAreaRef.current.value)
+    } catch (error) {
+      setMessageSnackbar('The final text does not result in an JSON object !')
+      setOpenSnackBarError(true)
+    }
     //TODO: Add preventions so that when the user edits the text the app dont break
-    handleDataCategory(dataCategory, userInput)
+    // handleDataCategory(dataCategory, userInput)
   }
   //-------------------HANDLE DELETE------------------------ //
 
@@ -222,27 +247,62 @@ const EditDataWindow = () => {
       })
       if (result != -1) {
         Registers_THS_LS.splice(result, 1)
+        setIndexBeingEdited(null)
+        setSelectedItem4Edit('')
+        setResetValueofInput((p) => p + 1)
         return localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS_LS))
       }
     } else if (dataCategory == 'CANopenRegisters') {
       result = Registers_CANopen_LS.findIndex((option) => {
         return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
       })
+
+      if (result != -1) {
+        Registers_CANopen_LS.splice(result, 1)
+        setIndexBeingEdited(null)
+        setSelectedItem4Edit('')
+        setResetValueofInput((p) => p + 1)
+        return localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen_LS))
+      }
     } else if (dataCategory == 'objectList') {
       var temp = ''
 
       if (indexBeingEdited.length > 6) {
         //in case of  "Index": "#x1011_01" we gon search for 1011
         temp = indexBeingEdited.slice(0, 6)
-      } else temp = indexBeingEdited
 
-      result = Objects_collection_LS.findIndex((option) => {
-        return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
-      })
-      if (indexBeingEdited.length > 6) {
-        result = result[0].Info.SubItem.findIndex((option) => {
+        var result1 = Objects_collection_LS.findIndex((option) => {
+          return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
+        })
+        result = Objects_collection_LS[result1].Info.SubItem.findIndex((option) => {
           return option.Index.toLocaleLowerCase() == indexBeingEdited.toLocaleLowerCase()
         })
+        if (result != -1) {
+          Objects_collection_LS[result1].Info.SubItem.splice(result, 1)
+          setIndexBeingEdited(null)
+          setSelectedItem4Edit('')
+          setResetValueofInput((p) => p + 1)
+          return localStorage.setItem(
+            'Objects_collection_LS',
+            JSON.stringify(Objects_collection_LS)
+          )
+        }
+      } else {
+        temp = indexBeingEdited
+        result = Objects_collection_LS.findIndex((option) => {
+          return option.Index.toLocaleLowerCase() == temp.toLocaleLowerCase()
+        })
+
+        if (result != -1) {
+          Objects_collection_LS.splice(result, 1)
+          setIndexBeingEdited(null)
+          setSelectedItem4Edit('')
+          setResetValueofInput((p) => p + 1)
+          return localStorage.setItem(
+            'Objects_collection_LS',
+            JSON.stringify(Objects_collection_LS)
+          )
+        }
       }
     }
   }
@@ -268,6 +328,7 @@ const EditDataWindow = () => {
             placeholder="Search"
             title="Search for an Object"
             tellParentObjectChanged={tellParentAutoCompleteValueChanged}
+            resetValueofInputFromParent={resetValueofInput}
           />
         ) : dataCategory == 'CANopenRegisters' ? (
           <AutocompleteInput_RegisterList
@@ -277,6 +338,7 @@ const EditDataWindow = () => {
             tellParentRegisterChanged={tellParentAutoCompleteValueChanged}
             extendStyle="true"
             listType={dataCategory}
+            resetValueofInputFromParent={resetValueofInput}
           />
         ) : (
           <AutocompleteInput_RegisterList
@@ -286,6 +348,7 @@ const EditDataWindow = () => {
             tellParentRegisterChanged={tellParentAutoCompleteValueChanged}
             extendStyle="true"
             listType={dataCategory}
+            resetValueofInputFromParent={resetValueofInput}
           />
         )}
         <ConfirmationModal
@@ -300,6 +363,26 @@ const EditDataWindow = () => {
           tellParentModalConfirmed={handleConfirmationDelete}
           message="Are you sure you want to permanently remove this Object/Register ? "
         />
+        {openSnackBarSuccess && (
+          <SnackBarMessage
+            message={messageSnackbar}
+            severity="success"
+            isOpen={openSnackBarSuccess}
+            closeSnackBarParent={() => {
+              setOpenSnackBarSuccess(false)
+            }}
+          />
+        )}
+        {openSnackBarError && (
+          <SnackBarMessage
+            message={messageSnackbar}
+            severity="error"
+            isOpen={openSnackBarError}
+            closeSnackBarParent={() => {
+              setOpenSnackBarError(false)
+            }}
+          />
+        )}
         <div>
           <Button1 onClick={handleDelete}>Delete Obj/Reg </Button1>
           <Button1 onClick={handleRestoreDefault}>Restore Default </Button1>

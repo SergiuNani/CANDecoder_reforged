@@ -167,7 +167,7 @@ export function SnackBarMessage({ message, severity, isOpen, closeSnackBarParent
   }
   setTimeout(() => {
     handleClose()
-  }, 2000)
+  }, 6000)
   return (
     <>
       <Snackbar

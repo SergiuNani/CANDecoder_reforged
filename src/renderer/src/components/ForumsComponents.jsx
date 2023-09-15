@@ -10,7 +10,12 @@ import {
 } from '../functions/NumberConversion'
 import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
 
-export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObjectChanged }) {
+export function AutocompleteInput_AllObjects({
+  title,
+  placeholder,
+  tellParentObjectChanged,
+  resetValueofInputFromParent
+}) {
   var options = Objects_collection_LS
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -23,6 +28,10 @@ export function AutocompleteInput_AllObjects({ title, placeholder, tellParentObj
 
   const inputRef = useRef()
   const ulRef = useRef()
+
+  useEffect(() => {
+    setInputValue('')
+  }, [resetValueofInputFromParent])
   const filterOptions = (value) => {
     const flatOptions = []
 
@@ -200,7 +209,8 @@ export function AutocompleteInput_RegisterList({
   placeholder,
   type,
   tellParentRegisterChanged,
-  extendStyle = false
+  extendStyle = false,
+  resetValueofInputFromParent
 }) {
   var options = []
   if (type == '1') {
@@ -223,7 +233,7 @@ export function AutocompleteInput_RegisterList({
   useEffect(() => {
     //Reset the input value based on the CANopen vs THS toggle
     setInputValue('')
-  }, [listType])
+  }, [listType, resetValueofInputFromParent])
 
   const filterOptions = (value) => {
     return options.filter((option) =>
