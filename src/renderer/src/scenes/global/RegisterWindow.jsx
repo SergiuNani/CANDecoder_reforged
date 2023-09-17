@@ -237,3 +237,13 @@ const RegisterSelectionComponent = ({ IncrementWindows, DecrementWindows }) => {
     </div>
   )
 }
+export const HelpRegister = () => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div>
+        <Typography variant="h3">The 'Register Bit Representation' window is </Typography>
+      </div>
+      <RegisterSelectionComponent />
+    </div>
+  )
+}

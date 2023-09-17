@@ -18,6 +18,10 @@ import { Objects_collection, Registers_THS, Registers_CANopen } from '../data/Bi
 
 import { ConfirmationModal } from '../components/FloatingComponents'
 import { SnackBarMessage } from '../components/FloatingComponents'
+import {
+  getMaxNumberFromStringRange,
+  getRangeNumberFromStringRange
+} from '../functions/NumberConversion'
 const EditDataWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -206,12 +210,31 @@ const EditDataWindow = () => {
     function handleDataCategory(dataCategory, userInput) {
       switch (dataCategory) {
         case 'thsRegisters':
+          if (check4BadRegisters(userInput)) return 0
           updateLocalStorage(userInput, 'Registers_THS_LS', Registers_THS_LS)
           break
         case 'CANopenRegisters':
+          if (check4BadRegisters(userInput)) return 0
           updateLocalStorage(userInput, 'Registers_CANopen_LS', Registers_CANopen_LS)
           break
         case 'objectList':
+          //AIP ----
+          if (![6, 9].includes(userInput.Index.length)) {
+            setMessageSnackbar(
+              'The format for the INDEX property is wrong. It should be something like this: "#x1001" or "x1001_01"'
+            )
+            return setOpenSnackBarError(true)
+          } else if (!userInput.Index || !userInput.Name || !userInput.BitSize) {
+            setMessageSnackbar(
+              'Please make sure that "Index", "Name" and "BitSize" fields are present'
+            )
+            return setOpenSnackBarError(true)
+          } else if (![8, 16, 32].includes(userInput.BitSize)) {
+            setMessageSnackbar(
+              'The "BitSize" property must be a number which is contained in this array ["8","16","32"]'
+            )
+            return setOpenSnackBarError(true)
+          }
           handleObjectList(userInput)
           break
         default:
@@ -221,20 +244,57 @@ const EditDataWindow = () => {
     }
     try {
       var userInput = JSON.parse(TextAreaRef.current.value)
+
+      handleDataCategory(dataCategory, userInput)
     } catch (error) {
+      console.log(error)
       setMessageSnackbar('The final text does not result in an JSON object !')
       setOpenSnackBarError(true)
     }
-    //TODO: Add preventions so that when the user edits the text the app dont break
-    // handleDataCategory(dataCategory, userInput)
+  }
+  function check4BadRegisters(userInput) {
+    //return true if error ---- AIP ----
+    if (!userInput.Index || !userInput.Title || !userInput.BitInfo) {
+      setMessageSnackbar('Please make sure that "Index", "Title" and "BitInfo" fields are present')
+      setOpenSnackBarError(true)
+      return true
+    }
+    var RegisterLength = getMaxNumberFromStringRange(userInput.BitInfo[0].bit)
+    if (![31, 15, 7].includes(RegisterLength)) {
+      setMessageSnackbar(
+        'The "bit" prop from the first "object" within the "BitInfo" property  must be a number which is contained in this array ["7","15","31"]. Example: "bit":"31...18" or simply "31"'
+      )
+      setOpenSnackBarError(true)
+      return true
+    }
+    var nextBit = RegisterLength
+    for (let i = 0; i < userInput.BitInfo.length; i++) {
+      if (userInput.BitInfo[i + 1]) {
+        var range = getRangeNumberFromStringRange(userInput.BitInfo[i].bit)
+        nextBit = nextBit - range
+        var actualNextBit = getMaxNumberFromStringRange(userInput.BitInfo[i + 1].bit)
+        if (nextBit != actualNextBit) {
+          setMessageSnackbar(
+            `All bits number and description from "${RegisterLength}" till "0" must be included. Bit "${nextBit}" is missing ! OR there is a bit which is has been declared twice `
+          )
+          setOpenSnackBarError(true)
+          i = userInput.BitInfo.length
+          return true
+        }
+      }
+    }
   }
   //-------------------HANDLE DELETE------------------------ //
 
   function handleDelete() {
     if (indexBeingEdited) {
       setIsDeleteModalOpen(true)
+    } else {
+      setMessageSnackbar('There is nothing to delete !')
+      setOpenSnackBarError(true)
     }
   }
+
   function tellParentDeleteModalClosed() {
     setIsDeleteModalOpen(false)
   }
@@ -250,7 +310,7 @@ const EditDataWindow = () => {
         setIndexBeingEdited(null)
         setSelectedItem4Edit('')
         setResetValueofInput((p) => p + 1)
-        return localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS_LS))
+        localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS_LS))
       }
     } else if (dataCategory == 'CANopenRegisters') {
       result = Registers_CANopen_LS.findIndex((option) => {
@@ -262,7 +322,7 @@ const EditDataWindow = () => {
         setIndexBeingEdited(null)
         setSelectedItem4Edit('')
         setResetValueofInput((p) => p + 1)
-        return localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen_LS))
+        localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen_LS))
       }
     } else if (dataCategory == 'objectList') {
       var temp = ''
@@ -298,13 +358,12 @@ const EditDataWindow = () => {
           setIndexBeingEdited(null)
           setSelectedItem4Edit('')
           setResetValueofInput((p) => p + 1)
-          return localStorage.setItem(
-            'Objects_collection_LS',
-            JSON.stringify(Objects_collection_LS)
-          )
+          localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection_LS))
         }
       }
     }
+    setMessageSnackbar('The Object/Register was successfully deleted !')
+    setOpenSnackBarSuccess(true)
   }
 
   return (

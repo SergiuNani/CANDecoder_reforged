@@ -151,15 +151,25 @@ export function SnackBarMessage({ message, severity, isOpen, closeSnackBarParent
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
+  const [formattedMessage, setFormattedMessage] = useState('')
   function TransitionLeft(props) {
     return <Slide {...props} direction="left" />
   }
+
+  const formatMessage = (message) => {
+    const regex = /"([^"]+)"/g
+    return message.replace(
+      regex,
+      '<span style="font-weight: bold; font-style: italic;">"$1"</span>'
+    )
+  }
+  useEffect(() => {
+    setFormattedMessage(formatMessage(message))
+  }, [message])
   const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
   })
   const handleClose = (reason) => {
-    console.log(`sss`)
     if (reason === null) {
       return
     }
@@ -167,7 +177,7 @@ export function SnackBarMessage({ message, severity, isOpen, closeSnackBarParent
   }
   setTimeout(() => {
     handleClose()
-  }, 6000)
+  }, 7000)
   return (
     <>
       <Snackbar
@@ -184,7 +194,7 @@ export function SnackBarMessage({ message, severity, isOpen, closeSnackBarParent
           severity={severity}
           sx={{ width: '100%', color: `${colors.primary[600]}` }}
         >
-          {message}
+          <div dangerouslySetInnerHTML={{ __html: formattedMessage }} />
         </Alert>
       </Snackbar>
     </>

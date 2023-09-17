@@ -10,6 +10,7 @@ import { RegisterWindow } from './scenes/global/RegisterWindow'
 import React_Logic from './scenes/React_logic'
 import React_Logic2 from './scenes/React_Logic2'
 import DebugScene from './scenes/debug'
+import HelpWindow from './scenes/HelpWindow.jsx'
 import { DrawerComponent } from './components/FloatingComponents'
 import { ColorsComponent } from './scenes/debug'
 import EditDataWindow from './scenes/EditDataWindow'
@@ -22,8 +23,11 @@ function App() {
   const [theme, colorMode] = useMode()
   const [isSidebar, setIsSidebar] = useState(true)
 
-  //TODO: after you have validated the objects and registers add that if below
-  if (!localStorage.getItem('Objects_collection_LS')) {
+  if (
+    !localStorage.getItem('Objects_collection_LS') ||
+    !localStorage.getItem('Registers_CANopen_LS') ||
+    !localStorage.getItem('Registers_THS_LS')
+  ) {
     // First Write in Local Storage if there is nothing there
     localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection))
     localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen))
@@ -52,6 +56,7 @@ function App() {
                 <Route path="/React_Logic2" element={<React_Logic2 />} />
                 <Route path="/DebugScene" element={<DebugScene />} />
                 <Route path="/EditDataWindow" element={<EditDataWindow />} />
+                <Route path="/Help" element={<HelpWindow />} />
               </Routes>
             </main>
           </div>

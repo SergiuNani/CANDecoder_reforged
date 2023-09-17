@@ -155,7 +155,7 @@ const Sidebar = () => {
             </Typography>
             <Item
               title="Help"
-              to="/bar"
+              to="/Help"
               icon={<HelpIcon />}
               selected={selected}
               setSelected={setSelected}
