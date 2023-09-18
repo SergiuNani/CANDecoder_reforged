@@ -10,7 +10,13 @@ import {
   bin2hex
 } from '../functions/NumberConversion'
 
-const RegisterComponent = ({ register, value, allowClickBox = false, tellParentValueChanged }) => {
+const RegisterComponent = ({
+  register,
+  value,
+  allowClickBox = false,
+  tellParentValueChanged,
+  ComponentHeight
+}) => {
   if (register == null) {
     return <p></p>
   }
@@ -93,7 +99,7 @@ const RegisterComponent = ({ register, value, allowClickBox = false, tellParentV
         border: `1px solid ${colors.grey[500]}`,
         width: '100%',
         overflow: 'auto',
-        height: '70vh',
+        height: ComponentHeight ? ComponentHeight : '70vh',
         background: `${colors.primary[300]}`
       }}
     >

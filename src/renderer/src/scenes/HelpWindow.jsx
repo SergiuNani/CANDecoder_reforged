@@ -8,6 +8,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { HelpRegister } from './global/RegisterWindow'
+import { HelpEditDataWindow } from './EditDataWindow'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import ViewListIcon from '@mui/icons-material/ViewList'
 import CalculateIcon from '@mui/icons-material/Calculate'
@@ -55,7 +56,7 @@ function ControlledAccordions() {
           handleChange={handleChange}
           icon={<ListAltIcon sx={{ zoom: 1.2 }} />}
           title="Register"
-          subtitle=" This component allows you to search any Register and see what each bits mean"
+          subtitle=" This component allows you to search any Register and visualize it"
           body={<HelpRegister />}
         />
         <AccordionComponent
@@ -65,7 +66,7 @@ function ControlledAccordions() {
           icon={<CreateIcon sx={{ zoom: 1.2 }} />}
           title="Edit Data Menu"
           subtitle=" This menu allows you to edit any Register or Object"
-          // body={</>}
+          body={<HelpEditDataWindow />}
         />
       </div>
     </div>

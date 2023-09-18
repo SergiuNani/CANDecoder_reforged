@@ -15,13 +15,17 @@ import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection_LS, Registers_CANopen_LS, Registers_THS_LS } from '../App'
 import { Objects_collection, Registers_THS, Registers_CANopen } from '../data/BigData'
-
+import { Box, IconButton } from '@mui/material'
 import { ConfirmationModal } from '../components/FloatingComponents'
 import { SnackBarMessage } from '../components/FloatingComponents'
 import {
   getMaxNumberFromStringRange,
   getRangeNumberFromStringRange
 } from '../functions/NumberConversion'
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import CreateIcon from '@mui/icons-material/Create'
+
 const EditDataWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -519,5 +523,44 @@ function RowRadioButtonsGroup({ tellParent, defaultValue }) {
         <FormControlLabel value="CANopenRegisters" control={<Radio />} label="CANopen Registers" />
       </RadioGroup>
     </FormControl>
+  )
+}
+
+export function HelpEditDataWindow() {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <div
+      style={{ display: 'flex', justifyContent: 'space-between', gap: '5rem', margin: '0 2rem' }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '5rem',
+          margin: '0 2rem',
+          alignContent: 'center'
+        }}
+      >
+        <Typography variant="h5" style={{ display: 'flex', alignItems: 'center' }}>
+          {' '}
+          To access this menu click on the highlighted icon "
+          <Box display="flex">
+            <IconButton>
+              <DarkModeOutlinedIcon />
+            </IconButton>
+            <IconButton>
+              <SettingsOutlinedIcon />
+            </IconButton>
+            <IconButton
+              sx={{ border: `2px solid ${colors.green[200]}`, color: `${colors.yellow[500]}` }}
+            >
+              <CreateIcon />
+            </IconButton>
+          </Box>
+          {'    '}" from the Topbar menu.
+        </Typography>
+      </div>
+    </div>
   )
 }

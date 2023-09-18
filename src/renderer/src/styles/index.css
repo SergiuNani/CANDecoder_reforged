@@ -72,6 +72,9 @@
 .XX {
   top: 0;
 }
+.xxx {
+  color: red;
+}
 .YY {
   position: absolute;
 
@@ -91,4 +94,18 @@
   border: 1px solid #a6b3ce;
   background-color: #ff7782;
   color: #d4a6a4;
+}
+.ol {
+  list-style-type: decimal;
+}
+.ol li {
+  margin: 0 0 0.5rem 1rem;
+}
+.primaryColor {
+  color: #ffbb55;
+  font-weight: 700;
+}
+.primaryColor1 {
+  color: #ffbb55;
+  font-weight: 700;
 }

@@ -29,9 +29,6 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <PaletteIcon />
-        </IconButton>
         <IconButton
           onClick={() => {
             navigate('/EditDataWindow')

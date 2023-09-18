@@ -363,7 +363,7 @@ export function AutocompleteInput_RegisterList({
             position: 'absolute',
             top: '100%',
             width: extendStyle ? '80%' : '450%',
-            maxHeight: '75vh',
+            maxHeight: '50vh',
             // backgroundColor: `${colors.primary[100]}`,
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
