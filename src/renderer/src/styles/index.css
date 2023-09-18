@@ -109,3 +109,19 @@
   color: #ffbb55;
   font-weight: 700;
 }
+.flexAlign {
+  display: flex;
+  align-items: center;
+}
+
+.buttonRow {
+  display: grid;
+  grid-template-columns: 15% 80%; /* Set the column widths */
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+.buttonRow p:first-child {
+  text-align: center;
+}

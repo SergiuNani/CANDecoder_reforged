@@ -3,7 +3,7 @@ import { Box, Button, Typography, IconButton } from '@mui/material'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import CloseIcon from '@mui/icons-material/Close'
-import { Button1, Button2 } from './SmallComponents'
+import { Button1, Button3 } from './SmallComponents'
 import Modal from '@mui/material/Modal'
 
 import Snackbar from '@mui/material/Snackbar'
@@ -125,7 +125,7 @@ export function ConfirmationModal({
             >
               Confirm
             </Button1>
-            <Button2 onClick={handleClose}>Cancel</Button2>
+            <Button3 onClick={handleClose}>Cancel</Button3>
           </Box>
         </Box>
       </Modal>

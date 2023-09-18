@@ -40,7 +40,32 @@ export const Button1 = ({ children, onClick }) => {
     </Button>
   )
 }
+
 export const Button2 = ({ children, onClick }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Button
+      variant="contained"
+      onClick={onClick}
+      sx={{
+        height: '3rem',
+        // margin: '1rem 2rem',
+        padding: '1.1rem',
+        fontSize: '0.9rem',
+        background: `${colors.personal[700]}`,
+        '&:hover': {
+          background: `${colors.primary[200]}`,
+          color: `${colors.red[200]}`
+        },
+        textTransform: 'none'
+      }}
+    >
+      {children}
+    </Button>
+  )
+}
+export const Button3 = ({ children, onClick }) => {
   //Cancel button
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)

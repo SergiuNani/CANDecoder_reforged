@@ -1,4 +1,4 @@
-import { Button1, Header } from '../components/SmallComponents'
+import { Button1, Button3, Button2, Header } from '../components/SmallComponents'
 import { useRef, useState } from 'react'
 import {
   AutocompleteInput_RegisterList,
@@ -485,7 +485,7 @@ const EditDataWindow = () => {
 
 export default EditDataWindow
 
-function RowRadioButtonsGroup({ tellParent, defaultValue }) {
+function RowRadioButtonsGroup({ tellParent, defaultValue, style }) {
   const [startValue, setStartValue] = useState(defaultValue)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -502,6 +502,7 @@ function RowRadioButtonsGroup({ tellParent, defaultValue }) {
         userSelect: 'none'
         // border: '1px solid yellow'
       }}
+      style={style}
     >
       <Typography variant="h5">Choose the data category you wish to modify. </Typography>
 
@@ -531,17 +532,15 @@ export function HelpEditDataWindow() {
   const colors = tokens(theme.palette.mode)
   return (
     <div
-      style={{ display: 'flex', justifyContent: 'space-between', gap: '5rem', margin: '0 2rem' }}
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '5rem',
+        margin: '0 2rem',
+        textAlign: 'justify'
+      }}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '5rem',
-          margin: '0 2rem',
-          alignContent: 'center'
-        }}
-      >
+      <div>
         <Typography variant="h5" style={{ display: 'flex', alignItems: 'center' }}>
           {' '}
           To access this menu click on the highlighted icon "
@@ -560,6 +559,93 @@ export function HelpEditDataWindow() {
           </Box>
           {'    '}" from the Topbar menu.
         </Typography>
+        <br />
+        <div
+          style={{ display: 'flex', justifyContent: 'center', gap: '2rem', alignItems: 'center' }}
+        >
+          <RowRadioButtonsGroup
+            style={{
+              border: `1px solid ${colors.yellow[400]}`,
+              padding: '0.5rem',
+              minWidth: '15rem',
+              minHeight: '15rem'
+            }}
+          />
+          <div>
+            <p>
+              The "Edit Data Menu" provides the opportunity to edit the relevant information for
+              this application such as Registers and Objects. Inside this applications memory there
+              is a bunch of data which is saved and called upon when the user interacts with Visual
+              Interface.
+            </p>
+            <br />
+            <p>
+              The idea behind this menu is that if for example some information regarding some data
+              updates or is added or gets depricated, this menu allows for the user to update the
+              application to the most relevant changes . So for example if ten more registers or
+              objects are added the database of this application will remain behind and if the user
+              so choses he can update it. There are three main data categories such as the options
+              on the left: "Objects" , "Technosoft Registers" and "CANopen Registers". This menu
+              allows for the user to click on any of the three options and based on the
+              "Autocomplete Search Bar" will update the searching location so that if you want to
+              edit an Object the entire list of objects will be available to be searched.
+            </p>
+            <br />
+            <p>
+              At any point in time, the application will have two distict databases. The first one
+              represents the default database which when the application will be installed it will
+              copy itself into the second one. The application will always use the second database
+              and the idea behind it that this database can be modified by the user and if in case
+              of any mistakes happening the user has the option to revert certain registers or
+              objects to the default information. However, there is no such option to overwrite the
+              entire second database in one go.
+            </p>
+          </div>
+        </div>
+
+        {/* Buttons Descriptions -----------  */}
+        <div>
+          <div className="buttonRow">
+            <p>
+              <Button2>Delete Obj/Reg</Button2>
+            </p>
+            <p>
+              The "Delete Obj/Reg" button is used to delete either an Object or a Register from the
+              database.
+            </p>
+          </div>
+
+          <div className="buttonRow">
+            <p>
+              <Button2>Restore Default</Button2>
+            </p>
+            <p>
+              The "Restore Default" button will search the first database for the specified
+              Object/Register and overwrite the TextArea in which the user edits data. For the
+              changes to apply you need to press on the "Save" button.
+            </p>
+          </div>
+
+          <div className="buttonRow">
+            <p>
+              <Button2>Restore Last Save</Button2>
+            </p>
+            <p>
+              The "Restore Last Save" button will look into the second database and simply overwrite
+              the TextArea with the latest information saved by the user.
+            </p>
+          </div>
+
+          <div className="buttonRow">
+            <p>
+              <Button2>SAVE</Button2>
+            </p>
+            <p>
+              The "Save" button will save any information present into the TextArea into the second
+              Database
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )

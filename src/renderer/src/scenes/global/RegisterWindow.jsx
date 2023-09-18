@@ -246,7 +246,13 @@ const RegisterSelectionComponent = ({
 export const HelpRegister = () => {
   return (
     <div
-      style={{ display: 'flex', justifyContent: 'space-between', gap: '5rem', margin: '0 2rem' }}
+      style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        gap: '5rem',
+        margin: '0 2rem',
+        textAlign: 'justify'
+      }}
     >
       <div>
         <Typography variant="h5">
