@@ -14,7 +14,8 @@ export function AutocompleteInput_AllObjects({
   title,
   placeholder,
   tellParentObjectChanged,
-  resetValueofInputFromParent
+  resetValueofInputFromParent,
+  focus
 }) {
   var options = Objects_collection_LS
   const theme = useTheme()
@@ -148,6 +149,7 @@ export function AutocompleteInput_AllObjects({
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          autoFocus={focus}
           placeholder={placeholder}
           style={{
             backgroundColor: `${colors.primary[300]}`,
@@ -171,7 +173,7 @@ export function AutocompleteInput_AllObjects({
             top: '100%',
             width: '100%',
             maxHeight: '75vh',
-            // backgroundColor: `${colors.primary[100]}`,
+            // backgroundColor: `${colors.primary[500]}`,
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             // border: '1px solid yellow',
@@ -210,7 +212,8 @@ export function AutocompleteInput_RegisterList({
   type,
   tellParentRegisterChanged,
   extendStyle = false,
-  resetValueofInputFromParent
+  resetValueofInputFromParent,
+  focus
 }) {
   var options = []
   if (type == '1') {
@@ -227,6 +230,7 @@ export function AutocompleteInput_RegisterList({
   const [isFocused, setIsFocused] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
 
+  const divParentRef = useRef()
   const inputRef = useRef()
   const ulRef = useRef()
 
@@ -234,6 +238,12 @@ export function AutocompleteInput_RegisterList({
     //Reset the input value based on the CANopen vs THS toggle
     setInputValue('')
   }, [listType, resetValueofInputFromParent])
+
+  useEffect(() => {
+    if (focus) {
+      inputRef.current.focus()
+    }
+  }, [focus])
 
   const filterOptions = (value) => {
     return options.filter((option) =>
@@ -267,7 +277,7 @@ export function AutocompleteInput_RegisterList({
   const handleBlur = () => {
     // Delay hiding the options to give time for a click to register
     setTimeout(() => {
-      if (inputRef.current && !inputRef.current.contains(document.activeElement)) {
+      if (divParentRef.current && !divParentRef.current.contains(document.activeElement)) {
         setIsFocused(false)
         setFilteredOptions([]) // Hide options when blurred
       }
@@ -312,7 +322,7 @@ export function AutocompleteInput_RegisterList({
 
   return (
     <div
-      ref={inputRef}
+      ref={divParentRef}
       style={{
         // overflow: 'auto',
         width: extendStyle ? '20rem' : '5rem',
@@ -337,12 +347,14 @@ export function AutocompleteInput_RegisterList({
       >
         <input
           type="text"
+          ref={inputRef}
           value={inputValue}
           onKeyDown={handleKeyDown}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
           placeholder={placeholder}
+          autoFocus={focus}
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
@@ -362,7 +374,7 @@ export function AutocompleteInput_RegisterList({
           style={{
             position: 'absolute',
             top: '100%',
-            width: extendStyle ? '80%' : '450%',
+            width: extendStyle ? '90%' : '450%',
             maxHeight: '50vh',
             // backgroundColor: `${colors.primary[100]}`,
             borderRadius: '0.5rem',

@@ -27,7 +27,7 @@ export const Objects_collection = [
     Index: '#x1009',
     Name: 'Hardware version',
     Type: 'STRING(8)',
-    BitSize: 64
+    BitSize: 32
   },
   {
     Index: '#x1005',

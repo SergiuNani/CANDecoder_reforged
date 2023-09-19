@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Typography, Box, IconButton, Button } from '@mui/material'
 import RegisterComponent from '../../components/Register'
 import { useTheme } from '@mui/material'
@@ -20,6 +20,37 @@ export const RegisterWindow = () => {
   const navigate = useNavigate()
 
   const [windowsNumber, setWindowsNumber] = useState(1)
+
+  const [ctrlTabCount, setCtrlTabCount] = useState(0)
+  console.log(`GLOBAL: ctrlTabCount: ` + ctrlTabCount + ' -- windowsNumber: ' + windowsNumber)
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'Tab') {
+        event.preventDefault()
+
+        setCtrlTabCount((prev) => {
+          console.log(`prev: ` + prev + ' -- windowsNumber: ' + windowsNumber)
+          if (prev === windowsNumber) {
+            //Because the second refocus doesn`t work when there is only one window
+            if (windowsNumber == 1) return 0
+            else return 1
+          } else if (prev > 3) {
+            return 0
+          } else {
+            return prev + 1
+          }
+        })
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [windowsNumber])
+
   const IncrementWindows = () => {
     if (windowsNumber > 3) return
     else {
@@ -49,18 +80,21 @@ export const RegisterWindow = () => {
           <RegisterSelectionComponent
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
+            focus={ctrlTabCount == 1 ? true : false}
           />
         )}
         {windowsNumber > 1 && (
           <RegisterSelectionComponent
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
+            focus={ctrlTabCount == 2 ? true : false}
           />
         )}
         {windowsNumber > 2 && (
           <RegisterSelectionComponent
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
+            focus={ctrlTabCount == 3 ? true : false}
           />
         )}
       </div>
@@ -73,7 +107,8 @@ const RegisterSelectionComponent = ({
   IncrementWindows,
   DecrementWindows,
   ComponentHeight,
-  ComponentWidth
+  ComponentWidth,
+  focus
 }) => {
   const [registerSelected, setRegisterSelected] = useState(null)
   const [registerResolution, setRegisterResolution] = useState(0)
@@ -175,6 +210,7 @@ const RegisterSelectionComponent = ({
             listType={listType}
             tellParentRegisterChanged={tellParentRegisterChanged}
             placeholder="Select"
+            focus={focus}
           />
         ) : (
           <AutocompleteInput_RegisterList
@@ -182,6 +218,7 @@ const RegisterSelectionComponent = ({
             listType={listType}
             tellParentRegisterChanged={tellParentRegisterChanged}
             placeholder="Select"
+            focus={focus}
           />
         )}
         <Button

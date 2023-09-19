@@ -1,11 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar'
 import { Box, IconButton, Typography, useTheme } from '@mui/material'
 import { Link } from 'react-router-dom'
 import 'react-pro-sidebar/dist/css/styles.css'
 import { tokens } from '../../theme'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
-import ViewListIcon from '@mui/icons-material/ViewList'
 import CalculateIcon from '@mui/icons-material/Calculate'
 import AttachFileIcon from '@mui/icons-material/AttachFile'
 import HelpIcon from '@mui/icons-material/Help'
@@ -15,7 +14,7 @@ import AdbIcon from '@mui/icons-material/Adb'
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
-
+import { useNavigate } from 'react-router-dom'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -41,6 +40,20 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode)
   const [isCollapsed, setIsCollapsed] = useState(true)
   const [selected, setSelected] = useState('HOME')
+  const navigate = useNavigate()
+  useEffect(() => {
+    //SHORTCUTS
+    const handleKeyPress = (event) => {
+      if (event.altKey && event.key === '1') {
+        setSelected('Registers')
+        navigate('/Registers')
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
 
   return (
     <Box

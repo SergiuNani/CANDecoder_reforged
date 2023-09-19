@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Header } from '../components/SmallComponents'
 import { Box, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
@@ -13,10 +13,26 @@ import {
 } from '../functions/NumberConversion'
 import { SnackBarMessage } from '../components/FloatingComponents'
 import { Button1 } from '../components/SmallComponents'
+import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
 
 const DebugScene = () => {
   const [openSnackBar, setOpenSnackBar] = useState(false)
+  const [focusedInputIndex, setFocusedInputIndex] = useState(0)
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'Tab') {
+        event.preventDefault() // Prevent the default behavior (e.g., switching browser tabs)
+        // setFocusedInputIndex((prevIndex) => (prevIndex + 1) % inputs.length) // Cycle through inputs
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
   function handleDebugClick() {
     //ADD logic here to be tested
 
@@ -38,6 +54,9 @@ const DebugScene = () => {
           closeSnackBarParent={closeSnackBarParent}
         />
       )}
+      <AutocompleteInput_RegisterList listType="CANopen" type="1" focus="true" />
+      <br />
+      <AutocompleteInput_RegisterList listType="CANopen" type="1" />
     </>
   )
 }

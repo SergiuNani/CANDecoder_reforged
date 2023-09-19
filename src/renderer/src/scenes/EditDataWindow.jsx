@@ -1,4 +1,4 @@
-import { Button1, Button3, Button2, Header } from '../components/SmallComponents'
+import { Button1, Button2, Header } from '../components/SmallComponents'
 import { useRef, useState } from 'react'
 import {
   AutocompleteInput_RegisterList,
@@ -8,9 +8,7 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
-import FormLabel from '@mui/material/FormLabel'
 import { Typography } from '@mui/material'
-
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection_LS, Registers_CANopen_LS, Registers_THS_LS } from '../App'
@@ -573,32 +571,31 @@ export function HelpEditDataWindow() {
           />
           <div>
             <p>
-              The "Edit Data Menu" provides the opportunity to edit the relevant information for
-              this application such as Registers and Objects. Inside this applications memory there
-              is a bunch of data which is saved and called upon when the user interacts with Visual
+              The "Edit Data Menu" provides the opportunity for modifying essential application
+              data, including Registers and Objects. . Inside this application`s memory there is a
+              lot of data which is saved and called upon when the user interacts with the Visual
               Interface.
             </p>
             <br />
             <p>
-              The idea behind this menu is that if for example some information regarding some data
-              updates or is added or gets depricated, this menu allows for the user to update the
-              application to the most relevant changes . So for example if ten more registers or
-              objects are added the database of this application will remain behind and if the user
-              so choses he can update it. There are three main data categories such as the options
-              on the left: "Objects" , "Technosoft Registers" and "CANopen Registers". This menu
-              allows for the user to click on any of the three options and based on the
-              "Autocomplete Search Bar" will update the searching location so that if you want to
-              edit an Object the entire list of objects will be available to be searched.
+              The primary purpose of this menu is to empower users to keep their application
+              up-to-date with the latest changes in information. For instance, when new data is
+              added, updated, or deprecated, this menu provides a seamless way for users to
+              synchronize their application with the most relevant data.
+              <br />
+              There are three key data categories, each represented as options on the left:
+              "Objects," "Technosoft Registers," and "CANopen Registers." Within this menu, users
+              can select any of these three options. The "Autocomplete Search Bar" dynamically
+              adjusts its search scope based on the chosen category.
             </p>
             <br />
             <p>
-              At any point in time, the application will have two distict databases. The first one
-              represents the default database which when the application will be installed it will
-              copy itself into the second one. The application will always use the second database
-              and the idea behind it that this database can be modified by the user and if in case
-              of any mistakes happening the user has the option to revert certain registers or
-              objects to the default information. However, there is no such option to overwrite the
-              entire second database in one go.
+              At any given moment, the application maintains two distinct databases. The initial one
+              serves as the default database, and upon installation, it duplicates itself into the
+              second database. The application consistently operates using the second database, and
+              the reason is that users can freely make modifications to this database. In the event
+              of any errors or mishaps, they have the flexibility to restore specific registers or
+              objects to their default settings.
             </p>
           </div>
         </div>
@@ -609,10 +606,7 @@ export function HelpEditDataWindow() {
             <p>
               <Button2>Delete Obj/Reg</Button2>
             </p>
-            <p>
-              The "Delete Obj/Reg" button is used to delete either an Object or a Register from the
-              database.
-            </p>
+            <p> button removes either an Object or a Register from the second database.</p>
           </div>
 
           <div className="buttonRow">
@@ -620,9 +614,9 @@ export function HelpEditDataWindow() {
               <Button2>Restore Default</Button2>
             </p>
             <p>
-              The "Restore Default" button will search the first database for the specified
-              Object/Register and overwrite the TextArea in which the user edits data. For the
-              changes to apply you need to press on the "Save" button.
+              button operates by searching the first database for the specified Object/Register and
+              then overwrites the content in the TextArea where the user edits data. To implement
+              these changes, the user must subsequently press the "Save" button.
             </p>
           </div>
 
@@ -631,8 +625,8 @@ export function HelpEditDataWindow() {
               <Button2>Restore Last Save</Button2>
             </p>
             <p>
-              The "Restore Last Save" button will look into the second database and simply overwrite
-              the TextArea with the latest information saved by the user.
+              button retrieves the most recent user-saved information from the second database and
+              overwrites the content in the TextArea.
             </p>
           </div>
 
@@ -641,8 +635,8 @@ export function HelpEditDataWindow() {
               <Button2>SAVE</Button2>
             </p>
             <p>
-              The "Save" button will save any information present into the TextArea into the second
-              Database
+              button serves the purpose of preserving any information currently within the TextArea
+              by storing it into the second Database.
             </p>
           </div>
         </div>
