@@ -4,6 +4,8 @@ import { Box, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
 import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
+import { useLocation } from 'react-router-dom'
+
 import {
   getMaxNumberFromStringRange,
   getRangeNumberFromStringRange,
@@ -16,47 +18,18 @@ import { Button1 } from '../components/SmallComponents'
 import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
 
 const DebugScene = () => {
-  const [openSnackBar, setOpenSnackBar] = useState(false)
-  const [focusedInputIndex, setFocusedInputIndex] = useState(0)
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.key === 'Tab') {
-        event.preventDefault() // Prevent the default behavior (e.g., switching browser tabs)
-        // setFocusedInputIndex((prevIndex) => (prevIndex + 1) % inputs.length) // Cycle through inputs
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
+  const location = useLocation()
   function handleDebugClick() {
     //ADD logic here to be tested
+    const currentRoute = location.pathname
+    console.log('Current route:', currentRoute)
+  }
 
-    setOpenSnackBar(true)
-  }
-  function closeSnackBarParent() {
-    setOpenSnackBar(false)
-  }
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>
       <Button1 onClick={handleDebugClick}>DEBUG</Button1>
       {/* <Registers_logic /> */}
-      {openSnackBar && (
-        <SnackBarMessage
-          message="This is Snackbar 1"
-          severity="success"
-          isOpen={openSnackBar}
-          closeSnackBarParent={closeSnackBarParent}
-        />
-      )}
-      <AutocompleteInput_RegisterList listType="CANopen" type="1" focus="true" />
-      <br />
-      <AutocompleteInput_RegisterList listType="CANopen" type="1" />
     </>
   )
 }

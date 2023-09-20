@@ -60,12 +60,10 @@ export const RegisterWindow = () => {
     }
   }
   const DecrementWindows = () => {
-    if (windowsNumber < 1) {
-      //TODO: change the icon color accordingly
-      return navigate('/React_logic2')
-    } else {
-      setWindowsNumber((prev) => prev - 1)
-    }
+    //TODO: change the icon color accordingly
+
+    setWindowsNumber((prev) => prev - 1)
+    if (windowsNumber == 1) return navigate('/Home')
   }
   return (
     <div>
@@ -362,7 +360,19 @@ export const HelpRegister = () => {
             changed.
           </li>
         </ol>
+        <br />
+        <div>
+          <p>
+            Shortcut to open the Register Window : <span className="primaryColor">"ALT + 1"</span>
+          </p>
+          <br />
+          <p>
+            Shortcut to focus on the search bar :{' '}
+            <span className="primaryColor"> "CTRL + TAB" </span>
+          </p>
+        </div>
       </div>
+
       <div>
         <RegisterSelectionComponent ComponentHeight="50vh" />
       </div>

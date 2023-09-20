@@ -1,8 +1,8 @@
 import { Header } from '../components/SmallComponents.jsx'
 import { Typography, Box, useTheme } from '@mui/material'
-import { tokens } from '../theme'
+import { tokens } from '../theme.js'
 
-const HOME = () => {
+const HomeWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
@@ -13,4 +13,4 @@ const HOME = () => {
   )
 }
 
-export default HOME
+export default HomeWindow

@@ -150,7 +150,20 @@ const RegisterComponent = ({
           </Box>
           {/* {'Element 2-  Bit description'} */}
           {row.value ? (
-            <Box>{MultipleBitsChoise2JSX(row.value, row.bit, register, index)}</Box>
+            <Box>
+              {row.info && (
+                <p
+                  style={{
+                    color: `${colors.personal[900]}`
+                  }}
+                >
+                  {row.info}
+                </p>
+              )}
+              <Box style={{ marginLeft: '0.5rem' }}>
+                {MultipleBitsChoise2JSX(row.value, row.bit, register, index)}
+              </Box>
+            </Box>
           ) : (
             <Box>
               {row.info && (

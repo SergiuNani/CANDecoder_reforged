@@ -4,7 +4,6 @@ import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
-import HOME from './scenes/HOME'
 import Decode_CAN_LOG from './scenes/Decode_CAN_LOG'
 import { RegisterWindow } from './scenes/global/RegisterWindow'
 import React_Logic from './scenes/React_logic'
@@ -18,6 +17,7 @@ import { Objects_collection, Registers_CANopen, Registers_THS } from './data/Big
 export var Objects_collection_LS = []
 export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
+import HomeWindow from './scenes/HomeWIndow'
 
 function App() {
   const [theme, colorMode] = useMode()
@@ -48,8 +48,8 @@ function App() {
               <Topbar />
               <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
               <Routes>
-                <Route path="/" element={<RegisterWindow />} />
-                <Route path="/HOME" element={<HOME />} />
+                <Route path="/" element={<HomeWindow />} />
+                <Route path="/Home" element={<HomeWindow />} />
                 <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
                 <Route path="/Registers" element={<RegisterWindow />} />
                 <Route path="/React_Logic" element={<React_Logic />} />

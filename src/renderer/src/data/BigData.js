@@ -4092,7 +4092,7 @@ export const Registers_CANopen = [
         one: 'Last event set has occurred'
       },
       {
-        bit: '13..12',
+        bit: '13',
         info: 'Reserved'
       },
       {
