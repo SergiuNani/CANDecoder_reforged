@@ -22,7 +22,7 @@ export const RegisterWindow = () => {
   const [windowsNumber, setWindowsNumber] = useState(1)
 
   const [ctrlTabCount, setCtrlTabCount] = useState(0)
-  console.log(`GLOBAL: ctrlTabCount: ` + ctrlTabCount + ' -- windowsNumber: ' + windowsNumber)
+  const [bugFixShortcut, setBugFixShortcut] = useState(0)
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -32,9 +32,11 @@ export const RegisterWindow = () => {
         setCtrlTabCount((prev) => {
           console.log(`prev: ` + prev + ' -- windowsNumber: ' + windowsNumber)
           if (prev === windowsNumber) {
-            //Because the second refocus doesn`t work when there is only one window
-            if (windowsNumber == 1) return 0
-            else return 1
+            if (windowsNumber == 1) {
+              //Because the second refocus doesn`t work when there is only one window
+              setBugFixShortcut((p) => p + 1)
+            }
+            return 1
           } else if (prev > 3) {
             return 0
           } else {
@@ -78,6 +80,7 @@ export const RegisterWindow = () => {
       >
         {windowsNumber > 0 && (
           <RegisterSelectionComponent
+            key={bugFixShortcut}
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
             focus={ctrlTabCount == 1 ? true : false}

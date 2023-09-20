@@ -2352,6 +2352,12 @@ export const Objects_collection = [
     BitSize: 16
   },
   {
+    Index: '#x6087',
+    Name: 'Torque slope',
+    Type: 'uint32',
+    BitSize: 32
+  },
+  {
     Index: '#x6075',
     Name: 'Motor rated current',
     Type: 'INT',
@@ -2454,6 +2460,12 @@ export const Objects_collection = [
     Info: {
       DefaultData: 0
     }
+  },
+  {
+    Index: '#x6080',
+    Name: ' Max motor speed',
+    Type: 'unsigned32',
+    BitSize: 32
   },
   {
     Index: '#x6081',
@@ -3106,6 +3118,91 @@ export const Registers_CANopen = [
     ]
   },
   {
+    Index: '1005',
+    Title: 'COB-ID of the SYNC Message',
+    BitInfo: [
+      {
+        bit: '31',
+        info: 'Reserved (always 0)'
+      },
+      {
+        bit: '30',
+        zero: 'Drive does not generate synchronization messages',
+        one: 'Drive is the synchronization master (SYNC producer)'
+      },
+      {
+        bit: '29',
+        zero: 'Use 11 bit identifier',
+        one: 'Use 29 bit identifier'
+      },
+      {
+        bit: '11-28',
+        info: 'Bit 11...28 of 29-bit SYNC COB-ID'
+      },
+      {
+        bit: '10-0',
+        info: 'Bit 0...10 of SYNC COB-ID'
+      }
+    ]
+  },
+  {
+    Index: '2004',
+    Title: 'COB-ID of the High-resolution time stamp',
+    BitInfo: [
+      {
+        bit: '31',
+        zero: 'High resolution time stamp exists / is valid',
+        one: 'High resolution time stamp does not exist / is not valid'
+      },
+      {
+        bit: '30',
+        info: 'Reserved'
+      },
+      {
+        bit: '29',
+        zero: '11 bit ID',
+        one: '29 bit ID'
+      },
+      {
+        bit: '11-28',
+        info: 'Bit 11...28 of 29-bit High resolution time stamp COB-ID'
+      },
+      {
+        bit: '10-0',
+        info: 'Bit 0...10 of High resolution time stamp COB-ID'
+      }
+    ]
+  },
+  {
+    Index: '1014',
+    Title: 'COB-ID of the High-resolution time stamp',
+    BitInfo: [
+      {
+        bit: '31',
+        zero: 'EMCY exists / is valid',
+        one: 'EMCY does not exist / is not valid'
+      },
+      {
+        bit: '30',
+        info: 'Reserved'
+      },
+      {
+        bit: '29',
+        zero: 'Use 11 bit identifier',
+        one: ' Use 29 bit identifier (not supported)'
+      },
+      {
+        bit: '11-28',
+        info: 'Reserved'
+      },
+      {
+        bit: '10-0',
+        info: 'Bit 0...10 of COB-ID'
+      }
+    ]
+  },
+
+  {
     Index: '1002',
     Title: 'Manufacturer status register',
     BitInfo: [
@@ -3464,7 +3561,75 @@ export const Registers_CANopen = [
       }
     ]
   },
+  {
+    Index: '60406',
+    Title: 'Controlword in Homing mode',
+    BitInfo: [
+      {
+        bit: '15',
+        zero: 'Registration mode inactive',
+        one: 'Activate registration mode'
+      },
+      {
+        bit: '14',
+        zero: 'When an update is performed, keep unchanged the demand values for speed and position (TML command TUM1;)',
+        one: 'When an update is performed, update the demand values for speed and position with the actual values of speed and position (TML command TUM0;)'
+      },
+      {
+        bit: '13',
+        info: 'When it is set, it cancels the execution of the TML function called through object 2006h. The bit is automatically reset by the drive when the command is executed.'
+      },
+      {
+        bit: '12',
+        zero: 'No action',
+        one: 'If bit 14 = 1 – Force position demand value to 0. If bit 14 = 0 – Force position actual value to 0. This bit is valid regardless of the status of the drive or other bits in Controlword'
+      },
+      {
+        bit: '11',
+        zero: 'Trapezoidal profile - In case the movement is relative, do not add the new target position to the old demand position S-curve profile – Stop the motion with S-curve profile (jerk limited ramp)',
+        one: 'Trapezoidal profile - In case the movement is relative, add the new target position to the old demand position to obtain the new target position S-curve profile – Stop the motion with trapezoidal profile (linear ramp)'
+      },
+      {
+        bit: '9-10',
+        info: 'Reserved. Writes have no effect. Read as 0'
+      },
+      {
+        bit: '8',
+        zero: 'Execute the instruction of bit 4',
+        one: 'Stop drive with homing acceleration'
+      },
+      {
+        bit: '7',
+        zero: 'No action',
+        one: 'Reset Fault. The faults are reset on 0 to 1 transition of this bit. After a Reset Fault command, the master has to reset this bit.'
+      },
+      {
+        bit: '6-5',
+        info: 'reserved'
+      },
 
+      {
+        bit: '4',
+        info: 'Homing operation start'
+      },
+      {
+        bit: '3',
+        info: 'Enable Operation'
+      },
+      {
+        bit: '2',
+        info: 'Quick Stop'
+      },
+      {
+        bit: '1',
+        info: 'Enable Voltage'
+      },
+      {
+        bit: '0',
+        info: 'Switch On'
+      }
+    ]
+  },
   {
     Index: '60407',
     Title: 'Controlword in Interpolated Position Mode',
@@ -3912,7 +4077,160 @@ export const Registers_CANopen = [
       }
     ]
   },
-
+  {
+    Index: '60419',
+    Title: 'Statusword in cyclic synchronous velocity mode',
+    BitInfo: [
+      {
+        bit: '15',
+        zero: 'Axis off. Power stage is disabled. Motor control is not performed',
+        one: 'Axis on. Power stage is enabled. Motor control is performed'
+      },
+      {
+        bit: '14',
+        zero: 'No event set or the programmed event has not occurred yet',
+        one: 'Last event set has occurred'
+      },
+      {
+        bit: '13..12',
+        info: 'Reserved'
+      },
+      {
+        bit: '12',
+        zero: 'Target velocity ignored. When 6040h.8 Halt is set to 1.',
+        one: 'Target velocity shall be used as input to velocity loop control'
+      },
+      {
+        bit: '11',
+        info: 'Internal Limit Active – see Remark 1 below'
+      },
+      {
+        bit: '10',
+        info: 'Reserved'
+      },
+      {
+        bit: '9',
+        zero: 'Remote – drive is in local mode and will not execute the command message.',
+        one: 'Remote – drive parameters may be modified via CAN and the drive will execute the command message.'
+      },
+      {
+        bit: '8',
+        zero: 'No TML function or homing is executed. The execution of the last called TML function or homing is completed.',
+        one: 'A TML function or homing is executed. Until the function or homing execution ends or is aborted, no other TML function / homing may be called'
+      },
+      {
+        bit: '7',
+        zero: 'No Warning',
+        one: 'Warning. A TML function / homing was called, while another TML function / homing is still in execution. The last call is ignored.'
+      },
+      {
+        bit: '6',
+        info: 'Switch On Disabled.'
+      },
+      {
+        bit: '5',
+        info: 'Quick Stop. When this bit is zero, the drive is performing a quick stop'
+      },
+      {
+        bit: '4',
+        zero: 'Motor supply voltage is absent See Remark 2 below',
+        one: 'Motor supply voltage is present'
+      },
+      {
+        bit: '3',
+        info: 'Fault. If set, a fault condition is or was present in the drive.'
+      },
+      {
+        bit: '2',
+        info: 'Operation Enabled'
+      },
+      {
+        bit: '1',
+        info: 'Switched On'
+      },
+      {
+        bit: '0',
+        info: 'Ready to switch on'
+      }
+    ]
+  },
+  {
+    Index: '6041A',
+    Title: 'Statusword in external reference speed mode',
+    BitInfo: [
+      {
+        bit: '15',
+        zero: 'Axis off. Power stage is disabled. Motor control is not performed',
+        one: 'Axis on. Power stage is enabled. Motor control is performed'
+      },
+      {
+        bit: '14',
+        zero: 'No event set or the programmed event has not occurred yet',
+        one: 'Last event set has occurred'
+      },
+      {
+        bit: '13-12',
+        info: 'Reserved'
+      },
+      {
+        bit: '12',
+        zero: 'Target torque ignored',
+        one: 'Target torque shall be used as input to torque control loop'
+      },
+      {
+        bit: '11',
+        info: 'Internal Limit Active – see Remark 1 below'
+      },
+      {
+        bit: '10',
+        info: 'Reserved'
+      },
+      {
+        bit: '9',
+        zero: 'Remote – drive is in local mode and will not execute the command message.',
+        one: 'Remote – drive parameters may be modified via CAN and the drive will execute the command message.'
+      },
+      {
+        bit: '8',
+        zero: 'No TML function or homing is executed. The execution of the last called TML function or homing is completed.',
+        one: 'A TML function or homing is executed. Until the function or homing execution ends or is aborted, no other TML function / homing may be called'
+      },
+      {
+        bit: '7',
+        zero: 'No Warning',
+        one: 'Warning. A TML function / homing was called, while another TML function / homing is still in execution. The last call is ignored.'
+      },
+      {
+        bit: '6',
+        info: 'Switch On Disabled.'
+      },
+      {
+        bit: '5',
+        info: 'Quick Stop. When this bit is zero, the drive is performing a quick stop'
+      },
+      {
+        bit: '4',
+        zero: 'Motor supply voltage is absent See Remark 2 below',
+        one: 'Motor supply voltage is present'
+      },
+      {
+        bit: '3',
+        info: 'Fault. If set, a fault condition is or was present in the drive.'
+      },
+      {
+        bit: '2',
+        info: 'Operation Enabled'
+      },
+      {
+        bit: '1',
+        info: 'Switched On'
+      },
+      {
+        bit: '0',
+        info: 'Ready to switch on'
+      }
+    ]
+  },
   {
     Index: '60411',
     Title: 'Statusword in Position Profile',
@@ -3992,7 +4310,85 @@ export const Registers_CANopen = [
       }
     ]
   },
-
+  {
+    Index: '60413',
+    Title: 'Statusword in Profile Velocity mode',
+    BitInfo: [
+      {
+        bit: '15',
+        zero: 'Axis off. Power stage is disabled. Motor control is not performed',
+        one: 'Axis on. Power stage is enabled. Motor control is performed'
+      },
+      {
+        bit: '14',
+        zero: 'No event set or the programmed event has not occurred yet',
+        one: 'Last event set has occurred'
+      },
+      {
+        bit: '13',
+        zero: 'Maximum slippage not reached',
+        one: 'Maximum slippage reached'
+      },
+      {
+        bit: '12',
+        zero: 'Speed is not equal to 0',
+        one: 'Speed is equal to 0'
+      },
+      {
+        bit: '11',
+        info: 'Internal Limit Active – see Remark 1 below'
+      },
+      {
+        bit: '10',
+        zero: 'Halt = 0: Target position not reached // Halt = 1: Drive decelerates',
+        one: 'Halt = 0: Target position reached // Halt = 1: Velocity of drive is 0'
+      },
+      {
+        bit: '9',
+        zero: 'Remote – drive is in local mode and will not execute the command message.',
+        one: 'Remote – drive parameters may be modified via CAN and the drive will execute the command message.'
+      },
+      {
+        bit: '8',
+        zero: 'No TML function or homing is executed. The execution of the last called TML function or homing is completed.',
+        one: 'A TML function or homing is executed. Until the function or homing execution ends or is aborted, no other TML function / homing may be called'
+      },
+      {
+        bit: '7',
+        zero: 'No Warning',
+        one: 'Warning. A TML function / homing was called, while another TML function / homing is still in execution. The last call is ignored.'
+      },
+      {
+        bit: '6',
+        info: 'Switch On Disabled.'
+      },
+      {
+        bit: '5',
+        info: 'Quick Stop. When this bit is zero, the drive is performing a quick stop'
+      },
+      {
+        bit: '4',
+        zero: 'Motor supply voltage is absent See Remark 2 below',
+        one: 'Motor supply voltage is present'
+      },
+      {
+        bit: '3',
+        info: 'Fault. If set, a fault condition is or was present in the drive.'
+      },
+      {
+        bit: '2',
+        info: 'Operation Enabled'
+      },
+      {
+        bit: '1',
+        info: 'Switched On'
+      },
+      {
+        bit: '0',
+        info: 'Ready to switch on'
+      }
+    ]
+  },
   {
     Index: '60416',
     Title: 'Statusword in Homing Method',
@@ -4883,8 +5279,23 @@ export const Registers_CANopen = [
         one: 'Set interpolation mode (when 6060=7) as described in the CiA402 standard'
       },
       {
-        bit: '7-4',
+        bit: '7',
         info: 'Reserved'
+      },
+      {
+        bit: '6',
+        zero: 'Leave position controller history unchanged',
+        one: 'Reset position controller history'
+      },
+      {
+        bit: '5',
+        zero: 'Leave speed controller history unchanged',
+        one: 'Reset speed controller history'
+      },
+      {
+        bit: '4',
+        zero: 'Leave current controller history unchanged',
+        one: 'Reset current controller history'
       },
       {
         bit: '3',
@@ -4913,6 +5324,21 @@ export const Registers_CANopen = [
       {
         bit: '0-11',
         info: 'Reserved'
+      }
+    ]
+  },
+  {
+    Index: '2091',
+    Title: 'Lock EEPROM',
+    BitInfo: [
+      {
+        bit: '1-7',
+        info: 'Reserved'
+      },
+      {
+        bit: '0',
+        zero: 'EEPROM is unlocked',
+        one: 'EEPROM is locked'
       }
     ]
   },
@@ -5063,9 +5489,27 @@ export const Registers_CANopen = [
         one: 'Enable sampling at positive edge of touch probe 2*'
       },
       {
-        bit: '11..10',
-        info: '00b: Trigger with touch probe 2 input (LSN input)|| 01b: Trigger with zero impulse signal || 10b: Reserved || 11b: Reserved'
+        bit: '11-10',
+        value: [
+          {
+            bitValue: '00',
+            info: 'Trigger with touch probe 2 input (LSN input)'
+          },
+          {
+            bitValue: '01',
+            info: 'Trigger with zero impulse signal'
+          },
+          {
+            bitValue: '10',
+            info: 'Reserved'
+          },
+          {
+            bitValue: '11',
+            info: 'Reserved'
+          }
+        ]
       },
+
       {
         bit: '9',
         zero: 'Trigger first event',
@@ -5096,9 +5540,28 @@ export const Registers_CANopen = [
         one: 'Enable sampling at positive edge of touch probe 1*'
       },
       {
-        bit: '3..2',
-        info: '00b: Trigger with touch probe 1 input (LSP input) || 01b: Trigger with zero impulse signal || 10b: Reserved || 11b: Reserved'
+        bit: '3-2',
+        value: [
+          {
+            bitValue: '00',
+            info: 'Trigger with touch probe 1 input (LSP input)'
+          },
+          {
+            bitValue: '01',
+            info: 'Trigger with zero impulse signal'
+          },
+          {
+            bitValue: '10',
+            info: 'Reserved'
+          },
+          {
+            bitValue: '11',
+            info: 'Reserved'
+          }
+        ],
+        info: 'EXTREF. External reference type'
       },
+
       {
         bit: '1',
         zero: 'Trigger first event',
@@ -5169,7 +5632,7 @@ export const Registers_CANopen = [
     Title: 'Auxiliary encoder function',
     BitInfo: [
       {
-        bit: '15..6',
+        bit: '7-6',
         info: 'Reserved'
       },
       {
@@ -5208,7 +5671,7 @@ export const Registers_CANopen = [
     Title: 'Auxiliary encoder status',
     BitInfo: [
       {
-        bit: '15..3',
+        bit: '7-3',
         info: 'Reserved'
       },
       {
