@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, createContext } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
@@ -19,10 +19,10 @@ export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
 import HomeWindow from './scenes/HomeWIndow'
 
+export const SidebarContext = createContext(null)
 function App() {
   const [theme, colorMode] = useMode()
-  const [isSidebar, setIsSidebar] = useState(true)
-
+  const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   if (
     !localStorage.getItem('Objects_collection_LS') ||
     !localStorage.getItem('Registers_CANopen_LS') ||
@@ -43,22 +43,24 @@ function App() {
         <CssBaseline />
         <HashRouter>
           <div className="app">
-            <Sidebar isSidebar={isSidebar} />
-            <main className="Topbar_Routes_container">
-              <Topbar />
-              <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
-              <Routes>
-                <Route path="/" element={<HomeWindow />} />
-                <Route path="/Home" element={<HomeWindow />} />
-                <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
-                <Route path="/Registers" element={<RegisterWindow />} />
-                <Route path="/React_Logic" element={<React_Logic />} />
-                <Route path="/React_Logic2" element={<React_Logic2 />} />
-                <Route path="/DebugScene" element={<DebugScene />} />
-                <Route path="/EditDataWindow" element={<EditDataWindow />} />
-                <Route path="/Help" element={<HelpWindow />} />
-              </Routes>
-            </main>
+            <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
+              <Sidebar />
+              <main className="Topbar_Routes_container">
+                <Topbar />
+                <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
+                <Routes>
+                  <Route path="/" element={<HomeWindow />} />
+                  <Route path="/Home" element={<HomeWindow />} />
+                  <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
+                  <Route path="/Registers" element={<RegisterWindow />} />
+                  <Route path="/React_Logic" element={<React_Logic />} />
+                  <Route path="/React_Logic2" element={<React_Logic2 />} />
+                  <Route path="/DebugScene" element={<DebugScene />} />
+                  <Route path="/EditDataWindow" element={<EditDataWindow />} />
+                  <Route path="/Help" element={<HelpWindow />} />
+                </Routes>
+              </main>
+            </SidebarContext.Provider>
           </div>
         </HashRouter>
       </ThemeProvider>

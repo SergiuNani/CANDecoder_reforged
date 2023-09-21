@@ -528,6 +528,86 @@ function RowRadioButtonsGroup({ tellParent, defaultValue, style }) {
 export function HelpEditDataWindow() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+
+  const obj = {
+    Index: 'MCR',
+    Title: 'Motion Command Register (command, RO)',
+    BitInfo: [
+      {
+        bit: '15',
+        zero: 'Same motion mode',
+        one: 'New motion mode',
+        info: 'MMODE. Motion mode'
+      },
+      {
+        bit: '14',
+        info: 'Update the reference'
+      },
+      {
+        bit: '13-5',
+        info: 'Reserved'
+      },
+
+      {
+        bit: '4-0',
+        info: 'REFTYPE. Reference type',
+
+        value: [
+          {
+            bitValue: '00000',
+            info: 'External reference'
+          },
+          {
+            bitValue: '00001',
+            info: 'Trapezoidal reference'
+          },
+          {
+            bitValue: '00010',
+            info: 'Contouring position/speed'
+          }
+        ]
+      }
+    ]
+  }
+
+  // Function to recursively display object properties
+  // Function to recursively display object properties
+  // Function to recursively display object properties
+  function displayObject(obj, isRoot = true) {
+    return (
+      <div>
+        {isRoot ? '{' : ''}
+        {Object.entries(obj).map(([key, value], index, array) => (
+          <div key={key}>
+            {key !== 'BitInfo' ? (
+              <>
+                {typeof value === 'object' ? (
+                  <div style={{ marginLeft: '1rem', border: `1px solid yellow` }}>
+                    {'{'}
+                    <p style={{ color: colors.yellow[500] }}>"{key}":</p>
+                    {displayObject(value, false)}
+                    {'}'}
+                  </div>
+                ) : (
+                  <p>
+                    <span style={{ color: colors.yellow[500] }}>"{key}"":</span> "{value}"
+                    {index < array.length - 1 ? ',' : ''}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <p style={{ color: colors.yellow[500] }}>"{key}"":</p>
+                {displayObject(value, false)}
+              </>
+            )}
+          </div>
+        ))}
+        {isRoot ? '}' : ''}
+      </div>
+    )
+  }
+
   return (
     <div
       style={{
@@ -558,7 +638,7 @@ export function HelpEditDataWindow() {
           {'    '}" from the Topbar menu.
         </Typography>
         <br />
-        <div
+        <section
           style={{ display: 'flex', justifyContent: 'center', gap: '2rem', alignItems: 'center' }}
         >
           <RowRadioButtonsGroup
@@ -598,10 +678,10 @@ export function HelpEditDataWindow() {
               objects to their default settings.
             </p>
           </div>
-        </div>
+        </section>
 
         {/* Buttons Descriptions -----------  */}
-        <div>
+        <section>
           <div className="buttonRow">
             <p>
               <Button2>Delete Obj/Reg</Button2>
@@ -639,7 +719,26 @@ export function HelpEditDataWindow() {
               by storing it into the second Database.
             </p>
           </div>
-        </div>
+        </section>
+        <section style={{ marginTop: '1rem' }}>
+          <p>Don`t forget that when changing a </p>
+          <pre style={{ background: `${colors.primary[200]}`, width: '20rem' }}>
+            <p>&#123;</p>
+            <p>
+              <span style={{ color: `${colors.yellow[500]}` }}>Index"</span>: "#x100A",
+            </p>
+            <p>
+              <span style={{ color: `${colors.yellow[500]}` }}>"Name"</span>: "Software version",{' '}
+            </p>
+
+            <p>
+              <span style={{ color: `${colors.yellow[500]}` }}>"BitSize"</span>: 40
+            </p>
+            <p>&#125;</p>
+          </pre>
+          <pre>{displayObject(obj)}</pre>
+          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur, rerum.</p>
+        </section>
       </div>
     </div>
   )

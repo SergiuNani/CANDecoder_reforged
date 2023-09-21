@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar'
 import { Box, IconButton, Typography, useTheme } from '@mui/material'
 import { Link } from 'react-router-dom'
@@ -15,6 +15,7 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { useNavigate } from 'react-router-dom'
+import { SidebarContext } from '../../App'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -39,13 +40,14 @@ const Sidebar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [isCollapsed, setIsCollapsed] = useState(true)
-  const [selected, setSelected] = useState('HOME')
+  const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
+
   const navigate = useNavigate()
   useEffect(() => {
     //SHORTCUTS
     const handleKeyPress = (event) => {
       if (event.altKey && event.key === '1') {
-        setSelected('Registers')
+        setSidebarSelectedItem('Registers')
         navigate('/Registers')
       }
     }
@@ -110,11 +112,11 @@ const Sidebar = () => {
 
           <Box paddingLeft={isCollapsed ? undefined : '10%'}>
             <Item
-              title="HOME"
+              title="Home"
               to="/Home"
               icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
 
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
@@ -124,15 +126,15 @@ const Sidebar = () => {
               title="Registers"
               to="/Registers"
               icon={<ListAltIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
             <Item
               title="Calculator"
               to="/contacts"
               icon={<CalculateIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
 
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
@@ -142,15 +144,15 @@ const Sidebar = () => {
               title="Decode CAN-Log"
               to="/Decode_CAN_LOG"
               icon={<AttachFileIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
             <Item
               title="Decode Messages"
               to="/form"
               icon={<ReceiptLongIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
 
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
@@ -160,8 +162,8 @@ const Sidebar = () => {
               title="Bar Chart"
               to="/bar"
               icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               More
@@ -170,29 +172,29 @@ const Sidebar = () => {
               title="Help"
               to="/Help"
               icon={<HelpIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
             <Item
               title="React_Logic"
               to="/React_Logic"
               icon={<DragIndicatorIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
             <Item
               title="React_Logic2"
               to="/React_Logic2"
               icon={<DragIndicatorIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
             <Item
               title="Debug"
               to="/DebugScene"
               icon={<AdbIcon />}
-              selected={selected}
-              setSelected={setSelected}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
             />
           </Box>
         </Menu>

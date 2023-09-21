@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Typography, Box, IconButton, Button } from '@mui/material'
 import RegisterComponent from '../../components/Register'
 import { useTheme } from '@mui/material'
@@ -16,6 +16,7 @@ import { AutocompleteInput_RegisterList, Input_AutoFormat } from '../../componen
 import AddIcon from '@mui/icons-material/Add'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/SmallComponents'
+import { SidebarContext } from '../../App'
 export const RegisterWindow = () => {
   const navigate = useNavigate()
 
@@ -23,6 +24,7 @@ export const RegisterWindow = () => {
 
   const [ctrlTabCount, setCtrlTabCount] = useState(0)
   const [bugFixShortcut, setBugFixShortcut] = useState(0)
+  const { setSidebarSelectedItem } = useContext(SidebarContext)
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -63,7 +65,10 @@ export const RegisterWindow = () => {
     //TODO: change the icon color accordingly
 
     setWindowsNumber((prev) => prev - 1)
-    if (windowsNumber == 1) return navigate('/Home')
+    if (windowsNumber == 1) {
+      setSidebarSelectedItem('Home')
+      return navigate('/Home')
+    }
   }
   return (
     <div>
