@@ -64,7 +64,7 @@ const RegisterComponent = ({
         style={{
           border: `1px solid ${colors.green[400]}`,
           textAlign: 'center',
-          fontSize: el == 1 ? '1.2rem' : '1.1rem',
+          fontSize: '1.1rem',
           fontWeight: el == 1 ? '500' : 'inherit',
           color: el == 1 ? `${colors.red[500]}` : `${colors.primary[600]}`,
           cursor: allowClickBox ? 'pointer' : 'default'

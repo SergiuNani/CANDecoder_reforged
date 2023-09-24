@@ -1,9 +1,26 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import { Header } from '../components/SmallComponents.jsx'
 import { Typography, Box, useTheme, IconButton } from '@mui/material'
 import { tokens } from '../theme.js'
 import { Objects_collection_LS } from '../App.jsx'
 import SearchIcon from '@mui/icons-material/Search'
+import { RadioGroup, FormControlLabel } from '@mui/material'
+import Radio from '@mui/material/Radio'
+import { Input_AutoFormat, Input_ChooseOption } from '../components/ForumsComponents.jsx'
+import { Types_of_CANopenMsgs_array } from '../data/SmallData.js'
+import { filterHex, filterDecimalWithComma, filterDecimal } from '../functions/NumberConversion.js'
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
+import { LoadTypeContext } from '../App.jsx'
+
+import {
+  FG_units_pos_rot,
+  FG_units_spd_rot,
+  FG_units_acc_rot,
+  FG_units_spd_lin,
+  FG_units_pos_lin,
+  FG_units_acc_lin,
+  FG_units_time
+} from '../data/SmallData.js'
 
 const HomeWindow = () => {
   const theme = useTheme()
@@ -11,12 +28,22 @@ const HomeWindow = () => {
   return (
     <div>
       <Header title="Home Page"></Header>
-      <AutocompleteInput_Main placeholder="Search for an Object" />
+      <div style={{ display: 'flex', width: '100%' }}>
+        <div style={{ flex: '0.55', marginRight: '1rem' }}>
+          <AutocompleteInput_Main placeholder="Search for an Object" />
+        </div>
+        <div style={{ flex: '1', marginRight: '2rem' }}>
+          <section>
+            <NumberTransformationComponent />
+          </section>
+        </div>
+      </div>
     </div>
   )
 }
+export default HomeWindow
 
-export function AutocompleteInput_Main({ placeholder, resetValueofInputFromParent, focus }) {
+function AutocompleteInput_Main({ placeholder, resetValueofInputFromParent, focus }) {
   var options = Objects_collection_LS
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -131,7 +158,7 @@ export function AutocompleteInput_Main({ placeholder, resetValueofInputFromParen
       <label
         style={{
           position: 'relative',
-          padding: '1.4rem',
+          padding: '1.1rem',
           backgroundColor: `${colors.primary[300]}`,
           borderRadius: '1rem'
         }}
@@ -163,17 +190,14 @@ export function AutocompleteInput_Main({ placeholder, resetValueofInputFromParen
         <ul
           ref={ulRef}
           style={{
-            zIndex: '2',
             position: 'absolute',
             top: '100%',
             width: '100%',
             maxHeight: '75vh',
-            // color: `${colors.primary[500]}`,
             borderRadius: '0.5rem',
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            // border: '1px solid yellow',
             overflow: 'auto',
-            fontSize: '1.1rem'
+            fontSize: '1.1rem',
+            marginTop: '1rem'
           }}
         >
           {filteredOptions.map((option, index) => (
@@ -187,11 +211,10 @@ export function AutocompleteInput_Main({ placeholder, resetValueofInputFromParen
                     : `${colors.primary[300]}`,
 
                 padding: '0.5rem 1rem',
-                border: `1px solid ${colors.yellow[200]}`,
                 borderRadius: '0.8rem',
                 padding: '1rem',
                 cursor: 'pointer',
-                width: '33%',
+                // width: '80%',
                 marginBottom: '0.5rem'
               }}
             >
@@ -211,4 +234,175 @@ export function AutocompleteInput_Main({ placeholder, resetValueofInputFromParen
     </div>
   )
 }
-export default HomeWindow
+
+function NumberTransformationComponent() {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  var { loadType, setLoadType } = useContext(LoadTypeContext)
+
+  const [fourOptionsRadioSelection, setFourOptionsRadioSelection] = useState('POS')
+  const [initialValueFieldValue, setInitialValueFieldValue] = useState('')
+  const [unitsFieldValue, setUnitsFieldValue] = useState('')
+  const [IU_FieldValue, setIU_FieldValue] = useState('')
+  const [HEX_FieldValue, setHEX_FieldValue] = useState('')
+  const [LE_FieldValue, setLE_FieldValue] = useState('')
+
+  function handle4OptionChanged(e) {
+    //1
+    setFourOptionsRadioSelection(e.target.value)
+  }
+
+  function handleInitialValueFieldChange(value) {
+    //2
+    setInitialValueFieldValue(value)
+  }
+
+  function handleUnitsFieldValueChaged(value) {
+    //3
+    setUnitsFieldValue(value)
+  }
+
+  function handleIU_FieldValueChaged(value) {
+    //4
+    setIU_FieldValue(value)
+  }
+
+  function handleHEX_FieldValueChaged(value) {
+    //5
+    setHEX_FieldValue(value)
+  }
+  function handleLE_FieldValueChaged(value) {
+    //6
+    setLE_FieldValue(value)
+  }
+
+  function tellParentValueChanged() {}
+  return (
+    <Box
+      sx={{
+        border: `1px solid yellow`,
+        backgroundColor: `${colors.primary[200]}`,
+        border: `1px solid ${colors.primary[400]}`,
+        borderRadius: '1rem',
+        p: '1rem'
+      }}
+    >
+      <Typography variant="h3" sx={{ mb: '1rem', color: `${colors.yellow[500]}` }}>
+        Quick Conversion
+      </Typography>
+      <div style={{ display: 'flex' }}>
+        {/* RADIO GROUP: POS/SPD/ACC/TIME------------------------------------------------------- */}
+        <RadioGroup
+          // column={true}
+          aria-labelledby="demo-row-radio-buttons-group-label"
+          onChange={handle4OptionChanged}
+          name="row-radio-buttons-group"
+          value={fourOptionsRadioSelection}
+          sx={{
+            '& .MuiSvgIcon-root': {
+              // fontSize: '1rem'
+              color: `${colors.green[400]}`
+            },
+            '& .MuiFormControlLabel-root': {
+              margin: '0', // Remove margin
+              padding: '0' // Remove padding
+            }
+          }}
+        >
+          <FormControlLabel value="POS" control={<Radio />} label="POS" selected />
+          <FormControlLabel value="SPD" control={<Radio />} label="SPD" selected />
+          <FormControlLabel value="ACC" control={<Radio />} label="ACC" selected />
+          <FormControlLabel value="TIME" control={<Radio />} label="TIME" selected />
+        </RadioGroup>
+        <section
+          key={loadType}
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '1.2rem',
+            width: '100%'
+            // border: `1px solid yellow`
+          }}
+        >
+          {/* "Initial Value" component------------------------------------------------------- */}
+          <Input_AutoFormat
+            title="Initial Value"
+            callback={
+              fourOptionsRadioSelection == 'POS'
+                ? filterDecimal
+                : fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC'
+                ? filterDecimalWithComma
+                : filterDecimal
+            }
+            resolution={fourOptionsRadioSelection == 'TIME' ? 'time' : 32}
+            inputType={fourOptionsRadioSelection}
+            tellParentValueChanged={handleInitialValueFieldChange}
+            forceValueFromParent={initialValueFieldValue}
+          />
+
+          {/* "Units" component for Initial Value Input field------------------------------------------------------- */}
+
+          <Input_ChooseOption
+            title="Units"
+            array={
+              loadType == 'ROTARY'
+                ? fourOptionsRadioSelection == 'POS'
+                  ? FG_units_pos_rot
+                  : fourOptionsRadioSelection == 'SPD'
+                  ? FG_units_spd_rot
+                  : fourOptionsRadioSelection == 'ACC'
+                  ? FG_units_acc_rot
+                  : FG_units_time
+                : //linear
+                fourOptionsRadioSelection == 'POS'
+                ? FG_units_pos_lin
+                : fourOptionsRadioSelection == 'SPD'
+                ? FG_units_spd_lin
+                : fourOptionsRadioSelection == 'ACC'
+                ? FG_units_acc_lin
+                : FG_units_time
+            }
+            tellParentOptionChanged={handleUnitsFieldValueChaged}
+            forceValueReset={fourOptionsRadioSelection}
+          />
+          <DoubleArrowIcon sx={{ color: `${colors.primary[400]}`, zoom: '1.8' }} />
+
+          {/* "IU" component from QuickConversion------------------------------------------------------- */}
+          <Input_AutoFormat
+            title="IU"
+            callback={
+              fourOptionsRadioSelection == 'POS'
+                ? filterDecimal
+                : fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC'
+                ? filterDecimalWithComma
+                : filterDecimal
+            }
+            resolution={fourOptionsRadioSelection == 'TIME' ? 'time' : 32}
+            inputType={fourOptionsRadioSelection}
+            tellParentValueChanged={handleIU_FieldValueChaged}
+            forceValueFromParent={IU_FieldValue}
+          />
+          {/* "HEX" component from QuickConversion------------------------------------------------------- */}
+          <Input_AutoFormat
+            title="HEX"
+            callback={filterHex}
+            resolution={fourOptionsRadioSelection == 'TIME' ? 16 : 32}
+            inputType={fourOptionsRadioSelection}
+            tellParentValueChanged={handleHEX_FieldValueChaged}
+            forceValueFromParent={HEX_FieldValue}
+          />
+          {/* "Little Endian" component from QuickConversion------------------------------------------------------- */}
+          <Input_AutoFormat
+            title="Little Endian"
+            callback={filterHex}
+            resolution={fourOptionsRadioSelection == 'TIME' ? 16 : 32}
+            inputType={fourOptionsRadioSelection}
+            tellParentValueChanged={handleLE_FieldValueChaged}
+            forceValueFromParent={LE_FieldValue}
+          />
+        </section>
+      </div>
+    </Box>
+  )
+}

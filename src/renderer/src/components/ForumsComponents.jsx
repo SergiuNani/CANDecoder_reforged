@@ -414,11 +414,10 @@ export function Input_AutoFormat({
   placeholder,
   callback,
   resolution,
-  offset = false,
   inputType,
   tellParentValueChanged,
   registerChanged,
-  valueRegisterFromParent
+  forceValueFromParent
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -427,16 +426,17 @@ export function Input_AutoFormat({
 
   useEffect(() => {
     setInputValue('')
+    tellParentValueChanged('')
   }, [inputType, registerChanged])
 
   useEffect(() => {
-    //When user clicks on the multiBitBoxes to change the value
+    //For RegisterComponent - When user clicks on the multiBitBoxes to change the value
     if (inputType == 'DEC') {
-      setInputValue(hexToDec(valueRegisterFromParent, resolution))
+      setInputValue(hexToDec(forceValueFromParent, resolution))
     } else {
-      setInputValue(valueRegisterFromParent)
+      setInputValue(forceValueFromParent)
     }
-  }, [valueRegisterFromParent])
+  }, [forceValueFromParent])
 
   function handleInputChange(e) {
     var sorted = callback(e.target.value, resolution)
@@ -455,7 +455,8 @@ export function Input_AutoFormat({
         style={{
           fontSize: '1rem',
           color: `${colors.primary1[200]}`,
-          margin: '0'
+          marginBottom: '0.2rem',
+          textAlign: 'center'
         }}
       >
         {title}
@@ -476,7 +477,6 @@ export function Input_AutoFormat({
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
             outline: 'none',
-            margin: offset ? '0.2rem 0 0 1rem' : '0',
             fontSize: '1rem',
             width: '7rem'
           }}
@@ -485,93 +485,173 @@ export function Input_AutoFormat({
     </div>
   )
 }
-export function Input_ChooseOption({ title, options }) {
+
+export function Input_ChooseOption({
+  title,
+  placeholder,
+  tellParentOptionChanged,
+  focus,
+  array,
+  forceValueReset,
+  forceValueReset1
+}) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
+  const [inputValue, setInputValue] = useState(array[0])
+  const options = array
   const [isFocused, setIsFocused] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
+
+  const inputRef = useRef()
+  const ulRef = useRef()
+
+  useEffect(() => {
+    setInputValue(array[0])
+  }, [forceValueReset, forceValueReset1])
+
+  const handleOptionClick = (option) => {
+    setInputValue(option)
+    tellParentOptionChanged(option)
+  }
 
   const handleFocus = () => {
     setIsFocused(true)
   }
 
   const handleBlur = () => {
+    // Delay hiding the options to give time for a click to register
+    setTimeout(() => {
+      if (inputRef.current && !inputRef.current.contains(document.activeElement)) {
+        setIsFocused(false)
+      }
+    }, 200)
+  }
+  function handleInputChange() {
     setIsFocused(false)
   }
-
   const handleKeyDown = (event) => {
     if (event.key === 'ArrowDown') {
       event.preventDefault()
       setIsFocused(true)
       setSelectedOptionIndex((prevIndex) =>
-        prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
+        prevIndex < filteredOptions.length - 1 ? prevIndex + 1 : prevIndex
       )
     } else if (event.key === 'ArrowUp') {
       event.preventDefault()
       setIsFocused(true)
       setSelectedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
+    } else if (event.key === 'Enter') {
+      event.preventDefault()
+      if (selectedOptionIndex >= 0 && selectedOptionIndex < filteredOptions.length) {
+        handleOptionClick(filteredOptions[selectedOptionIndex])
+      }
+    } else if (event.key === 'Escape') {
+      setIsFocused(false)
+    }
+
+    // Scroll the selected option into view
+    if (ulRef.current && ulRef.current.children[selectedOptionIndex]) {
+      ulRef.current.children[selectedOptionIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest'
+      })
     }
   }
 
-  const handleSelectChange = (event) => {
-    setSelectedOptionIndex(event.target.selectedIndex)
+  const arrowIconStyles = {
+    position: 'absolute',
+    top: '50%',
+    right: '0.3rem',
+    transform: `translateY(-50%) rotate(${isFocused ? '180deg' : '0deg'})`,
+    transition: 'transform 0.2s ease',
+    color: `${colors.green[200]}`
   }
-
   return (
     <div
+      ref={inputRef}
       style={{
-        width: '20rem',
+        // overflow: 'auto',
         position: 'relative'
       }}
     >
-      <p
+      <Typography
+        variant="h5"
         style={{
           fontSize: '1rem',
-          color: `${colors.primary1[200]}`
+          color: `${colors.primary1[200]}`,
+          marginBottom: '0.2rem',
+          textAlign: 'center'
         }}
       >
         {title}
-      </p>
+      </Typography>
       <label
         style={{
           position: 'relative'
         }}
       >
-        <select
+        <input
+          type="text"
+          value={inputValue}
           onKeyDown={handleKeyDown}
+          onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          onChange={handleSelectChange}
-          value={selectedOptionIndex}
+          autoFocus={focus}
+          placeholder={placeholder}
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
-            fontSize: '1rem',
             outline: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            margin: '0.2rem 0 0 1rem'
+            width: '7rem',
+            fontSize: '1rem'
+          }}
+        />
+        <span style={arrowIconStyles}>▼</span>
+      </label>
+      {isFocused && options.length > 0 && (
+        <ul
+          ref={ulRef}
+          style={{
+            zIndex: '2',
+            position: 'absolute',
+            top: '100%',
+            width: '100%',
+            maxHeight: '50vh',
+            // backgroundColor: `${colors.primary[500]}`,
+            borderRadius: '0.5rem',
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            // border: '1px solid yellow',
+            marginTop: '0.5rem',
+
+            overflow: 'auto'
           }}
         >
           {options.map((option, index) => (
-            <option
+            <li
               key={index}
-              value={index}
+              onClick={() => handleOptionClick(option)}
               style={{
-                backgroundColor: `${colors.primary[300]}`,
+                backgroundColor:
+                  selectedOptionIndex === index
+                    ? `${colors.primary[400]}`
+                    : `${colors.primary[300]}`,
+
                 padding: '0.5rem 1rem',
-                borderRadius: '4rem',
-                color: `${colors.primary[800]}`
+                // border: `1px solid ${colors.red[500]}`,
+                // borderRadius: '4rem',
+                cursor: 'pointer'
               }}
+              className="hover"
             >
               {option}
-            </option>
+            </li>
           ))}
-        </select>
-      </label>
+        </ul>
+      )}
     </div>
   )
 }

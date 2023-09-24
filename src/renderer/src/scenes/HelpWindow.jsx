@@ -86,8 +86,6 @@ function AccordionComponent({ expanded, panelNR, handleChange, icon, body, title
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1bh-content"
-        id="panel1bh-header"
         sx={{ borderBottom: `1px solid ${colors.yellow[400]} ` }}
       >
         <Typography

@@ -10,7 +10,7 @@ import {
 import { filterHex, filterDecimal, filterDecimalWithComma } from '../functions/NumberConversion'
 import RegisterComponent from '../components/Register'
 import { Registers_THS_LS } from '../App'
-import { Types_of_Msgs_array } from '../data/SmallData'
+import { Types_of_CANopenMsgs_array } from '../data/SmallData'
 // -------------------------------------------------------------------------------------------------------------
 function Element22() {
   return (
@@ -213,10 +213,10 @@ const TestWindow = () => {
       >
         <Input_ChooseOption
           title="xxxSDO object one foffffffffffffffffffffffffffffffffffr the..."
-          options={Types_of_Msgs_array}
+          options={Types_of_CANopenMsgs_array}
         />
 
-        <Input_ChooseOption title="MANAAAAAAAA" options={Types_of_Msgs_array} />
+        <Input_ChooseOption title="MANAAAAAAAA" options={Types_of_CANopenMsgs_array} />
       </div>
     </div>
   )

@@ -19,10 +19,7 @@ export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
 import HomeWindow from './scenes/HomeWIndow'
 
-export const SidebarContext = createContext(null)
 function App() {
-  const [theme, colorMode] = useMode()
-  const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   if (
     !localStorage.getItem('Objects_collection_LS') ||
     !localStorage.getItem('Registers_CANopen_LS') ||
@@ -38,34 +35,51 @@ function App() {
   Registers_THS_LS = JSON.parse(localStorage.getItem('Registers_THS_LS'))
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <HashRouter>
-          <div className="app">
-            <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-              <Sidebar />
-              <main className="Topbar_Routes_container">
-                <Topbar />
-                <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
-                <Routes>
-                  <Route path="/" element={<HomeWindow />} />
-                  <Route path="/Home" element={<HomeWindow />} />
-                  <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
-                  <Route path="/Registers" element={<RegisterWindow />} />
-                  <Route path="/React_Logic" element={<React_Logic />} />
-                  <Route path="/React_Logic2" element={<React_Logic2 />} />
-                  <Route path="/DebugScene" element={<DebugScene />} />
-                  <Route path="/EditDataWindow" element={<EditDataWindow />} />
-                  <Route path="/Help" element={<HelpWindow />} />
-                </Routes>
-              </main>
-            </SidebarContext.Provider>
-          </div>
-        </HashRouter>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <MyProviders>
+      <HashRouter>
+        <div className="app">
+          <Sidebar />
+          <main className="Topbar_Routes_container">
+            <Topbar />
+            <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
+            <Routes>
+              <Route path="/" element={<HomeWindow />} />
+              <Route path="/Home" element={<HomeWindow />} />
+              <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
+              <Route path="/Registers" element={<RegisterWindow />} />
+              <Route path="/React_Logic" element={<React_Logic />} />
+              <Route path="/React_Logic2" element={<React_Logic2 />} />
+              <Route path="/DebugScene" element={<DebugScene />} />
+              <Route path="/EditDataWindow" element={<EditDataWindow />} />
+              <Route path="/Help" element={<HelpWindow />} />
+            </Routes>
+          </main>
+        </div>
+      </HashRouter>
+    </MyProviders>
   )
 }
 
 export default App
+
+export const SidebarContext = createContext(null)
+export const LoadTypeContext = createContext()
+
+function MyProviders({ children }) {
+  const [theme, colorMode] = useMode()
+  const [loadType, setLoadType] = useState('ROTARY')
+  const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
+
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <LoadTypeContext.Provider value={{ loadType, setLoadType }}>
+          <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
+            {children}
+          </SidebarContext.Provider>
+        </LoadTypeContext.Provider>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
+  )
+}

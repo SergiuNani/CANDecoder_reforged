@@ -122,7 +122,7 @@ const RegisterSelectionComponent = ({
   const [listType, setListType] = useState('CANopen')
   const [inputType, setInputType] = useState('HEX')
   // This is added because of the useEffect of the Input_AutoFormat component
-  const [valueRegister4Child, setvalueRegister4Child] = useState('')
+  const [valueRegister4Child, setValueRegister4Child] = useState('')
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -154,7 +154,7 @@ const RegisterSelectionComponent = ({
       }
     } else if (htmlType == 'p') {
       setValueRegister(value)
-      setvalueRegister4Child(value)
+      setValueRegister4Child(value)
     }
   }
   return (
@@ -246,7 +246,7 @@ const RegisterSelectionComponent = ({
             placeholder="Value"
             tellParentValueChanged={tellParentValueChanged}
             registerChanged={registerSelected}
-            valueRegisterFromParent={valueRegister4Child}
+            forceValueFromParent={valueRegister4Child}
           />
         ) : (
           <Input_AutoFormat
@@ -256,7 +256,7 @@ const RegisterSelectionComponent = ({
             placeholder="Value"
             tellParentValueChanged={tellParentValueChanged}
             registerChanged={registerSelected}
-            valueRegisterFromParent={valueRegister4Child}
+            forceValueFromParent={valueRegister4Child}
           />
         )}
         <Button
