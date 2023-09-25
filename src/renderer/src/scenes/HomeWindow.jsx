@@ -259,7 +259,9 @@ function NumberTransformationComponent() {
   }
 
   function handleUnitsFieldValueChaged(value) {
+    // console.log('🚀', value)
     //3
+
     setUnitsFieldValue(value)
   }
 
@@ -276,10 +278,10 @@ function NumberTransformationComponent() {
     //6
     setLE_FieldValue(value)
   }
-  console.log(whatFG_isObject('1800_03'))
-  console.log(whatFG_isObject('609A'))
-  console.log(whatFG_isObject('606c_01'))
-  console.log(whatFG_isObject('6064'))
+  // console.log(UnitsConvertor('33', 'IU', 'rpm', '6081'))
+  // console.log(UnitsConvertor('1', 'rot', 'deg', '607A'))
+  // console.log(UnitsConvertor1('33', 'IU', 'rpm', '6081'))
+
   return (
     <Box
       sx={{
@@ -338,7 +340,7 @@ function NumberTransformationComponent() {
                 ? filterDecimalWithComma
                 : filterDecimal
             }
-            resolution={fourOptionsRadioSelection == 'TIME' ? 'time' : 32}
+            resolution={fourOptionsRadioSelection == 'TIME' ? 'TIME' : 32}
             inputType={fourOptionsRadioSelection}
             tellParentValueChanged={handleInitialValueFieldChange}
             forceValueFromParent={initialValueFieldValue}
@@ -347,6 +349,7 @@ function NumberTransformationComponent() {
           {/* "Units" component for Initial Value Input field------------------------------------------------------- */}
 
           <Input_ChooseOption
+            key={fourOptionsRadioSelection}
             title="Units"
             array={
               loadType == 'ROTARY'
@@ -381,7 +384,7 @@ function NumberTransformationComponent() {
                 ? filterDecimalWithComma
                 : filterDecimal
             }
-            resolution={fourOptionsRadioSelection == 'TIME' ? 'time' : 32}
+            resolution={fourOptionsRadioSelection == 'TIME' ? 'TIME' : 32}
             inputType={fourOptionsRadioSelection}
             tellParentValueChanged={handleIU_FieldValueChaged}
             forceValueFromParent={IU_FieldValue}

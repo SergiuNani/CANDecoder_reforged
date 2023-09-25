@@ -418,7 +418,8 @@ export function Input_AutoFormat({
   tellParentValueChanged,
   registerChanged,
   forceValueFromParent,
-  iteration
+  iteration,
+  blockValueReset
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -426,8 +427,10 @@ export function Input_AutoFormat({
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
-    setInputValue('')
-    tellParentValueChanged('')
+    if (!blockValueReset) {
+      setInputValue('')
+      tellParentValueChanged('')
+    }
   }, [inputType, registerChanged])
 
   useEffect(() => {
@@ -504,7 +507,7 @@ export function Input_ChooseOption({
   const options = array
   const [isFocused, setIsFocused] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
-
+  const [scrollDirection, setScrollDirection] = useState(null)
   const inputRef = useRef()
   const ulRef = useRef()
 
@@ -512,9 +515,41 @@ export function Input_ChooseOption({
     setInputValue(array[0])
   }, [forceValueReset, forceValueReset1])
 
+  useEffect(() => {
+    const wheelHandler = (event) => {
+      handleWheelEvent(event)
+    }
+
+    window.addEventListener('wheel', wheelHandler)
+
+    return () => {
+      window.removeEventListener('wheel', wheelHandler)
+    }
+  }, [])
+
+  useEffect(() => {
+    tellParentOptionChanged(inputValue)
+  }, [inputValue])
+  function handleWheelEvent(event) {
+    if (inputRef.current.contains(event.target)) {
+      setInputValue((prevInputValue) => {
+        const currentIndex = options.findIndex((iterate) => iterate === prevInputValue)
+
+        if (event.deltaY > 0 && currentIndex < options.length - 1) {
+          const nextOption = options[currentIndex + 1]
+          return nextOption
+        } else if (event.deltaY < 0 && currentIndex > 0) {
+          const prevOption = options[currentIndex - 1]
+          return prevOption
+        }
+
+        return prevInputValue
+      })
+    }
+  }
+
   const handleOptionClick = (option) => {
     setInputValue(option)
-    tellParentOptionChanged(option)
   }
 
   const handleFocus = () => {
@@ -537,7 +572,7 @@ export function Input_ChooseOption({
       event.preventDefault()
       setIsFocused(true)
       setSelectedOptionIndex((prevIndex) =>
-        prevIndex < filteredOptions.length - 1 ? prevIndex + 1 : prevIndex
+        prevIndex < options.length - 1 ? prevIndex + 1 : prevIndex
       )
     } else if (event.key === 'ArrowUp') {
       event.preventDefault()
@@ -545,8 +580,9 @@ export function Input_ChooseOption({
       setSelectedOptionIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : prevIndex))
     } else if (event.key === 'Enter') {
       event.preventDefault()
-      if (selectedOptionIndex >= 0 && selectedOptionIndex < filteredOptions.length) {
-        handleOptionClick(filteredOptions[selectedOptionIndex])
+      if (selectedOptionIndex >= 0 && selectedOptionIndex < options.length) {
+        handleOptionClick(options[selectedOptionIndex])
+        setIsFocused(false)
       }
     } else if (event.key === 'Escape') {
       setIsFocused(false)

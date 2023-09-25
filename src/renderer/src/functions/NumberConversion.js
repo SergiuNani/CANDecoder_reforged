@@ -1,3 +1,6 @@
+import { useContext } from 'react'
+import { MotorSpecificationsContext } from '../App'
+import { whatFG_isObject } from './CANopen'
 /*******************************************************************************/
 /*---------------------Number transformation functions------------------------ */
 /*******************************************************************************/
@@ -121,7 +124,7 @@ export function filterDecimal(string, resolution) {
     string = parseInt(string, 10).toString()
     if (string == 'NaN') string = ''
     return string
-  } else if (resolution == 'time') {
+  } else if (resolution == 'TIME') {
     //Special filtration for time units
     string = parseInt(string, 10)
     var a = 65536
@@ -237,18 +240,20 @@ function hex_to_ascii(str1) {
 /*   IN   : UnitsConvertor("258", "in/s^2", "IU", OneRot_IU_value.value, "6085");*/
 /*   OUT  : "1.31064"  */
 /*------------------------------------*/
-export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU, object_type) {
+export function UnitsConvertor1(inputValue, inputUnits, returnUnits, object_type) {
+  var { slowLoop, fullRot_IU } = useContext(MotorSpecificationsContext)
+
   fullRot_IU = parseInt(fullRot_IU)
   inputValue = parseFloat(inputValue)
 
-  object_type = FG_object(object_type)
+  object_type = whatFG_isObject(object_type)
   var aux_IU //temp var for all types of IU
 
   //For pos
 
   //Velocity
 
-  if (object_type == 'pos') {
+  if (object_type == 'POS') {
     //ROT
     var one_rad = fullRot_IU / (2 * Math.PI)
     var one_deg = one_rad * 0.0174533
@@ -322,9 +327,9 @@ export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU,
     return
   }
   //VELOCITY
-  if (object_type == 'spd') {
+  if (object_type == 'SPD') {
     //rot
-    var one_rad_s = (fullRot_IU * slow_loop) / (2 * Math.PI)
+    var one_rad_s = (fullRot_IU * slowLoop) / (2 * Math.PI)
     var one_rpm = one_rad_s * 0.10472
     var one_rps = one_rad_s * 6.2831853071796
     var one_deg_s = one_rad_s * 0.0174533
@@ -335,7 +340,7 @@ export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU,
     var aux_deg_s
     var aux_deg_min
     //LIN
-    var one_m_s = fullRot_IU * slow_loop
+    var one_m_s = fullRot_IU * slowLoop
     var one_mm_s = one_m_s * 0.001
     var one_um_s = one_m_s * 1e-6
     var one_in_s = one_m_s * 0.0254
@@ -429,8 +434,8 @@ export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU,
     return
   }
   //ACCELERATION CONDITIONS
-  if (object_type == 'acc') {
-    var one_rad_s2 = (fullRot_IU * Math.pow(slow_loop, 2)) / (2 * Math.PI)
+  if (object_type == 'ACC') {
+    var one_rad_s2 = (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI)
     var one_deg_s2 = one_rad_s2 / 57.2958
     var one_rot_s2 = one_rad_s2 / 0.15915495
     var one_krad_s2 = one_rad_s2 / 0.001
@@ -440,7 +445,7 @@ export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU,
     var aux_krad_s2
 
     //lin
-    var one_m_s2 = fullRot_IU * Math.pow(slow_loop, 2)
+    var one_m_s2 = fullRot_IU * Math.pow(slowLoop, 2)
     var one_mm_s2 = one_m_s2 * 0.001
     var one_um_s2 = one_m_s2 * 0.000001
     var one_in_s2 = one_m_s2 / 39.370079
@@ -515,7 +520,7 @@ export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU,
     return
   }
 
-  if (object_type == 'time') {
+  if (object_type == 'TIME') {
     var aux_s
     var aux_ms
 
@@ -542,109 +547,185 @@ export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU,
   }
 }
 
-export function UnitsConvertor(inputValue, inputUnits, returnUnits, fullRot_IU, object_type) {
-  const slow_loop = 1 // Define the value of slow_loop here
-
+export function UnitsConvertor2(inputValue, inputUnits, returnUnits, object_type) {
+  var { slowLoop, fullRot_IU } = useContext(MotorSpecificationsContext)
+  slowLoop = slowLoop / 1000
   fullRot_IU = parseInt(fullRot_IU)
   inputValue = parseFloat(inputValue)
 
-  object_type = FG_object(object_type)
+  object_type = whatFG_isObject(object_type)
   var aux_IU // temp var for all types of IU
 
-  const convert = (value, fromUnit, toUnit, conversionFactor) => {
-    if (inputUnits === fromUnit) {
-      aux_IU = conversionFactor * inputValue
-    } else if (inputUnits === 'IU') {
-      aux_IU = inputValue
-    }
-    return Number(aux_IU.toFixed(3))
-  }
-
-  if (object_type === 'pos') {
-    if (returnUnits === 'IU') {
-      return inputValue.toString()
-    }
-
-    // Define conversion factors
-    const conversionFactors = {
+  // Check if the object_type is 'POS'
+  if (object_type === 'POS') {
+    const unitFactors = {
       rad: fullRot_IU / (2 * Math.PI),
-      deg: fullRot_IU / 360,
+      deg: (fullRot_IU / (2 * Math.PI)) * 0.0174533,
       rot: fullRot_IU,
-      m: fullRot_IU,
-      mm: fullRot_IU * 0.001,
-      um: fullRot_IU * 1e-6,
-      in: fullRot_IU * 0.0254,
-      ft: fullRot_IU * 0.3048
+      IU: 1,
+      m: 1,
+      mm: 0.001,
+      um: 1e-6,
+      in: 0.0254,
+      ft: 0.3048
+    }
+    // Convert input value to IU
+    const inputFactor = unitFactors[inputUnits] || 1
+    const aux_IU = inputValue * inputFactor
+
+    // Convert IU to desired return unit
+    const outputFactor = unitFactors[returnUnits] || 1
+    const result = (aux_IU / outputFactor).toFixed(3)
+
+    return result.toString()
+  } else if (object_type === 'SPD') {
+    const unitFactors = {
+      rpm: ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 0.10472,
+      'rad/s': (fullRot_IU * slowLoop) / (2 * Math.PI),
+      rps: ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 6.2831853071796,
+      'deg/s': ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 0.0174533,
+      'deg/min': ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 0.000290888,
+      IU: 1,
+      'm/s': fullRot_IU * slowLoop,
+      'mm/s': fullRot_IU * slowLoop * 0.001,
+      'um/s': fullRot_IU * slowLoop * 1e-6,
+      'in/s': fullRot_IU * slowLoop * 0.0254,
+      'ft/s': fullRot_IU * slowLoop * 0.3048,
+      'mm/min': fullRot_IU * slowLoop * 1.66667e-5,
+      'in/min': (fullRot_IU * slowLoop) / 2362.2,
+      'ft/min': fullRot_IU * slowLoop * 0.00508
     }
 
-    aux_IU = convert(inputValue, inputUnits, returnUnits, conversionFactors[returnUnits])
+    // Convert input value to IU
+    const inputFactor = unitFactors[inputUnits] || 1
+    const aux_IU = inputValue * inputFactor
 
-    return aux_IU.toString()
+    // Convert IU to desired return unit
+    const outputFactor = unitFactors[returnUnits] || 1
+    const result = (aux_IU / outputFactor).toFixed(3)
+
+    return result.toString()
+  } else if (object_type === 'ACC') {
+    const accelerationFactors = {
+      'rad/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI),
+      'deg/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI) / 57.2958,
+      'rot/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI) / 0.15915495,
+      'krad/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI) / 0.001,
+      IU: 1,
+      'm/s^2': fullRot_IU * Math.pow(slowLoop, 2),
+      'mm/s^2': fullRot_IU * Math.pow(slowLoop, 2) * 0.001,
+      'um/s^2': fullRot_IU * Math.pow(slowLoop, 2) * 0.000001,
+      'in/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / 39.370079,
+      'ft/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / 3.280839895,
+      g: fullRot_IU * Math.pow(slowLoop, 2) * 9.80665
+    }
+    // Check if input unit is valid
+    if (inputUnits in accelerationFactors) {
+      // Convert input value to IU
+      const inputFactor = accelerationFactors[inputUnits]
+      const aux_IU = inputValue * inputFactor
+
+      // Convert IU to desired return unit
+      const outputFactor = accelerationFactors[returnUnits] || 1
+      const result = (aux_IU / outputFactor).toFixed(3)
+
+      return result.toString()
+    }
+  } else if (object_type === 'TIME') {
+    const timeFactors = {
+      s: 1000,
+      ms: 1,
+      IU: 1
+    }
+
+    // Check if input unit is valid
+    if (inputUnits in timeFactors) {
+      // Convert input value to IU
+      const inputFactor = timeFactors[inputUnits]
+      const aux_IU = inputValue * inputFactor
+
+      // Convert IU to desired return unit
+      const outputFactor = timeFactors[returnUnits] || 1
+      const result = (aux_IU / outputFactor).toFixed(3)
+
+      return result.toString()
+    }
+  }
+}
+export function UnitsConvertor(inputValue, inputUnits, returnUnits, object_type) {
+  var { slowLoop, fullRot_IU } = useContext(MotorSpecificationsContext)
+
+  var slowLoop = slowLoop / 1000
+  var fullRot_IU = parseInt(fullRot_IU)
+  const inputValueFloat = parseFloat(inputValue)
+
+  object_type = whatFG_isObject(object_type)
+
+  function convertValue(unitFactors) {
+    const inputFactor = unitFactors[inputUnits] || 1
+    const outputFactor = unitFactors[returnUnits] || 1
+    const aux_IU = inputValueFloat * inputFactor
+    const result = (aux_IU / outputFactor).toFixed(3)
+    return result.toString()
   }
 
-  if (object_type === 'spd') {
-    if (returnUnits === 'IU') {
-      return inputValue.toString()
+  if (object_type === 'POS') {
+    const unitFactors = {
+      rad: fullRot_IU / (2 * Math.PI),
+      deg: (fullRot_IU / (2 * Math.PI)) * 0.0174533,
+      rot: fullRot_IU,
+      IU: 1,
+      m: 1,
+      mm: 0.001,
+      um: 1e-6,
+      in: 0.0254,
+      ft: 0.3048
     }
-
-    // Define conversion factors
-    const conversionFactors = {
-      rpm: ((fullRot_IU * slow_loop) / (2 * Math.PI)) * 60,
-      'rad/s': (fullRot_IU * slow_loop) / (2 * Math.PI),
-      rps: (fullRot_IU * slow_loop) / (2 * Math.PI),
-      'deg/s': (fullRot_IU * slow_loop) / 360,
-      'deg/min': (fullRot_IU * slow_loop) / 6,
-      'm/s': fullRot_IU * slow_loop,
-      'mm/s': fullRot_IU * slow_loop * 0.001,
-      'um/s': fullRot_IU * slow_loop * 1e-6,
-      'in/s': fullRot_IU * slow_loop * 0.0254,
-      'ft/s': fullRot_IU * slow_loop * 0.3048,
-      'mm/min': fullRot_IU * slow_loop * 0.001 * 60,
-      'in/min': fullRot_IU * slow_loop * 0.0254 * 60,
-      'ft/min': fullRot_IU * slow_loop * 0.3048 * 60
+    return convertValue(unitFactors)
+  } else if (object_type === 'SPD') {
+    const unitFactors = {
+      rpm: ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 0.10472,
+      'rad/s': (fullRot_IU * slowLoop) / (2 * Math.PI),
+      rps: ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 6.2831853071796,
+      'deg/s': ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 0.0174533,
+      'deg/min': ((fullRot_IU * slowLoop) / (2 * Math.PI)) * 0.000290888,
+      IU: 1,
+      'm/s': fullRot_IU * slowLoop,
+      'mm/s': fullRot_IU * slowLoop * 0.001,
+      'um/s': fullRot_IU * slowLoop * 1e-6,
+      'in/s': fullRot_IU * slowLoop * 0.0254,
+      'ft/s': fullRot_IU * slowLoop * 0.3048,
+      'mm/min': fullRot_IU * slowLoop * 1.66667e-5,
+      'in/min': (fullRot_IU * slowLoop) / 2362.2,
+      'ft/min': fullRot_IU * slowLoop * 0.00508
     }
-
-    aux_IU = convert(inputValue, inputUnits, returnUnits, conversionFactors[returnUnits])
-
-    return aux_IU.toString()
+    return convertValue(unitFactors)
+  } else if (object_type === 'ACC') {
+    const accelerationFactors = {
+      'rad/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI),
+      'deg/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI) / 57.2958,
+      'rot/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI) / 0.15915495,
+      'krad/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / (2 * Math.PI) / 0.001,
+      IU: 1,
+      'm/s^2': fullRot_IU * Math.pow(slowLoop, 2),
+      'mm/s^2': fullRot_IU * Math.pow(slowLoop, 2) * 0.001,
+      'um/s^2': fullRot_IU * Math.pow(slowLoop, 2) * 0.000001,
+      'in/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / 39.370079,
+      'ft/s^2': (fullRot_IU * Math.pow(slowLoop, 2)) / 3.280839895,
+      g: fullRot_IU * Math.pow(slowLoop, 2) * 9.80665
+    }
+    if (inputUnits in accelerationFactors) {
+      return convertValue(accelerationFactors)
+    }
+  } else if (object_type === 'TIME') {
+    const timeFactors = {
+      s: 1000,
+      ms: 1,
+      IU: 1
+    }
+    if (inputUnits in timeFactors) {
+      return convertValue(timeFactors)
+    }
   }
-
-  if (object_type === 'acc') {
-    if (returnUnits === 'IU') {
-      return inputValue.toString()
-    }
-    // Define conversion factors
-    const conversionFactors = {
-      'rad/s^2': (fullRot_IU * Math.pow(slow_loop, 2)) / (2 * Math.PI),
-      'deg/s^2': (fullRot_IU * Math.pow(slow_loop, 2)) / 360,
-      'rot/s^2': fullRot_IU * Math.pow(slow_loop, 2),
-      'krad/s^2': fullRot_IU * Math.pow(slow_loop, 2) * 0.001,
-      'm/s^2': fullRot_IU * Math.pow(slow_loop, 2),
-      'mm/s^2': fullRot_IU * Math.pow(slow_loop, 2) * 0.001,
-      'um/s^2': fullRot_IU * Math.pow(slow_loop, 2) * 1e-6,
-      'in/s^2': fullRot_IU * Math.pow(slow_loop, 2) * 0.0254,
-      'ft/s^2': fullRot_IU * Math.pow(slow_loop, 2) * 0.3048,
-      g: fullRot_IU * Math.pow(slow_loop, 2) * 9.80665
-    }
-
-    aux_IU = convert(inputValue, inputUnits, returnUnits, conversionFactors[returnUnits])
-
-    return aux_IU.toString()
-  }
-
-  if (object_type === 'time') {
-    if (returnUnits === 'IU') {
-      return inputValue.toString()
-    }
-
-    if (inputUnits === 'IU') {
-      aux_IU = inputValue
-    } else if (inputUnits === 's') {
-      aux_IU = inputValue * 1000
-    } else if (inputUnits === 'ms') {
-      aux_IU = inputValue
-    }
-
-    return Number(aux_IU.toFixed(3)).toString()
-  }
+  return '' // Handle unsupported object_type or inputUnits
 }

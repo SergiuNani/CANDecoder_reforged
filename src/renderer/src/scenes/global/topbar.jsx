@@ -140,6 +140,7 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
                 tellParentValueChanged={setFullRot_IU}
                 forceValueFromParent={fullRot_IU}
                 iteration={1}
+                blockValueReset
               />{' '}
               <p> IU </p>
             </div>
@@ -154,6 +155,7 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
                 tellParentValueChanged={setSlowLoop}
                 forceValueFromParent={slowLoop}
                 iteration={1}
+                blockValueReset
               />{' '}
               <p> ms </p>
             </div>
