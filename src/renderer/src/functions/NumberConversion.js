@@ -237,7 +237,7 @@ function hex_to_ascii(str1) {
 /*   IN   : UnitsConvertor("258", "in/s^2", "IU", OneRot_IU_value.value, "6085");*/
 /*   OUT  : "1.31064"  */
 /*------------------------------------*/
-function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU, object_type) {
+export function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU, object_type) {
   fullRot_IU = parseInt(fullRot_IU)
   inputValue = parseFloat(inputValue)
 
@@ -542,7 +542,7 @@ function UnitsConvertor1(inputValue, inputUnits, returnUnits, fullRot_IU, object
   }
 }
 
-function UnitsConvertor(inputValue, inputUnits, returnUnits, fullRot_IU, object_type) {
+export function UnitsConvertor(inputValue, inputUnits, returnUnits, fullRot_IU, object_type) {
   const slow_loop = 1 // Define the value of slow_loop here
 
   fullRot_IU = parseInt(fullRot_IU)

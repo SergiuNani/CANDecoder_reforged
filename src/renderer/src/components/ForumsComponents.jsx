@@ -417,7 +417,8 @@ export function Input_AutoFormat({
   inputType,
   tellParentValueChanged,
   registerChanged,
-  forceValueFromParent
+  forceValueFromParent,
+  iteration
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -472,13 +473,14 @@ export function Input_AutoFormat({
           onChange={handleInputChange}
           placeholder={placeholder}
           style={{
-            backgroundColor: `${colors.primary[300]}`,
-            padding: '0.5rem 1rem',
+            backgroundColor: iteration == '1' ? `${colors.grey[500]}` : `${colors.primary[300]}`,
+            padding: iteration == '1' ? '0.2rem' : '0.5rem 1rem',
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
             outline: 'none',
             fontSize: '1rem',
-            width: '7rem'
+            width: iteration == '1' ? '5rem' : '7rem',
+            textAlign: iteration == '1' ? 'center' : 'inherit'
           }}
         />
       </label>

@@ -17,7 +17,7 @@ import { Objects_collection, Registers_CANopen, Registers_THS } from './data/Big
 export var Objects_collection_LS = []
 export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
-import HomeWindow from './scenes/HomeWIndow'
+import HomeWindow from './scenes/HomeWindow'
 
 function App() {
   if (
@@ -63,22 +63,25 @@ function App() {
 export default App
 
 export const SidebarContext = createContext(null)
-export const LoadTypeContext = createContext()
+export const MotorSpecificationsContext = createContext()
 
 function MyProviders({ children }) {
   const [theme, colorMode] = useMode()
   const [loadType, setLoadType] = useState('ROTARY')
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
-
+  const [fullRot_IU, setFullRot_IU] = useState(2000)
+  const [slowLoop, setSlowLoop] = useState(1)
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <LoadTypeContext.Provider value={{ loadType, setLoadType }}>
+        <MotorSpecificationsContext.Provider
+          value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+        >
           <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
             {children}
           </SidebarContext.Provider>
-        </LoadTypeContext.Provider>
+        </MotorSpecificationsContext.Provider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   )

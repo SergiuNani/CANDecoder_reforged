@@ -10,8 +10,9 @@ import { Input_AutoFormat, Input_ChooseOption } from '../components/ForumsCompon
 import { Types_of_CANopenMsgs_array } from '../data/SmallData.js'
 import { filterHex, filterDecimalWithComma, filterDecimal } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
-import { LoadTypeContext } from '../App.jsx'
-
+import { MotorSpecificationsContext } from '../App.jsx'
+import { UnitsConvertor, UnitsConvertor1 } from '../functions/NumberConversion.js'
+import { whatFG_isObject } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
   FG_units_spd_rot,
@@ -238,7 +239,7 @@ function AutocompleteInput_Main({ placeholder, resetValueofInputFromParent, focu
 function NumberTransformationComponent() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var { loadType, setLoadType } = useContext(LoadTypeContext)
+  var { loadType, setLoadType } = useContext(MotorSpecificationsContext)
 
   const [fourOptionsRadioSelection, setFourOptionsRadioSelection] = useState('POS')
   const [initialValueFieldValue, setInitialValueFieldValue] = useState('')
@@ -275,8 +276,10 @@ function NumberTransformationComponent() {
     //6
     setLE_FieldValue(value)
   }
-
-  function tellParentValueChanged() {}
+  console.log(whatFG_isObject('1800_03'))
+  console.log(whatFG_isObject('609A'))
+  console.log(whatFG_isObject('606c_01'))
+  console.log(whatFG_isObject('6064'))
   return (
     <Box
       sx={{
