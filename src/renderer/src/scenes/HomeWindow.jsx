@@ -11,7 +11,7 @@ import { Types_of_CANopenMsgs_array } from '../data/SmallData.js'
 import { filterHex, filterDecimalWithComma, filterDecimal } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { MotorSpecificationsContext } from '../App.jsx'
-import { UnitsConvertor, UnitsConvertor1 } from '../functions/NumberConversion.js'
+import { UnitsConvertor } from '../functions/NumberConversion.js'
 import { whatFG_isObject } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
@@ -239,30 +239,80 @@ function AutocompleteInput_Main({ placeholder, resetValueofInputFromParent, focu
 function NumberTransformationComponent() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var { loadType, setLoadType } = useContext(MotorSpecificationsContext)
+  var { loadType, setLoadType, slowLoop, fullRot_IU } = useContext(MotorSpecificationsContext)
 
   const [fourOptionsRadioSelection, setFourOptionsRadioSelection] = useState('POS')
   const [initialValueFieldValue, setInitialValueFieldValue] = useState('')
-  const [unitsFieldValue, setUnitsFieldValue] = useState('')
+  const [unitsFieldValue, setUnitsFieldValue] = useState('IU')
   const [IU_FieldValue, setIU_FieldValue] = useState('')
   const [HEX_FieldValue, setHEX_FieldValue] = useState('')
   const [LE_FieldValue, setLE_FieldValue] = useState('')
 
+  //Can`t update field input bug fix
+  let [forceRender, setForceRender] = useState(0)
+
+  // console.log(
+  //   UnitsConvertor('33', 'rpm', 'deg/s', slowLoop, fullRot_IU, 'SPD', 'objectTypeDirectly')
+  // )
+
   function handle4OptionChanged(e) {
     //1
+
     setFourOptionsRadioSelection(e.target.value)
   }
 
   function handleInitialValueFieldChange(value) {
     //2
-    setInitialValueFieldValue(value)
+    //Input field conditional filtering
+    setForceRender(value)
+    let value_IU = UnitsConvertor(
+      value,
+      unitsFieldValue,
+      'IU',
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+    var result
+
+    if (fourOptionsRadioSelection == 'POS') {
+      value_IU = parseInt(value_IU)
+      value_IU = value_IU.toString()
+      value_IU = filterDecimal(value_IU, 32)
+    }
+
+    setInitialValueFieldValue(value_IU)
+
+    // setIU_FieldValue(value_IU)
+
+    // For HEX input
   }
 
   function handleUnitsFieldValueChaged(value) {
-    // console.log('🚀', value)
     //3
-
     setUnitsFieldValue(value)
+
+    let value_IU = UnitsConvertor(
+      initialValueFieldValue,
+      unitsFieldValue,
+      'IU',
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+
+    let value_initial = UnitsConvertor(
+      value_IU,
+      'IU',
+      value,
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+    setInitialValueFieldValue(value_initial)
   }
 
   function handleIU_FieldValueChaged(value) {
@@ -278,7 +328,6 @@ function NumberTransformationComponent() {
     //6
     setLE_FieldValue(value)
   }
-  // console.log(UnitsConvertor('33', 'IU', 'rpm', '6081'))
   // console.log(UnitsConvertor('1', 'rot', 'deg', '607A'))
   // console.log(UnitsConvertor1('33', 'IU', 'rpm', '6081'))
 
@@ -333,17 +382,12 @@ function NumberTransformationComponent() {
           {/* "Initial Value" component------------------------------------------------------- */}
           <Input_AutoFormat
             title="Initial Value"
-            callback={
-              fourOptionsRadioSelection == 'POS'
-                ? filterDecimal
-                : fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC'
-                ? filterDecimalWithComma
-                : filterDecimal
-            }
-            resolution={fourOptionsRadioSelection == 'TIME' ? 'TIME' : 32}
+            callback={filterDecimalWithComma}
+            resolution={0}
             inputType={fourOptionsRadioSelection}
             tellParentValueChanged={handleInitialValueFieldChange}
             forceValueFromParent={initialValueFieldValue}
+            forceRender={forceRender}
           />
 
           {/* "Units" component for Initial Value Input field------------------------------------------------------- */}

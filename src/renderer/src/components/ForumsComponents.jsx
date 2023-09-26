@@ -419,8 +419,10 @@ export function Input_AutoFormat({
   registerChanged,
   forceValueFromParent,
   iteration,
-  blockValueReset
+  blockValueReset,
+  forceRender
 }) {
+  console.log('🚀', forceRender)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -440,7 +442,7 @@ export function Input_AutoFormat({
     } else {
       setInputValue(forceValueFromParent)
     }
-  }, [forceValueFromParent])
+  }, [forceValueFromParent, forceRender])
 
   function handleInputChange(e) {
     var sorted = callback(e.target.value, resolution)

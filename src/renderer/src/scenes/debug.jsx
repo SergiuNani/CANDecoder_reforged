@@ -11,7 +11,9 @@ import {
   getRangeNumberFromStringRange,
   decToHex,
   hexToDec,
-  filterDecimal
+  filterDecimal,
+  fixed2Hex,
+  filterDecimalWithComma
 } from '../functions/NumberConversion'
 import { SnackBarMessage } from '../components/FloatingComponents'
 import { Button1 } from '../components/SmallComponents'
@@ -19,6 +21,10 @@ import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
 
 const DebugScene = () => {
   const location = useLocation()
+
+  var a = filterDecimalWithComma('65536', 32)
+  console.log('🚀 ~ file: debug.jsx:26 ~ DebugScene ~ a:', a)
+
   function handleDebugClick() {
     //ADD logic here to be tested
     const currentRoute = location.pathname
