@@ -422,7 +422,6 @@ export function Input_AutoFormat({
   blockValueReset,
   forceRender
 }) {
-  console.log('🚀', forceRender)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 

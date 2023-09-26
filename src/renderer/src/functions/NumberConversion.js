@@ -242,6 +242,45 @@ function hex_to_ascii(str1) {
   return str
 }
 
+/*L2B_endian(arr) - Little to Big Endian transformation */
+/*IN: L2B_endian("AB CD E")*/
+/*OUT:  0ECDAB*/
+export function L2B_endian(arr) {
+  // WE assume that we don`t get bs values
+  var aux1
+  var aux2
+  arr = arr.toUpperCase()
+  if (arr == '') {
+    return ''
+  }
+  if (typeof arr == 'object') {
+    arr = arr.map((x) => {
+      return L2B_endian(x)
+    })
+    return arr
+  }
+  if (typeof arr == 'number') {
+    arr = arr.toString()
+    return L2B_endian(arr)
+  }
+  if (typeof arr == 'string') {
+    //case of "AB CD E"
+    if (arr.length % 2 != 0) {
+      arr = arr.split('')
+      arr[arr.length - 1] = `0${arr[arr.length - 1]}`
+      arr = arr.join('')
+    }
+    aux2 = arr.match(/.{1,2}/g)
+
+    for (var i = 0; i < aux2.length / 2; i++) {
+      aux1 = aux2[i]
+      aux2[i] = aux2[aux2.length - 1 - i]
+      aux2[aux2.length - 1 - i] = aux1
+    }
+    return aux2.join('')
+  }
+}
+
 /*------------------------------------*/
 
 /*   Function    :function UnitsConvertor(inputValue,inputUnits,returnUnits,fullRot_IU,object_type) */
@@ -272,7 +311,8 @@ export function UnitsConvertor(
     const inputFactor = unitFactors[inputUnits] || 1
     const outputFactor = unitFactors[returnUnits] || 1
     const aux_IU = inputValueFloat * inputFactor
-    const result = (aux_IU / outputFactor).toFixed(3)
+
+    let result = aux_IU / outputFactor
     return result.toString()
   }
 

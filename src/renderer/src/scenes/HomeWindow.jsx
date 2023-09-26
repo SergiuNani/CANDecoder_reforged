@@ -8,10 +8,16 @@ import { RadioGroup, FormControlLabel } from '@mui/material'
 import Radio from '@mui/material/Radio'
 import { Input_AutoFormat, Input_ChooseOption } from '../components/ForumsComponents.jsx'
 import { Types_of_CANopenMsgs_array } from '../data/SmallData.js'
-import { filterHex, filterDecimalWithComma, filterDecimal } from '../functions/NumberConversion.js'
+import {
+  filterHex,
+  filterDecimalWithComma,
+  filterDecimal,
+  UnitsConvertor,
+  decToHex,
+  L2B_endian
+} from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { MotorSpecificationsContext } from '../App.jsx'
-import { UnitsConvertor } from '../functions/NumberConversion.js'
 import { whatFG_isObject } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
@@ -22,7 +28,6 @@ import {
   FG_units_acc_lin,
   FG_units_time
 } from '../data/SmallData.js'
-
 const HomeWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -211,7 +216,6 @@ function AutocompleteInput_Main({ placeholder, resetValueofInputFromParent, focu
                     ? `${colors.primary[400]}`
                     : `${colors.primary[300]}`,
 
-                padding: '0.5rem 1rem',
                 borderRadius: '0.8rem',
                 padding: '1rem',
                 cursor: 'pointer',
@@ -265,6 +269,8 @@ function NumberTransformationComponent() {
     //2
     //Input field conditional filtering
     setForceRender(value)
+    let value_Hex
+    let value_LE
     let value_IU = UnitsConvertor(
       value,
       unitsFieldValue,
@@ -274,7 +280,6 @@ function NumberTransformationComponent() {
       fourOptionsRadioSelection,
       'objectTypeDirectly'
     )
-    var result
 
     if (fourOptionsRadioSelection == 'POS') {
       value_IU = parseInt(value_IU)
@@ -282,7 +287,22 @@ function NumberTransformationComponent() {
       value_IU = filterDecimal(value_IU, 32)
     }
 
-    setInitialValueFieldValue(value_IU)
+    let value_Initial = UnitsConvertor(
+      value_IU,
+      'IU',
+      unitsFieldValue,
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+    if (fourOptionsRadioSelection == 'POS') {
+      value_Hex = decToHex(value_Initial, 32)
+    }
+
+    setInitialValueFieldValue(value_Initial)
+    setIU_FieldValue(value_IU)
+    setHEX_FieldValue(value_Hex)
 
     // setIU_FieldValue(value_IU)
 
