@@ -14,7 +14,8 @@ import {
   filterDecimal,
   UnitsConvertor,
   decToHex,
-  L2B_endian
+  L2B_endian,
+  fixed2Hex
 } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { MotorSpecificationsContext } from '../App.jsx'
@@ -282,9 +283,11 @@ function NumberTransformationComponent() {
     )
 
     if (fourOptionsRadioSelection == 'POS') {
-      value_IU = parseInt(value_IU)
-      value_IU = value_IU.toString()
+      value_IU = parseInt(value_IU).toString()
       value_IU = filterDecimal(value_IU, 32)
+    } else if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
+      value_IU = parseFloat(value_IU).toString()
+      value_IU = filterDecimalWithComma(value_IU, 32)
     }
 
     let value_Initial = UnitsConvertor(
@@ -297,16 +300,25 @@ function NumberTransformationComponent() {
       'objectTypeDirectly'
     )
     if (fourOptionsRadioSelection == 'POS') {
-      value_Hex = decToHex(value_Initial, 32)
+      value_Hex = decToHex(value_IU, 32)
+      value_LE = L2B_endian(value_Hex)
+    } else if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
+      value_Hex = fixed2Hex(value_IU)
+      value_LE = L2B_endian(value_Hex)
     }
 
-    setInitialValueFieldValue(value_Initial)
+    if (
+      ['-32768', '2147483647', '-32768.99899', '-2147483648', '32767.99899', '32767'].includes(
+        value_IU
+      )
+    ) {
+      setInitialValueFieldValue(value_Initial)
+    } else {
+      setInitialValueFieldValue(value)
+    }
     setIU_FieldValue(value_IU)
     setHEX_FieldValue(value_Hex)
-
-    // setIU_FieldValue(value_IU)
-
-    // For HEX input
+    setLE_FieldValue(value_LE)
   }
 
   function handleUnitsFieldValueChaged(value) {

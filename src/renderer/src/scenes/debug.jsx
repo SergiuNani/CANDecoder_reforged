@@ -23,9 +23,6 @@ import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
 const DebugScene = () => {
   const location = useLocation()
 
-  let a = L2B_endian('10000')
-  console.log('🚀 ~ file: debug.jsx:27 ~ DebugScene ~ a:', a)
-
   function handleDebugClick() {
     //ADD logic here to be tested
     const currentRoute = location.pathname

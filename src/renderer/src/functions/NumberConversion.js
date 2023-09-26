@@ -249,7 +249,6 @@ export function L2B_endian(arr) {
   // WE assume that we don`t get bs values
   var aux1
   var aux2
-  arr = arr.toUpperCase()
   if (arr == '') {
     return ''
   }
@@ -264,6 +263,8 @@ export function L2B_endian(arr) {
     return L2B_endian(arr)
   }
   if (typeof arr == 'string') {
+    arr = arr.toUpperCase()
+    arr = filterHex(arr, 32)
     //case of "AB CD E"
     if (arr.length % 2 != 0) {
       arr = arr.split('')
@@ -312,7 +313,20 @@ export function UnitsConvertor(
     const outputFactor = unitFactors[returnUnits] || 1
     const aux_IU = inputValueFloat * inputFactor
 
-    let result = aux_IU / outputFactor
+    let result
+    if (object_type == 'SPD' || object_type == 'ACC') {
+      result = aux_IU / outputFactor
+      var aux = result.toString() // addressing the x.999 where we will ceil that value
+      aux = aux.split('.')
+      if (aux[1] && aux[1].length > 5) {
+        result = result.toFixed(5)
+      }
+      if (aux[1] && aux[1].slice(0, 3) == '999') {
+        result = Math.ceil(result)
+      }
+    } else {
+      result = aux_IU / outputFactor
+    }
     return result.toString()
   }
 
