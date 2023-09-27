@@ -262,16 +262,17 @@ function NumberTransformationComponent() {
 
   function handle4OptionChanged(e) {
     //1
-
+    setInitialValueFieldValue('')
     setFourOptionsRadioSelection(e.target.value)
   }
 
   function handleInitialValueFieldChange(value) {
     //2
     //Input field conditional filtering
-    setForceRender(value)
+    setForceRender(value) // used to update the UI when value is "12."
     let value_Hex
     let value_LE
+
     let value_IU = UnitsConvertor(
       value,
       unitsFieldValue,
@@ -281,13 +282,15 @@ function NumberTransformationComponent() {
       fourOptionsRadioSelection,
       'objectTypeDirectly'
     )
-
     if (fourOptionsRadioSelection == 'POS') {
       value_IU = parseInt(value_IU).toString()
       value_IU = filterDecimal(value_IU, 32)
     } else if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
       value_IU = parseFloat(value_IU).toString()
       value_IU = filterDecimalWithComma(value_IU, 32)
+    } else if (fourOptionsRadioSelection == 'TIME') {
+      value_IU = parseInt(value_IU).toString()
+      value_IU = filterDecimal(value_IU, 'TIME')
     }
 
     let value_Initial = UnitsConvertor(
@@ -301,16 +304,31 @@ function NumberTransformationComponent() {
     )
     if (fourOptionsRadioSelection == 'POS') {
       value_Hex = decToHex(value_IU, 32)
-      value_LE = L2B_endian(value_Hex)
+      value_Hex = value_Hex.toString().padStart(8, 0)
     } else if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
       value_Hex = fixed2Hex(value_IU)
-      value_LE = L2B_endian(value_Hex)
+      value_Hex = value_Hex.toString().padStart(8, 0)
+    } else if (fourOptionsRadioSelection == 'TIME') {
+      value_Hex = decToHex(value_IU, 16)
+      value_Hex = value_Hex.toString().padStart(4, 0)
     }
+    value_LE = L2B_endian(value_Hex)
+
+    var aux = value.split('.')
 
     if (
-      ['-32768', '2147483647', '-32768.99899', '-2147483648', '32767.99899', '32767'].includes(
-        value_IU
-      )
+      [
+        '-32768',
+        '2147483647',
+        '-32768.99899',
+        '-2147483648',
+        '32767.99899',
+        '32767',
+        '65536'
+      ].includes(value_IU) ||
+      (aux[1] &&
+        unitsFieldValue == 'IU' &&
+        (fourOptionsRadioSelection == 'POS' || fourOptionsRadioSelection == 'TIME'))
     ) {
       setInitialValueFieldValue(value_Initial)
     } else {
@@ -325,19 +343,9 @@ function NumberTransformationComponent() {
     //3
     setUnitsFieldValue(value)
 
-    let value_IU = UnitsConvertor(
+    let value_initial = UnitsConvertor(
       initialValueFieldValue,
       unitsFieldValue,
-      'IU',
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
-    )
-
-    let value_initial = UnitsConvertor(
-      value_IU,
-      'IU',
       value,
       slowLoop,
       fullRot_IU,
@@ -349,7 +357,35 @@ function NumberTransformationComponent() {
 
   function handleIU_FieldValueChaged(value) {
     //4
+
+    let value_initial = UnitsConvertor(
+      value,
+      'IU',
+      unitsFieldValue,
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+
+    let value_Hex
+
+    if (fourOptionsRadioSelection == 'POS') {
+      value_Hex = decToHex(value, 32)
+      value_Hex = value_Hex.toString().padStart(8, 0)
+    } else if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
+      value_Hex = fixed2Hex(value)
+      value_Hex = value_Hex.toString().padStart(8, 0)
+    } else if (fourOptionsRadioSelection == 'TIME') {
+      value_Hex = decToHex(value, 16)
+      value_Hex = value_Hex.toString().padStart(4, 0)
+    }
+    let value_LE = L2B_endian(value_Hex)
+
+    setInitialValueFieldValue(value_initial)
     setIU_FieldValue(value)
+    setHEX_FieldValue(value_Hex)
+    setLE_FieldValue(value_LE)
   }
 
   function handleHEX_FieldValueChaged(value) {
@@ -365,6 +401,7 @@ function NumberTransformationComponent() {
 
   return (
     <Box
+      // key={fourOptionsRadioSelection}
       sx={{
         border: `1px solid yellow`,
         backgroundColor: `${colors.primary[200]}`,

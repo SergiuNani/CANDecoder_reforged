@@ -426,7 +426,7 @@ export function Input_AutoFormat({
   const colors = tokens(theme.palette.mode)
 
   const [inputValue, setInputValue] = useState('')
-
+  if (inputValue == 'NaN') setInputValue('')
   useEffect(() => {
     if (!blockValueReset) {
       setInputValue('')

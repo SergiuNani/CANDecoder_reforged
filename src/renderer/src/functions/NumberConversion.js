@@ -321,7 +321,7 @@ export function UnitsConvertor(
       if (aux[1] && aux[1].length > 5) {
         result = result.toFixed(5)
       }
-      if (aux[1] && aux[1].slice(0, 3) == '999') {
+      if (aux[1] && (aux[1].slice(0, 3) == '999' || aux[1].slice(0, 5) == '00000')) {
         result = Math.ceil(result)
       }
     } else {
