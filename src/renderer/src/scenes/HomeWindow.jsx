@@ -15,7 +15,9 @@ import {
   UnitsConvertor,
   decToHex,
   L2B_endian,
-  fixed2Hex
+  fixed2Hex,
+  hexToDec,
+  hex2Fixed
 } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { MotorSpecificationsContext } from '../App.jsx'
@@ -37,11 +39,12 @@ const HomeWindow = () => {
       <Header title="Home Page"></Header>
       <div style={{ display: 'flex', width: '100%' }}>
         <div style={{ flex: '0.55', marginRight: '1rem' }}>
-          <AutocompleteInput_Main placeholder="Search for an Object" />
+          <BigObjectSearchInputComponent placeholder="Search for an Object" />
         </div>
         <div style={{ flex: '1', marginRight: '2rem' }}>
           <section>
             <NumberTransformationComponent />
+            <BigFindCobIDComponent />
           </section>
         </div>
       </div>
@@ -50,7 +53,7 @@ const HomeWindow = () => {
 }
 export default HomeWindow
 
-function AutocompleteInput_Main({ placeholder, resetValueofInputFromParent, focus }) {
+function BigObjectSearchInputComponent({ placeholder, resetValueofInputFromParent, focus }) {
   var options = Objects_collection_LS
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -390,18 +393,61 @@ function NumberTransformationComponent() {
 
   function handleHEX_FieldValueChaged(value) {
     //5
+
+    var value_IU
+    if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
+      value_IU = hex2Fixed(value)
+    } else {
+      value_IU = hexToDec(value, 32)
+    }
+    let value_LE = L2B_endian(value)
+
+    let value_initial = UnitsConvertor(
+      value_IU,
+      'IU',
+      unitsFieldValue,
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+
+    setInitialValueFieldValue(value_initial)
+    setIU_FieldValue(value_IU)
+
     setHEX_FieldValue(value)
+    setLE_FieldValue(value_LE)
   }
   function handleLE_FieldValueChaged(value) {
     //6
+    let value_Hex = L2B_endian(value)
+
+    var value_IU
+    if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {
+      value_IU = hex2Fixed(value_Hex)
+    } else {
+      value_IU = hexToDec(value_Hex, 32)
+    }
+
+    let value_initial = UnitsConvertor(
+      value_IU,
+      'IU',
+      unitsFieldValue,
+      slowLoop,
+      fullRot_IU,
+      fourOptionsRadioSelection,
+      'objectTypeDirectly'
+    )
+
+    setInitialValueFieldValue(value_initial)
+    setIU_FieldValue(value_IU)
+
+    setHEX_FieldValue(value_Hex)
     setLE_FieldValue(value)
   }
-  // console.log(UnitsConvertor('1', 'rot', 'deg', '607A'))
-  // console.log(UnitsConvertor1('33', 'IU', 'rpm', '6081'))
 
   return (
     <Box
-      // key={fourOptionsRadioSelection}
       sx={{
         border: `1px solid yellow`,
         backgroundColor: `${colors.primary[200]}`,
@@ -522,6 +568,71 @@ function NumberTransformationComponent() {
           />
         </section>
       </div>
+    </Box>
+  )
+}
+
+function BigFindCobIDComponent() {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [cobIdInput, setCobIdInput] = useState('')
+  const [cobIdType, setCobIdType] = useState('')
+  const [cobIdAxisID, setCobIdAxisID] = useState('')
+
+  function handleValueChanged(value) {
+    setCobIdInput(value)
+  }
+
+  return (
+    <Box
+      sx={{
+        border: `1px solid yellow`,
+        backgroundColor: `${colors.primary[200]}`,
+        border: `1px solid ${colors.primary[400]}`,
+        borderRadius: '1rem',
+        p: '1rem',
+        mt: '2rem'
+      }}
+    >
+      <Typography variant="h3" sx={{ mb: '1rem', color: `${colors.yellow[500]}` }}>
+        COB-ID Search
+      </Typography>
+      <section
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '1.2rem',
+          width: '100%'
+          // border: `1px solid yellow`
+        }}
+      >
+        <Input_AutoFormat
+          title="Search"
+          callback={filterDecimalWithComma}
+          resolution={0}
+          tellParentValueChanged={handleValueChanged}
+          forceValueFromParent={cobIdInput}
+          // forceRender={forceRender}
+        />
+        <DoubleArrowIcon sx={{ color: `${colors.primary[400]}`, zoom: '1.8' }} />
+        <Input_AutoFormat
+          title="Type"
+          callback={filterDecimalWithComma}
+          resolution={0}
+          tellParentValueChanged={setCobIdInput}
+          forceValueFromParent={cobIdInput}
+          // forceRender={forceRender}
+        />
+        <Input_AutoFormat
+          title="Axis ID"
+          callback={filterDecimalWithComma}
+          resolution={0}
+          tellParentValueChanged={setCobIdInput}
+          forceValueFromParent={cobIdInput}
+          // forceRender={forceRender}
+        />
+      </section>
     </Box>
   )
 }

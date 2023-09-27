@@ -231,7 +231,11 @@ export function fixed2Hex(input) {
   var result = Math.floor(input * 65536)
   return decToHex(result, 32)
 }
-
+export function hex2Fixed(input) {
+  //only for 32bits variables like CSPD or CACC
+  var result = hexToDec(input, 32)
+  return parseFloat(result) / 65536
+}
 //Untested
 function hex_to_ascii(str1) {
   var hex = str1.toString()
