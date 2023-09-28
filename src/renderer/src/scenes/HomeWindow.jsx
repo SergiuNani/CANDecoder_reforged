@@ -21,7 +21,7 @@ import {
 } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { MotorSpecificationsContext } from '../App.jsx'
-import { whatFG_isObject } from '../functions/CANopen.js'
+import { whatFG_isObject, CobID_who_dis } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
   FG_units_spd_rot,
@@ -581,6 +581,10 @@ function BigFindCobIDComponent() {
 
   function handleValueChanged(value) {
     setCobIdInput(value)
+
+    var result = CobID_who_dis(value)
+    setCobIdType(result[1])
+    setCobIdAxisID(result[2])
   }
 
   return (
@@ -609,28 +613,32 @@ function BigFindCobIDComponent() {
       >
         <Input_AutoFormat
           title="Search"
-          callback={filterDecimalWithComma}
-          resolution={0}
+          callback={filterHex}
+          resolution={16}
           tellParentValueChanged={handleValueChanged}
           forceValueFromParent={cobIdInput}
           // forceRender={forceRender}
+          center
         />
         <DoubleArrowIcon sx={{ color: `${colors.primary[400]}`, zoom: '1.8' }} />
         <Input_AutoFormat
           title="Type"
-          callback={filterDecimalWithComma}
+          callback={filterHex}
           resolution={0}
           tellParentValueChanged={setCobIdInput}
-          forceValueFromParent={cobIdInput}
-          // forceRender={forceRender}
+          forceValueFromParent={cobIdAxisID}
+          disabled
+          center
+          longer
         />
         <Input_AutoFormat
           title="Axis ID"
-          callback={filterDecimalWithComma}
+          callback={filterHex}
           resolution={0}
           tellParentValueChanged={setCobIdInput}
-          forceValueFromParent={cobIdInput}
-          // forceRender={forceRender}
+          forceValueFromParent={cobIdType}
+          disabled
+          center
         />
       </section>
     </Box>

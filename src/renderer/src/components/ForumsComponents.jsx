@@ -420,7 +420,10 @@ export function Input_AutoFormat({
   forceValueFromParent,
   iteration,
   blockValueReset,
-  forceRender
+  forceRender,
+  disabled,
+  center,
+  longer
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -476,15 +479,16 @@ export function Input_AutoFormat({
           value={inputValue}
           onChange={handleInputChange}
           placeholder={placeholder}
+          disabled={disabled}
           style={{
-            backgroundColor: iteration == '1' ? `${colors.grey[500]}` : `${colors.primary[300]}`,
+            backgroundColor: iteration == '1' ? `${colors.primary[200]}` : `${colors.primary[300]}`,
             padding: iteration == '1' ? '0.2rem' : '0.5rem 1rem',
             borderRadius: '2rem',
-            color: `${colors.red[200]}`,
+            color: iteration == '1' ? `${colors.red[100]}` : `${colors.red[200]}`,
             outline: 'none',
             fontSize: '1rem',
-            width: iteration == '1' ? '5rem' : '7rem',
-            textAlign: iteration == '1' ? 'center' : 'inherit'
+            width: longer ? '10rem' : iteration == '1' ? '5rem' : '7rem',
+            textAlign: iteration == '1' || center ? 'center' : 'inherit'
           }}
         />
       </label>

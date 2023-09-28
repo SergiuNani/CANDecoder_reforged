@@ -1,3 +1,4 @@
+import { filterHex, hexToDec } from './NumberConversion'
 const FG_Objects_Array = {
   POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
@@ -39,9 +40,9 @@ export function whatFG_isObject(obj) {
 
   return false
 }
-function CobID_who_dis(cob_id) {
+export function CobID_who_dis(cob_id) {
   var axis_id = 0
-
+  var aux
   if (cob_id.slice(0, 2).toUpperCase() == '0X') {
     cob_id = cob_id.slice(2, cob_id[cob_id.length])
   }
@@ -51,15 +52,15 @@ function CobID_who_dis(cob_id) {
     var uselessString = temp.slice(0, temp.length - 3)
     for (var j = 0; j < uselessString.length; j++) {
       if (uselessString[j] != '0') {
-        return ['??']
+        return ['invalid', 'invalid', 'invalid']
       }
     }
     cob_id = temp.slice(temp.length - 3, temp.length)
   }
-  temp = check_validity_hex(cob_id, 16)
+  temp = filterHex(cob_id, 16)
   if (cob_id != temp) {
     //if letters are passed as cobid
-    return ['??']
+    return ['invalid', 'invalid', 'invalid']
   }
   cob_id = hexToDec(cob_id, 16)
 
@@ -77,6 +78,10 @@ function CobID_who_dis(cob_id) {
   if (cob_id >= 65 && cob_id <= 95) {
     axis_id = cob_id - 65 + 1
     return (aux = ['TCAN', axis_id, 'PVT-TCAN'])
+  }
+  if (cob_id == 256) {
+    // axis_id = cob_id - 65 + 1
+    return (aux = ['TCAN', '-', 'TimeStamp-TCAN'])
   }
   if (cob_id >= 257 && cob_id <= 287) {
     axis_id = cob_id - 257 + 1
@@ -160,5 +165,5 @@ function CobID_who_dis(cob_id) {
   if (cob_id >= 2020 && cob_id <= 2021) {
     return (aux = ['LSS', 'R/T', 'LSS'])
   }
-  return (aux = ['??'])
+  return ['invalid', 'invalid', 'invalid']
 }
