@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { Typography, Box, useTheme } from '@mui/material'
 import { tokens } from '../theme'
-import Button from '@mui/material/Button'
+import { Button, Switch } from '@mui/material'
 
 export const Header = ({ title, subtitle }) => {
   const theme = useTheme()
@@ -86,5 +87,39 @@ export const Button3 = ({ children, onClick }) => {
     >
       {children}
     </Button>
+  )
+}
+
+export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const [isSwitchedOn, setIsSwitchedOn] = useState(0)
+  function handleChange(e) {
+    if (isSwitchedOn == 1) {
+      tellParentValueChanged(option1)
+      setIsSwitchedOn(0)
+    } else {
+      tellParentValueChanged(option2)
+      setIsSwitchedOn(1)
+    }
+  }
+  return (
+    <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <p>{option1}</p>
+      <Switch
+        onChange={handleChange}
+        sx={{
+          color: 'red',
+          '& .MuiSwitch-switchBase.Mui-checked': {
+            color: `${colors.primary[600]}`
+          },
+          '& .css-hno2zs-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track': {
+            background: `${colors.yellow[400]}`
+          }
+        }}
+      ></Switch>
+      <p>{option2}</p>
+    </Box>
   )
 }

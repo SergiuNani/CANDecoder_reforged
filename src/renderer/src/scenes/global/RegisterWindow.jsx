@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, useRef } from 'react'
 import { Typography, Box, IconButton, Button } from '@mui/material'
 import RegisterComponent from '../../components/Register'
 import { useTheme } from '@mui/material'
@@ -21,9 +21,10 @@ export const RegisterWindow = () => {
   const navigate = useNavigate()
 
   const [windowsNumber, setWindowsNumber] = useState(1)
-
   const [ctrlTabCount, setCtrlTabCount] = useState(0)
+  const [ctrlCount, setCtrlCount] = useState(0)
   const [bugFixShortcut, setBugFixShortcut] = useState(0)
+  const RegisterWindowRef = useRef()
   const { setSidebarSelectedItem } = useContext(SidebarContext)
 
   useEffect(() => {
@@ -32,7 +33,6 @@ export const RegisterWindow = () => {
         event.preventDefault()
 
         setCtrlTabCount((prev) => {
-          console.log(`prev: ` + prev + ' -- windowsNumber: ' + windowsNumber)
           if (prev === windowsNumber) {
             if (windowsNumber == 1) {
               //Because the second refocus doesn`t work when there is only one window
@@ -44,6 +44,15 @@ export const RegisterWindow = () => {
           } else {
             return prev + 1
           }
+        })
+      } else if (event.ctrlKey && event.key === 'ArrowRight') {
+        event.preventDefault()
+        RegisterWindowRef.current.focus()
+        setCtrlCount((prev) => {
+          var temp = prev + 1
+          if (temp > windowsNumber) temp = 1
+
+          return temp
         })
       }
     }
@@ -71,7 +80,7 @@ export const RegisterWindow = () => {
     }
   }
   return (
-    <div>
+    <div ref={RegisterWindowRef}>
       <Header title="Registers Window " subtitle="Look up any register" />
       <div
         style={{
@@ -87,6 +96,9 @@ export const RegisterWindow = () => {
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
             focus={ctrlTabCount == 1 ? true : false}
+            tabIndex={windowsNumber}
+            focusOnComponent={ctrlCount}
+            NrWindow={1}
           />
         )}
         {windowsNumber > 1 && (
@@ -94,6 +106,9 @@ export const RegisterWindow = () => {
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
             focus={ctrlTabCount == 2 ? true : false}
+            tabIndex={windowsNumber}
+            focusOnComponent={ctrlCount}
+            NrWindow={2}
           />
         )}
         {windowsNumber > 2 && (
@@ -101,6 +116,9 @@ export const RegisterWindow = () => {
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
             focus={ctrlTabCount == 3 ? true : false}
+            tabIndex={windowsNumber}
+            focusOnComponent={ctrlCount}
+            NrWindow={3}
           />
         )}
       </div>
@@ -114,7 +132,10 @@ const RegisterSelectionComponent = ({
   DecrementWindows,
   ComponentHeight,
   ComponentWidth,
-  focus
+  focus,
+  tabIndex,
+  focusOnComponent,
+  NrWindow
 }) => {
   const [registerSelected, setRegisterSelected] = useState(null)
   const [registerResolution, setRegisterResolution] = useState(0)
@@ -126,7 +147,7 @@ const RegisterSelectionComponent = ({
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
+  const ContainerParent = useRef()
   function handleChangeListType() {
     setRegisterSelected(null)
     setValueRegister('')
@@ -157,6 +178,15 @@ const RegisterSelectionComponent = ({
       setValueRegister4Child(value)
     }
   }
+
+  useEffect(() => {
+    // ContainerParent.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (NrWindow == focusOnComponent) {
+      if (ContainerParent.current.children[0]) {
+        ContainerParent.current.children[0].focus()
+      }
+    }
+  }, [focusOnComponent])
   return (
     <div
       style={{
@@ -276,13 +306,16 @@ const RegisterSelectionComponent = ({
         </IconButton>
       </Box>
       {/* Register Painting ----------------------------------------------------*/}
-      <RegisterComponent
-        register={registerSelected}
-        value={valueRegister}
-        allowClickBox={true}
-        tellParentValueChanged={tellParentValueChanged}
-        ComponentHeight={ComponentHeight}
-      />
+      <div ref={ContainerParent}>
+        <RegisterComponent
+          register={registerSelected}
+          value={valueRegister}
+          allowClickBox={true}
+          tellParentValueChanged={tellParentValueChanged}
+          tabIndex={tabIndex}
+          ComponentHeight={ComponentHeight}
+        />
+      </div>
     </div>
   )
 }

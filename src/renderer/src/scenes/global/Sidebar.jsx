@@ -14,6 +14,7 @@ import AdbIcon from '@mui/icons-material/Adb'
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
+import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOutlined'
 import { useNavigate } from 'react-router-dom'
 import { SidebarContext } from '../../App'
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -143,7 +144,7 @@ const Sidebar = () => {
             <Item
               title="Decode CAN-Log"
               to="/Decode_CAN_LOG"
-              icon={<AttachFileIcon />}
+              icon={<ChromeReaderModeOutlinedIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

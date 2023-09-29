@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material'
@@ -15,7 +15,8 @@ const RegisterComponent = ({
   value,
   allowClickBox = false,
   tellParentValueChanged,
-  ComponentHeight
+  ComponentHeight,
+  tabIndex
 }) => {
   if (register == null) {
     return <p></p>
@@ -95,6 +96,7 @@ const RegisterComponent = ({
   return (
     <Box
       ref={RegisterBodyRef}
+      tabIndex={tabIndex}
       style={{
         border: `1px solid ${colors.grey[500]}`,
         width: '100%',
@@ -113,6 +115,7 @@ const RegisterComponent = ({
           justifyContent: 'center',
           textAlign: 'center'
         }}
+        className="HookForFocus"
       >
         <h5>
           -- {register.Index} - {register.Title}
