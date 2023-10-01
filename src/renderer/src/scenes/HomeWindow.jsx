@@ -14,14 +14,14 @@ import {
   filterDecimal,
   UnitsConvertor,
   decToHex,
-  L2B_endian,
+  LittleEndian,
   fixed2Hex,
   hexToDec,
   hex2Fixed
 } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { MotorSpecificationsContext } from '../App.jsx'
-import { whatFG_isObject, CobID_who_dis } from '../functions/CANopen.js'
+import { CobID_who_dis } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
   FG_units_spd_rot,
@@ -70,6 +70,7 @@ function BigObjectSearchInputComponent({ placeholder, resetValueofInputFromParen
   useEffect(() => {
     setInputValue('')
   }, [resetValueofInputFromParent])
+
   const filterOptions = (value) => {
     const flatOptions = []
 
@@ -315,7 +316,7 @@ function NumberTransformationComponent() {
       value_Hex = decToHex(value_IU, 16)
       value_Hex = value_Hex.toString().padStart(4, 0)
     }
-    value_LE = L2B_endian(value_Hex)
+    value_LE = LittleEndian(value_Hex)
 
     var aux = value.split('.')
 
@@ -383,7 +384,7 @@ function NumberTransformationComponent() {
       value_Hex = decToHex(value, 16)
       value_Hex = value_Hex.toString().padStart(4, 0)
     }
-    let value_LE = L2B_endian(value_Hex)
+    let value_LE = LittleEndian(value_Hex)
 
     setInitialValueFieldValue(value_initial)
     setIU_FieldValue(value)
@@ -400,7 +401,7 @@ function NumberTransformationComponent() {
     } else {
       value_IU = hexToDec(value, 32)
     }
-    let value_LE = L2B_endian(value)
+    let value_LE = LittleEndian(value)
 
     let value_initial = UnitsConvertor(
       value_IU,
@@ -420,7 +421,7 @@ function NumberTransformationComponent() {
   }
   function handleLE_FieldValueChaged(value) {
     //6
-    let value_Hex = L2B_endian(value)
+    let value_Hex = LittleEndian(value)
 
     var value_IU
     if (fourOptionsRadioSelection == 'SPD' || fourOptionsRadioSelection == 'ACC') {

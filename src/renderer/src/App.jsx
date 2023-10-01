@@ -37,9 +37,9 @@ function App() {
   return (
     <MyProviders>
       <HashRouter>
-        <div className="app">
+        <div style={{ display: 'flex' }}>
           <Sidebar />
-          <main className="Topbar_Routes_container">
+          <main style={{ flexGrow: 1, position: 'relative', height: '100%' }}>
             <Topbar />
             <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
             <Routes>
@@ -64,13 +64,15 @@ export default App
 
 export const SidebarContext = createContext(null)
 export const MotorSpecificationsContext = createContext()
-
+export const UserVsDebugModeContext = createContext()
 function MyProviders({ children }) {
   const [theme, colorMode] = useMode()
   const [loadType, setLoadType] = useState('ROTARY')
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
+  const [userVsDebugMode, setUserVsDebugMode] = useState('DEBUG')
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -79,7 +81,9 @@ function MyProviders({ children }) {
           value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
         >
           <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-            {children}
+            <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
+              {children}
+            </UserVsDebugModeContext.Provider>
           </SidebarContext.Provider>
         </MotorSpecificationsContext.Provider>
       </ThemeProvider>

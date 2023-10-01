@@ -1,6 +1,6 @@
 import { useContext } from 'react'
 import { MotorSpecificationsContext } from '../App'
-import { whatFG_isObject } from './CANopen'
+import { whatFG_isObject } from './CANopenFunctions'
 /*******************************************************************************/
 /*---------------------Number transformation functions------------------------ */
 /*******************************************************************************/
@@ -246,10 +246,10 @@ function hex_to_ascii(str1) {
   return str
 }
 
-/*L2B_endian(arr) - Little to Big Endian transformation */
-/*IN: L2B_endian("AB CD E")*/
+/*LittleEndian(arr) - Little to Big Endian transformation */
+/*IN: LittleEndian("AB CD E")*/
 /*OUT:  0ECDAB*/
-export function L2B_endian(arr) {
+export function LittleEndian(arr) {
   // WE assume that we don`t get bs values
   var aux1
   var aux2
@@ -258,13 +258,13 @@ export function L2B_endian(arr) {
   }
   if (typeof arr == 'object') {
     arr = arr.map((x) => {
-      return L2B_endian(x)
+      return LittleEndian(x)
     })
     return arr
   }
   if (typeof arr == 'number') {
     arr = arr.toString()
-    return L2B_endian(arr)
+    return LittleEndian(arr)
   }
   if (typeof arr == 'string') {
     arr = arr.toUpperCase()

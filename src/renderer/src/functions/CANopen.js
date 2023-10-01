@@ -1,45 +1,6 @@
 import { filterHex, hexToDec } from './NumberConversion'
-const FG_Objects_Array = {
-  POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
-  SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
-  ACC: ['6083', '6085', '609A'],
-  TIME: [
-    '6066',
-    '6068',
-    '2023',
-    '2005',
-    '2051',
-    '1006',
-    '1800_03',
-    '1801_03',
-    '1802_03',
-    '1803_03',
-    '1800_05',
-    '1801_05',
-    '1802_05',
-    '1803_05'
-  ]
-}
+import { DecodeSDO } from './CANopenFunctions'
 
-export function whatFG_isObject(obj) {
-  obj = obj.toUpperCase()
-
-  if (obj.slice(0, 2) == '#X') {
-    obj = obj.slice(2, obj.length)
-  }
-  // If object is '6060_00', remove '_00'
-  if (obj.length > 4 && obj.slice(4, 7) === '_00') {
-    obj = obj.slice(0, 4)
-  }
-
-  for (const type in FG_Objects_Array) {
-    if (FG_Objects_Array[type].includes(obj)) {
-      return type
-    }
-  }
-
-  return false
-}
 export function CobID_who_dis(cob_id) {
   var axis_id = 0
   var aux
@@ -166,4 +127,177 @@ export function CobID_who_dis(cob_id) {
     return (aux = ['LSS', 'R/T', 'LSS'])
   }
   return ['invalid', 'invalid', 'invalid']
+}
+
+export function Extract_MSGs_from_text(text) {
+  //Text should be array of strings
+  var FirstPatternEntireRowSplitter = /['"`, \s]/g
+  const hexPattern = /^(0x)?[0-9a-f]+$/gi
+
+  text = text.map((row, index) => {
+    var filteredRow = row.split(FirstPatternEntireRowSplitter)
+    filteredRow = filteredRow.filter((element) => !element == '')
+    filteredRow = filteredRow.filter((element) => element.match(hexPattern))
+    var CobID = Check4PotentialCobID(filteredRow)
+
+    var aux_data
+    if (CobID[0] != 'invalid') {
+      aux_data = extractDATAfromROW(filteredRow, CobID[1])
+    } else {
+      aux_data = 'invalid'
+    }
+
+    return [index + 1, row, CobID[0], aux_data]
+  })
+
+  return text
+}
+
+export function Check4PotentialCobID(row) {
+  //returns [cobid, index_in_the_row]
+  var temp
+  var all_COBiDs = []
+  var count = 0
+  var arrayCount = []
+  for (var j = 0; j < row.length; j++) {
+    if ([1, 2].includes(row[j].length)) {
+      count++
+    }
+    if (row[j].length > 2) {
+      temp = CobID_who_dis(row[j])
+      if (temp[0] != 'invalid') {
+        all_COBiDs[all_COBiDs.length] = [row[j], j]
+        arrayCount[arrayCount.length] = count
+        count = 0
+      }
+    }
+  }
+  arrayCount[arrayCount.length] = count // for the last elements
+  arrayCount.splice(0, 1)
+
+  if (all_COBiDs.length > 0) {
+    var tempp = returnMaxFromArr(arrayCount)
+
+    return [all_COBiDs[tempp[1]][0], all_COBiDs[tempp[1]][1]]
+  } else {
+    return ['invalid', '-1']
+  }
+  //Return [TheCobID, indexOfCobId_inTheRow]
+}
+
+function extractDATAfromROW(row, index) {
+  var OneDigitPattern = /^\d$/g
+  var aux_data = ''
+  for (var aa = index + 1; aa < row.length; aa++) {
+    //putting the tail together
+    aux_data = aux_data.concat(row[aa])
+  }
+  if (OneDigitPattern.test(row[index + 1])) {
+    //Conditions if lenght is specified (only as a single digit) -remove it
+    aux_data = aux_data.slice(1, aux_data.length)
+    if (aux_data.length > parseInt(row[index + 1]) * 2) {
+      //If length says its smaller than the array, we cutting it accordingly
+      aux_data = aux_data.slice(0, parseInt(row[index + 1]) * 2)
+    }
+    if (aux_data == '') {
+      aux_data = row[index + 1]
+    }
+  }
+  if (aux_data.length > 16) {
+    //Max data length is 16 characters
+    aux_data = aux_data.slice(0, 16)
+  }
+  if (aux_data == '') {
+    aux_data = 'empty'
+  }
+  return aux_data
+}
+
+function returnMaxFromArr(arr) {
+  var arr_copy = arr
+  if (typeof arr[0] == 'string') {
+    arr[0] = parseInt(arr[0])
+  }
+  var aux = arr[0]
+  for (var i = 0; i < arr.length; i++) {
+    if (typeof arr[i] == 'string') {
+      arr[i] = parseInt(arr[i])
+    }
+    if (aux < arr[i]) {
+      aux = arr[i]
+    }
+  }
+
+  return [aux, arr_copy.indexOf(aux)]
+  //Returns [MAX_nr, index_in_array]
+}
+
+export function CreateDecodedArrayOfObjects(arr) {
+  var ResultingArray = []
+
+  function createObject(
+    msgNr,
+    OriginalMessage,
+    CobID,
+    FrameData,
+    type,
+    AxisID,
+    CS,
+    Object,
+    ObjectName,
+    Data,
+    Interpretation
+  ) {
+    var newObj = {
+      msgNr: msgNr || '-',
+      OriginalMessage: OriginalMessage || '-',
+      CobID: CobID || '-',
+      FrameData: FrameData || '-',
+      type: type || '-',
+      AxisID: AxisID ? AxisID : '-',
+      CS: CS || '-',
+      Object: Object || '-',
+      ObjectName: ObjectName || '-',
+      Data: Data || '-',
+      Interpretation: Interpretation || '-'
+    }
+
+    ResultingArray.push(newObj)
+  }
+
+  arr.forEach((row) => {
+    //Handle Empty Lines
+    if (row[1] == '') {
+      row[2] = 'Empty'
+      row[3] = 'Line'
+      return createObject(row[0], row[1], row[2], row[3])
+    }
+    var aux_CobID = CobID_who_dis(row[2])
+    var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3])
+    createObject(
+      row[0],
+      row[1],
+      row[2],
+      row[3],
+      aux_CobID[2],
+      aux_CobID[1],
+      DecodedMessage[0],
+      DecodedMessage[1],
+      DecodedMessage[2],
+      DecodedMessage[3],
+      DecodedMessage[4]
+    )
+  })
+
+  return ResultingArray
+}
+
+function DecodeOneCAN_msgFct(cobID_array, message) {
+  var result = []
+
+  if (cobID_array[0] == 'SDO') {
+    result = DecodeSDO(cobID_array[2], message)
+  } else result = ['-', 'Nothing', 'NULL', 'IDK Chief', 'Go ask Sergiu!', 'error']
+
+  return result
 }

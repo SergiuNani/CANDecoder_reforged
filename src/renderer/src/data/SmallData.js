@@ -1,3 +1,5 @@
+/*------------------------------Global Parameters------------------------------ */
+
 /*------------------------------Factor Group Units------------------------------ */
 export const FG_units_pos_rot = ['IU', 'rad', 'deg', 'rot']
 export const FG_units_spd_rot = ['IU', 'rad/s', 'rpm', 'rps', 'deg/s', 'deg/min', 'in/s']

@@ -14,7 +14,7 @@ import {
   filterDecimal,
   fixed2Hex,
   filterDecimalWithComma,
-  L2B_endian
+  LittleEndian
 } from '../functions/NumberConversion'
 import { SnackBarMessage } from '../components/FloatingComponents'
 import { Button1 } from '../components/SmallComponents'

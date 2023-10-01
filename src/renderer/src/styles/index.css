@@ -16,20 +16,6 @@
   background-color: #525252;
 }
 
-/* Firefox and other browsers */
-/* Customize the scrollbar width and color */
-/* Note: Firefox does not support customizing the track color directly */
-/* You can use scrollbar-color to set thumb and track colors */
-/* Example: scrollbar-color: thumbColor trackColor; */
-/* body {
-  scrollbar-width: thin;
-  scrollbar-color: #a0a0a0 #f0f0f0;
-} */
-
-.app {
-  display: flex;
-}
-
 .drawerComponenet {
   position: fixed;
   right: 0;
