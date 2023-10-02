@@ -5,7 +5,7 @@ import { tokens } from '../theme'
 import { useMemo } from 'react'
 import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
 import { useLocation } from 'react-router-dom'
-
+import { Tooltip, Button } from '@mui/material'
 import {
   getMaxNumberFromStringRange,
   getRangeNumberFromStringRange,
@@ -19,20 +19,29 @@ import {
 import { SnackBarMessage } from '../components/FloatingComponents'
 import { Button1 } from '../components/SmallComponents'
 import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
-
+import { TooltipClickable } from '../components/SmallComponents'
+import { GetObject } from '../functions/CANopenFunctions'
 const DebugScene = () => {
   const location = useLocation()
 
   function handleDebugClick() {
     //ADD logic here to be tested
-    const currentRoute = location.pathname
-    console.log('Current route:', currentRoute)
+
+    // var a = GetObject('1011_01')
+    // var a = GetObject('1011_00')
+    var a = GetObject('1403_01')
+    // var a = GetObject('1011_10')
+    console.log('🚀 ~ file: debug.jsx:31 ~ handleDebugClick ~ a:', a)
   }
 
+  const title = `Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore accusamus qui obcaecati amet sequi ad nam architecto magnam laboriosam numquam atque, sed fugit consectetur omnis quod ipsum a nihil ratione nemo non autem. Cum iste itaque dicta esse, sequi quaerat, nam dolorum fugiat exercitationem deleniti, quibusdam accusantium! Cumque unde non nisi earum illo distinctio nemo amet reprehenderit repellat minus! Nemo, tempora? Facere, atque hic id incidunt necessitatibus, animi at quidem nulla ipsam omnis expedita ab accusamus aliquam iusto est vero ipsa repellat commodi placeat earum debitis! Ipsam aliquid quae eligendi, delectus quisquam excepturi explicabo dolores ipsum nemo amet? Eveniet aliquid asperiores voluptatum rem minus molestias quibusdam ipsam pariatur vero neque rerum commodi veritatis numquam odio ipsa mollitia, molestiae quam quod consequuntur error quaerat omnis. Eaque at officiis, soluta molestiae itaque temporibus accusamus veniam excepturi, corrupti, rem sint ut laborum error architecto modi debitis minima. Ex ea minima non, iusto sint et nostrum alias incidunt eligendi aperiam recusandae aliquam similique laudantium neque veritatis tempora consequuntur doloremque distinctio quam maiores inventore. Ipsa, aliquid esse. Quos placeat corporis dolorem, culpa dolores fugiat! Dolore officia nulla suscipit tenetur ad, iusto recusandae sequi enim totam autem magnam, commodi corrupti? Repellendus mollitia nostrum dicta officiis debitis?`
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>
       <Button1 onClick={handleDebugClick}>DEBUG</Button1>
+      <TooltipClickable title={title} placement="top" arrow>
+        <Button>lorem100</Button>
+      </TooltipClickable>
       {/* <Registers_logic /> */}
     </>
   )

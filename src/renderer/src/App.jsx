@@ -71,7 +71,7 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [userVsDebugMode, setUserVsDebugMode] = useState('DEBUG')
+  const [userVsDebugMode, setUserVsDebugMode] = useState('USER')
 
   return (
     <ColorModeContext.Provider value={colorMode}>

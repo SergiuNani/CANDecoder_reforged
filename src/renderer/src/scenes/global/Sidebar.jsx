@@ -120,7 +120,7 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
 
-            <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
+            <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               Tools
             </Typography>
             <Item
@@ -138,7 +138,7 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
 
-            <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
+            <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               Decode
             </Typography>
             <Item
@@ -156,7 +156,7 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
 
-            <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
+            <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               Encrypt
             </Typography>
             <Item
@@ -166,7 +166,7 @@ const Sidebar = () => {
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />
-            <Typography variant="h6" color={colors.grey[300]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
+            <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               More
             </Typography>
             <Item

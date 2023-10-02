@@ -2,6 +2,7 @@ import { filterHex, hexToDec } from './NumberConversion'
 import { DecodeSDO } from './CANopenFunctions'
 
 export function CobID_who_dis(cob_id) {
+  cob_id = cob_id.toUpperCase()
   var axis_id = 0
   var aux
   if (cob_id.slice(0, 2).toUpperCase() == '0X') {
@@ -147,7 +148,7 @@ export function Extract_MSGs_from_text(text) {
       aux_data = 'invalid'
     }
 
-    return [index + 1, row, CobID[0], aux_data]
+    return [index + 1, row, CobID[0], aux_data, filteredRow]
   })
 
   return text
@@ -246,7 +247,8 @@ export function CreateDecodedArrayOfObjects(arr) {
     Object,
     ObjectName,
     Data,
-    Interpretation
+    Interpretation,
+    errorStatus
   ) {
     var newObj = {
       msgNr: msgNr || '-',
@@ -259,7 +261,8 @@ export function CreateDecodedArrayOfObjects(arr) {
       Object: Object || '-',
       ObjectName: ObjectName || '-',
       Data: Data || '-',
-      Interpretation: Interpretation || '-'
+      Interpretation: Interpretation || '-',
+      errorStatus: errorStatus || '-'
     }
 
     ResultingArray.push(newObj)
@@ -276,16 +279,17 @@ export function CreateDecodedArrayOfObjects(arr) {
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3])
     createObject(
       row[0],
-      row[1],
-      row[2],
+      row[1], //OriginalMsg
+      row[2], //CobID
       row[3],
-      aux_CobID[2],
-      aux_CobID[1],
-      DecodedMessage[0],
-      DecodedMessage[1],
-      DecodedMessage[2],
-      DecodedMessage[3],
-      DecodedMessage[4]
+      aux_CobID[2], //type
+      aux_CobID[1], //AxisID
+      DecodedMessage[0], //CS
+      DecodedMessage[1], //Object
+      DecodedMessage[2], //ObjName
+      DecodedMessage[3], //Data
+      DecodedMessage[4], //Interpretation
+      DecodedMessage[5] //Error
     )
   })
 
@@ -297,7 +301,7 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
 
   if (cobID_array[0] == 'SDO') {
     result = DecodeSDO(cobID_array[2], message)
-  } else result = ['-', 'Nothing', 'NULL', 'IDK Chief', 'Go ask Sergiu!', 'error']
+  } else result = ['-', 'Nothing', 'Go ask my Creator!', 'IDK Chief', 'Invalid COB-ID', 'error']
 
   return result
 }

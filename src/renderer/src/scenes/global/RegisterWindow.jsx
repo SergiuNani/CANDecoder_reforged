@@ -224,7 +224,7 @@ const RegisterSelectionComponent = ({
         <Typography
           variant="h4"
           sx={{
-            color: `${colors.primary1[100]}`
+            color: `${colors.grey[100]}`
             // textAlign: 'center'
           }}
         >

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react'
-import { Box, IconButton, Button } from '@mui/material'
+import { Box, IconButton, Button, Typography } from '@mui/material'
 import { Header } from '../components/SmallComponents'
 import { SwitchComponent } from '../components/SmallComponents'
 import { useTheme } from '@mui/material'
@@ -11,7 +11,10 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { UserVsDebugModeContext } from '../App'
 import { InsertTextIntoTextArea } from '../data/TestingData'
 import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../functions/CANopen'
-
+import { TooltipClickable } from '../components/SmallComponents'
+import { Input_AutoFormat } from '../components/ForumsComponents'
+import { filterDecimal } from '../functions/NumberConversion'
+import { Search } from '@mui/icons-material'
 export let MessagesDecoded_ArrayOfObjects = []
 
 const Decode_CAN_LOG = () => {
@@ -161,11 +164,82 @@ const Decode_CAN_LOG = () => {
 
 export default Decode_CAN_LOG
 
-const UserCANopenDecodedTable = ({ fileInnerText }) => {
+const DebugCANopenDecodedTable = ({ fileInnerText }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [lineToScroll, setLineToScroll] = useState('')
+
   if (fileInnerText == '') {
-    return <div>CAN Nothing to decode. Oh Dear</div>
+    return <div> Nothing to decode. Oh Dear. Maybe try writing something so I can Decode</div>
   }
-  return <div>TOOO EARLY</div>
+  const scrollRef = useRef(null)
+
+  useEffect(() => {
+    if (lineToScroll !== '') {
+      if (scrollRef.current) {
+        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }, [lineToScroll])
+
+  function handleNewSearch(event) {
+    setLineToScroll(event)
+  }
+  var originalLines = fileInnerText.split('\n')
+  var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(originalLines)
+  return (
+    <Box sx={{ position: 'relative' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'start',
+          alignItems: 'center',
+          position: 'sticky',
+          top: '2.5rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4">GOTO LINE: </Typography>
+        <Input_AutoFormat
+          callback={filterDecimal}
+          resolution={'TIME'}
+          tellParentValueChanged={handleNewSearch}
+          forceValueFromParent={lineToScroll}
+        />
+      </div>
+      <Box>
+        {AllCAN_MsgsExtracted_array.map((iteration, index) => {
+          const isHighlighted = index === lineToScroll - 1
+          return (
+            <div
+              key={index}
+              ref={isHighlighted ? scrollRef : null}
+              style={{
+                display: 'flex',
+                border: isHighlighted
+                  ? `4px solid ${colors.yellow[500]}`
+                  : `1px solid ${colors.primary[400]}`,
+
+                gap: '1rem',
+                padding: '0.2rem'
+              }}
+            >
+              <p style={{}}> [{iteration[0]}]. </p>
+              <p style={{ color: `${colors.yellow[500]}` }}> {iteration[1]}</p>
+              <div style={{ color: `${colors.red[300]}`, display: 'flex' }}>
+                {' '}
+                {iteration[4].map((i, ii) => {
+                  return <p key={ii + 'abc'}> - {i} - </p>
+                })}
+              </div>
+              <p style={{ color: `${colors.green[100]}` }}>-- [{iteration[2]}]</p>
+              <p style={{ color: `${colors.personal[100]}` }}>-- [{iteration[3]}]</p>
+            </div>
+          )
+        })}
+      </Box>
+    </Box>
+  )
 }
 
 const FunArray = [
@@ -678,7 +752,7 @@ const FunArray = [
   }
 ]
 
-const DebugCANopenDecodedTable = ({ fileInnerText }) => {
+const UserCANopenDecodedTable = ({ fileInnerText }) => {
   if (fileInnerText == '') {
     return <div>Debug Nothing to decode. Oh Dear</div>
   }
@@ -743,7 +817,7 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
                 <tr
                   key={index}
                   style={{
-                    borderBottom: `1px solid ${colors.grey[400]}`,
+                    borderBottom: `1px solid ${colors.grey[300]}`,
                     background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
                     borderLeft: isRecieveTypeMessage
                       ? `0.5rem solid ${colors.primary[400]}`
@@ -758,8 +832,12 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
                   >
                     {iteration.msgNr}
                   </td>
-                  <td style={{ textAlign: 'center' }}>
-                    {iteration.CobID} - {iteration.FrameData}
+                  <td style={{ textAlign: 'center', cursor: 'pointer' }}>
+                    <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
+                      <p>
+                        {iteration.CobID} - {iteration.FrameData}
+                      </p>
+                    </TooltipClickable>
                   </td>
                   <td
                     style={{
@@ -811,7 +889,14 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
                     style={{
                       textAlign: 'center',
                       maxWidth: '25rem',
-                      overflowY: 'auto'
+                      overflowY: 'auto',
+                      fontWeight: iteration.errorStatus == 'error' ? '700' : 'inherit',
+                      color:
+                        iteration.errorStatus == 'error'
+                          ? `${colors.red[500]}`
+                          : iteration.errorStatus == 'warning'
+                          ? `${colors.yellow[500]}`
+                          : 'inherit'
                     }}
                   >
                     {iteration.Interpretation}

@@ -238,7 +238,6 @@ export function AutocompleteInput_RegisterList({
         variant="h5"
         style={{
           fontSize: '1.1rem'
-          // color: `${colors.primary1[200]}`
         }}
       >
         {title}

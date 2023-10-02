@@ -98,7 +98,7 @@ const RegisterComponent = ({
       ref={RegisterBodyRef}
       tabIndex={tabIndex}
       style={{
-        border: `1px solid ${colors.grey[500]}`,
+        border: `1px solid ${colors.grey[400]}`,
         width: '100%',
         overflow: 'auto',
         height: ComponentHeight ? ComponentHeight : '70vh',
@@ -127,7 +127,7 @@ const RegisterComponent = ({
         <Box
           key={row.bit}
           style={{
-            border: `1px solid ${colors.grey[500]}`,
+            border: `1px solid ${colors.grey[400]}`,
             display: 'grid',
             gridTemplateColumns: '3.2rem auto 2rem',
             borderBottom: 'none',
@@ -157,7 +157,7 @@ const RegisterComponent = ({
               {row.info && (
                 <p
                   style={{
-                    color: `${colors.personal[900]}`
+                    color: `${colors.personal[300]}`
                   }}
                 >
                   {row.info}
@@ -172,7 +172,7 @@ const RegisterComponent = ({
               {row.info && (
                 <p
                   style={{
-                    color: `${colors.personal[900]}`
+                    color: `${colors.personal[300]}`
                     // textAlign: 'center'
                     // fontSize: '1rem'
                   }}

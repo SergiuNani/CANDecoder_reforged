@@ -7,58 +7,33 @@ export const tokens = (mode) => ({
     ? {
         grey: {
           100: '#EDEFFD',
-          200: '#c2c2c2',
-          300: '#a3a3a3',
-          400: '#858585',
-          500: '#666666',
-          600: '#525252',
-          700: '#3d3d3d',
-          800: '#292929',
-          900: '#f6f6f6'
+          200: '#a3a3a3',
+          300: '#858585',
+          400: '#666666',
+          500: '#3d3d3d'
         },
         primary1: {
           100: '#202528',
-          200: '#a1a4ab',
-          300: '#727681',
-          400: '#1F2A40',
-          500: '#141b2d',
-          600: '#101624',
-          700: '#0c101b',
-          800: '#080b12',
-          900: '#040509'
+          200: '#a1a4ab'
         },
         green: {
           100: '#41F1B6',
           200: '#b7ebde',
           300: '#94e2cd',
           400: '#70d8bd',
-          500: '#4cceac',
-          600: '#3da58a',
-          700: '#2e7c67',
-          800: '#1e5245',
-          900: '#0f2922'
+          500: '#4cceac'
         },
         red: {
           100: '#f8dcdb',
           200: '#f1b9b7',
-          300: '#e99592',
           400: '#e2726e',
-          500: '#FF5252',
-          600: '#af3f3b',
-          700: '#832f2c',
-          800: '#58201e',
-          900: '#2c100f'
+          500: '#FF5252'
         },
         blue: {
           100: '#7380EC',
           200: '#2d394b',
           300: '#202528',
-          400: '#868dfb',
-          500: '#6870fa',
-          600: '#535ac8',
-          700: '#3e4396',
-          800: '#2a2d64',
-          900: '#151632'
+          400: '#868dfb'
         },
         purple: {
           100: '#252943',
@@ -79,20 +54,13 @@ export const tokens = (mode) => ({
           300: '#b1a490',
           400: '#e3d3ba',
           500: '#ffbb55',
-          600: '#FABD62',
-          700: '#FDEBCF'
+          600: '#FABD62'
         },
 
         personal: {
           100: '#e27c7c',
-          200: '#a86464',
-          300: '#6d4b4b',
-          400: '#503f3f',
-          500: '#333333',
-          600: '#3c4e4b',
-          700: '#466964',
-          800: '#599e94',
-          900: '#6cd4c5'
+          200: '#466964',
+          300: '#6cd4c5'
         }
       }
     : {
@@ -109,14 +77,7 @@ export const tokens = (mode) => ({
         },
         primary1: {
           100: '#040509',
-          200: '#080b12',
-          300: '#0c101b',
-          400: '#f2f0f0', // manually changed
-          500: '#141b2d',
-          600: '#1F2A40',
-          700: '#727681',
-          800: '#a1a4ab',
-          900: '#d0d1d5'
+          200: '#080b12'
         },
         green: {
           100: '#0f2922',
@@ -205,8 +166,8 @@ export const themeSettings = (mode) => {
               main: colors.green[500]
             },
             neutral: {
-              dark: colors.grey[700],
-              main: colors.grey[500],
+              dark: colors.grey[500],
+              main: colors.grey[400],
               light: colors.grey[100]
             },
             background: {
@@ -222,8 +183,8 @@ export const themeSettings = (mode) => {
               main: colors.green[500]
             },
             neutral: {
-              dark: colors.grey[700],
-              main: colors.grey[500],
+              dark: colors.grey[500],
+              main: colors.grey[400],
               light: colors.grey[100]
             },
             background: {

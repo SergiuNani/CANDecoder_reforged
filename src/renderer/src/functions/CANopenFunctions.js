@@ -51,10 +51,12 @@ export function GetObject(index) {
   }
   var SearchResult = Objects_collection_LS.filter((object) => object.Index.match(index))
 
-  if (subIndex) {
+  if (subIndex || ![8, 16, 32].includes(SearchResult[0].BitSize)) {
     var aux_Obj = index.concat(subIndex)
-    if (SearchResult[0].Info && SearchResult[0].Info.SubItem) {
+    if (SearchResult[0] && SearchResult[0].Info && SearchResult[0].Info.SubItem) {
       SearchResult = SearchResult[0].Info.SubItem.filter((object) => object.Index.match(aux_Obj))
+    } else if (subIndex != '_00') {
+      return [`${index.concat(subIndex)}`, 'Nothing Found', 0]
     }
   }
   if (SearchResult[0]) {
@@ -67,13 +69,53 @@ export function GetObject(index) {
   }
 }
 export function DecodeSDO(sdoType, message) {
-  // Message will always be less then 16 characters
+  // Message will always be less or equal than 16 characters
+  if (message.length < 10) {
+    //ERROR: SDO insufficient
+    return ['-', '-', '-', '-', 'SDO_Error: SDO message length insufficient ', 'error']
+  }
+  var interpretationInfo = ''
+  var errorStatus = ''
+
   var CS = message.slice(0, 2)
-  var ErrorStatus = 'good'
   var Object = LittleEndian(message.slice(2, 6))
   Object = GetObject(Object.concat('_' + message.slice(6, 8)))
   var aux_message = LittleEndian(message.slice(8, 16))
 
+  if (Object[1] == 'Nothing Found') {
+    return [
+      CS,
+      Object[0],
+      Object[1],
+      aux_message,
+      `SDO_Error: Couldn't find object : ${Object[0]}`,
+      'error'
+    ]
+  }
+
+  var checkForErrors = Check_SDOmsg_ForErrors(sdoType, CS, aux_message)
+  interpretationInfo = checkForErrors[0]
+  errorStatus = checkForErrors[1]
+
   //Return: [CS, Object , ObjectName , data , Interpretation ]
-  return [CS, Object[0], Object[1], aux_message, 'Interpretation', ErrorStatus]
+  return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
+}
+
+function Check_SDOmsg_ForErrors(sdoType, CS, data) {
+  //Returns [interpretationInfo, errorStatus]
+  var interpretation = ''
+  var errorStatus = ''
+
+  switch (CS) {
+    case '40':
+      if (sdoType == 'R_SDO') {
+        interpretation = ''
+        errorStatus = ''
+      }
+      break
+
+    default:
+      break
+  }
+  return [interpretation, errorStatus]
 }

@@ -38,8 +38,19 @@ export const DrawerComponent = ({ title, component }) => {
       <Box
         className="drawerComponenet "
         style={{
+          position: 'fixed',
+          width: '30rem',
+          backgroundColor: '#333',
+          color: 'white',
+          borderRadius: '1rem',
+          height: '95vh',
+          padding: '20px',
+          boxShadow: '5px 0px 15px rgba(0, 0, 0, 0.2)',
+          transition: 'right 0.3s ease-in-out',
+          overflow: 'auto',
           background: `${colors.primary[100]}`,
-          border: `1px solid ${colors.grey[500]}`,
+          border: `1px solid ${colors.grey[400]}`,
+          zIndex: 2,
           right: isDrawerOpen ? '0' : '-200rem'
         }}
       >
@@ -47,7 +58,7 @@ export const DrawerComponent = ({ title, component }) => {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          style={{ borderBottom: `1px solid ${colors.grey[500]}` }}
+          style={{ borderBottom: `1px solid ${colors.grey[400]}` }}
         >
           <Typography variant="h2">{title} </Typography>
           <IconButton onClick={handleClose}>

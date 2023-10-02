@@ -2,6 +2,10 @@ import { useState } from 'react'
 import { Typography, Box, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { Button, Switch } from '@mui/material'
+import { styled } from '@mui/material/styles'
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
+import Fade from '@mui/material/Fade'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
 
 export const Header = ({ title, subtitle }) => {
   const theme = useTheme()
@@ -54,7 +58,7 @@ export const Button2 = ({ children, onClick }) => {
         // margin: '1rem 2rem',
         padding: '1.1rem',
         fontSize: '0.9rem',
-        background: `${colors.personal[700]}`,
+        background: `${colors.personal[200]}`,
         '&:hover': {
           background: `${colors.primary[200]}`,
           color: `${colors.red[200]}`
@@ -123,3 +127,84 @@ export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) =>
     </Box>
   )
 }
+
+export const HTMLTooltip = styled(({ className, children, ...props }) => {
+  return (
+    <Tooltip {...props} classes={{ popper: className }} TransitionComponent={Fade}>
+      {children}
+    </Tooltip>
+  )
+})(({ theme }) => {
+  const colors = tokens(theme.palette.mode)
+
+  return {
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: `${colors.primary[100]}`,
+      color: `${colors.yellow[100]}`,
+      maxWidth: '40rem',
+      fontSize: '1.3rem',
+      fontWeight: '500',
+      border: `2px solid ${colors.primary[400]}`,
+      padding: '0.6rem'
+    }
+  }
+})
+export const TooltipClickable = styled(({ className, children, ...props }) => {
+  const [open, setOpen] = useState(false)
+
+  const handleTooltipClose = () => {
+    setOpen(false)
+  }
+
+  const handleTooltipOpen = () => {
+    setOpen(true)
+  }
+  return (
+    <div>
+      <ClickAwayListener onClickAway={handleTooltipClose}>
+        <Tooltip
+          {...props}
+          classes={{ popper: className }}
+          TransitionComponent={Fade}
+          open={open}
+          onClick={handleTooltipOpen}
+        >
+          {children}
+        </Tooltip>
+      </ClickAwayListener>
+
+      {/* <div>
+          <Tooltip
+            PopperProps={{
+              disablePortal: true
+            }}
+            onClose={handleTooltipClose}
+            open={open}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+            title="Add"
+          >
+            <Button onClick={handleTooltipOpen}>Click</Button>
+          </Tooltip>
+        </div> */}
+    </div>
+  )
+})(({ theme }) => {
+  const colors = tokens(theme.palette.mode)
+
+  return {
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: `${colors.primary[100]}`,
+      color: `${colors.yellow[100]}`,
+      maxWidth: '40rem',
+      fontSize: '1.3rem',
+      fontWeight: '500',
+      border: `3px solid ${colors.primary[400]}`,
+      padding: '0.6rem'
+    },
+    [`& .${tooltipClasses.arrow}`]: {
+      color: `${colors.primary[600]}`
+    }
+  }
+})
