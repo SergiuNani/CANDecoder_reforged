@@ -276,7 +276,8 @@ export function CreateDecodedArrayOfObjects(arr) {
       return createObject(row[0], row[1], row[2], row[3])
     }
     var aux_CobID = CobID_who_dis(row[2])
-    var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3])
+
+    var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
     createObject(
       row[0],
       row[1], //OriginalMsg

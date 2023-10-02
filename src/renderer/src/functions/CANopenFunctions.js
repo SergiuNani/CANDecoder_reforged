@@ -69,6 +69,7 @@ export function GetObject(index) {
   }
 }
 export function DecodeSDO(sdoType, message) {
+  //TODO: segmented reading , gl :))
   // Message will always be less or equal than 16 characters
   if (message.length < 10) {
     //ERROR: SDO insufficient
@@ -82,6 +83,7 @@ export function DecodeSDO(sdoType, message) {
   Object = GetObject(Object.concat('_' + message.slice(6, 8)))
   var aux_message = LittleEndian(message.slice(8, 16))
 
+  //TODO: Check in the future because of segmented reading
   if (Object[1] == 'Nothing Found') {
     return [
       CS,
@@ -93,7 +95,7 @@ export function DecodeSDO(sdoType, message) {
     ]
   }
 
-  var checkForErrors = Check_SDOmsg_ForErrors(sdoType, CS, aux_message)
+  var checkForErrors = Check_SDOmsg_ForErrors(sdoType, CS, aux_message, Object[2])
   interpretationInfo = checkForErrors[0]
   errorStatus = checkForErrors[1]
 
@@ -101,19 +103,93 @@ export function DecodeSDO(sdoType, message) {
   return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
 }
 
-function Check_SDOmsg_ForErrors(sdoType, CS, data) {
+function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
   //Returns [interpretationInfo, errorStatus]
   var interpretation = ''
   var errorStatus = ''
 
   switch (CS) {
-    case '40':
+    case '2F':
       if (sdoType == 'R_SDO') {
-        interpretation = ''
-        errorStatus = ''
+        if (ObjectSize != 8) {
+          interpretation = 'Invalid CS for this object '
+          errorStatus = 'error'
+        } else if (data.length != 2) {
+          interpretation = 'The data should be 8bits '
+          errorStatus = 'warning'
+        }
+      } else {
+        //T_SDO
+        interpretation = '2F is a Command Specifier only for R_SDO'
+        errorStatus = 'error'
+      }
+
+      break
+    case '2B':
+      if (sdoType == 'R_SDO') {
+        if (ObjectSize != 16) {
+          interpretation = 'Invalid CS for this object '
+          errorStatus = 'error'
+        } else if (data.length != 4) {
+          interpretation = 'The data should be 16bits '
+          errorStatus = 'warning'
+        }
+      } else {
+        //T_SDO
+        interpretation = '2B is a Command Specifier only for R_SDO'
+        errorStatus = 'error'
+      }
+
+      break
+    case '27':
+    case '47':
+      interpretation = ' Invalid CS for this Object'
+      errorStatus = 'error'
+      break
+    case '23':
+      if (sdoType == 'R_SDO') {
+        if (ObjectSize != 32) {
+          interpretation = 'Invalid CS for this object '
+          errorStatus = 'error'
+        } else if (data.length != 8) {
+          interpretation = 'The data should be 16bits '
+          errorStatus = 'warning'
+        }
+      } else {
+        //T_SDO
+        interpretation = '23 is a Command Specifier only for R_SDO'
+        errorStatus = 'error'
+      }
+
+      break
+    case '43':
+      if (ObjectSize != 32) {
+        interpretation = 'This CS should be used to read a 32bit object'
+        errorStatus = 'warning'
+      }
+
+      break
+    case '4F':
+      if (ObjectSize != 8) {
+        interpretation = 'This CS should be used to read a 8bit object'
+        errorStatus = 'warning'
+      }
+
+      break
+    case '4B':
+      if (ObjectSize != 16) {
+        interpretation = 'This CS should be used to read a 16bit object'
+        errorStatus = 'warning'
+      }
+
+      break
+    case '40':
+      if (sdoType == 'T_SDO') {
+        interpretation = '40 is a Command Specifier only for T_SDO'
+        errorStatus = 'error'
       }
       break
-
+    //TODO:41 60 70 80
     default:
       break
   }
