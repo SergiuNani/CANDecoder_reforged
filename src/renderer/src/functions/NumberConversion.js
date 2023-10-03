@@ -237,7 +237,7 @@ export function hex2Fixed(input) {
   return parseFloat(result) / 65536
 }
 //Untested
-function hex_to_ascii(str1) {
+export function hex_to_ascii(str1) {
   var hex = str1.toString()
   var str = ''
   for (var n = 0; n < hex.length; n += 2) {

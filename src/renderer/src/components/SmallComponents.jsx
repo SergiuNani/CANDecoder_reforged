@@ -157,7 +157,8 @@ export const TooltipClickable = styled(({ className, children, ...props }) => {
   }
 
   const handleTooltipOpen = () => {
-    setOpen(true)
+    if (open == true) setOpen(false)
+    else setOpen(true)
   }
   return (
     <div>
@@ -172,22 +173,6 @@ export const TooltipClickable = styled(({ className, children, ...props }) => {
           {children}
         </Tooltip>
       </ClickAwayListener>
-
-      {/* <div>
-          <Tooltip
-            PopperProps={{
-              disablePortal: true
-            }}
-            onClose={handleTooltipClose}
-            open={open}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-            title="Add"
-          >
-            <Button onClick={handleTooltipOpen}>Click</Button>
-          </Tooltip>
-        </div> */}
     </div>
   )
 })(({ theme }) => {

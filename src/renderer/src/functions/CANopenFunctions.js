@@ -1,5 +1,5 @@
 import { Objects_collection_LS } from '../App'
-import { LittleEndian } from './NumberConversion'
+import { LittleEndian, hexToDec, hex_to_ascii } from './NumberConversion'
 const FG_Objects_Array = {
   POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
@@ -71,7 +71,7 @@ export function GetObject(index) {
 export function DecodeSDO(sdoType, message) {
   //TODO: segmented reading , gl :))
   // Message will always be less or equal than 16 characters
-  if (message.length < 10) {
+  if (message.length < 8) {
     //ERROR: SDO insufficient
     return ['-', '-', '-', '-', 'SDO_Error: SDO message length insufficient ', 'error']
   }
@@ -84,7 +84,7 @@ export function DecodeSDO(sdoType, message) {
   var aux_message = LittleEndian(message.slice(8, 16))
 
   //TODO: Check in the future because of segmented reading
-  if (Object[1] == 'Nothing Found') {
+  if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS) && sdoType == 'R_SDO') {
     return [
       CS,
       Object[0],
@@ -95,7 +95,14 @@ export function DecodeSDO(sdoType, message) {
     ]
   }
 
-  var checkForErrors = Check_SDOmsg_ForErrors(sdoType, CS, aux_message, Object[2])
+  var checkForErrors = Check_SDOmsg_ForErrors(
+    sdoType,
+    CS,
+    aux_message,
+    Object[2],
+    Object[0],
+    message
+  )
   interpretationInfo = checkForErrors[0]
   errorStatus = checkForErrors[1]
 
@@ -103,7 +110,7 @@ export function DecodeSDO(sdoType, message) {
   return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
 }
 
-function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
+function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, fullMessage) {
   //Returns [interpretationInfo, errorStatus]
   var interpretation = ''
   var errorStatus = ''
@@ -117,6 +124,9 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
         } else if (data.length != 2) {
           interpretation = 'The data should be 8bits '
           errorStatus = 'warning'
+        } else {
+          interpretation = `Write: ${ObjectIndex} <- ${data}h`
+          errorStatus = 'good'
         }
       } else {
         //T_SDO
@@ -133,6 +143,9 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
         } else if (data.length != 4) {
           interpretation = 'The data should be 16bits '
           errorStatus = 'warning'
+        } else {
+          interpretation = `Write: ${ObjectIndex} <- ${data}h`
+          errorStatus = 'good'
         }
       } else {
         //T_SDO
@@ -154,6 +167,9 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
         } else if (data.length != 8) {
           interpretation = 'The data should be 16bits '
           errorStatus = 'warning'
+        } else {
+          interpretation = `Write: ${ObjectIndex} <- ${data}h`
+          errorStatus = 'good'
         }
       } else {
         //T_SDO
@@ -166,6 +182,9 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
       if (ObjectSize != 32) {
         interpretation = 'This CS should be used to read a 32bit object'
         errorStatus = 'warning'
+      } else if (sdoType == 'T_SDO') {
+        interpretation = `Read: ${ObjectIndex} -> ${data}h`
+        errorStatus = 'good'
       }
 
       break
@@ -173,6 +192,15 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
       if (ObjectSize != 8) {
         interpretation = 'This CS should be used to read a 8bit object'
         errorStatus = 'warning'
+      } else if (data.length != 8 && parseInt(data.length) != 0 && sdoType == 'T_SDO') {
+        interpretation = 'The data length should be "00 00 00 00"'
+        errorStatus = 'warning'
+      } else if (sdoType == 'T_SDO') {
+        interpretation = `Read: ${ObjectIndex} -> ${data.slice(
+          data.length - ObjectSize / 4,
+          data.length
+        )}h`
+        errorStatus = 'good'
       }
 
       break
@@ -180,6 +208,15 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
       if (ObjectSize != 16) {
         interpretation = 'This CS should be used to read a 16bit object'
         errorStatus = 'warning'
+      } else if (data.length != 8 && parseInt(data.length) != 0 && sdoType == 'T_SDO') {
+        interpretation = 'The data length should be "00 00 00 00"'
+        errorStatus = 'warning'
+      } else if (sdoType == 'T_SDO') {
+        interpretation = `Read: ${ObjectIndex} ->  ${data.slice(
+          data.length - ObjectSize / 4,
+          data.length
+        )}h`
+        errorStatus = 'good'
       }
 
       break
@@ -187,11 +224,103 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize) {
       if (sdoType == 'T_SDO') {
         interpretation = '40 is a Command Specifier only for T_SDO'
         errorStatus = 'error'
+      } else if (parseInt(data.length) != 0) {
+        interpretation = 'The data length should be "00 00 00 00"'
+        errorStatus = 'warning'
+      } else {
+        interpretation = `Read object ${ObjectIndex}`
+        errorStatus = 'good'
+      }
+      break
+
+    case '41':
+      if (sdoType == 'T_SDO') {
+        interpretation = `Use Segmented Reading. There are ${hexToDec(data, 32)}bytes of Info`
+        errorStatus = 'good'
+      } else {
+        interpretation = '"41" - Invalid CS for a R_SDO'
+        errorStatus = 'warning'
+      }
+      break
+
+    case '60':
+      if (sdoType == 'T_SDO') {
+        if (parseInt(data) == 0) {
+          interpretation = `Writing in ${ObjectIndex} - OK `
+          errorStatus = 'good'
+        } else {
+          interpretation = 'The data should be "00 00 00 00" confirming an OK to write'
+          errorStatus = 'warning'
+        }
+      } else {
+        //Drive don`t care what the data is
+        interpretation = 'Request a segmented Read'
+        errorStatus = 'good'
+      }
+      break
+    case '70':
+      if (sdoType == 'T_SDO') {
+        interpretation = 'Invalid CS for T_SDO'
+        errorStatus = 'error'
+      } else {
+        //Drive don`t care what the data is
+        interpretation = 'Request a segmented Read'
+        errorStatus = 'good'
+      }
+      break
+    case '80':
+      if (sdoType == 'T_SDO') {
+        interpretation = findSDO_AbortCode(data)
+        errorStatus = 'error'
+      } else {
+        //Drive don`t care what the data is
+        interpretation = 'Invalid CS'
+        errorStatus = 'error'
       }
       break
     //TODO:41 60 70 80
+
     default:
+      interpretation = `${hex_to_ascii(fullMessage)}`
+      errorStatus = 'idk'
       break
   }
   return [interpretation, errorStatus]
+}
+
+const SDO_abortCodes = {
+  '05030000': `Toggle bit not changed: Valid only with "normal transfer" or "block transfer". The bit, which is to alternate after each transfer, did not change its state.`,
+  '05040000':
+    'Command specifier unknown: Byte 0 of the data block contains a command that is not allowed.',
+  '05040001': 'Client/server command specifier not valid or unknown',
+  '06010000': `Unsupported access to an object. If "complete access" was requested via CAN over EtherCAT (CoE) (is not supported.)`,
+  '06010002': 'Read-only entry: An attempt was made to write to a constant or read-only object.',
+  '06020000':
+    'Object not existing: An attempt was made to access a non-existing object (index incorrect).',
+  '06040041':
+    'Object cannot be PDO mapped: An attempt was made to map an object in the PDO for which that is not permissible.',
+  '06040042':
+    'Mapped PDO exceeds PDO: If the desired object were to be attached to the PDO mapping, the 8 bytes of the PDO mapping would be exceeded.',
+  '06040043': 'General parameter incompatibility reason',
+  '06040047': 'General internal incompatibility error in the device',
+  '06070010': 'Data type does not match, length of service parameter does not match',
+  '06070012':
+    'Parameter length too long: An attempt was made to write to an object with too much data; for example, with <CMD>=23h (4 bytes) to an object of type Unsigned8, <CMD>=2Fh would be correct.',
+  '06070013':
+    'Parameter length too short: An attempt was made to write to an object with too little data; for example, with <CMD>=2Fh (1 byte) to an object of type Unsigned32, <CMD>=23h would be correct.',
+  '06090011':
+    'Subindex not existing: An attempt was made to access an invalid subindex of an object; the index, on the other hand, would exist.',
+  '06090030': 'Value range of parameter exceeded (only for write access)',
+  '06090031': `Value too great: Some objects are subject to restrictions in the size of the value; in this case, an attempt was made to write an excessively large value to the object. For example, the "Pre-defined error field: Number of errors" object for 1003h:00 may only be set to the value "0"; all other numerical values result in this error.`,
+  '06090032':
+    'Value too small: Some objects are subject to restrictions in the size of the value. In this case, an attempt was made to write a value that is too small to the object.',
+  '08000000': 'General error: General error that does not fit in any other category.',
+  '08000020': 'Data cannot be transferred or stored to the application',
+  '08000021': 'Data cannot be transferred or stored to the application because of local control',
+  '08000022': `Data cannot be transferred or stored to the application because of the present device state: The parameters of the PDOs may only be changed in the "Stopped" or "Pre-Operational" state. Write access of objects 1400h to 1407h, 1600h to 1607h, 1800h to 1807h, and 1A00h to 1A07h is not permissible in the "Operational" state.`,
+  default: 'Unknown Abort Code'
+}
+
+function findSDO_AbortCode(data) {
+  return SDO_abortCodes[data] || SDO_abortCodes['default']
 }

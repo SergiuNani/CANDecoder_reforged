@@ -810,7 +810,7 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
                 'RPDO1',
                 'RPDO2',
                 'RPDO3',
-                'RPDO1',
+                'RPDO4',
                 'NMT'
               ].includes(iteration.type)
               return (
@@ -896,6 +896,8 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
                           ? `${colors.red[500]}`
                           : iteration.errorStatus == 'warning'
                           ? `${colors.yellow[500]}`
+                          : iteration.errorStatus == 'idk'
+                          ? `${colors.primary[400]}`
                           : 'inherit'
                     }}
                   >

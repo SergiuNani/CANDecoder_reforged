@@ -302,7 +302,7 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
 
   if (cobID_array[0] == 'SDO') {
     result = DecodeSDO(cobID_array[2], message)
-  } else result = ['-', 'Nothing', 'Go ask my Creator!', 'IDK Chief', 'Invalid COB-ID', 'error']
+  } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result
 }
