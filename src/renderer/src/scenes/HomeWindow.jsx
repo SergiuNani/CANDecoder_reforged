@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useContext } from 'react'
+import { useState, useRef, useEffect, useContext, SyntheticEvent } from 'react'
 import { Header } from '../components/SmallComponents.jsx'
-import { Typography, Box, useTheme, IconButton } from '@mui/material'
+import { Typography, Box, useTheme, Button, Tabs, Tab } from '@mui/material'
 import { tokens } from '../theme.js'
 import { Objects_collection_LS } from '../App.jsx'
 import SearchIcon from '@mui/icons-material/Search'
@@ -31,15 +31,36 @@ import {
   FG_units_acc_lin,
   FG_units_time
 } from '../data/SmallData.js'
+import { SDO_abortCodes } from '../functions/CANopenFunctions.js'
+
 const HomeWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const [tabsOption, setTabsOption] = useState(0)
+
+  const handleChange = (event) => {
+    setTabsOption(event)
+  }
   return (
-    <div>
+    <div
+      style={{
+        position: 'relative'
+      }}
+    >
       <Header title="Home Page"></Header>
       <div style={{ display: 'flex', width: '100%' }}>
         <div style={{ flex: '0.55', marginRight: '1rem' }}>
-          <BigObjectSearchInputComponent placeholder="Search for an Object" />
+          <TabsComponent tellParentValueChanged={handleChange} valueFromParent={tabsOption} />
+          <BigObjectSearchInputComponent
+            placeholder={
+              tabsOption == 0
+                ? 'Search for an Object'
+                : tabsOption == 1
+                ? 'Search for an SDO Abort Code'
+                : 'Search for an EMCY Code'
+            }
+            variant={tabsOption}
+          />
         </div>
         <div style={{ flex: '1', marginRight: '2rem' }}>
           <section>
@@ -53,8 +74,20 @@ const HomeWindow = () => {
 }
 export default HomeWindow
 
-function BigObjectSearchInputComponent({ placeholder, resetValueofInputFromParent, focus }) {
-  var options = Objects_collection_LS
+function BigObjectSearchInputComponent({
+  placeholder,
+  resetValueofInputFromParent,
+  focus,
+  variant
+}) {
+  var options
+  if (variant == 0) {
+    options = Objects_collection_LS
+  } else if (variant == 1) {
+    options = SDO_abortCodes
+  } else {
+    options = Objects_collection_LS
+  }
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -235,8 +268,10 @@ function BigObjectSearchInputComponent({ placeholder, resetValueofInputFromParen
               >
                 {option.Index}
               </span>{' '}
-              - {option.Name} -{' '}
-              <span style={{ color: `${colors.green[300]}` }}>{option.BitSize} bits</span>
+              - {option.Name}
+              {variant == 0 ? (
+                <span style={{ color: `${colors.green[300]}` }}> - {option.BitSize} bits</span>
+              ) : null}
             </li>
           ))}
         </ul>
@@ -643,5 +678,46 @@ function BigFindCobIDComponent() {
         />
       </section>
     </Box>
+  )
+}
+
+export function TabsComponent({ tellParentValueChanged, valueFromParent }) {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [value, setValue] = useState(valueFromParent)
+  const handleChange = (event, newValue) => {
+    tellParentValueChanged(newValue)
+    setValue(newValue)
+  }
+
+  const tabOptions = [
+    { label: 'CANopen Objects' },
+    { label: 'Abort Codes' },
+    { label: 'EMCY Codes' }
+  ]
+
+  return (
+    <Tabs
+      value={value}
+      onChange={handleChange}
+      sx={{
+        marginBottom: '1rem',
+        position: 'absolute',
+        top: '-1rem'
+      }}
+    >
+      {tabOptions.map((tab, index) => (
+        <Tab
+          key={index}
+          label={tab.label}
+          sx={{
+            color: `${colors.grey[100]}`,
+            ['&.Mui-selected']: {
+              color: `${colors.green[400]}`
+            }
+          }}
+        />
+      ))}
+    </Tabs>
   )
 }

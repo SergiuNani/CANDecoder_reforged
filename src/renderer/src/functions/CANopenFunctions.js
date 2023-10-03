@@ -69,7 +69,6 @@ export function GetObject(index) {
   }
 }
 export function DecodeSDO(sdoType, message) {
-  //TODO: segmented reading , gl :))
   // Message will always be less or equal than 16 characters
   if (message.length < 8) {
     //ERROR: SDO insufficient
@@ -83,7 +82,6 @@ export function DecodeSDO(sdoType, message) {
   Object = GetObject(Object.concat('_' + message.slice(6, 8)))
   var aux_message = LittleEndian(message.slice(8, 16))
 
-  //TODO: Check in the future because of segmented reading
   if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS) && sdoType == 'R_SDO') {
     return [
       CS,
@@ -278,7 +276,6 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         errorStatus = 'error'
       }
       break
-    //TODO:41 60 70 80
 
     default:
       interpretation = `${hex_to_ascii(fullMessage)}`
@@ -288,39 +285,105 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
   return [interpretation, errorStatus]
 }
 
-const SDO_abortCodes = {
-  '05030000': `Toggle bit not changed: Valid only with "normal transfer" or "block transfer". The bit, which is to alternate after each transfer, did not change its state.`,
-  '05040000':
-    'Command specifier unknown: Byte 0 of the data block contains a command that is not allowed.',
-  '05040001': 'Client/server command specifier not valid or unknown',
-  '06010000': `Unsupported access to an object. If "complete access" was requested via CAN over EtherCAT (CoE) (is not supported.)`,
-  '06010002': 'Read-only entry: An attempt was made to write to a constant or read-only object.',
-  '06020000':
-    'Object not existing: An attempt was made to access a non-existing object (index incorrect).',
-  '06040041':
-    'Object cannot be PDO mapped: An attempt was made to map an object in the PDO for which that is not permissible.',
-  '06040042':
-    'Mapped PDO exceeds PDO: If the desired object were to be attached to the PDO mapping, the 8 bytes of the PDO mapping would be exceeded.',
-  '06040043': 'General parameter incompatibility reason',
-  '06040047': 'General internal incompatibility error in the device',
-  '06070010': 'Data type does not match, length of service parameter does not match',
-  '06070012':
-    'Parameter length too long: An attempt was made to write to an object with too much data; for example, with <CMD>=23h (4 bytes) to an object of type Unsigned8, <CMD>=2Fh would be correct.',
-  '06070013':
-    'Parameter length too short: An attempt was made to write to an object with too little data; for example, with <CMD>=2Fh (1 byte) to an object of type Unsigned32, <CMD>=23h would be correct.',
-  '06090011':
-    'Subindex not existing: An attempt was made to access an invalid subindex of an object; the index, on the other hand, would exist.',
-  '06090030': 'Value range of parameter exceeded (only for write access)',
-  '06090031': `Value too great: Some objects are subject to restrictions in the size of the value; in this case, an attempt was made to write an excessively large value to the object. For example, the "Pre-defined error field: Number of errors" object for 1003h:00 may only be set to the value "0"; all other numerical values result in this error.`,
-  '06090032':
-    'Value too small: Some objects are subject to restrictions in the size of the value. In this case, an attempt was made to write a value that is too small to the object.',
-  '08000000': 'General error: General error that does not fit in any other category.',
-  '08000020': 'Data cannot be transferred or stored to the application',
-  '08000021': 'Data cannot be transferred or stored to the application because of local control',
-  '08000022': `Data cannot be transferred or stored to the application because of the present device state: The parameters of the PDOs may only be changed in the "Stopped" or "Pre-Operational" state. Write access of objects 1400h to 1407h, 1600h to 1607h, 1800h to 1807h, and 1A00h to 1A07h is not permissible in the "Operational" state.`,
-  default: 'Unknown Abort Code'
-}
+export const SDO_abortCodes = [
+  {
+    Index: '05030000',
+    Name: `Toggle bit not changed: Valid only with "normal transfer" or "block transfer". The bit, which is to alternate after each transfer, did not change its state.`
+  },
+  {
+    Index: '05040000',
+    Name: 'Command specifier unknown: Byte 0 of the data block contains a command that is not allowed.'
+  },
+  {
+    Index: '05040001',
+    Name: 'Client/server command specifier not valid or unknown'
+  },
+  {
+    Index: '06010000',
+    Name: `Unsupported access to an object. If "complete access" was requested via CAN over EtherCAT (CoE) (is not supported.)`
+  },
+  {
+    Index: '06010002',
+    Name: 'Read-only entry: An attempt was made to write to a constant or read-only object.'
+  },
+  {
+    Index: '06020000',
+    Name: 'Object not existing: An attempt was made to access a non-existing object (index incorrect).'
+  },
+  {
+    Index: '06040041',
+    Name: 'Object cannot be PDO mapped: An attempt was made to map an object in the PDO for which that is not permissible.'
+  },
+  {
+    Index: '06040042',
+    Name: 'Mapped PDO exceeds PDO: If the desired object were to be attached to the PDO mapping, the 8 bytes of the PDO mapping would be exceeded.'
+  },
+  {
+    Index: '06040043',
+    Name: 'General parameter incompatibility reason'
+  },
+  {
+    Index: '06040047',
+    Name: 'General internal incompatibility error in the device'
+  },
+  {
+    Index: '06070010',
+    Name: 'Data type does not match, length of service parameter does not match'
+  },
+  {
+    Index: '06070012',
+    Name: 'Parameter length too long: An attempt was made to write to an object with too much data; for example, with <CMD>=23h (4 bytes) to an object of type Unsigned8, <CMD>=2Fh would be correct.'
+  },
+  {
+    Index: '06070013',
+    Name: 'Parameter length too short: An attempt was made to write to an object with too little data; for example, with <CMD>=2Fh (1 byte) to an object of type Unsigned32, <CMD>=23h would be correct.'
+  },
+  {
+    Index: '06090011',
+    Name: 'Subindex not existing: An attempt was made to access an invalid subindex of an object; the index, on the other hand, would exist.'
+  },
+  {
+    Index: '06090030',
+    Name: 'Value range of parameter exceeded (only for write access)'
+  },
+  {
+    Index: '06090031',
+    Name: `Value too great: Some objects are subject to restrictions in the size of the value; in this case, an attempt was made to write an excessively large value to the object. For example, the "Pre-defined error field: Number of errors" object for 1003h:00 may only be set to the value "0"; all other numerical values result in this error.`
+  },
+  {
+    Index: '06090032',
+    Name: 'Value too small: Some objects are subject to restrictions in the size of the value. In this case, an attempt was made to write a value that is too small to the object.'
+  },
+  {
+    Index: '08000000',
+    Name: 'General error: General error that does not fit in any other category.'
+  },
+  {
+    Index: '08000020',
+    Name: 'Data cannot be transferred or stored to the application'
+  },
+  {
+    Index: '08000021',
+    Name: 'Data cannot be transferred or stored to the application because of local control'
+  },
+  {
+    Index: '08000022',
+    Name: `Data cannot be transferred or stored to the application because of the present device state: The parameters of the PDOs may only be changed in the "Stopped" or "Pre-Operational" state. Write access of objects 1400h to 1407h, 1600h to 1607h, 1800h to 1807h, and 1A00h to 1A07h is not permissible in the "Operational" state.`
+  },
+  {
+    Index: '07D00000',
+    Name: `Assumption: Requesting to read a Segmented message while not available.`
+  },
+  {
+    Index: 'default',
+    Name: 'Unknown Abort Code'
+  }
+]
 
 function findSDO_AbortCode(data) {
-  return SDO_abortCodes[data] || SDO_abortCodes['default']
+  console.log('🚀 ~ file: CANopenFunctions.js:380 ~ findSDO_AbortCode ~ data:', data)
+  const result = SDO_abortCodes.find((item) => item.Index === data)
+  if (result) {
+    return result.Name
+  } else return 'Unknown Abort Code'
 }
