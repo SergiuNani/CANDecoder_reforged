@@ -65,6 +65,18 @@ export default App
 export const SidebarContext = createContext(null)
 export const MotorSpecificationsContext = createContext()
 export const UserVsDebugModeContext = createContext()
+export const FG_Context = createContext()
+
+const FG_OptionsStarter = {
+  FG_Display_POS: 'rot',
+  FG_Display_SPD: 'rpm',
+  FG_Display_ACC: 'rad/s^2',
+  FG_Display_TIME: 'ms',
+  FG_Applied_POS: 'IU',
+  FG_Applied_SPD: 'IU',
+  FG_Applied_ACC: 'IU',
+  FG_Applied_TIME: 'IU'
+}
 function MyProviders({ children }) {
   const [theme, colorMode] = useMode()
   const [loadType, setLoadType] = useState('ROTARY')
@@ -72,6 +84,10 @@ function MyProviders({ children }) {
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
   const [userVsDebugMode, setUserVsDebugMode] = useState('USER')
+
+  // FG OPTIONS
+  const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('')
+  const [FG_OptionsObject, setFG_OptionsObject] = useState(FG_OptionsStarter)
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -82,7 +98,16 @@ function MyProviders({ children }) {
         >
           <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
             <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
-              {children}
+              <FG_Context.Provider
+                value={{
+                  FG_DisplayVSApplied,
+                  setFG_DisplayVSApplied,
+                  FG_OptionsObject,
+                  setFG_OptionsObject
+                }}
+              >
+                {children}
+              </FG_Context.Provider>
             </UserVsDebugModeContext.Provider>
           </SidebarContext.Provider>
         </MotorSpecificationsContext.Provider>

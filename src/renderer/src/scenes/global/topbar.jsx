@@ -12,10 +12,19 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { RadioGroup, FormControlLabel } from '@mui/material'
 import Radio from '@mui/material/Radio'
-import { MotorSpecificationsContext, UserVsDebugModeContext } from '../../App'
-import { Input_AutoFormat } from '../../components/ForumsComponents'
+import { MotorSpecificationsContext, UserVsDebugModeContext, FG_Context } from '../../App'
+import { Input_AutoFormat, Input_ChooseOption } from '../../components/ForumsComponents'
 import { filterDecimal, filterDecimalWithComma } from '../../functions/NumberConversion'
 
+import {
+  FG_units_pos_rot,
+  FG_units_spd_rot,
+  FG_units_acc_rot,
+  FG_units_spd_lin,
+  FG_units_pos_lin,
+  FG_units_acc_lin,
+  FG_units_time
+} from '../../data/SmallData'
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -86,6 +95,7 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
 
         <AccordionComponent title="Working Mode" children={<WorkingModeInsertPart />} />
         <AccordionComponent title="General Settings" children={<GeneralSettingsInsertPart />} />
+        <AccordionComponent title="Factor Group" children={<FactorGroupInsertPart />} />
       </div>
     </Dialog>
   )
@@ -208,6 +218,69 @@ const GeneralSettingsInsertPart = () => {
         />{' '}
         <p> ms </p>
       </div>
+    </section>
+  )
+}
+
+const FactorGroupInsertPart = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const { FG_DisplayVSApplied, setFG_DisplayVSApplied, FG_OptionsObject, setFG_OptionsObject } =
+    useContext(FG_Context)
+
+  function handleAnyInputChange() {
+    console.log(`yee boi`)
+  }
+  return (
+    <section style={{ padding: '1rem' }}>
+      <div>ff</div>
+
+      <RadioGroup
+        // row
+        onChange={(e) => {
+          // setLoadType(e.target.value)
+        }}
+        value={'4445'}
+        sx={{
+          justifyContent: 'center',
+          '& .MuiSvgIcon-root': {
+            // fontSize: '1rem'
+            color: `${colors.green[400]}`
+          }
+        }}
+      >
+        <FormControlLabel value="Display" control={<Radio />} label="Display Factor Group" />
+        <div
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
+        >
+          <Input_ChooseOption
+            title="POS"
+            array={FG_units_pos_rot}
+            tellParentOptionChanged={handleAnyInputChange}
+            variant
+          />
+          <Input_ChooseOption
+            title="SPD"
+            array={FG_units_pos_rot}
+            tellParentOptionChanged={handleAnyInputChange}
+            variant
+          />
+          <Input_ChooseOption
+            title="ACC"
+            array={FG_units_pos_rot}
+            tellParentOptionChanged={handleAnyInputChange}
+            variant
+          />
+          <Input_ChooseOption
+            title="TIME"
+            array={FG_units_pos_rot}
+            tellParentOptionChanged={handleAnyInputChange}
+            variant
+          />
+        </div>
+        <FormControlLabel value="Applied" control={<Radio />} label="Applied Factor Group" />
+      </RadioGroup>
     </section>
   )
 }

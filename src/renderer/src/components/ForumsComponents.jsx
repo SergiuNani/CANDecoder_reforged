@@ -501,7 +501,8 @@ export function Input_ChooseOption({
   focus,
   array,
   forceValueReset,
-  forceValueReset1
+  forceValueReset1,
+  variant
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -642,7 +643,8 @@ export function Input_ChooseOption({
           autoFocus={focus}
           placeholder={placeholder}
           style={{
-            backgroundColor: `${colors.primary[300]}`,
+            backgroundColor: variant ? `${colors.primary[200]}` : ` ${colors.primary[300]}`,
+            // border: `1px solid ${colors.primary[500]}`,
             padding: '0.5rem 1rem',
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
