@@ -381,7 +381,6 @@ export const SDO_abortCodes = [
 ]
 
 function findSDO_AbortCode(data) {
-  console.log('🚀 ~ file: CANopenFunctions.js:380 ~ findSDO_AbortCode ~ data:', data)
   const result = SDO_abortCodes.find((item) => item.Index === data)
   if (result) {
     return result.Name

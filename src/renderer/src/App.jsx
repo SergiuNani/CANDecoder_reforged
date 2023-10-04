@@ -67,7 +67,7 @@ export const MotorSpecificationsContext = createContext()
 export const UserVsDebugModeContext = createContext()
 export const FG_Context = createContext()
 
-const FG_OptionsStarter = {
+export const FG_OptionsStarter = {
   FG_Display_POS: 'rot',
   FG_Display_SPD: 'rpm',
   FG_Display_ACC: 'rad/s^2',
@@ -86,7 +86,7 @@ function MyProviders({ children }) {
   const [userVsDebugMode, setUserVsDebugMode] = useState('USER')
 
   // FG OPTIONS
-  const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('')
+  const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('Display')
   const [FG_OptionsObject, setFG_OptionsObject] = useState(FG_OptionsStarter)
 
   return (

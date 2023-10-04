@@ -495,6 +495,7 @@ export function Input_AutoFormat({
 }
 
 export function Input_ChooseOption({
+  key,
   title,
   placeholder,
   tellParentOptionChanged,
@@ -502,22 +503,32 @@ export function Input_ChooseOption({
   array,
   forceValueReset,
   forceValueReset1,
-  variant
+  variant,
+  parentForceValue
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const [inputValue, setInputValue] = useState(array[0])
+  var firstValue
+  if (parentForceValue) {
+    firstValue = parentForceValue
+  } else firstValue = array[0]
+
+  const [inputValue, setInputValue] = useState(firstValue)
   const options = array
   const [isFocused, setIsFocused] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
   const [scrollDirection, setScrollDirection] = useState(null)
   const inputRef = useRef()
   const ulRef = useRef()
+  useEffect(() => {
+    setInputValue(firstValue)
+  }, [forceValueReset, forceValueReset1])
 
   useEffect(() => {
-    setInputValue(array[0])
-  }, [forceValueReset, forceValueReset1])
+    console.log('🚀 ~ :parentForceValue', parentForceValue)
+    if (parentForceValue) setInputValue(parentForceValue)
+  }, [parentForceValue])
 
   useEffect(() => {
     const wheelHandler = (event) => {
@@ -532,8 +543,9 @@ export function Input_ChooseOption({
   }, [])
 
   useEffect(() => {
-    tellParentOptionChanged(inputValue)
-  }, [inputValue])
+    tellParentOptionChanged(inputValue, title)
+  }, [inputValue, forceValueReset])
+
   function handleWheelEvent(event) {
     if (inputRef.current.contains(event.target)) {
       setInputValue((prevInputValue) => {
@@ -686,7 +698,8 @@ export function Input_ChooseOption({
                 padding: '0.5rem 1rem',
                 // border: `1px solid ${colors.red[500]}`,
                 // borderRadius: '4rem',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                zIndex: 1
               }}
               className="hover"
             >

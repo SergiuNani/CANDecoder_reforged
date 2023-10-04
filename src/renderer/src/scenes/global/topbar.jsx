@@ -1,4 +1,4 @@
-import { useContext, useState, createContext } from 'react'
+import { useContext, useState, createContext, useEffect } from 'react'
 import { Box, IconButton, useTheme, Typography } from '@mui/material'
 import { ColorModeContext, tokens } from '../../theme'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
@@ -12,7 +12,12 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { RadioGroup, FormControlLabel } from '@mui/material'
 import Radio from '@mui/material/Radio'
-import { MotorSpecificationsContext, UserVsDebugModeContext, FG_Context } from '../../App'
+import {
+  MotorSpecificationsContext,
+  UserVsDebugModeContext,
+  FG_Context,
+  FG_OptionsStarter
+} from '../../App'
 import { Input_AutoFormat, Input_ChooseOption } from '../../components/ForumsComponents'
 import { filterDecimal, filterDecimalWithComma } from '../../functions/NumberConversion'
 
@@ -228,22 +233,86 @@ const FactorGroupInsertPart = () => {
 
   const { FG_DisplayVSApplied, setFG_DisplayVSApplied, FG_OptionsObject, setFG_OptionsObject } =
     useContext(FG_Context)
+  var { loadType } = useContext(MotorSpecificationsContext)
 
-  function handleAnyInputChange() {
-    console.log(`yee boi`)
+  // console.log(
+  //   'DISPLAY: ' +
+  //     FG_OptionsObject.FG_Display_POS +
+  //     ' - ' +
+  //     FG_OptionsObject.FG_Display_SPD +
+  //     ' - ' +
+  //     FG_OptionsObject.FG_Display_ACC +
+  //     ' - ' +
+  //     FG_OptionsObject.FG_Display_TIME
+  // )
+  // console.log(
+  //   'Applied: ' +
+  //     FG_OptionsObject.FG_Applied_POS +
+  //     ' - ' +
+  //     FG_OptionsObject.FG_Applied_SPD +
+  //     ' - ' +
+  //     FG_OptionsObject.FG_Applied_ACC +
+  //     ' - ' +
+  //     FG_OptionsObject.FG_Applied_TIME
+  // )
+  function handleAnyInputChange(value, title) {
+    if (title == 'POS') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_POS: value })
+    else if (title == 'SPD') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_SPD: value })
+    else if (title == 'ACC') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_ACC: value })
+    else setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_TIME: value })
+    console.log('handleAnyInputChange MODIFY: ' + FG_OptionsObject.FG_Display_POS)
   }
+  function handleAppliedFG_inputChange(value, title) {
+    if (title == 'POS') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_POS: value })
+    else if (title == 'SPD') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_SPD: value })
+    else if (title == 'ACC') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_ACC: value })
+    else setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_TIME: value })
+  }
+
+  // useEffect(() => {
+  //   if (loadType == 'ROTARY') {
+  //     console.log(`WTF-----------------`)
+
+  //     // setFG_OptionsObject(setFG_OptionsObject)
+  //     setFG_OptionsObject({
+  //       ...FG_OptionsObject,
+  //       FG_Display_POS: 'IU',
+  //       FG_Display_SPD: 'IU',
+  //       FG_Display_ACC: 'IU',
+  //       FG_Display_TIME: 'IU',
+  //       FG_Applied_POS: 'IU',
+  //       FG_Applied_SPD: 'IU',
+  //       FG_Applied_ACC: 'IU',
+  //       FG_Applied_TIME: 'IU'
+  //     })
+  //   } else {
+  //     console.log(`Shit going down-----------------`)
+  //     setFG_OptionsObject({
+  //       ...FG_OptionsObject,
+  //       FG_Display_POS: 'IU',
+  //       FG_Display_SPD: 'IU',
+  //       FG_Display_ACC: 'IU',
+  //       FG_Display_TIME: 'IU',
+  //       FG_Applied_POS: 'IU',
+  //       FG_Applied_SPD: 'IU',
+  //       FG_Applied_ACC: 'IU',
+  //       FG_Applied_TIME: 'IU'
+  //     })
+  //   }
+  // }, [loadType])
   return (
     <section style={{ padding: '1rem' }}>
-      <div>ff</div>
+      <li>Select "Applied Factor Group" only when it's activated in the drive as well.</li>
 
       <RadioGroup
         // row
         onChange={(e) => {
-          // setLoadType(e.target.value)
+          setFG_DisplayVSApplied(e.target.value)
         }}
-        value={'4445'}
+        value={FG_DisplayVSApplied}
         sx={{
           justifyContent: 'center',
+          mt: '1rem',
           '& .MuiSvgIcon-root': {
             // fontSize: '1rem'
             color: `${colors.green[400]}`
@@ -251,35 +320,88 @@ const FactorGroupInsertPart = () => {
         }}
       >
         <FormControlLabel value="Display" control={<Radio />} label="Display Factor Group" />
+        {/* DISPLAY FACTOR GROUP -------------------------------------- */}
         <div
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
         >
           <Input_ChooseOption
             title="POS"
-            array={FG_units_pos_rot}
+            array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
             tellParentOptionChanged={handleAnyInputChange}
+            parentForceValue={FG_OptionsObject.FG_Display_POS}
+            forceValueReset={loadType}
             variant
           />
-          <Input_ChooseOption
+          {/* <Input_ChooseOption
+            key={loadType + 'SPD'}
             title="SPD"
-            array={FG_units_pos_rot}
+            array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
             tellParentOptionChanged={handleAnyInputChange}
+            parentTellsFirstValue={FG_OptionsObject.FG_Display_SPD}
             variant
+            forceValueReset={loadType}
           />
           <Input_ChooseOption
+            key={loadType + 'ACC'}
             title="ACC"
-            array={FG_units_pos_rot}
+            array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
+            parentTellsFirstValue={FG_OptionsObject.FG_Display_ACC}
             tellParentOptionChanged={handleAnyInputChange}
             variant
+            forceValueReset={loadType}
           />
           <Input_ChooseOption
+            key={loadType + 'TIME'}
             title="TIME"
-            array={FG_units_pos_rot}
+            array={FG_units_time}
             tellParentOptionChanged={handleAnyInputChange}
+            parentTellsFirstValue={FG_OptionsObject.FG_Display_TIME}
             variant
-          />
+            forceValueReset={loadType}
+          /> */}
         </div>
         <FormControlLabel value="Applied" control={<Radio />} label="Applied Factor Group" />
+        {/* APPLIED FACTOR GROUP---------------------------- */}
+        {/* <div
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
+        >
+          <Input_ChooseOption
+            key={loadType + 'POS1'}
+            title="POS"
+            array={loadType ? FG_units_pos_rot : FG_units_pos_lin}
+            tellParentOptionChanged={handleAppliedFG_inputChange}
+            parentTellsFirstValue={FG_OptionsObject.FG_Applied_POS}
+            variant
+            forceValueReset={loadType}
+          />
+          <Input_ChooseOption
+            key={loadType + 'SPD1'}
+            title="SPD"
+            array={loadType ? FG_units_spd_rot : FG_units_spd_lin}
+            tellParentOptionChanged={handleAppliedFG_inputChange}
+            parentTellsFirstValue={FG_OptionsObject.FG_Applied_SPD}
+            variant
+            forceValueReset={loadType}
+          />
+          <Input_ChooseOption
+            key={loadType + 'ACC1'}
+            title="ACC"
+            array={loadType ? FG_units_acc_rot : FG_units_acc_lin}
+            parentTellsFirstValue={FG_OptionsObject.FG_Applied_ACC}
+            tellParentOptionChanged={handleAppliedFG_inputChange}
+            variant
+            forceValueReset={loadType}
+          />
+          <Input_ChooseOption
+            key={loadType + 'TIME1'}
+            title="TIME"
+            array={FG_units_time}
+            tellParentOptionChanged={handleAppliedFG_inputChange}
+            parentTellsFirstValue={FG_OptionsObject.FG_Applied_TIME}
+            variant
+            forceValueReset={loadType}
+          />
+        </div> */}
       </RadioGroup>
     </section>
   )
