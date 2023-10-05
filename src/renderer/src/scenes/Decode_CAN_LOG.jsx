@@ -229,7 +229,20 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
               <div style={{ color: `${colors.red[300]}`, display: 'flex' }}>
                 {' '}
                 {iteration[4].map((i, ii) => {
-                  return <p key={ii + 'abc'}> - {i} - </p>
+                  return (
+                    <p
+                      key={ii + 'abc'}
+                      style={{
+                        display: 'flex'
+                        // justifyContent: 'center',
+                        // alignItems: 'center',
+                        // border: `1px solid yellow`
+                      }}
+                    >
+                      {' '}
+                      {i} -
+                    </p>
+                  )
                 })}
               </div>
               <p style={{ color: `${colors.green[100]}` }}>-- [{iteration[2]}]</p>
@@ -890,7 +903,12 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
                       textAlign: 'center',
                       maxWidth: '25rem',
                       overflowY: 'auto',
-                      fontWeight: iteration.errorStatus == 'error' ? '700' : 'inherit',
+                      fontWeight:
+                        iteration.errorStatus == 'error'
+                          ? '700'
+                          : iteration.errorStatus == 'blue'
+                          ? '700'
+                          : 'inherit',
                       color:
                         iteration.errorStatus == 'error'
                           ? `${colors.red[500]}`
@@ -898,6 +916,8 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
                           ? `${colors.yellow[500]}`
                           : iteration.errorStatus == 'idk'
                           ? `${colors.primary[400]}`
+                          : iteration.errorStatus == 'blue'
+                          ? `${colors.personal[400]}`
                           : 'inherit'
                     }}
                   >

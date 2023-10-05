@@ -235,26 +235,6 @@ const FactorGroupInsertPart = () => {
     useContext(FG_Context)
   var { loadType } = useContext(MotorSpecificationsContext)
 
-  // console.log(
-  //   'DISPLAY: ' +
-  //     FG_OptionsObject.FG_Display_POS +
-  //     ' - ' +
-  //     FG_OptionsObject.FG_Display_SPD +
-  //     ' - ' +
-  //     FG_OptionsObject.FG_Display_ACC +
-  //     ' - ' +
-  //     FG_OptionsObject.FG_Display_TIME
-  // )
-  // console.log(
-  //   'Applied: ' +
-  //     FG_OptionsObject.FG_Applied_POS +
-  //     ' - ' +
-  //     FG_OptionsObject.FG_Applied_SPD +
-  //     ' - ' +
-  //     FG_OptionsObject.FG_Applied_ACC +
-  //     ' - ' +
-  //     FG_OptionsObject.FG_Applied_TIME
-  // )
   function handleAnyInputChange(value, title) {
     if (title == 'POS') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_POS: value })
     else if (title == 'SPD') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_SPD: value })
@@ -269,35 +249,17 @@ const FactorGroupInsertPart = () => {
   }
   useEffect(() => {
     if (delayedUseEffect) {
-      if (loadType == 'ROTARY') {
-        console.log(`WTF-----------------`)
-
-        // setFG_OptionsObject(setFG_OptionsObject)
-        setFG_OptionsObject({
-          ...FG_OptionsObject,
-          FG_Display_POS: 'IU',
-          FG_Display_SPD: 'IU',
-          FG_Display_ACC: 'IU',
-          FG_Display_TIME: 'IU',
-          FG_Applied_POS: 'IU',
-          FG_Applied_SPD: 'IU',
-          FG_Applied_ACC: 'IU',
-          FG_Applied_TIME: 'IU'
-        })
-      } else {
-        console.log(`Shit going down-----------------`)
-        setFG_OptionsObject({
-          ...FG_OptionsObject,
-          FG_Display_POS: 'IU',
-          FG_Display_SPD: 'IU',
-          FG_Display_ACC: 'IU',
-          FG_Display_TIME: 'IU',
-          FG_Applied_POS: 'IU',
-          FG_Applied_SPD: 'IU',
-          FG_Applied_ACC: 'IU',
-          FG_Applied_TIME: 'IU'
-        })
-      }
+      setFG_OptionsObject({
+        ...FG_OptionsObject,
+        FG_Display_POS: 'IU',
+        FG_Display_SPD: 'IU',
+        FG_Display_ACC: 'IU',
+        FG_Display_TIME: 'IU',
+        FG_Applied_POS: 'IU',
+        FG_Applied_SPD: 'IU',
+        FG_Applied_ACC: 'IU',
+        FG_Applied_TIME: 'IU'
+      })
     }
   }, [loadType])
 
@@ -306,7 +268,7 @@ const FactorGroupInsertPart = () => {
   }, [])
   return (
     <section style={{ padding: '1rem' }}>
-      <li>Select "Applied Factor Group" only when it's activated in the drive as well.</li>
+      <li>Select "Applied Factor Group" only when it's enabled in the drive as well.</li>
 
       <RadioGroup
         // row

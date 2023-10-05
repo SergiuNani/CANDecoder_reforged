@@ -340,11 +340,11 @@ export function UnitsConvertor(
       deg: (fullRot_IU / (2 * Math.PI)) * 0.0174533,
       rot: fullRot_IU,
       IU: 1,
-      m: 1,
-      mm: 0.001,
-      um: 1e-6,
-      in: 0.0254,
-      ft: 0.3048
+      m: fullRot_IU,
+      mm: fullRot_IU * 0.001,
+      um: fullRot_IU * 1e-6,
+      in: fullRot_IU * 0.0254,
+      ft: fullRot_IU * 0.3048
     }
     return convertValue(unitFactors)
   } else if (object_type === 'SPD') {

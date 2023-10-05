@@ -1,5 +1,7 @@
 import { Objects_collection_LS } from '../App'
-import { LittleEndian, hexToDec, hex_to_ascii } from './NumberConversion'
+import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from './NumberConversion'
+import { FG_Context, MotorSpecificationsContext } from '../App'
+import { useContext } from 'react'
 const FG_Objects_Array = {
   POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
@@ -101,8 +103,16 @@ export function DecodeSDO(sdoType, message) {
     Object[0],
     message
   )
+
   interpretationInfo = checkForErrors[0]
   errorStatus = checkForErrors[1]
+
+  var FG_typeObject = whatFG_isObject(Object[0])
+  if (FG_typeObject && errorStatus == 'good') {
+    var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message)
+    interpretationInfo = checkForFG[0]
+    errorStatus = checkForFG[1]
+  }
 
   //Return: [CS, Object , ObjectName , data , Interpretation ]
   return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
@@ -283,6 +293,52 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       break
   }
   return [interpretation, errorStatus]
+}
+
+function Check_SDOmsg_forFG(FG_typeObject, value) {
+  var interpretationInfo = ''
+  var errorStatus = ''
+  var { FG_DisplayVSApplied, FG_OptionsObject } = useContext(FG_Context)
+  var { fullRot_IU, slowLoop } = useContext(MotorSpecificationsContext)
+
+  const conversionParams = {
+    Display: {
+      POS: { converter: hexToDec, display: FG_OptionsObject.FG_Display_POS },
+      SPD: { converter: hex2Fixed, display: FG_OptionsObject.FG_Display_SPD },
+      ACC: { converter: hex2Fixed, display: FG_OptionsObject.FG_Display_ACC },
+      TIME: { converter: hexToDec, display: FG_OptionsObject.FG_Display_TIME }
+    },
+    Applied: {
+      POS: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_POS },
+      SPD: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_SPD },
+      ACC: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_ACC },
+      TIME: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_TIME }
+    }
+  }
+
+  const conversionType = conversionParams[FG_DisplayVSApplied][FG_typeObject]
+
+  if (conversionType) {
+    let value_initial
+    if (FG_DisplayVSApplied == 'Display') {
+      value_initial = UnitsConvertor(
+        conversionType.converter(value, 32),
+        'IU',
+        conversionType.display,
+        slowLoop,
+        fullRot_IU,
+        FG_typeObject,
+        'objectTypeDirectly'
+      )
+    } else {
+      value_initial = conversionType.converter(value, 32)
+    }
+
+    interpretationInfo = `${value_initial} ${conversionType.display}`
+    errorStatus = 'blue'
+  }
+
+  return [interpretationInfo, errorStatus]
 }
 
 export const SDO_abortCodes = [

@@ -83,7 +83,7 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [userVsDebugMode, setUserVsDebugMode] = useState('USER')
+  const [userVsDebugMode, setUserVsDebugMode] = useState('USER') //USER
 
   // FG OPTIONS
   const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('Display')
