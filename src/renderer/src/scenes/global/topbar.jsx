@@ -230,7 +230,7 @@ const GeneralSettingsInsertPart = () => {
 const FactorGroupInsertPart = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
+  const [delayedUseEffect, setDelayedUseEffect] = useState(false)
   const { FG_DisplayVSApplied, setFG_DisplayVSApplied, FG_OptionsObject, setFG_OptionsObject } =
     useContext(FG_Context)
   var { loadType } = useContext(MotorSpecificationsContext)
@@ -260,7 +260,6 @@ const FactorGroupInsertPart = () => {
     else if (title == 'SPD') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_SPD: value })
     else if (title == 'ACC') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_ACC: value })
     else setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_TIME: value })
-    console.log('handleAnyInputChange MODIFY: ' + FG_OptionsObject.FG_Display_POS)
   }
   function handleAppliedFG_inputChange(value, title) {
     if (title == 'POS') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_POS: value })
@@ -268,38 +267,43 @@ const FactorGroupInsertPart = () => {
     else if (title == 'ACC') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_ACC: value })
     else setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_TIME: value })
   }
+  useEffect(() => {
+    if (delayedUseEffect) {
+      if (loadType == 'ROTARY') {
+        console.log(`WTF-----------------`)
 
-  // useEffect(() => {
-  //   if (loadType == 'ROTARY') {
-  //     console.log(`WTF-----------------`)
+        // setFG_OptionsObject(setFG_OptionsObject)
+        setFG_OptionsObject({
+          ...FG_OptionsObject,
+          FG_Display_POS: 'IU',
+          FG_Display_SPD: 'IU',
+          FG_Display_ACC: 'IU',
+          FG_Display_TIME: 'IU',
+          FG_Applied_POS: 'IU',
+          FG_Applied_SPD: 'IU',
+          FG_Applied_ACC: 'IU',
+          FG_Applied_TIME: 'IU'
+        })
+      } else {
+        console.log(`Shit going down-----------------`)
+        setFG_OptionsObject({
+          ...FG_OptionsObject,
+          FG_Display_POS: 'IU',
+          FG_Display_SPD: 'IU',
+          FG_Display_ACC: 'IU',
+          FG_Display_TIME: 'IU',
+          FG_Applied_POS: 'IU',
+          FG_Applied_SPD: 'IU',
+          FG_Applied_ACC: 'IU',
+          FG_Applied_TIME: 'IU'
+        })
+      }
+    }
+  }, [loadType])
 
-  //     // setFG_OptionsObject(setFG_OptionsObject)
-  //     setFG_OptionsObject({
-  //       ...FG_OptionsObject,
-  //       FG_Display_POS: 'IU',
-  //       FG_Display_SPD: 'IU',
-  //       FG_Display_ACC: 'IU',
-  //       FG_Display_TIME: 'IU',
-  //       FG_Applied_POS: 'IU',
-  //       FG_Applied_SPD: 'IU',
-  //       FG_Applied_ACC: 'IU',
-  //       FG_Applied_TIME: 'IU'
-  //     })
-  //   } else {
-  //     console.log(`Shit going down-----------------`)
-  //     setFG_OptionsObject({
-  //       ...FG_OptionsObject,
-  //       FG_Display_POS: 'IU',
-  //       FG_Display_SPD: 'IU',
-  //       FG_Display_ACC: 'IU',
-  //       FG_Display_TIME: 'IU',
-  //       FG_Applied_POS: 'IU',
-  //       FG_Applied_SPD: 'IU',
-  //       FG_Applied_ACC: 'IU',
-  //       FG_Applied_TIME: 'IU'
-  //     })
-  //   }
-  // }, [loadType])
+  useEffect(() => {
+    setDelayedUseEffect(true)
+  }, [])
   return (
     <section style={{ padding: '1rem' }}>
       <li>Select "Applied Factor Group" only when it's activated in the drive as well.</li>
@@ -329,79 +333,65 @@ const FactorGroupInsertPart = () => {
             array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
             tellParentOptionChanged={handleAnyInputChange}
             parentForceValue={FG_OptionsObject.FG_Display_POS}
-            forceValueReset={loadType}
             variant
           />
-          {/* <Input_ChooseOption
-            key={loadType + 'SPD'}
+          <Input_ChooseOption
             title="SPD"
             array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
             tellParentOptionChanged={handleAnyInputChange}
-            parentTellsFirstValue={FG_OptionsObject.FG_Display_SPD}
+            parentForceValue={FG_OptionsObject.FG_Display_SPD}
             variant
-            forceValueReset={loadType}
           />
           <Input_ChooseOption
-            key={loadType + 'ACC'}
             title="ACC"
             array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
-            parentTellsFirstValue={FG_OptionsObject.FG_Display_ACC}
             tellParentOptionChanged={handleAnyInputChange}
+            parentForceValue={FG_OptionsObject.FG_Display_ACC}
             variant
-            forceValueReset={loadType}
           />
           <Input_ChooseOption
-            key={loadType + 'TIME'}
             title="TIME"
             array={FG_units_time}
             tellParentOptionChanged={handleAnyInputChange}
-            parentTellsFirstValue={FG_OptionsObject.FG_Display_TIME}
+            parentForceValue={FG_OptionsObject.FG_Display_TIME}
             variant
-            forceValueReset={loadType}
-          /> */}
+          />
         </div>
         <FormControlLabel value="Applied" control={<Radio />} label="Applied Factor Group" />
         {/* APPLIED FACTOR GROUP---------------------------- */}
-        {/* <div
+
+        <div
           style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
         >
           <Input_ChooseOption
-            key={loadType + 'POS1'}
             title="POS"
-            array={loadType ? FG_units_pos_rot : FG_units_pos_lin}
+            array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
             tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentTellsFirstValue={FG_OptionsObject.FG_Applied_POS}
+            parentForceValue={FG_OptionsObject.FG_Applied_POS}
             variant
-            forceValueReset={loadType}
           />
           <Input_ChooseOption
-            key={loadType + 'SPD1'}
             title="SPD"
-            array={loadType ? FG_units_spd_rot : FG_units_spd_lin}
+            array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
             tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentTellsFirstValue={FG_OptionsObject.FG_Applied_SPD}
+            parentForceValue={FG_OptionsObject.FG_Applied_SPD}
             variant
-            forceValueReset={loadType}
           />
           <Input_ChooseOption
-            key={loadType + 'ACC1'}
             title="ACC"
-            array={loadType ? FG_units_acc_rot : FG_units_acc_lin}
-            parentTellsFirstValue={FG_OptionsObject.FG_Applied_ACC}
+            array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
             tellParentOptionChanged={handleAppliedFG_inputChange}
+            parentForceValue={FG_OptionsObject.FG_Applied_ACC}
             variant
-            forceValueReset={loadType}
           />
           <Input_ChooseOption
-            key={loadType + 'TIME1'}
             title="TIME"
             array={FG_units_time}
             tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentTellsFirstValue={FG_OptionsObject.FG_Applied_TIME}
+            parentForceValue={FG_OptionsObject.FG_Applied_TIME}
             variant
-            forceValueReset={loadType}
           />
-        </div> */}
+        </div>
       </RadioGroup>
     </section>
   )

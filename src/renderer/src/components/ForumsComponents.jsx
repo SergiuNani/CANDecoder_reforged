@@ -495,7 +495,6 @@ export function Input_AutoFormat({
 }
 
 export function Input_ChooseOption({
-  key,
   title,
   placeholder,
   tellParentOptionChanged,
@@ -521,12 +520,12 @@ export function Input_ChooseOption({
   const [scrollDirection, setScrollDirection] = useState(null)
   const inputRef = useRef()
   const ulRef = useRef()
+
   useEffect(() => {
     setInputValue(firstValue)
   }, [forceValueReset, forceValueReset1])
 
   useEffect(() => {
-    console.log('🚀 ~ :parentForceValue', parentForceValue)
     if (parentForceValue) setInputValue(parentForceValue)
   }, [parentForceValue])
 
@@ -540,17 +539,16 @@ export function Input_ChooseOption({
     return () => {
       window.removeEventListener('wheel', wheelHandler)
     }
-  }, [])
+  }, [options])
 
   useEffect(() => {
     tellParentOptionChanged(inputValue, title)
-  }, [inputValue, forceValueReset])
+  }, [inputValue])
 
   function handleWheelEvent(event) {
     if (inputRef.current.contains(event.target)) {
       setInputValue((prevInputValue) => {
-        const currentIndex = options.findIndex((iterate) => iterate === prevInputValue)
-
+        const currentIndex = options.findIndex((iterate) => iterate == prevInputValue)
         if (event.deltaY > 0 && currentIndex < options.length - 1) {
           const nextOption = options[currentIndex + 1]
           return nextOption
