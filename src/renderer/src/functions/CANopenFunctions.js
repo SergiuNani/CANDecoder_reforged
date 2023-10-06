@@ -24,6 +24,112 @@ const FG_Objects_Array = {
   ]
 }
 
+const ObjectDescriptions = {
+  6060: {
+    '-5': 'Manufacturer specific – External Reference Torque Mode1',
+    '-4': 'Manufacturer specific – External Reference Speed Mode1',
+    '-3': 'Manufacturer specific – External Reference Position Mode1',
+    '-2': 'Manufacturer specific – Electronic Camming Position Mode',
+    '-1': 'Manufacturer specific – Electronic Gearing Position Mode',
+    0: 'Reserved',
+    1: 'Profile Position Mode',
+    2: 'Reserved',
+    3: 'Profile Velocity Mode',
+    4: 'Profile Torque Mode1',
+    5: 'Reserved',
+    6: 'Homing Mode',
+    7: 'Interpolated Position Mode',
+    8: 'Cyclic Synchronous Position Mode (CSP)',
+    9: 'Cyclic sync Velocity Mode (CSV)2',
+    10: 'Cyclic sync Torque Mode (CST)2'
+  },
+  '605E': {
+    '-1': 'No action',
+    0: 'Disable drive, motor is free to rotate',
+    1: 'Reserved',
+    2: 'Slow down with quick stop ramp'
+  },
+  '605A': {
+    0: 'Disable drive function',
+    1: 'Slow down on slow down ramp and transit into Switch On Disabled',
+    2: 'Slow down on quick stop ramp and transit into Switch On Disabled',
+    3: 'Reserved',
+    4: 'Reserved',
+    5: 'Slow down on slow down ramp and stay in Quick Stop Active',
+    6: 'Slow down on quick stop ramp and stay in Quick Stop Active'
+  },
+  '605B': {
+    0: 'Disable drive function (switch-off the drive power stage)',
+    1: 'Slow down on slowdown ramp'
+  },
+  '605C': {
+    0: 'Disable drive function (switch-off the drive power stage)',
+    1: 'Slow down on slow down ramp and disable the drive function'
+  },
+  '605D': {
+    0: 'Reserved',
+    1: 'Slow down on slow down ramp and stay in Operation Enabled',
+    2: 'Slow down on quick stop ramp'
+  },
+  6007: {
+    0: 'No action',
+    1: 'Fault signal - Execute specific fault routine set in Object 605Eh: Fault reaction option code',
+    2: 'Disable voltage command',
+    3: 'Quick stop command'
+  },
+  6098: {
+    '-4': 'Method -4',
+    '-3': 'Method -3',
+    '-2': 'Method -2',
+    '-1': 'Method -1',
+    0: 'No homing operation will be executed',
+    1: 'Method 1',
+    2: 'Method 2',
+    3: 'Method 3',
+    4: 'Method 4',
+    5: 'Method 5',
+    6: 'Method 6',
+    7: 'Method 7',
+    8: 'Method 8',
+    9: 'Method 9',
+    10: 'Method 10',
+    11: 'Method 11',
+    12: 'Method 12',
+    13: 'Method 13',
+    14: 'Method 14',
+    15: 'Reserved',
+    16: 'Reserved',
+    17: 'Method 17',
+    18: 'Method 18',
+    19: 'Method 19',
+    20: 'Method 20',
+    21: 'Method 21',
+    22: 'Method 22',
+    23: 'Method 23',
+    24: 'Method 24',
+    25: 'Method 25',
+    26: 'Method 26',
+    27: 'Method 27',
+    28: 'Method 28',
+    29: 'Method 29',
+    30: 'Method 30',
+    31: 'Reserved',
+    32: 'Reserved',
+    33: 'Method 33',
+    34: 'Method 34',
+    35: 'Method 35'
+  },
+  6086: {
+    0: 'Linear ramp (trapezoidal profile)',
+    1: 'Reserved',
+    2: 'Reserved',
+    3: 'Jerk-limited ramp (S-curve)'
+  },
+  '60C0': {
+    '-1': 'PVT (Position – Velocity – Time) cubic interpolation',
+    0: 'Linear Interpolation or PT (Position –Time) '
+  }
+}
 export function whatFG_isObject(obj) {
   obj = obj.toUpperCase()
 
@@ -36,12 +142,37 @@ export function whatFG_isObject(obj) {
   }
 
   for (const type in FG_Objects_Array) {
-    if (FG_Objects_Array[type].includes(obj)) {
+    if (FG_Objects_Array[type] && FG_Objects_Array[type].includes(obj)) {
       return type
     }
   }
 
   return false
+}
+
+export function whatObjectValueMeans(obj, value, objectSize) {
+  obj = obj.toUpperCase()
+  if (obj.slice(0, 2) == '#X') {
+    obj = obj.slice(2, obj.length)
+  }
+  // If object is '6060_00', remove '_00'
+  if (obj.length > 4 && obj.slice(4, 7) === '_00') {
+    obj = obj.slice(0, 4)
+  }
+
+  for (const type in ObjectDescriptions) {
+    if (ObjectDescriptions[type] && type == obj) {
+      var decValue = hexToDec(value, objectSize)
+
+      for (const description in ObjectDescriptions[type]) {
+        if (description == decValue) {
+          return [ObjectDescriptions[type][description], 'blue']
+        }
+      }
+    }
+  }
+
+  return [false, false]
 }
 export function GetObject(index) {
   //Input: 1013 or 1013_05
@@ -70,6 +201,9 @@ export function GetObject(index) {
     return [`${index.concat(subIndex)}`, 'Nothing Found', 0]
   }
 }
+
+// ********************** //SDO FUNCTIONS// ********************************
+
 export function DecodeSDO(sdoType, message) {
   // Message will always be less or equal than 16 characters
   if (message.length < 8) {
@@ -114,7 +248,15 @@ export function DecodeSDO(sdoType, message) {
     errorStatus = checkForFG[1]
   }
 
-  //Return: [CS, Object , ObjectName , data , Interpretation ]
+  if (errorStatus == 'good') {
+    //No error and the other functions didnt write anything in interpretationInfo
+    var ObjectValueDescription = whatObjectValueMeans(Object[0], aux_message, Object[2])
+    if (ObjectValueDescription[0]) {
+      interpretationInfo = ObjectValueDescription[0]
+      errorStatus = ObjectValueDescription[1]
+    }
+  }
+  //Return: [CS, Object , ObjectName , data , Interpretation ,errorStatus]
   return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
 }
 
@@ -255,7 +397,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       if (sdoType == 'T_SDO') {
         if (parseInt(data) == 0) {
           interpretation = `Writing in ${ObjectIndex} - OK `
-          errorStatus = 'good'
+          errorStatus = 'perfect'
         } else {
           interpretation = 'The data should be "00 00 00 00" confirming an OK to write'
           errorStatus = 'warning'
@@ -344,91 +486,119 @@ function Check_SDOmsg_forFG(FG_typeObject, value) {
 export const SDO_abortCodes = [
   {
     Index: '05030000',
-    Name: `Toggle bit not changed: Valid only with "normal transfer" or "block transfer". The bit, which is to alternate after each transfer, did not change its state.`
+    Name: 'Toggle bit not changed.'
   },
   {
     Index: '05040000',
-    Name: 'Command specifier unknown: Byte 0 of the data block contains a command that is not allowed.'
+    Name: 'SDO protocol timed out.'
   },
   {
     Index: '05040001',
-    Name: 'Client/server command specifier not valid or unknown'
+    Name: 'Client/server command specifier not valid or unknown.'
+  },
+  {
+    Index: '05040002',
+    Name: 'Invalid block size (block mode only).'
+  },
+  {
+    Index: '05040003',
+    Name: 'Invalid sequence number (block mode only).'
+  },
+  {
+    Index: '05040004',
+    Name: 'CRC error (block mode only).'
+  },
+  {
+    Index: '05040005',
+    Name: 'Out of memory.'
   },
   {
     Index: '06010000',
-    Name: `Unsupported access to an object. If "complete access" was requested via CAN over EtherCAT (CoE) (is not supported.)`
+    Name: 'Unsupported access to an object.'
+  },
+  {
+    Index: '06010001',
+    Name: 'Attempt to read a write-only object.'
   },
   {
     Index: '06010002',
-    Name: 'Read-only entry: An attempt was made to write to a constant or read-only object.'
+    Name: 'Attempt to write a read-only object.'
   },
   {
     Index: '06020000',
-    Name: 'Object not existing: An attempt was made to access a non-existing object (index incorrect).'
+    Name: 'Object does not exist in the object dictionary.'
   },
   {
     Index: '06040041',
-    Name: 'Object cannot be PDO mapped: An attempt was made to map an object in the PDO for which that is not permissible.'
+    Name: 'Object cannot be mapped to the PDO.'
   },
   {
     Index: '06040042',
-    Name: 'Mapped PDO exceeds PDO: If the desired object were to be attached to the PDO mapping, the 8 bytes of the PDO mapping would be exceeded.'
+    Name: 'The number and length of the objects to be mapped would exceed PDO length.'
   },
   {
     Index: '06040043',
-    Name: 'General parameter incompatibility reason'
+    Name: 'General parameter incompatibility reason.'
   },
   {
     Index: '06040047',
-    Name: 'General internal incompatibility error in the device'
+    Name: 'General internal incompatibility in the device.'
+  },
+  {
+    Index: '06060000',
+    Name: 'Access failed due to a hardware error.'
   },
   {
     Index: '06070010',
-    Name: 'Data type does not match, length of service parameter does not match'
+    Name: 'Data type does not match; length of service parameter does not match.'
   },
   {
     Index: '06070012',
-    Name: 'Parameter length too long: An attempt was made to write to an object with too much data; for example, with <CMD>=23h (4 bytes) to an object of type Unsigned8, <CMD>=2Fh would be correct.'
+    Name: 'Data type does not match; length of service parameter too high.'
   },
   {
     Index: '06070013',
-    Name: 'Parameter length too short: An attempt was made to write to an object with too little data; for example, with <CMD>=2Fh (1 byte) to an object of type Unsigned32, <CMD>=23h would be correct.'
+    Name: 'Data type does not match; length of service parameter too low.'
   },
   {
     Index: '06090011',
-    Name: 'Subindex not existing: An attempt was made to access an invalid subindex of an object; the index, on the other hand, would exist.'
+    Name: 'Sub-index does not exist.'
   },
   {
     Index: '06090030',
-    Name: 'Value range of parameter exceeded (only for write access)'
+    Name: 'Value range of parameter exceeded (only for write access).'
   },
   {
     Index: '06090031',
-    Name: `Value too great: Some objects are subject to restrictions in the size of the value; in this case, an attempt was made to write an excessively large value to the object. For example, the "Pre-defined error field: Number of errors" object for 1003h:00 may only be set to the value "0"; all other numerical values result in this error.`
+    Name: 'Value of parameter written too high.'
   },
   {
     Index: '06090032',
-    Name: 'Value too small: Some objects are subject to restrictions in the size of the value. In this case, an attempt was made to write a value that is too small to the object.'
+    Name: 'Value of parameter written too low.'
+  },
+  {
+    Index: '06090036',
+    Name: 'Maximum value is less than minimum value.'
   },
   {
     Index: '08000000',
-    Name: 'General error: General error that does not fit in any other category.'
+    Name: 'General error.'
   },
   {
     Index: '08000020',
-    Name: 'Data cannot be transferred or stored to the application'
+    Name: 'Data cannot be transferred or stored to the application.'
   },
   {
     Index: '08000021',
-    Name: 'Data cannot be transferred or stored to the application because of local control'
+    Name: 'Data cannot be transferred or stored to the application because of local control.'
   },
   {
     Index: '08000022',
-    Name: `Data cannot be transferred or stored to the application because of the present device state: The parameters of the PDOs may only be changed in the "Stopped" or "Pre-Operational" state. Write access of objects 1400h to 1407h, 1600h to 1607h, 1800h to 1807h, and 1A00h to 1A07h is not permissible in the "Operational" state.`
+    Name: 'Data cannot be transferred or stored to the application because of the present device state.'
   },
   {
-    Index: '07D00000',
-    Name: `Assumption: Requesting to read a Segmented message while not available.`
+    Index: '08000023',
+    Name: 'Object dictionary dynamic generation fails or no object dictionary is present (e.g. object dictionary is generated from file and generation fails because of a file error).'
   },
   {
     Index: 'default',
@@ -441,4 +611,28 @@ function findSDO_AbortCode(data) {
   if (result) {
     return result.Name
   } else return 'Unknown Abort Code'
+}
+// ********************** //PDO FUNCTIONS// ********************************
+export let PDO_mapped = {
+  1: [], //RPDO1
+  2: [], //RPDO2
+  3: [], //RPDO3
+  4: [], //RPDO4
+  5: [], //TPDO1
+  6: [], //TPDO2
+  7: [], //TPDO3
+  8: [] //TPDO4
+}
+
+export function DecodePDO(cobID, message) {
+  let index = cobID[2].includes('TPDO') ? 4 : 0
+  index = index + parseInt(cobID[2].slice(4, 5))
+  let MappedIndex = PDO_mapped[index]
+
+  if (!MappedIndex[cobID[1] - 1]) {
+    MappedIndex[cobID[1] - 1] = 'DDDDDDD'
+  }
+
+  //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]
+  return ['CS', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
 }

@@ -17,6 +17,8 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOutlined'
 import { useNavigate } from 'react-router-dom'
 import { SidebarContext } from '../../App'
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
+import { handleDebugButton } from '../debug'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -28,7 +30,13 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
         zoom: '1.2',
         margin: '0'
       }}
-      onClick={() => setSelected(title)}
+      onClick={() => {
+        setSelected(title)
+
+        if (title == 'DebugButton') {
+          handleDebugButton()
+        }
+      }}
       icon={icon}
     >
       <Typography>{title}</Typography>
@@ -194,6 +202,13 @@ const Sidebar = () => {
               title="Debug"
               to="/DebugScene"
               icon={<AdbIcon />}
+              selected={sidebarSelectedItem}
+              setSelected={setSidebarSelectedItem}
+            />
+            <Item
+              title="DebugButton"
+              // to="/DebugScene"
+              icon={<HealthAndSafetyIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

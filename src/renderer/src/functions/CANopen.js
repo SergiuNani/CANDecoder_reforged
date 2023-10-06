@@ -1,5 +1,5 @@
 import { filterHex, hexToDec } from './NumberConversion'
-import { DecodeSDO } from './CANopenFunctions'
+import { DecodeSDO, DecodePDO } from './CANopenFunctions'
 
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
@@ -276,7 +276,6 @@ export function CreateDecodedArrayOfObjects(arr) {
       return createObject(row[0], row[1], row[2], row[3])
     }
     var aux_CobID = CobID_who_dis(row[2])
-
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
     createObject(
       row[0],
@@ -302,6 +301,8 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
 
   if (cobID_array[0] == 'SDO') {
     result = DecodeSDO(cobID_array[2], message)
+  } else if (cobID_array[0] == 'PDO') {
+    result = DecodePDO(cobID_array, message)
   } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result

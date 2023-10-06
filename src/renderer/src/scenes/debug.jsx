@@ -21,6 +21,11 @@ import { Button1 } from '../components/SmallComponents'
 import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
 import { TooltipClickable } from '../components/SmallComponents'
 import { GetObject } from '../functions/CANopenFunctions'
+import { PDO_mapped } from '../functions/CANopenFunctions'
+export function handleDebugButton() {
+  console.log(`------ DEBUG BUTTON ----------`)
+  console.log(PDO_mapped)
+}
 
 const DebugScene = () => {
   const location = useLocation()

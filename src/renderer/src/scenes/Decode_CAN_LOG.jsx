@@ -917,7 +917,7 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
                           : iteration.errorStatus == 'idk'
                           ? `${colors.primary[400]}`
                           : iteration.errorStatus == 'blue'
-                          ? `${colors.personal[400]}`
+                          ? `${colors.personal[300]}`
                           : 'inherit'
                     }}
                   >
