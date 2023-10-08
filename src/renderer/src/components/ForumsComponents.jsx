@@ -421,7 +421,8 @@ export function Input_AutoFormat({
   forceRender,
   disabled,
   center,
-  longer
+  longer,
+  width
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -485,7 +486,7 @@ export function Input_AutoFormat({
             color: iteration == '1' ? `${colors.red[100]}` : `${colors.red[200]}`,
             outline: 'none',
             fontSize: '1rem',
-            width: longer ? '10rem' : iteration == '1' ? '5rem' : '7rem',
+            width: longer ? '10rem' : width ? width : iteration == '1' ? '5rem' : '7rem',
             textAlign: iteration == '1' || center ? 'center' : 'inherit'
           }}
         />

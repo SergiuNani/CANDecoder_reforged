@@ -41,8 +41,6 @@ const EditDataWindow = () => {
   const [resetValueofInput, setResetValueofInput] = useState(0)
   const TextAreaRef = useRef()
 
-  var SnackbarMessageGlobal
-
   function tellParentCheckBoxChanged(e) {
     setDataCategory(e.target.value)
     setSelectedItem4Edit('')

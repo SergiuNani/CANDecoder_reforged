@@ -181,10 +181,12 @@ export function GetObject(index) {
   if (index.length > 4) {
     subIndex = index.slice(4, 7)
     index = index.slice(0, 4)
+  } else if (index.length < 4) {
+    return [`${index}`, 'Nothing Found', 0]
   }
   var SearchResult = Objects_collection_LS.filter((object) => object.Index.match(index))
 
-  if (subIndex || ![8, 16, 32].includes(SearchResult[0].BitSize)) {
+  if (subIndex || (SearchResult[0] && ![8, 16, 32].includes(SearchResult[0].BitSize))) {
     var aux_Obj = index.concat(subIndex)
     if (SearchResult[0] && SearchResult[0].Info && SearchResult[0].Info.SubItem) {
       SearchResult = SearchResult[0].Info.SubItem.filter((object) => object.Index.match(aux_Obj))
@@ -614,25 +616,17 @@ function findSDO_AbortCode(data) {
 }
 // ********************** //PDO FUNCTIONS// ********************************
 export let PDO_mapped = {
-  1: [], //RPDO1
-  2: [], //RPDO2
-  3: [], //RPDO3
-  4: [], //RPDO4
-  5: [], //TPDO1
-  6: [], //TPDO2
-  7: [], //TPDO3
-  8: [] //TPDO4
+  //Pos 0 will not be used, only 1 to 127
+  RPDO1: [],
+  RPDO2: [],
+  RPDO3: [],
+  RPDO4: [],
+  TPDO1: [],
+  TPDO2: [],
+  TPDO3: [],
+  TPDO4: []
 }
-
 export function DecodePDO(cobID, message) {
-  let index = cobID[2].includes('TPDO') ? 4 : 0
-  index = index + parseInt(cobID[2].slice(4, 5))
-  let MappedIndex = PDO_mapped[index]
-
-  if (!MappedIndex[cobID[1] - 1]) {
-    MappedIndex[cobID[1] - 1] = 'DDDDDDD'
-  }
-
   //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]
-  return ['CS', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
+  return ['PDO', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
 }

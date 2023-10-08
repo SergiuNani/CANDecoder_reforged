@@ -234,6 +234,7 @@ function returnMaxFromArr(arr) {
 }
 
 export function CreateDecodedArrayOfObjects(arr) {
+  console.log(`Only once === CreateDecodedArrayOfObjects`)
   var ResultingArray = []
 
   function createObject(
