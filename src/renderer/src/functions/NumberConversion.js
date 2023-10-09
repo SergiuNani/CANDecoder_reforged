@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { MotorSpecificationsContext } from '../App'
 import { whatFG_isObject } from './CANopenFunctions'
+import { fullRot_IU_1, slowLoop_1 } from '../scenes/global/topbar'
 /*******************************************************************************/
 /*---------------------Number transformation functions------------------------ */
 /*******************************************************************************/
@@ -294,23 +295,11 @@ export function LittleEndian(arr) {
 /*   OUT  : "1.31064"  */
 /*------------------------------------*/
 
-export function UnitsConvertor(
-  inputValue,
-  inputUnits,
-  returnUnits,
-  slowLoop,
-  fullRot_IU,
-  object_type,
-  objectTypeDirectly
-) {
-  var slowLoop = slowLoop / 1000
-  var fullRot_IU = parseInt(fullRot_IU)
+export function UnitsConvertor(inputValue, inputUnits, returnUnits, object_type) {
+  var slowLoop = slowLoop_1 / 1000
+  var fullRot_IU = parseInt(fullRot_IU_1)
+
   const inputValueFloat = parseFloat(inputValue)
-  if ((objectTypeDirectly = 'objectTypeDirectly')) {
-  } else {
-    object_type = whatFG_isObject(object_type)
-    if (object_type == null) return 0
-  }
 
   function convertValue(unitFactors) {
     const inputFactor = unitFactors[inputUnits] || 1

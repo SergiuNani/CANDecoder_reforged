@@ -2,6 +2,7 @@ import { Objects_collection_LS } from '../App'
 import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from './NumberConversion'
 import { FG_Context, MotorSpecificationsContext } from '../App'
 import { useContext } from 'react'
+import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
 const FG_Objects_Array = {
   POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
@@ -26,6 +27,24 @@ const FG_Objects_Array = {
 
 const ObjectDescriptions = {
   6060: {
+    '-5': 'Manufacturer specific – External Reference Torque Mode1',
+    '-4': 'Manufacturer specific – External Reference Speed Mode1',
+    '-3': 'Manufacturer specific – External Reference Position Mode1',
+    '-2': 'Manufacturer specific – Electronic Camming Position Mode',
+    '-1': 'Manufacturer specific – Electronic Gearing Position Mode',
+    0: 'Reserved',
+    1: 'Profile Position Mode',
+    2: 'Reserved',
+    3: 'Profile Velocity Mode',
+    4: 'Profile Torque Mode1',
+    5: 'Reserved',
+    6: 'Homing Mode',
+    7: 'Interpolated Position Mode',
+    8: 'Cyclic Synchronous Position Mode (CSP)',
+    9: 'Cyclic sync Velocity Mode (CSV)2',
+    10: 'Cyclic sync Torque Mode (CST)2'
+  },
+  6061: {
     '-5': 'Manufacturer specific – External Reference Torque Mode1',
     '-4': 'Manufacturer specific – External Reference Speed Mode1',
     '-3': 'Manufacturer specific – External Reference Position Mode1',
@@ -152,7 +171,7 @@ export function whatFG_isObject(obj) {
 
 export function whatObjectValueMeans(obj, value, objectSize) {
   obj = obj.toUpperCase()
-  if (obj.slice(0, 2) == '#X') {
+  if (obj.slice(0, 2) == '#X' || obj.slice(0, 2) == '0X') {
     obj = obj.slice(2, obj.length)
   }
   // If object is '6060_00', remove '_00'
@@ -165,7 +184,7 @@ export function whatObjectValueMeans(obj, value, objectSize) {
       var decValue = hexToDec(value, objectSize)
 
       for (const description in ObjectDescriptions[type]) {
-        if (description == decValue) {
+        if (parseInt(description) == parseInt(decValue)) {
           return [ObjectDescriptions[type][description], 'blue']
         }
       }
@@ -444,39 +463,35 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
 }
 
 function Check_SDOmsg_forFG(FG_typeObject, value) {
+  console.log(FG_DisplayVSApplied_1)
   var interpretationInfo = ''
   var errorStatus = ''
-  var { FG_DisplayVSApplied, FG_OptionsObject } = useContext(FG_Context)
-  var { fullRot_IU, slowLoop } = useContext(MotorSpecificationsContext)
   console.log('--- 444 ----')
   const conversionParams = {
     Display: {
-      POS: { converter: hexToDec, display: FG_OptionsObject.FG_Display_POS },
-      SPD: { converter: hex2Fixed, display: FG_OptionsObject.FG_Display_SPD },
-      ACC: { converter: hex2Fixed, display: FG_OptionsObject.FG_Display_ACC },
-      TIME: { converter: hexToDec, display: FG_OptionsObject.FG_Display_TIME }
+      POS: { converter: hexToDec, display: FG_OptionsObject_1.FG_Display_POS },
+      SPD: { converter: hex2Fixed, display: FG_OptionsObject_1.FG_Display_SPD },
+      ACC: { converter: hex2Fixed, display: FG_OptionsObject_1.FG_Display_ACC },
+      TIME: { converter: hexToDec, display: FG_OptionsObject_1.FG_Display_TIME }
     },
     Applied: {
-      POS: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_POS },
-      SPD: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_SPD },
-      ACC: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_ACC },
-      TIME: { converter: hexToDec, display: FG_OptionsObject.FG_Applied_TIME }
+      POS: { converter: hexToDec, display: FG_OptionsObject_1.FG_Applied_POS },
+      SPD: { converter: hexToDec, display: FG_OptionsObject_1.FG_Applied_SPD },
+      ACC: { converter: hexToDec, display: FG_OptionsObject_1.FG_Applied_ACC },
+      TIME: { converter: hexToDec, display: FG_OptionsObject_1.FG_Applied_TIME }
     }
   }
 
-  const conversionType = conversionParams[FG_DisplayVSApplied][FG_typeObject]
+  const conversionType = conversionParams[FG_DisplayVSApplied_1][FG_typeObject]
 
   if (conversionType) {
     let value_initial
-    if (FG_DisplayVSApplied == 'Display') {
+    if (FG_DisplayVSApplied_1 == 'Display') {
       value_initial = UnitsConvertor(
         conversionType.converter(value, 32),
         'IU',
         conversionType.display,
-        slowLoop,
-        fullRot_IU,
-        FG_typeObject,
-        'objectTypeDirectly'
+        FG_typeObject
       )
     } else {
       value_initial = conversionType.converter(value, 32)
@@ -634,45 +649,67 @@ export function DecodePDO(objectIteration) {
   var MappedObjects = PDO_mapped[objectIteration.type][objectIteration.AxisID]
   objectIteration.CS = MappedObjects.length
 
-  var aux_objects = ''
-  var aux_objectsName = ''
-  var aux_objectsData = ''
-  var aux_Interpretation = ''
   var aux_frame = objectIteration.FrameData
+
+  let aux_objects = []
+  let aux_objectsName = []
+  let aux_objectsData = []
+  let aux_Interpretation = []
+  var aux_error = []
+
   MappedObjects.forEach((object, index) => {
-    object = GetObject(object)
+    const [objectIndex, objectName, objectSize] = GetObject(object)
+    const FG_typeObject = whatFG_isObject(objectIndex)
 
-    var FG_typeObject = whatFG_isObject(object[0])
+    // Process object data
+    let obj_msg = LittleEndian(aux_frame.slice(0, objectSize / 4))
+    aux_objects = aux_objects.concat(objectIndex)
+    aux_objectsName = aux_objectsName.concat(objectName)
 
-    if (index == MappedObjects.length - 1) {
-      //Last element
-      aux_objects = aux_objects.concat(object[0])
-      aux_objectsName = aux_objectsName.concat(object[1])
-      var obj_msg = LittleEndian(aux_frame.slice(0, object[2] / 4))
-      aux_objectsData = aux_objectsData.concat(obj_msg)
-      aux_frame = aux_frame.slice(object[2] / 4, aux_frame.length)
+    if (obj_msg.legnth != objectSize / 4) {
+      //In case data is insufficiet
+      obj_msg = obj_msg.padStart(objectSize / 4, '0')
+    }
+    aux_objectsData = aux_objectsData.concat(obj_msg)
+    aux_frame = aux_frame.slice(objectSize / 4)
 
-      aux_Interpretation = aux_Interpretation.concat(FG_typeObject)
+    var tempInterpretation, tempError
+    if (FG_typeObject) {
+      // Factor Group
+      ;[tempInterpretation, tempError] = Check_SDOmsg_forFG(FG_typeObject, obj_msg)
     } else {
-      aux_objects = aux_objects.concat(object[0], ' / ')
-      aux_objectsName = aux_objectsName.concat(object[1], ' / ')
-      var obj_msg = LittleEndian(aux_frame.slice(0, object[2] / 4))
-      aux_objectsData = aux_objectsData.concat(obj_msg, ' / ')
-      aux_frame = aux_frame.slice(object[2] / 4, aux_frame.length)
+      //Maybe we have info on the object
+      ;[tempInterpretation, tempError] = whatObjectValueMeans(objectIndex, obj_msg, objectSize)
+      if (tempInterpretation == false) tempInterpretation = '-'
+    }
+    aux_Interpretation = aux_Interpretation.concat(tempInterpretation)
+    aux_error = aux_error.concat(tempError)
 
-      FG_typeObject = Check_SDOmsg_forFG('SPD', '6085')
-      console.log(
-        '🚀 ~ file: CANopenFunctions.js:667 ~ MappedObjects.forEach ~ FG_typeObject:',
-        FG_typeObject
-      )
-      aux_Interpretation = aux_Interpretation.concat(FG_typeObject, ' / ')
+    if (index < MappedObjects.length - 1) {
+      aux_objects.push(' / ')
+      aux_objectsName.push(' / ')
+      aux_objectsData.push(' / ')
+      aux_Interpretation.push(' / ')
     }
   })
+
+  // Combine arrays into strings
+  aux_objects = aux_objects.join('')
+  aux_objectsName = aux_objectsName.join('')
+  aux_objectsData = aux_objectsData.join('')
+  aux_Interpretation = aux_Interpretation.join('')
 
   objectIteration.Object = aux_objects
   objectIteration.ObjectName = aux_objectsName
   objectIteration.Data = aux_objectsData
-  objectIteration.interpretation = aux_Interpretation
+  objectIteration.Interpretation = aux_Interpretation
+
+  if (aux_error.includes('error')) {
+    aux_error = 'error'
+  } else if (aux_error.includes('blue')) {
+    aux_error = 'blue'
+  }
+  objectIteration.errorStatus = aux_error
 
   return objectIteration
   //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]

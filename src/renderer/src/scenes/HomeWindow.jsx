@@ -283,7 +283,7 @@ function BigObjectSearchInputComponent({
 function NumberTransformationComponent() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var { loadType, setLoadType, slowLoop, fullRot_IU } = useContext(MotorSpecificationsContext)
+  var { loadType } = useContext(MotorSpecificationsContext)
 
   const [fourOptionsRadioSelection, setFourOptionsRadioSelection] = useState('POS')
   const [initialValueFieldValue, setInitialValueFieldValue] = useState('')
@@ -294,10 +294,6 @@ function NumberTransformationComponent() {
 
   //Can`t update field input bug fix
   let [forceRender, setForceRender] = useState(0)
-
-  // console.log(
-  //   UnitsConvertor('33', 'rpm', 'deg/s', slowLoop, fullRot_IU, 'SPD', 'objectTypeDirectly')
-  // )
 
   function handle4OptionChanged(e) {
     //1
@@ -312,15 +308,7 @@ function NumberTransformationComponent() {
     let value_Hex
     let value_LE
 
-    let value_IU = UnitsConvertor(
-      value,
-      unitsFieldValue,
-      'IU',
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
-    )
+    let value_IU = UnitsConvertor(value, unitsFieldValue, 'IU', fourOptionsRadioSelection)
     if (fourOptionsRadioSelection == 'POS') {
       value_IU = parseInt(value_IU).toString()
       value_IU = filterDecimal(value_IU, 32)
@@ -332,15 +320,7 @@ function NumberTransformationComponent() {
       value_IU = filterDecimal(value_IU, 'TIME')
     }
 
-    let value_Initial = UnitsConvertor(
-      value_IU,
-      'IU',
-      unitsFieldValue,
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
-    )
+    let value_Initial = UnitsConvertor(value_IU, 'IU', unitsFieldValue, fourOptionsRadioSelection)
     if (fourOptionsRadioSelection == 'POS') {
       value_Hex = decToHex(value_IU, 32)
       value_Hex = value_Hex.toString().padStart(8, 0)
@@ -386,10 +366,7 @@ function NumberTransformationComponent() {
       initialValueFieldValue,
       unitsFieldValue,
       value,
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
+      fourOptionsRadioSelection
     )
     setInitialValueFieldValue(value_initial)
   }
@@ -397,15 +374,7 @@ function NumberTransformationComponent() {
   function handleIU_FieldValueChaged(value) {
     //4
 
-    let value_initial = UnitsConvertor(
-      value,
-      'IU',
-      unitsFieldValue,
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
-    )
+    let value_initial = UnitsConvertor(value, 'IU', unitsFieldValue, fourOptionsRadioSelection)
 
     let value_Hex
 
@@ -438,15 +407,7 @@ function NumberTransformationComponent() {
     }
     let value_LE = LittleEndian(value)
 
-    let value_initial = UnitsConvertor(
-      value_IU,
-      'IU',
-      unitsFieldValue,
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
-    )
+    let value_initial = UnitsConvertor(value_IU, 'IU', unitsFieldValue, fourOptionsRadioSelection)
 
     setInitialValueFieldValue(value_initial)
     setIU_FieldValue(value_IU)
@@ -465,15 +426,7 @@ function NumberTransformationComponent() {
       value_IU = hexToDec(value_Hex, 32)
     }
 
-    let value_initial = UnitsConvertor(
-      value_IU,
-      'IU',
-      unitsFieldValue,
-      slowLoop,
-      fullRot_IU,
-      fourOptionsRadioSelection,
-      'objectTypeDirectly'
-    )
+    let value_initial = UnitsConvertor(value_IU, 'IU', unitsFieldValue, fourOptionsRadioSelection)
 
     setInitialValueFieldValue(value_initial)
     setIU_FieldValue(value_IU)

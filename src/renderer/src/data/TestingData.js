@@ -1,12 +1,10 @@
 export var InsertTextIntoTextArea = `
-601 23 8160 00 1255 4588
+4	    	10:33:40	154.540	        575.805		       513	       401	      	  	1243 1	  	  	  	  	____    	
  
 `
 
 export var InsertTextIntoTextArea2 = ` 
 
-4	    	10:33:40	154.540	        575.805		       513	       401	      	  	06	00	00	00	  	  	  	  	____    	
- 4	    	10:33:40	154.540	        575.805		       513	       501	      	  	06	112244554488	  	  	  	  	____    	
 
 [F1] Source:	?CANreal Clip
 [--]     Num	Trig	     Abs	Msec	            Rel	Desc	     IdDec	     IdHex	Attr	Len	d1	d2	d3	d4	d5	d6	d7	d8	Text    	

@@ -30,6 +30,22 @@ import {
   FG_units_acc_lin,
   FG_units_time
 } from '../../data/SmallData'
+
+export let FG_OptionsObject_1 = {
+  FG_Display_POS: 'rot',
+  FG_Display_SPD: 'rpm',
+  FG_Display_ACC: 'rad/s^2',
+  FG_Display_TIME: 'ms',
+  FG_Applied_POS: 'IU',
+  FG_Applied_SPD: 'IU',
+  FG_Applied_ACC: 'IU',
+  FG_Applied_TIME: 'IU'
+}
+
+export var fullRot_IU_1 = 2000
+export var slowLoop_1 = 1
+export var FG_DisplayVSApplied_1 = 'Display'
+
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -169,6 +185,15 @@ const GeneralSettingsInsertPart = () => {
     MotorSpecificationsContext
   )
 
+  function fctSetFullRot_IU(value) {
+    setFullRot_IU(value)
+    fullRot_IU_1 = parseInt(value)
+  }
+  function fctSetSlowLoop(value) {
+    setSlowLoop(value)
+    slowLoop_1 = parseFloat(value)
+  }
+
   return (
     <section style={{ padding: '1rem' }}>
       <li>Load Type:</li>
@@ -203,7 +228,7 @@ const GeneralSettingsInsertPart = () => {
           callback={filterDecimal}
           resolution={32}
           // inputType={fourOptionsRadioSelection}
-          tellParentValueChanged={setFullRot_IU}
+          tellParentValueChanged={fctSetFullRot_IU}
           forceValueFromParent={fullRot_IU}
           iteration={1}
           blockValueReset
@@ -216,7 +241,7 @@ const GeneralSettingsInsertPart = () => {
           callback={filterDecimalWithComma}
           resolution={32}
           // inputType={fourOptionsRadioSelection}
-          tellParentValueChanged={setSlowLoop}
+          tellParentValueChanged={fctSetSlowLoop}
           forceValueFromParent={slowLoop}
           iteration={1}
           blockValueReset
@@ -236,16 +261,34 @@ const FactorGroupInsertPart = () => {
   var { loadType } = useContext(MotorSpecificationsContext)
 
   function handleAnyInputChange(value, title) {
-    if (title == 'POS') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_POS: value })
-    else if (title == 'SPD') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_SPD: value })
-    else if (title == 'ACC') setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_ACC: value })
-    else setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_TIME: value })
+    if (title == 'POS') {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_POS: value })
+      FG_OptionsObject_1.FG_Display_POS = value
+    } else if (title == 'SPD') {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_SPD: value })
+      FG_OptionsObject_1.FG_Display_SPD = value
+    } else if (title == 'ACC') {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_ACC: value })
+      FG_OptionsObject_1.FG_Display_ACC = value
+    } else {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Display_TIME: value })
+      FG_OptionsObject_1.FG_Display_TIME = value
+    }
   }
   function handleAppliedFG_inputChange(value, title) {
-    if (title == 'POS') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_POS: value })
-    else if (title == 'SPD') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_SPD: value })
-    else if (title == 'ACC') setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_ACC: value })
-    else setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_TIME: value })
+    if (title == 'POS') {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_POS: value })
+      FG_OptionsObject_1.FG_Applied_POS = value
+    } else if (title == 'SPD') {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_SPD: value })
+      FG_OptionsObject_1.FG_Applied_SPD = value
+    } else if (title == 'ACC') {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_ACC: value })
+      FG_OptionsObject_1.FG_Applied_ACC = value
+    } else {
+      setFG_OptionsObject({ ...FG_OptionsObject, FG_Applied_TIME: value })
+      FG_OptionsObject_1.FG_Applied_TIME = value
+    }
   }
   useEffect(() => {
     if (delayedUseEffect) {
@@ -260,6 +303,17 @@ const FactorGroupInsertPart = () => {
         FG_Applied_ACC: 'IU',
         FG_Applied_TIME: 'IU'
       })
+
+      FG_OptionsObject_1 = {
+        FG_Display_POS: 'IU',
+        FG_Display_SPD: 'IU',
+        FG_Display_ACC: 'IU',
+        FG_Display_TIME: 'IU',
+        FG_Applied_POS: 'IU',
+        FG_Applied_SPD: 'IU',
+        FG_Applied_ACC: 'IU',
+        FG_Applied_TIME: 'IU'
+      }
     }
   }, [loadType])
 
@@ -274,6 +328,7 @@ const FactorGroupInsertPart = () => {
         // row
         onChange={(e) => {
           setFG_DisplayVSApplied(e.target.value)
+          FG_DisplayVSApplied_1 = e.target.value
         }}
         value={FG_DisplayVSApplied}
         sx={{

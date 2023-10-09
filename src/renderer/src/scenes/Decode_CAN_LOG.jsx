@@ -321,7 +321,6 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
               </tr>
             </thead>
             <tbody>
-              {console.log('[1]DATA->' + MessagesDecoded_ArrayOfObjects[1].Data)}
               {MessagesDecoded_ArrayOfObjects.map((iteration, index) => {
                 var isRecieveTypeMessage = [
                   'R_SDO',
@@ -494,7 +493,7 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
   )
 }
 
-let DontBotherWithPDO_flag = 1
+let DontBotherWithPDO_flag = 0
 function PDOdetectedModal({ open, onClose, objectIteration }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
