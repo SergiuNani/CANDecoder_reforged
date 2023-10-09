@@ -15,7 +15,7 @@ import { Input_AutoFormat } from '../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../functions/NumberConversion'
 import { Loop, Search } from '@mui/icons-material'
 import { Dialog } from '@mui/material'
-import { PDO_mapped, GetObject } from '../functions/CANopenFunctions'
+import { PDO_mapped, GetObject, DecodePDO } from '../functions/CANopenFunctions'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../data/SmallData'
@@ -270,7 +270,10 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
 
   var originalLines = fileInnerText.split('\n')
   var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(originalLines)
-  MessagesDecoded_ArrayOfObjects = CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array)
+  MessagesDecoded_ArrayOfObjects = useMemo(
+    () => CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array),
+    []
+  )
 
   return (
     <section>
@@ -318,6 +321,7 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
               </tr>
             </thead>
             <tbody>
+              {console.log('[1]DATA->' + MessagesDecoded_ArrayOfObjects[1].Data)}
               {MessagesDecoded_ArrayOfObjects.map((iteration, index) => {
                 var isRecieveTypeMessage = [
                   'R_SDO',
@@ -490,7 +494,7 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
   )
 }
 
-let DontBotherWithPDO_flag = 0
+let DontBotherWithPDO_flag = 1
 function PDOdetectedModal({ open, onClose, objectIteration }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -840,17 +844,15 @@ function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdecte
     frameData = frameData.length * 4
 
     PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping1[frameData]
-    console.log(
-      `In PDO_mapped we dont have what we need but DontBotherWithPDO_flag is true:  ${objectIteration.type}`
-    )
   }
   if (!PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
-    console.log(`In PDO_mapped we dont have what we need ${objectIteration.type}`)
     setOpenPDOdectectedModal(true)
     return DelayTimeForPDO(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
   }
   // Putting in the correct information for PDO
-  console.log('WE DONE')
+
+  MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = DecodePDO(objectIteration)
+
   setCurrentObjectIndex((prev) => prev + 1)
 }
 

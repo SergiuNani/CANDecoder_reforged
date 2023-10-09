@@ -303,7 +303,7 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
   if (cobID_array[0] == 'SDO') {
     result = DecodeSDO(cobID_array[2], message)
   } else if (cobID_array[0] == 'PDO') {
-    result = DecodePDO(cobID_array, message)
+    result = ['PDO', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
   } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result

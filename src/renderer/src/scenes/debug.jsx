@@ -22,9 +22,12 @@ import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
 import { TooltipClickable } from '../components/SmallComponents'
 import { GetObject } from '../functions/CANopenFunctions'
 import { PDO_mapped } from '../functions/CANopenFunctions'
+import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
+
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
   console.log(PDO_mapped)
+  console.log(MessagesDecoded_ArrayOfObjects)
 }
 
 const DebugScene = () => {

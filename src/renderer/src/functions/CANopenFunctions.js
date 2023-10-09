@@ -177,6 +177,10 @@ export function whatObjectValueMeans(obj, value, objectSize) {
 export function GetObject(index) {
   //Input: 1013 or 1013_05
   //Output: Index, IndexName, IndexBitSize
+  index = index.toUpperCase()
+  if (index.slice(0, 2) == '#X' || index.slice(0, 2) == '0X') {
+    index = index.slice(2, index.length)
+  }
   var subIndex = ''
   if (index.length > 4) {
     subIndex = index.slice(4, 7)
@@ -444,7 +448,7 @@ function Check_SDOmsg_forFG(FG_typeObject, value) {
   var errorStatus = ''
   var { FG_DisplayVSApplied, FG_OptionsObject } = useContext(FG_Context)
   var { fullRot_IU, slowLoop } = useContext(MotorSpecificationsContext)
-
+  console.log('--- 444 ----')
   const conversionParams = {
     Display: {
       POS: { converter: hexToDec, display: FG_OptionsObject.FG_Display_POS },
@@ -626,7 +630,50 @@ export let PDO_mapped = {
   TPDO3: [],
   TPDO4: []
 }
-export function DecodePDO(cobID, message) {
+export function DecodePDO(objectIteration) {
+  var MappedObjects = PDO_mapped[objectIteration.type][objectIteration.AxisID]
+  objectIteration.CS = MappedObjects.length
+
+  var aux_objects = ''
+  var aux_objectsName = ''
+  var aux_objectsData = ''
+  var aux_Interpretation = ''
+  var aux_frame = objectIteration.FrameData
+  MappedObjects.forEach((object, index) => {
+    object = GetObject(object)
+
+    var FG_typeObject = whatFG_isObject(object[0])
+
+    if (index == MappedObjects.length - 1) {
+      //Last element
+      aux_objects = aux_objects.concat(object[0])
+      aux_objectsName = aux_objectsName.concat(object[1])
+      var obj_msg = LittleEndian(aux_frame.slice(0, object[2] / 4))
+      aux_objectsData = aux_objectsData.concat(obj_msg)
+      aux_frame = aux_frame.slice(object[2] / 4, aux_frame.length)
+
+      aux_Interpretation = aux_Interpretation.concat(FG_typeObject)
+    } else {
+      aux_objects = aux_objects.concat(object[0], ' / ')
+      aux_objectsName = aux_objectsName.concat(object[1], ' / ')
+      var obj_msg = LittleEndian(aux_frame.slice(0, object[2] / 4))
+      aux_objectsData = aux_objectsData.concat(obj_msg, ' / ')
+      aux_frame = aux_frame.slice(object[2] / 4, aux_frame.length)
+
+      FG_typeObject = Check_SDOmsg_forFG('SPD', '6085')
+      console.log(
+        '🚀 ~ file: CANopenFunctions.js:667 ~ MappedObjects.forEach ~ FG_typeObject:',
+        FG_typeObject
+      )
+      aux_Interpretation = aux_Interpretation.concat(FG_typeObject, ' / ')
+    }
+  })
+
+  objectIteration.Object = aux_objects
+  objectIteration.ObjectName = aux_objectsName
+  objectIteration.Data = aux_objectsData
+  objectIteration.interpretation = aux_Interpretation
+
+  return objectIteration
   //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]
-  return ['PDO', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
 }
