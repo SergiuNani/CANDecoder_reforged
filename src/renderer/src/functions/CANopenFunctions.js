@@ -3,6 +3,7 @@ import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from 
 import { FG_Context, MotorSpecificationsContext } from '../App'
 import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
+import { Mapping_objects_array } from '../data/SmallData'
 const FG_Objects_Array = {
   POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
@@ -280,6 +281,11 @@ export function DecodeSDO(sdoType, message) {
       interpretationInfo = ObjectValueDescription[0]
       errorStatus = ObjectValueDescription[1]
     }
+    var MappingObject = checkSDOforMapping(Object[0], aux_message)
+    if (MappingObject) {
+      interpretationInfo = MappingObject[0]
+      errorStatus = MappingObject[1]
+    }
   }
   //Return: [CS, Object , ObjectName , data , Interpretation ,errorStatus]
   return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
@@ -296,10 +302,13 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         if (ObjectSize != 8) {
           interpretation = 'Invalid CS for this object '
           errorStatus = 'error'
-        } else if (data.length != 2) {
+        } else if (data.length != 2 && parseInt(data.slice(0, data.length - 2)) != 0) {
+          var temp = data.slice(0, data.length - 2)
+
           interpretation = 'The data should be 8bits '
           errorStatus = 'warning'
         } else {
+          if (data.length != 2) data = data.slice(data.length - 2)
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
           errorStatus = 'good'
         }
@@ -315,10 +324,12 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         if (ObjectSize != 16) {
           interpretation = 'Invalid CS for this object '
           errorStatus = 'error'
-        } else if (data.length != 4) {
+        } else if (data.length != 4 && parseInt(data.slice(0, data.length - 4)) != 0) {
           interpretation = 'The data should be 16bits '
           errorStatus = 'warning'
         } else {
+          if (data.length != 4) data = data.slice(data.length - 4)
+
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
           errorStatus = 'good'
         }
@@ -500,6 +511,18 @@ function Check_SDOmsg_forFG(FG_typeObject, value) {
   }
 
   return [interpretationInfo, errorStatus]
+}
+
+function checkSDOforMapping(object, data) {
+  object = object.toUpperCase()
+  if (object.slice(0, 2) == '0X' || object.slice(0, 2) == '#X') {
+    object = object.slice(2)
+  }
+  console.log('🚀 ~  object:', object)
+  if (Mapping_objects_array.includes(object)) {
+    console.log('🚀 ~  object:11', object)
+    return ['Yee', 'blue']
+  } else return null
 }
 
 export const SDO_abortCodes = [
