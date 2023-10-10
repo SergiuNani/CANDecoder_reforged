@@ -132,7 +132,7 @@ export function CobID_who_dis(cob_id) {
 
 export function Extract_MSGs_from_text(text) {
   //Text should be array of strings
-  var FirstPatternEntireRowSplitter = /['"`, \s]/g
+  var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
   const hexPattern = /^(0x)?[0-9a-f]+$/gi
 
   text = text.map((row, index) => {

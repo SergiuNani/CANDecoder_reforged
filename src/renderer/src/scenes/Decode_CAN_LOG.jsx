@@ -19,6 +19,8 @@ import { PDO_mapped, GetObject, DecodePDO } from '../functions/CANopenFunctions'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../data/SmallData'
+import { RegisterTooltip } from '../components/Register'
+
 export let MessagesDecoded_ArrayOfObjects = []
 
 const Decode_CAN_LOG = () => {
@@ -272,7 +274,7 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
   var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(originalLines)
   MessagesDecoded_ArrayOfObjects = useMemo(
     () => CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array),
-    []
+    [fileInnerText]
   )
 
   return (
@@ -289,7 +291,8 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
               position: 'relative',
               color: `${colors.grey[100]}`,
               background: `${colors.blue[300]}`,
-              fontFamily: 'Calibri'
+              fontFamily: 'Calibri',
+              marginBottom: '20rem'
             }}
           >
             <thead
@@ -400,7 +403,9 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
                         fontWeight: '700'
                       }}
                     >
-                      {iteration.Data}
+                      <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
+                        {iteration.Data}
+                      </RegisterTooltip>
                     </td>
                     <td
                       style={{
@@ -493,7 +498,7 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
   )
 }
 
-let DontBotherWithPDO_flag = 0
+let DontBotherWithPDO_flag = 1
 function PDOdetectedModal({ open, onClose, objectIteration }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)

@@ -128,27 +128,6 @@ export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) =>
   )
 }
 
-export const HTMLTooltip = styled(({ className, children, ...props }) => {
-  return (
-    <Tooltip {...props} classes={{ popper: className }} TransitionComponent={Fade}>
-      {children}
-    </Tooltip>
-  )
-})(({ theme }) => {
-  const colors = tokens(theme.palette.mode)
-
-  return {
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: `${colors.primary[100]}`,
-      color: `${colors.yellow[100]}`,
-      maxWidth: '40rem',
-      fontSize: '1.3rem',
-      fontWeight: '500',
-      border: `2px solid ${colors.primary[400]}`,
-      padding: '0.6rem'
-    }
-  }
-})
 export const TooltipClickable = styled(({ className, children, ...props }) => {
   const [open, setOpen] = useState(false)
 

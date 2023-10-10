@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Typography } from '@mui/material'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material'
@@ -9,6 +9,8 @@ import {
   getRangeNumberFromStringRange,
   bin2hex
 } from '../functions/NumberConversion'
+import { Registers_CANopen_LS } from '../App'
+import { ClickAwayListener } from '@mui/material'
 
 const RegisterComponent = ({
   register,
@@ -225,3 +227,154 @@ const RegisterComponent = ({
 }
 
 export default RegisterComponent
+
+export const RegisterTooltip = ({ objects, objectData, children }) => {
+  objects = objects.split(' / ')
+  objectData = objectData.split(' / ')
+  var foundRegisters = []
+  var registerData = []
+  objects.forEach((object, index) => {
+    object = object.toUpperCase()
+    if (object.slice(0, 2) == '0X' || object.slice(0, 2) == '#X') object = object.slice(2)
+
+    var filterResults = Registers_CANopen_LS.filter((register) => register.Index == object)
+
+    if (filterResults[0]) {
+      foundRegisters[foundRegisters.length] = filterResults[0]
+      registerData[registerData.length] = objectData[index]
+    }
+  })
+
+  if (foundRegisters.length == 0) {
+    return <>{children}</>
+  }
+
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const [showRegister, setShowRegister] = useState(false)
+
+  const [stayOpen, setStayOpen] = useState(false)
+
+  const handleMouseOver = () => {
+    console.log('🚀  handleMouseOver++:')
+
+    if (!stayOpen) {
+      setShowRegister(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    console.log('🚀  handleMouseLeave++:')
+    if (!stayOpen) {
+      setShowRegister(false)
+    }
+  }
+  const handleClick = (event) => {
+    console.log('🚀 ~  handleClick ~:++')
+
+    event.stopPropagation()
+    setShowRegister(true)
+    setStayOpen(true)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      console.log('handleClickOutside ++')
+      if (stayOpen) {
+        // Check if the click is outside of the component
+        setShowRegister(false)
+        setStayOpen(false)
+      }
+    }
+    if (stayOpen) {
+      // Attach the event listener to the document when the component is mounted
+      document.addEventListener('click', handleClickOutside)
+
+      // Remove the event listener when the component is unmounted
+      return () => {
+        document.removeEventListener('click', handleClickOutside)
+      }
+    }
+  }, [stayOpen])
+
+  return (
+    <Box
+      style={{
+        position: 'relative',
+        display: 'inline-block',
+        cursor: 'pointer'
+      }}
+      onMouseOver={handleMouseOver}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+    >
+      <div>
+        {children}
+
+        {showRegister && (
+          <div
+            style={{
+              position: 'absolute',
+              padding: '0.5rem',
+              top: '50%',
+              right: '100%',
+              transform: 'translate(0, -50%)',
+              borderRadius: '2rem',
+              backgroundColor: 'transparent',
+              textAlign: 'left',
+              justifyContent: 'center',
+              zIndex: '2'
+            }}
+          >
+            <>
+              <span
+                style={{
+                  position: 'absolute',
+                  width: '0',
+                  height: '0',
+                  borderLeft: '0.7rem solid transparent',
+                  borderRight: '0.7rem solid transparent',
+                  borderBottom: `1.5rem solid ${colors.red[500]}`,
+                  top: '50%',
+                  right: '0.1rem',
+                  transform: 'translateY(-50%) rotate(-90deg)'
+                }}
+              ></span>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '0.3rem',
+                  marginRight: '1.2rem',
+                  border: `3px solid ${colors.primary[400]}`,
+                  background: `${colors.primary[300]}`,
+                  borderRadius: '1rem',
+                  padding: '0.8rem',
+                  minWidth:
+                    foundRegisters.length == 1
+                      ? '25rem'
+                      : foundRegisters.length == 2
+                      ? '50rem'
+                      : '60rem'
+                }}
+              >
+                {foundRegisters.map((register, index) => {
+                  return (
+                    <RegisterComponent
+                      key={index}
+                      register={register}
+                      value={registerData[index]}
+                      ComponentHeight="30rem"
+                    />
+                  )
+                })}
+              </div>
+            </>
+          </div>
+        )}
+      </div>
+
+      {/* Children elements */}
+    </Box>
+  )
+}

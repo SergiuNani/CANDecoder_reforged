@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, Fragment } from 'react'
 import { Header } from '../components/SmallComponents'
 import { Box, Dialog, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
@@ -23,6 +23,7 @@ import { TooltipClickable } from '../components/SmallComponents'
 import { GetObject } from '../functions/CANopenFunctions'
 import { PDO_mapped } from '../functions/CANopenFunctions'
 import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
+import { RegisterTooltip } from '../components/Register'
 
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
@@ -39,8 +40,15 @@ const DebugScene = () => {
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>
-      <Button1 onClick={handleDebugClick}>DEBUG</Button1>
-      <PDOcomponent></PDOcomponent>
+      <div
+        style={{
+          marginLeft: '23rem'
+        }}
+      >
+        <RegisterTooltip>
+          <Button1>HTML</Button1>
+        </RegisterTooltip>
+      </div>
       {/* <Registers_logic /> */}
     </>
   )
@@ -48,6 +56,17 @@ const DebugScene = () => {
 
 export default DebugScene
 
+const Temp = () => {
+  return (
+    <div
+      style={{
+        border: `1px solid yellow`
+      }}
+    >
+      <RegisterComponent register={Registers_CANopen_LS[1]} value="1234" />
+    </div>
+  )
+}
 const array = ['Number: 1', 'Number: 2', 'Number: 3', 'Number: 4', 'Number: 100-----']
 
 function PDOcomponent() {

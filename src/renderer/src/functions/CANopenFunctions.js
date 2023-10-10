@@ -367,7 +367,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       if (ObjectSize != 8) {
         interpretation = 'This CS should be used to read a 8bit object'
         errorStatus = 'warning'
-      } else if (data.length != 8 && parseInt(data.length) != 0 && sdoType == 'T_SDO') {
+      } else if (data.length != 8 && parseInt(data) != 0 && sdoType == 'T_SDO') {
         interpretation = 'The data length should be "00 00 00 00"'
         errorStatus = 'warning'
       } else if (sdoType == 'T_SDO') {
@@ -383,7 +383,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       if (ObjectSize != 16) {
         interpretation = 'This CS should be used to read a 16bit object'
         errorStatus = 'warning'
-      } else if (data.length != 8 && parseInt(data.length) != 0 && sdoType == 'T_SDO') {
+      } else if (data.length != 8 && parseInt(data) != 0 && sdoType == 'T_SDO') {
         interpretation = 'The data length should be "00 00 00 00"'
         errorStatus = 'warning'
       } else if (sdoType == 'T_SDO') {
@@ -399,7 +399,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       if (sdoType == 'T_SDO') {
         interpretation = '40 is a Command Specifier only for T_SDO'
         errorStatus = 'error'
-      } else if (parseInt(data.length) != 0) {
+      } else if (parseInt(data) != 0) {
         interpretation = 'The data length should be "00 00 00 00"'
         errorStatus = 'warning'
       } else {
@@ -463,10 +463,8 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
 }
 
 function Check_SDOmsg_forFG(FG_typeObject, value) {
-  console.log(FG_DisplayVSApplied_1)
   var interpretationInfo = ''
   var errorStatus = ''
-  console.log('--- 444 ----')
   const conversionParams = {
     Display: {
       POS: { converter: hexToDec, display: FG_OptionsObject_1.FG_Display_POS },

@@ -68,9 +68,9 @@ export const UserVsDebugModeContext = createContext()
 export const FG_Context = createContext()
 
 export const FG_OptionsStarter = {
-  FG_Display_POS: 'rot',
-  FG_Display_SPD: 'rpm',
-  FG_Display_ACC: 'rad/s^2',
+  FG_Display_POS: 'IU',
+  FG_Display_SPD: 'IU',
+  FG_Display_ACC: 'IU',
   FG_Display_TIME: 'ms',
   FG_Applied_POS: 'IU',
   FG_Applied_SPD: 'IU',
