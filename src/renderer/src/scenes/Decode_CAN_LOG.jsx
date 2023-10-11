@@ -279,6 +279,7 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
 
   return (
     <section>
+      {console.log('Right above DecodePDO_component ++')}
       <Box>
         <DecodePDO_component
           MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
@@ -447,7 +448,7 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
-
+  console.log('inside DecodePDO_component++')
   useEffect(() => {
     // Check if there are more objects to process
     console.log('useEffect ---' + currentObjectIndex)
@@ -459,7 +460,10 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
         setobject(objectIteration)
         DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
       } else {
-        setCurrentObjectIndex(currentObjectIndex + 1)
+        setTimeout(() => {
+          setCurrentObjectIndex(currentObjectIndex + 1)
+          //Solve the  Maximum update depth exceeded
+        }, 10)
       }
     } else {
       setPDOareDone(true)
@@ -819,6 +823,7 @@ function InputRow({ label, resolution, object, setObject, objectSub, setObjectSu
 
 //--------------------------------------------------------
 function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
+  console.log('Inside DecodeOnePDOmsg++')
   if (DontBotherWithPDO_flag && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
     // We write some dummy data just to get rid of PDO filling requirements
     var frameData = objectIteration.FrameData

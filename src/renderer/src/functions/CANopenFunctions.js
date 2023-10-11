@@ -620,6 +620,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[1] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][0] = object[0]
           }
 
           break
@@ -641,7 +645,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
-            // PDO_mapped[typePDO][axisID] = object[0]
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][1] = object[0]
           }
 
           break
@@ -663,6 +670,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[3] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][2] = object[0]
           }
 
           break
@@ -684,6 +695,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[4] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][3] = object[0]
           }
 
           break
@@ -741,22 +756,28 @@ function checkSDOforMapping(object, data, axisID) {
           break
       }
     } else if (aux_firstByte == '16') {
+      var typePDO = ''
+
       switch (aux_secondByte) {
         case '00':
+          typePDO = 'RPDO1'
           cobID += 200
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
           break
         case '01':
+          typePDO = 'RPDO2'
           cobID += 300
 
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
           break
         case '02':
+          typePDO = 'RPDO3'
           cobID += 400
 
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
           break
         case '03':
+          typePDO = 'RPDO4'
           cobID += 500
 
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
@@ -784,6 +805,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[1] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][0] = object[0]
           }
 
           break
@@ -805,6 +830,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][1] = object[0]
           }
 
           break
@@ -826,6 +855,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[3] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][2] = object[0]
           }
 
           break
@@ -847,6 +880,10 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[4] - ${object[0]} - ${object[1]}`)
+            if (!PDO_mapped[typePDO][axisID]) {
+              PDO_mapped[typePDO][axisID] = []
+            }
+            PDO_mapped[typePDO][axisID][3] = object[0]
           }
 
           break
