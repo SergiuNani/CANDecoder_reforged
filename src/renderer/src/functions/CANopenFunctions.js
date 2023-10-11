@@ -1,30 +1,9 @@
 import { Objects_collection_LS } from '../App'
 import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from './NumberConversion'
-import { FG_Context, MotorSpecificationsContext } from '../App'
 import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
 import { Mapping_objects_array } from '../data/SmallData'
-const FG_Objects_Array = {
-  POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C'],
-  SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
-  ACC: ['6083', '6085', '609A'],
-  TIME: [
-    '6066',
-    '6068',
-    '2023',
-    '2005',
-    '2051',
-    '1006',
-    '1800_03',
-    '1801_03',
-    '1802_03',
-    '1803_03',
-    '1800_05',
-    '1801_05',
-    '1802_05',
-    '1803_05'
-  ]
-}
+import { FG_Objects_Array } from '../data/SmallData'
 
 const ObjectDescriptions = {
   6060: {
@@ -230,7 +209,7 @@ export function GetObject(index) {
 
 // ********************** //SDO FUNCTIONS// ********************************
 
-export function DecodeSDO(sdoType, message) {
+export function DecodeSDO(sdoType, message, axisID) {
   // Message will always be less or equal than 16 characters
   if (message.length < 8) {
     //ERROR: SDO insufficient
@@ -266,7 +245,7 @@ export function DecodeSDO(sdoType, message) {
 
   interpretationInfo = checkForErrors[0]
   errorStatus = checkForErrors[1]
-
+  aux_message = checkForErrors[2]
   var FG_typeObject = whatFG_isObject(Object[0])
   if (FG_typeObject && errorStatus == 'good') {
     var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message)
@@ -281,12 +260,13 @@ export function DecodeSDO(sdoType, message) {
       interpretationInfo = ObjectValueDescription[0]
       errorStatus = ObjectValueDescription[1]
     }
-    var MappingObject = checkSDOforMapping(Object[0], aux_message)
+    var MappingObject = checkSDOforMapping(Object[0], aux_message, axisID)
     if (MappingObject) {
       interpretationInfo = MappingObject[0]
       errorStatus = MappingObject[1]
     }
   }
+
   //Return: [CS, Object , ObjectName , data , Interpretation ,errorStatus]
   return [CS, Object[0], Object[1], aux_message, interpretationInfo, errorStatus]
 }
@@ -303,12 +283,11 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
           interpretation = 'Invalid CS for this object '
           errorStatus = 'error'
         } else if (data.length != 2 && parseInt(data.slice(0, data.length - 2)) != 0) {
-          var temp = data.slice(0, data.length - 2)
-
           interpretation = 'The data should be 8bits '
           errorStatus = 'warning'
         } else {
           if (data.length != 2) data = data.slice(data.length - 2)
+
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
           errorStatus = 'good'
         }
@@ -382,10 +361,9 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         interpretation = 'The data length should be "00 00 00 00"'
         errorStatus = 'warning'
       } else if (sdoType == 'T_SDO') {
-        interpretation = `Read: ${ObjectIndex} -> ${data.slice(
-          data.length - ObjectSize / 4,
-          data.length
-        )}h`
+        if (data.length != 2) data = data.slice(data.length - 2)
+
+        interpretation = `Read: ${ObjectIndex} -> ${data}h`
         errorStatus = 'good'
       }
 
@@ -398,10 +376,9 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         interpretation = 'The data length should be "00 00 00 00"'
         errorStatus = 'warning'
       } else if (sdoType == 'T_SDO') {
-        interpretation = `Read: ${ObjectIndex} ->  ${data.slice(
-          data.length - ObjectSize / 4,
-          data.length
-        )}h`
+        if (data.length != 4) data = data.slice(data.length - 4)
+
+        interpretation = `Read: ${ObjectIndex} ->  ${data}h`
         errorStatus = 'good'
       }
 
@@ -470,7 +447,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       errorStatus = 'idk'
       break
   }
-  return [interpretation, errorStatus]
+  return [interpretation, errorStatus, data]
 }
 
 function Check_SDOmsg_forFG(FG_typeObject, value) {
@@ -513,15 +490,364 @@ function Check_SDOmsg_forFG(FG_typeObject, value) {
   return [interpretationInfo, errorStatus]
 }
 
-function checkSDOforMapping(object, data) {
+function checkSDOforMapping(object, data, axisID) {
+  //We will get only R_SDO because T_SDO have errorStatus="perfect"
   object = object.toUpperCase()
+  var interpretationInfo = ''
+  var errorStatus = ''
   if (object.slice(0, 2) == '0X' || object.slice(0, 2) == '#X') {
     object = object.slice(2)
   }
-  console.log('🚀 ~  object:', object)
   if (Mapping_objects_array.includes(object)) {
-    console.log('🚀 ~  object:11', object)
-    return ['Yee', 'blue']
+    var aux_firstByte = object.slice(0, 2)
+    var aux_secondByte = object.slice(2, 4)
+    var aux_thirdByte
+    if (object.length > 4) {
+      aux_thirdByte = object.slice(5, 7)
+    } else {
+      aux_thirdByte = '00'
+    }
+    var cobID = axisID
+    //Configuring COB_ID for TPDOs --------
+    if (aux_firstByte == '18') {
+      switch (aux_secondByte) {
+        case '00':
+          cobID += 180
+          interpretationInfo = interpretationInfo.concat(`TPDO1 - [${cobID}h]`)
+          break
+        case '01':
+          cobID += 280
+
+          interpretationInfo = interpretationInfo.concat(`TPDO2 - [${cobID}h]`)
+          break
+        case '02':
+          cobID += 380
+
+          interpretationInfo = interpretationInfo.concat(`TPDO3 - [${cobID}h]`)
+          break
+        case '03':
+          cobID += 480
+
+          interpretationInfo = interpretationInfo.concat(`TPDO4 - [${cobID}h]`)
+          break
+      }
+      switch (aux_thirdByte) {
+        case '00':
+          interpretationInfo = interpretationInfo.concat(` -Nr of entries : ${data}`)
+          break
+        case '01':
+          var temp
+          if (data.slice(0, 1) == '8') temp = `Disable ${interpretationInfo}`
+          else temp = `Enable ${interpretationInfo}`
+
+          interpretationInfo = temp
+          if (data.slice(5) != cobID) {
+            interpretationInfo = `Mapping Error: the CobID should be ${cobID} and not ${data.slice(
+              5
+            )} `
+            errorStatus = 'error'
+          }
+          break
+        case '02':
+          var temp
+          data = hexToDec(data, 16)
+          if (data == 0) {
+            temp = ` - Transmission - Reserved`
+          } else if (data > 0 && data <= 240) {
+            temp = ` - synchronous( cyclic every ${data} SYNC)`
+          } else if (data > 240 && data <= 251) {
+            temp = ` - Transmission - Reserved`
+          } else if (data == 252) {
+            temp = ` - RTR-Only (synchronous): The data are copied upon arrival of each SYNC message but are sent only upon request with an RTR message.`
+          } else if (data == 253) {
+            temp = ` - RTR-Only (event-driven): The data are copied to the TX-PDO message upon receipt of an RTR message and sent immediately thereafter`
+          } else if (data == 254 || data == 255) {
+            temp = ` - Event-driven (asynchronous)`
+          }
+          interpretationInfo = interpretationInfo.concat(temp)
+          break
+        case '04':
+          interpretationInfo = interpretationInfo.concat(` - Subindex Reserved`)
+          break
+      }
+    } else if (aux_firstByte == '1A') {
+      switch (aux_secondByte) {
+        case '00':
+          cobID += 180
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+        case '01':
+          cobID += 280
+
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+        case '02':
+          cobID += 380
+
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+        case '03':
+          cobID += 480
+
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+      }
+      switch (aux_thirdByte) {
+        case '00':
+          interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
+          break
+        case '01':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[1] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+        case '02':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+        case '03':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[3] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+        case '04':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[4] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+      }
+    } else if (aux_firstByte == '14') {
+      switch (aux_secondByte) {
+        case '00':
+          cobID += 200
+          interpretationInfo = interpretationInfo.concat(`RPDO1 - [${cobID}h]`)
+          break
+        case '01':
+          cobID += 300
+
+          interpretationInfo = interpretationInfo.concat(`RPDO2 - [${cobID}h]`)
+          break
+        case '02':
+          cobID += 400
+
+          interpretationInfo = interpretationInfo.concat(`RPDO3 - [${cobID}h]`)
+          break
+        case '03':
+          cobID += 500
+
+          interpretationInfo = interpretationInfo.concat(`RPDO4 - [${cobID}h]`)
+          break
+      }
+      switch (aux_thirdByte) {
+        case '00':
+          interpretationInfo = interpretationInfo.concat(` -Nr of entries : ${data}`)
+          break
+        case '01':
+          var temp
+          if (data.slice(0, 1) == '8') temp = `Disable ${interpretationInfo}`
+          else temp = `Enable ${interpretationInfo}`
+          interpretationInfo = temp
+
+          if (data.slice(5) != cobID) {
+            interpretationInfo = `Mapping Error: the CobID should be ${cobID} and not ${data.slice(
+              5
+            )} `
+            errorStatus = 'error'
+          }
+          break
+        case '02':
+          var temp
+          data = hexToDec(data, 16)
+          if (data >= 0 && data <= 240) {
+            temp = ` - synchronous( cyclic every ${data} SYNC)`
+          } else if (data > 240 && data <= 253) {
+            temp = ` - Transmission - Reserved`
+          } else if (data == 254 || data == 255) {
+            temp = ` - Asynchronous: the PDO will be sent every time anything changes in its data field`
+          }
+          interpretationInfo = interpretationInfo.concat(temp)
+          break
+      }
+    } else if (aux_firstByte == '16') {
+      switch (aux_secondByte) {
+        case '00':
+          cobID += 200
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+        case '01':
+          cobID += 300
+
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+        case '02':
+          cobID += 400
+
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+        case '03':
+          cobID += 500
+
+          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
+          break
+      }
+      switch (aux_thirdByte) {
+        case '00':
+          interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
+          break
+        case '01':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[1] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+        case '02':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+        case '03':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[3] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+        case '04':
+          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
+          object = GetObject(object)
+          //How many bytes the object is being mapped on
+          var mappingSize = data.slice(6, 8)
+          if (mappingSize == '08') {
+            mappingSize = 8
+          } else if (mappingSize == '10') {
+            mappingSize = 16
+          } else if (mappingSize == '20') {
+            mappingSize = 32
+          }
+          //Check if Object size is not equal to the defined mapping size
+          if (mappingSize != object[2]) {
+            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
+            errorStatus = 'error'
+          } else {
+            interpretationInfo = interpretationInfo.concat(`[4] - ${object[0]} - ${object[1]}`)
+          }
+
+          break
+      }
+    }
+
+    if (errorStatus == '') errorStatus = 'blue'
+    return [interpretationInfo, errorStatus]
   } else return null
 }
 
