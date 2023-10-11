@@ -443,22 +443,6 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
   )
 }
 
-const FunArray = [
-  {
-    msgNr: 2,
-    OriginalMessage: '222',
-    CobID: '182',
-    FrameData: '1234',
-    type: 'TPDO1',
-    AxisID: 3,
-    CS: 'PDO',
-    Object: 'Object',
-    ObjectName: 'ObjectName',
-    Data: 'Data',
-    Interpretation: 'Interpretation',
-    errorStatus: '-'
-  }
-]
 function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) {
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)

@@ -571,22 +571,27 @@ function checkSDOforMapping(object, data, axisID) {
           break
       }
     } else if (aux_firstByte == '1A') {
+      var typePDO = ''
       switch (aux_secondByte) {
         case '00':
+          typePDO = 'TPDO1'
           cobID += 180
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
           break
         case '01':
+          typePDO = 'TPDO2'
           cobID += 280
 
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
           break
         case '02':
+          typePDO = 'TPDO3'
           cobID += 380
 
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
           break
         case '03':
+          typePDO = 'TPDO4'
           cobID += 480
 
           interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
@@ -599,6 +604,7 @@ function checkSDOforMapping(object, data, axisID) {
         case '01':
           var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
           object = GetObject(object)
+
           //How many bytes the object is being mapped on
           var mappingSize = data.slice(6, 8)
           if (mappingSize == '08') {
@@ -635,6 +641,7 @@ function checkSDOforMapping(object, data, axisID) {
             errorStatus = 'error'
           } else {
             interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
+            // PDO_mapped[typePDO][axisID] = object[0]
           }
 
           break
