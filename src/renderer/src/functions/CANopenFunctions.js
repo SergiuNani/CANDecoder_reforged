@@ -2,8 +2,7 @@ import { Objects_collection_LS } from '../App'
 import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from './NumberConversion'
 import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
-import { Mapping_objects_array } from '../data/SmallData'
-import { FG_Objects_Array } from '../data/SmallData'
+import { Mapping_objects_array, FG_Objects_Array, EMCYcodes } from '../data/SmallData'
 
 const ObjectDescriptions = {
   6060: {
@@ -1104,4 +1103,72 @@ export function DecodePDO(objectIteration) {
 
   return objectIteration
   //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]
+}
+
+export function DecodeEMCY(message) {
+  var CS = ''
+  var Object = ''
+  var ObjectName = ''
+  var Data = ''
+  var Interpretation = 'EMCY : '
+  var errorStatus = 'error'
+
+  var error_code = LittleEndian(message.slice(0, 4))
+  Interpretation = Interpretation.concat(error_code)
+  var temp = EMCYcodes[error_code]
+  if (!temp) temp = 'Unknown EMCY message'
+  Interpretation = Interpretation.concat(' - ', temp)
+
+  if (error_code == '7500') {
+    Object = '1001 / 2003'
+    ObjectName = `${GetObject('1001')[1]} / ${GetObject('2003')[1]}`
+    Data = `${message.slice(4, 6)} / ${LittleEndian(message.slice(6, 10))}`
+  } else if (error_code == '7300') {
+    Object = '1001 / 2009'
+    ObjectName = `${GetObject('1001')[1]} / ${GetObject('2009')[1]}`
+    Data = `${message.slice(4, 6)} / ${LittleEndian(message.slice(6, 10))}`
+  } else if (error_code == 'FF01') {
+    Object = '1001 / 2072'
+    ObjectName = `${GetObject('1001')[1]} / ${GetObject('2072')[1]}`
+    Data = `${message.slice(4, 6)} / ${LittleEndian(message.slice(6, 10))}`
+  } else {
+    Object = '1001'
+    ObjectName = `${GetObject('1001')[1]}`
+    Data = `${message.slice(4, 6)} `
+  }
+
+  return [CS, Object, ObjectName, Data, Interpretation, errorStatus]
+}
+
+export function DecodeNMT(message) {
+  var interpretation = 'NMT '
+  var errorStatus = 'blue'
+  var CS
+  if (message.length > 4) {
+    interpretation = 'DATA too big for this type of message'
+    errorStatus = 'error'
+  } else if (message.length < 4) {
+    interpretation = 'DATA too short for this type of message'
+    errorStatus = 'error'
+  }
+  if (errorStatus != 'error') {
+    CS = message.slice(0, 2)
+
+    if (CS == '80') {
+      interpretation = 'Enter Pre-Operational'
+    } else if (CS == '82') {
+      interpretation = 'Reset Communication'
+    } else if (CS == '81') {
+      interpretation = 'Reset Node'
+    } else if (CS == '01') {
+      interpretation = 'Start Remote Node'
+    } else if (CS == '02') {
+      interpretation = 'Stop Remote Node'
+    } else {
+      interpretation = 'Unknown Command Specifier '
+      errorStatus = 'error'
+    }
+  }
+
+  return [CS, message.slice(2), '-', '-', interpretation, errorStatus]
 }

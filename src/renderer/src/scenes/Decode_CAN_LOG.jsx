@@ -467,7 +467,7 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
         setTimeout(() => {
           setCurrentObjectIndex(currentObjectIndex + 1)
           //Solve the  Maximum update depth exceeded
-        }, 10)
+        }, 1)
       }
     } else {
       setPDOareDone(true)

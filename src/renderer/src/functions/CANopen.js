@@ -1,5 +1,5 @@
 import { filterHex, hexToDec } from './NumberConversion'
-import { DecodeSDO, DecodePDO } from './CANopenFunctions'
+import { DecodeSDO, DecodePDO, DecodeEMCY, DecodeNMT } from './CANopenFunctions'
 
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
@@ -278,6 +278,27 @@ export function CreateDecodedArrayOfObjects(arr) {
     }
     var aux_CobID = CobID_who_dis(row[2])
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
+
+    if (aux_CobID[2] == 'NMT') {
+      //Special case for NMT axisID
+
+      if (DecodedMessage[5] != 'error') {
+        aux_CobID[1] = 'NMT'
+        var axisID = hexToDec(DecodedMessage[1], 16)
+        if (axisID > 127) {
+          DecodedMessage[4] = 'Axis ID must be between 0 and 127'
+          DecodedMessage[5] = 'error'
+          aux_CobID[1] = '-'
+        } else if (axisID == 0) {
+          aux_CobID[1] = 'All'
+          DecodedMessage[4] = 'All Axes - '.concat(DecodedMessage[4])
+        } else {
+          aux_CobID[1] = axisID
+        }
+      }
+      //Declaring Object as nothing
+      DecodedMessage[1] = '-'
+    }
     createObject(
       row[0],
       row[1], //OriginalMsg
@@ -304,6 +325,10 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
     result = DecodeSDO(cobID_array[2], message, cobID_array[1])
   } else if (cobID_array[0] == 'PDO') {
     result = ['PDO', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
+  } else if (cobID_array[0] == 'EMCY') {
+    result = DecodeEMCY(message)
+  } else if (cobID_array[0] == 'NMT') {
+    result = DecodeNMT(message)
   } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result

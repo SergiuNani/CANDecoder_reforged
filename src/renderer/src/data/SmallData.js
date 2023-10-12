@@ -179,3 +179,35 @@ export const Mapping_objects_array = [
   '1A03_03',
   '1A03_04'
 ]
+
+export const EMCYcodes = {
+  '0000': 'Error Reset or No Error',
+  1000: 'Generic Error; sent when a communication error occurs on CAN (object 2000h bit0=1; usually followed by EMCY code 0x7500',
+  2310: 'Continuous over-current',
+  2340: 'Short-circuit',
+  3210: 'DC-link over-voltage',
+  3220: 'DC-link under-voltage',
+  4280: 'Over temperature motor',
+  4310: 'Over temperature drive',
+  5441: 'Drive disabled due to enable or STO input',
+  5442: 'Negative limit switch active',
+  5443: 'Positive limit switch active',
+  6100: 'Invalid setup data',
+  7300: 'Sensor error',
+  7500: 'Communication error',
+  8110: 'CAN overrun (message lost)',
+  8210: 'Assuming - the PDO length you are trying to write to is not correct',
+  8130: 'Life guard error or heartbeat error',
+  8331: 'I2t protection triggered',
+  8580: 'Position wraparound',
+  8611: 'Control error / Following error',
+  9000: 'Command error',
+  FF01: 'Generic interpolated position mode error (PVT / PT error)',
+  FF02: 'Change set acknowledge bit wrong value',
+  FF03: 'Specified homing method not available',
+  FF04: 'A wrong mode is set in object 6060h, modes of operation',
+  FF05: 'Specified digital I/O line not available',
+  FF06: 'Positive software position limit triggered',
+  FF07: 'Negative software position limit triggered',
+  FF08: 'Enable circuit hardware error'
+}
