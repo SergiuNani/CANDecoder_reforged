@@ -269,17 +269,14 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
   if (fileInnerText == '') {
     return <div> Nothing to decode. Oh Dear</div>
   }
-
   var originalLines = fileInnerText.split('\n')
   var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(originalLines)
-  MessagesDecoded_ArrayOfObjects = useMemo(
-    () => CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array),
-    [fileInnerText]
-  )
+  MessagesDecoded_ArrayOfObjects = useMemo(() => {
+    return CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array)
+  }, [fileInnerText])
 
   return (
     <section>
-      {console.log('Right above DecodePDO_component ++')}
       <Box>
         <DecodePDO_component
           MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
@@ -449,10 +446,17 @@ function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) 
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
   console.log('inside DecodePDO_component++')
+
+  useEffect(() => {
+    setCurrentObjectIndex(0)
+    DontBotherWithPDO_flag = 0
+  }, [MessagesDecoded_ArrayOfObjects])
+
   useEffect(() => {
     // Check if there are more objects to process
     console.log('useEffect ---' + currentObjectIndex)
     if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
+      setPDOareDone(false)
       const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
 
       // Check if the object is a PDO
