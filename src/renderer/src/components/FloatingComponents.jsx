@@ -17,7 +17,7 @@ export const DrawerComponent = ({ title, component }) => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.ctrlKey && event.key === '`') {
+      if (event.altKey && event.key === '`') {
         closeDrawer((prev) => !prev)
       }
     }
@@ -36,7 +36,6 @@ export const DrawerComponent = ({ title, component }) => {
   return (
     <Box className="relative">
       <Box
-        className="drawerComponenet "
         style={{
           position: 'fixed',
           width: '30rem',

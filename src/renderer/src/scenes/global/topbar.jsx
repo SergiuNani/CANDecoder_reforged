@@ -10,8 +10,7 @@ import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { RadioGroup, FormControlLabel } from '@mui/material'
-import Radio from '@mui/material/Radio'
+import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import {
   MotorSpecificationsContext,
   UserVsDebugModeContext,

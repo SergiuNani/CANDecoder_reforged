@@ -180,34 +180,244 @@ export const Mapping_objects_array = [
   '1A03_04'
 ]
 
-export const EMCYcodes = {
-  '0000': 'Error Reset or No Error',
-  1000: 'Generic Error; sent when a communication error occurs on CAN (object 2000h bit0=1; usually followed by EMCY code 0x7500',
-  2310: 'Continuous over-current',
-  2340: 'Short-circuit',
-  3210: 'DC-link over-voltage',
-  3220: 'DC-link under-voltage',
-  4280: 'Over temperature motor',
-  4310: 'Over temperature drive',
-  5441: 'Drive disabled due to enable or STO input',
-  5442: 'Negative limit switch active',
-  5443: 'Positive limit switch active',
-  6100: 'Invalid setup data',
-  7300: 'Sensor error',
-  7500: 'Communication error',
-  8110: 'CAN overrun (message lost)',
-  8210: 'Assuming - the PDO length you are trying to write to is not correct',
-  8130: 'Life guard error or heartbeat error',
-  8331: 'I2t protection triggered',
-  8580: 'Position wraparound',
-  8611: 'Control error / Following error',
-  9000: 'Command error',
-  FF01: 'Generic interpolated position mode error (PVT / PT error)',
-  FF02: 'Change set acknowledge bit wrong value',
-  FF03: 'Specified homing method not available',
-  FF04: 'A wrong mode is set in object 6060h, modes of operation',
-  FF05: 'Specified digital I/O line not available',
-  FF06: 'Positive software position limit triggered',
-  FF07: 'Negative software position limit triggered',
-  FF08: 'Enable circuit hardware error'
-}
+export const EMCYcodes = [
+  {
+    Index: '0000',
+    Name: 'Error Reset or No Error'
+  },
+  {
+    Index: '1000',
+    Name: 'Generic Error; sent when a communication error occurs on CAN (object 2000h bit0=1; usually followed by EMCY code 0x7500'
+  },
+  {
+    Index: '2310',
+    Name: 'Continuous over-current'
+  },
+  {
+    Index: '2340',
+    Name: 'Short-circuit'
+  },
+  {
+    Index: '3210',
+    Name: 'DC-link over-voltage'
+  },
+  {
+    Index: '3220',
+    Name: 'DC-link under-voltage'
+  },
+  {
+    Index: '4280',
+    Name: 'Over temperature motor'
+  },
+  {
+    Index: '4310',
+    Name: 'Over temperature drive'
+  },
+  {
+    Index: '5441',
+    Name: 'Drive disabled due to enable or STO input'
+  },
+  {
+    Index: '5442',
+    Name: 'Negative limit switch active'
+  },
+  {
+    Index: '5443',
+    Name: 'Positive limit switch active'
+  },
+  {
+    Index: '6100',
+    Name: 'Invalid setup data'
+  },
+  {
+    Index: '7300',
+    Name: 'Sensor error'
+  },
+  {
+    Index: '7500',
+    Name: 'Communication error'
+  },
+  {
+    Index: '8110',
+    Name: 'CAN overrun (message lost)'
+  },
+  {
+    Index: '8210',
+    Name: 'Assuming - the PDO length you are trying to write to is not correct'
+  },
+  {
+    Index: '8130',
+    Name: 'Life guard error or heartbeat error'
+  },
+  {
+    Index: '8331',
+    Name: 'I2t protection triggered'
+  },
+  {
+    Index: '8580',
+    Name: 'Position wraparound'
+  },
+  {
+    Index: '8611',
+    Name: 'Control error / Following error'
+  },
+  {
+    Index: '9000',
+    Name: 'Command error'
+  },
+  {
+    Index: 'FF01',
+    Name: 'Generic interpolated position mode error (PVT / PT error)'
+  },
+  {
+    Index: 'FF02',
+    Name: 'Change set acknowledge bit wrong value'
+  },
+  {
+    Index: 'FF03',
+    Name: 'Specified homing method not available'
+  },
+  {
+    Index: 'FF04',
+    Name: 'A wrong mode is set in object 6060h, modes of operation'
+  },
+  {
+    Index: 'FF05',
+    Name: 'Specified digital I/O line not available'
+  },
+  {
+    Index: 'FF06',
+    Name: 'Positive software position limit triggered'
+  },
+  {
+    Index: 'FF07',
+    Name: 'Negative software position limit triggered'
+  },
+  {
+    Index: 'FF08',
+    Name: 'Enable circuit hardware error'
+  }
+]
+
+export const SDO_abortCodes = [
+  {
+    Index: '05030000',
+    Name: 'Toggle bit not changed.'
+  },
+  {
+    Index: '05040000',
+    Name: 'SDO protocol timed out.'
+  },
+  {
+    Index: '05040001',
+    Name: 'Client/server command specifier not valid or unknown.'
+  },
+  {
+    Index: '05040002',
+    Name: 'Invalid block size (block mode only).'
+  },
+  {
+    Index: '05040003',
+    Name: 'Invalid sequence number (block mode only).'
+  },
+  {
+    Index: '05040004',
+    Name: 'CRC error (block mode only).'
+  },
+  {
+    Index: '05040005',
+    Name: 'Out of memory.'
+  },
+  {
+    Index: '06010000',
+    Name: 'Unsupported access to an object.'
+  },
+  {
+    Index: '06010001',
+    Name: 'Attempt to read a write-only object.'
+  },
+  {
+    Index: '06010002',
+    Name: 'Attempt to write a read-only object.'
+  },
+  {
+    Index: '06020000',
+    Name: 'Object does not exist in the object dictionary.'
+  },
+  {
+    Index: '06040041',
+    Name: 'Object cannot be mapped to the PDO.'
+  },
+  {
+    Index: '06040042',
+    Name: 'The number and length of the objects to be mapped would exceed PDO length.'
+  },
+  {
+    Index: '06040043',
+    Name: 'General parameter incompatibility reason.'
+  },
+  {
+    Index: '06040047',
+    Name: 'General internal incompatibility in the device.'
+  },
+  {
+    Index: '06060000',
+    Name: 'Access failed due to a hardware error.'
+  },
+  {
+    Index: '06070010',
+    Name: 'Data type does not match; length of service parameter does not match.'
+  },
+  {
+    Index: '06070012',
+    Name: 'Data type does not match; length of service parameter too high.'
+  },
+  {
+    Index: '06070013',
+    Name: 'Data type does not match; length of service parameter too low.'
+  },
+  {
+    Index: '06090011',
+    Name: 'Sub-index does not exist.'
+  },
+  {
+    Index: '06090030',
+    Name: 'Value range of parameter exceeded (only for write access).'
+  },
+  {
+    Index: '06090031',
+    Name: 'Value of parameter written too high.'
+  },
+  {
+    Index: '06090032',
+    Name: 'Value of parameter written too low.'
+  },
+  {
+    Index: '06090036',
+    Name: 'Maximum value is less than minimum value.'
+  },
+  {
+    Index: '08000000',
+    Name: 'General error.'
+  },
+  {
+    Index: '08000020',
+    Name: 'Data cannot be transferred or stored to the application.'
+  },
+  {
+    Index: '08000021',
+    Name: 'Data cannot be transferred or stored to the application because of local control.'
+  },
+  {
+    Index: '08000022',
+    Name: 'Data cannot be transferred or stored to the application because of the present device state.'
+  },
+  {
+    Index: '08000023',
+    Name: 'Object dictionary dynamic generation fails or no object dictionary is present (e.g. object dictionary is generated from file and generation fails because of a file error).'
+  },
+  {
+    Index: 'default',
+    Name: 'Unknown Abort Code'
+  }
+]

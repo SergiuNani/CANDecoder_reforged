@@ -13,13 +13,10 @@ import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../function
 import { TooltipClickable } from '../components/SmallComponents'
 import { Input_AutoFormat } from '../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../functions/NumberConversion'
-import { Loop, Search } from '@mui/icons-material'
-import { Dialog } from '@mui/material'
-import { PDO_mapped, GetObject, DecodePDO } from '../functions/CANopenFunctions'
-import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
-import { SnackBarMessage } from '../components/FloatingComponents'
-import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../data/SmallData'
+import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
+import { DecodePDO_component } from './global/PDO'
+import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 
 export let MessagesDecoded_ArrayOfObjects = []
 
@@ -72,6 +69,7 @@ const Decode_CAN_LOG = () => {
   }
   return (
     <Box style={{ position: 'relative' }}>
+      <DrawerComponent_DecodeOptions />
       <Header title="Decode a CAN LOG "></Header>
 
       {/* TOP MENU options --------------------------- */}
@@ -267,10 +265,10 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
   const [PDOareDone, setPDOareDone] = useState(false)
 
   if (fileInnerText == '') {
-    return <div> Nothing to decode. Oh Dear</div>
+    fileInnerText = ` `
   }
-  var originalLines = fileInnerText.split('\n')
-  var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(originalLines)
+
+  var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(fileInnerText.split('\n'))
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
     return CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array)
   }, [fileInnerText])
@@ -282,6 +280,7 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
           MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
           setPDOareDone={setPDOareDone}
         />
+
         {PDOareDone && (
           <table
             style={{
@@ -441,420 +440,241 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
   )
 }
 
-function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) {
-  const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
-  const [object, setobject] = useState(null)
-  const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
-  console.log('inside DecodePDO_component++')
+export const DrawerComponent_DecodeOptions = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [isDrawerOpen, closeDrawer] = useState(true)
 
   useEffect(() => {
-    setCurrentObjectIndex(0)
-    DontBotherWithPDO_flag = 0
-  }, [MessagesDecoded_ArrayOfObjects])
-
-  useEffect(() => {
-    // Check if there are more objects to process
-    console.log('useEffect ---' + currentObjectIndex)
-    if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
-      setPDOareDone(false)
-      const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
-
-      // Check if the object is a PDO
-      if (objectIteration.CS === 'PDO') {
-        setobject(objectIteration)
-        DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
-      } else {
-        setTimeout(() => {
-          setCurrentObjectIndex(currentObjectIndex + 1)
-          //Solve the  Maximum update depth exceeded
-        }, 1)
+    const handleKeyPress = (event) => {
+      if (event.ctrlKey && event.key === '`') {
+        closeDrawer((prev) => !prev)
       }
-    } else {
-      setPDOareDone(true)
     }
-  }, [currentObjectIndex, MessagesDecoded_ArrayOfObjects])
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
+  function handleClose() {
+    closeDrawer((prev) => {
+      !prev
+    })
+  }
 
   return (
-    <div>
-      {object && (
-        <Box>
-          <PDOdetectedModal
-            key={currentObjectIndex}
-            open={openPDOdectectedModal}
-            onClose={setOpenPDOdectectedModal}
-            objectIteration={object}
-          />
+    <Box className="relative">
+      <Box
+        style={{
+          position: 'fixed',
+          width: '30rem',
+          backgroundColor: '#333',
+          color: 'white',
+          borderRadius: '1rem',
+          height: '95vh',
+          padding: '20px',
+          boxShadow: '5px 0px 15px rgba(0, 0, 0, 0.2)',
+          transition: 'right 0.3s ease-in-out',
+          overflow: 'auto',
+          background: `${colors.primary[100]}`,
+          border: `1px solid ${colors.grey[400]}`,
+          zIndex: 2,
+          right: isDrawerOpen ? '0' : '-200rem'
+        }}
+      >
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          style={{ borderBottom: `1px solid ${colors.grey[400]}` }}
+        >
+          <Typography variant="h3">CAN-LOG Display Settings </Typography>
+          <IconButton onClick={handleClose}>
+            <CloseIcon style={{ fontSize: '2rem' }} />
+          </IconButton>
         </Box>
-      )}
-    </div>
+        <CanOpenDisplaySettings />
+      </Box>
+    </Box>
   )
 }
 
-let DontBotherWithPDO_flag = 0
-function PDOdetectedModal({ open, onClose, objectIteration }) {
+function CanOpenDisplaySettings() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const [openSnackBarError, setOpenSnackBarError] = useState(false)
-  const [messageSnackbar, setMessageSnackbar] = useState()
+  const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
+  const [lowerLimit, setLowerLimit] = useState(1)
+  const [upperLimit, setUpperLimit] = useState(3)
 
-  const [object1, setObject1] = useState('')
-  const [objectSub1, setObjectSub1] = useState('00')
-  const [object2, setObject2] = useState('')
-  const [objectSub2, setObjectSub2] = useState('00')
-  const [object3, setObject3] = useState('')
-  const [objectSub3, setObjectSub3] = useState('00')
-  const [object4, setObject4] = useState('')
-  const [objectSub4, setObjectSub4] = useState('00')
+  const [messageTypeSorting, setMessageTypeSorting] = useState('all')
 
-  const [radioOption, setRadioOption] = useState('USER')
-
-  function handleApply() {
-    if (
-      (object1 == '' && object2 == '' && object3 == '' && object4 == '') ||
-      (object1 == '' && (object2 != '' || object3 != '' || object4 != '')) ||
-      (object2 == '' && (object3 != '' || object4 != '')) ||
-      (object3 == '' && object4 != '')
-    ) {
-      setOpenSnackBarError(true)
-      return setMessageSnackbar('Please insert objects one after another and in order! ')
-    }
-    var error = false
-
-    function formatObject(object, objectSub) {
-      if (object.length != 4 && object != '') {
-        error = true
-        setOpenSnackBarError(true)
-        return setMessageSnackbar('Object length must be 4 characters or above! ')
-      }
-      let aux = objectSub || '00'
-      if (aux.length == 1) {
-        aux = '0' + aux
-      }
-      aux = object + '_' + aux
-      var object = aux
-      aux = GetObject(aux)
-
-      if (aux[1] == 'Nothing Found') {
-        error = true
-        setOpenSnackBarError(true)
-        return setMessageSnackbar(`Object "${object}" is not contained in the database `)
-      }
-      return aux
-    }
-
-    var aux_object1
-    var aux_object2
-    var aux_object3
-    var aux_object4
-    var sumSize = 0
-
-    if (object1 != '') {
-      aux_object1 = formatObject(object1, objectSub1)
-      if (!error) sumSize += aux_object1[2]
-    }
-    if (object2 != '') {
-      aux_object2 = formatObject(object2, objectSub2)
-      if (!error) sumSize += aux_object2[2]
-    }
-    if (object3 != '') {
-      aux_object3 = formatObject(object3, objectSub3)
-      if (!error) sumSize += aux_object3[2]
-    }
-    if (object4 != '') {
-      aux_object4 = formatObject(object4, objectSub4)
-      if (!error) sumSize += aux_object4[2]
-    }
-
-    if (error) return
-
-    var aux_msgSize = objectIteration.FrameData.length * 4
-    if (aux_msgSize != sumSize && radioOption != 'DONTMATCH') {
-      setOpenSnackBarError(true)
-      return setMessageSnackbar(
-        `Data size of the message ("${aux_msgSize}bits") doesn't match the combined size of all the objects: "${sumSize}bits" `
-      )
-    }
-
-    //DATA DISTRIBUTION ----------------
-
-    var resultArray
-
-    if (aux_object1 && aux_object2 && aux_object3 && aux_object4) {
-      resultArray = [aux_object1[0], aux_object2[0], aux_object3[0], aux_object4[0]]
-    } else if (aux_object1 && aux_object2 && aux_object3) {
-      resultArray = [aux_object1[0], aux_object2[0], aux_object3[0]]
-    } else if (aux_object1 && aux_object2) {
-      resultArray = [aux_object1[0], aux_object2[0]]
-    } else if (aux_object1) {
-      resultArray = [aux_object1[0]]
-    }
-
-    if (radioOption == 'ALLDEFAUT') {
-      for (let i = 1; i < 128; i++) {
-        PDO_mapped[objectIteration.type][i] = resultArray
-      }
-    } else if (radioOption == 'ALLCOMPATIBLE') {
-      PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
-      DontBotherWithPDO_flag = 1
-    } else {
-      PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
-    }
-
-    console.log('--Close modal --')
-    onClose(false)
-  }
-
-  function handleChangedRadio(value) {
-    setRadioOption(value)
-
-    if (value == 'DEFAUT' || value == 'ALLDEFAUT') {
-      var temp = DefaultPDOs[objectIteration.type]
-
-      setObject1(temp[0])
-      setObjectSub1(temp[1])
-      setObject2(temp[2])
-      setObjectSub2(temp[3])
-      setObject3(temp[4])
-      setObjectSub3(temp[5])
-      setObject4(temp[6])
-      setObjectSub4(temp[7])
-    } else if (value == 'COMPATIBLE' || value == 'ALLCOMPATIBLE') {
-      var frameData = objectIteration.FrameData
-      if (frameData.length % 2 != 0) {
-        frameData =
-          frameData.slice(0, frameData.length - 1) +
-          '0' +
-          frameData.slice(frameData.length - 1, frameData.length)
-
-        objectIteration.FrameData = frameData
-      }
-
-      var temp = frameData.length * 4
-      temp = CompatibleMapping[temp]
-
-      setObject1(temp[0])
-      setObjectSub1(temp[1])
-      setObject2(temp[2])
-      setObjectSub2(temp[3])
-      setObject3(temp[4])
-      setObjectSub3(temp[5])
-      setObject4(temp[6])
-      setObjectSub4(temp[7])
-    }
-  }
-
-  let Str1 = `Set default objects for ${objectIteration.type}`
-  let Str2 = `Set default objects for ${objectIteration.type} for all the axes`
   return (
-    <Dialog open={open}>
-      {openSnackBarError && (
-        <SnackBarMessage
-          message={messageSnackbar}
-          severity="error"
-          isOpen={openSnackBarError}
-          closeSnackBarParent={() => {
-            setOpenSnackBarError(false)
-          }}
-        />
-      )}
+    <Box>
+      {/* Reading Direction Radio Buttons ----------------- */}
       <Box
         sx={{
-          background: `${colors.primary[100]}`,
-
-          padding: '1rem',
-          border: `3px solid ${colors.primary[400]}`,
-          borderRadius: '0.2rem'
+          border: `2px solid ${colors.primary[400]}`,
+          borderRadius: '1rem',
+          margin: '1rem 0',
+          background: `${colors.blue[200]}`,
+          padding: '0.4rem'
         }}
       >
-        <Typography variant="h3">PDO has been detected</Typography>
-        {/* Information Section about the message -------------- */}
-        <section
+        <p
           style={{
-            background: `${colors.primary[200]}`,
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '1rem',
-            margin: '1rem 0',
             fontSize: '1rem',
-            gap: '0.5rem'
+            marginBottom: '0.5rem',
+            marginLeft: '1rem',
+            color: `${colors.yellow[500]}`
           }}
         >
-          <li>
-            Message:{' '}
-            <span style={{ color: `${colors.green[100]}`, fontWeight: '600' }}>
-              {objectIteration.CobID} - {objectIteration.FrameData}
-            </span>
-          </li>
-          <li>
-            Type:{' '}
-            <span style={{ color: `${colors.blue[100]}`, fontWeight: '600' }}>
-              {objectIteration.type}
-            </span>
-          </li>
-          <li>
-            AxisID: {'   '}
-            <span style={{ color: `${colors.yellow[100]}`, fontWeight: '600' }}>
-              {objectIteration.AxisID}
-            </span>
-          </li>
-        </section>
-
-        {/* INPUT SECTION , multiple choise Menu------------ */}
-        <section
-          style={{
-            display: 'flex',
-            // justifyContent: 'center',
-            alignItems: 'center',
-            background: `${colors.primary[200]}`,
-            padding: '1rem',
-            position: 'relative',
-            paddingBottom: '3rem'
+          CAN_LOG reading direction:{' '}
+        </p>
+        <RadioGroup
+          row
+          onChange={(e) => {
+            setOptionReadingDirection(e.target.value)
+          }}
+          value={optionReadingDirection}
+          sx={{
+            justifyContent: 'center',
+            '& .MuiSvgIcon-root': {
+              // fontSize: '1rem'
+              color: `${colors.green[400]}`
+            }
           }}
         >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <InputRow
-              label="Object 1"
-              resolution={16}
-              object={object1}
-              setObject={setObject1}
-              objectSub={objectSub1}
-              setObjectSub={setObjectSub1}
-            />
-            <InputRow
-              label="Object 2"
-              resolution={16}
-              object={object2}
-              setObject={setObject2}
-              objectSub={objectSub2}
-              setObjectSub={setObjectSub2}
-            />
-            <InputRow
-              label="Object 3"
-              resolution={16}
-              object={object3}
-              setObject={setObject3}
-              objectSub={objectSub3}
-              setObjectSub={setObjectSub3}
-            />
-            <InputRow
-              label="Object 4"
-              resolution={16}
-              object={object4}
-              setObject={setObject4}
-              objectSub={objectSub4}
-              setObjectSub={setObjectSub4}
-            />
-          </div>
-          <div>
-            <RadioGroup
-              row
-              onChange={(e) => {
-                handleChangedRadio(e.target.value)
-              }}
-              value={radioOption}
-              sx={{
-                // justifyContent: 'center',
-                marginLeft: '2rem',
-                '& .MuiSvgIcon-root': {
-                  color: `${colors.green[400]}`
-                }
-              }}
-            >
-              <FormControlLabel value="USER" control={<Radio />} label="User input" />
-              <FormControlLabel value="DEFAUT" control={<Radio />} label={Str1} />
-              <FormControlLabel value="ALLDEFAUT" control={<Radio />} label={Str2} />
-              <FormControlLabel
-                value="COMPATIBLE"
-                control={<Radio />}
-                label="Set compatible objects"
-              />
-              <FormControlLabel
-                value="ALLCOMPATIBLE"
-                control={<Radio />}
-                label="Set compatible objects for all the remaining PDOs"
-              />
-              <FormControlLabel
-                value="DONTMATCH"
-                control={<Radio />}
-                label="I know data doesn`t match , proceed..."
-              />
-            </RadioGroup>
-          </div>
-
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-0.5rem',
-              right: '-1.1rem'
-            }}
-          >
-            <Button1 onClick={handleApply}>Apply</Button1>
-          </div>
-        </section>
+          <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
+          <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
+        </RadioGroup>
       </Box>
-    </Dialog>
-  )
-}
 
-function InputRow({ label, resolution, object, setObject, objectSub, setObjectSub }) {
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
-      <Input_AutoFormat
-        callback={filterHex}
-        placeholder={label}
-        resolution={resolution}
-        width="6rem"
-        forceValueFromParent={object}
-        center
-        tellParentValueChanged={(value) => {
-          setObject(value)
+      {/* Choose interval  ----------------- */}
+
+      <Box
+        sx={{
+          border: `2px solid ${colors.primary[400]}`,
+          borderRadius: '1rem',
+          margin: '1rem 0',
+          background: `${colors.blue[200]}`,
+          padding: '0.4rem',
+          display: 'flex',
+          // justifyContent: 'center',
+          alignItems: 'center',
+          gap: '1.3rem'
         }}
-      />
-      <Input_AutoFormat
-        callback={filterHex}
-        resolution={8}
-        forceValueFromParent={objectSub}
-        width="4rem"
-        center
-        tellParentValueChanged={(value) => {
-          setObjectSub(value)
+      >
+        <Typography
+          style={{
+            fontSize: '1rem',
+            marginBottom: '0.5rem',
+            marginLeft: '1rem',
+            color: `${colors.yellow[500]}`
+          }}
+        >
+          Choose interval :
+        </Typography>
+        <Input_AutoFormat
+          callback={filterDecimal}
+          resolution={'TIME'}
+          tellParentValueChanged={(value) => {
+            if (value == '0') value = '1'
+            setLowerLimit(value)
+          }}
+          forceValueFromParent={lowerLimit}
+          width={'4rem'}
+          border={`2px solid ${colors.primary1[200]}`}
+          color={`${colors.primary[600]}`}
+          center
+          blockValueReset
+          padding="0.1rem"
+        />
+
+        <Input_AutoFormat
+          callback={filterDecimal}
+          resolution={'TIME'}
+          tellParentValueChanged={(value) => {
+            if (value == '0') value = '1'
+            setUpperLimit(value)
+          }}
+          forceValueFromParent={upperLimit}
+          width={'4rem'}
+          border={`2px solid ${colors.primary1[200]}`}
+          color={`${colors.primary[600]}`}
+          center
+          blockValueReset
+          padding="0.1rem"
+        />
+      </Box>
+      {/* Available Axes  ----------------- */}
+
+      <Box
+        sx={{
+          border: `2px solid ${colors.primary[400]}`,
+          borderRadius: '1rem',
+          margin: '1rem 0',
+          background: `${colors.blue[200]}`,
+          padding: '0.4rem'
         }}
-      />
-    </div>
+      >
+        <p
+          style={{
+            fontSize: '1rem',
+            marginBottom: '0.5rem',
+            marginLeft: '1rem',
+            color: `${colors.yellow[500]}`
+          }}
+        >
+          Available Axes:{' '}
+        </p>
+      </Box>
+
+      {/* Message Types ----------------- */}
+
+      <Box
+        sx={{
+          border: `2px solid ${colors.primary[400]}`,
+          borderRadius: '1rem',
+          margin: '1rem 0',
+          background: `${colors.blue[200]}`,
+          padding: '0.4rem'
+        }}
+      >
+        <p
+          style={{
+            fontSize: '1rem',
+            marginBottom: '0.5rem',
+            marginLeft: '1rem',
+            color: `${colors.yellow[500]}`
+          }}
+        >
+          Sort By:{' '}
+        </p>
+
+        <RadioGroup
+          row
+          onChange={(e) => {
+            setMessageTypeSorting(e.target.value)
+          }}
+          value={messageTypeSorting}
+          sx={{
+            justifyContent: 'center',
+            '& .MuiSvgIcon-root': {
+              // fontSize: '1rem'
+              color: `${colors.green[400]}`,
+              display: 'flex',
+              gap: '2rem'
+            }
+          }}
+        >
+          <FormControlLabel value="all" control={<Radio />} label="All" />
+          <FormControlLabel value="master" control={<Radio />} label="Master" />
+          <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
+          <FormControlLabel value="errors" control={<Radio />} label="Errors" />
+        </RadioGroup>
+      </Box>
+    </Box>
   )
-}
-
-//--------------------------------------------------------
-function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
-  console.log('Inside DecodeOnePDOmsg++')
-  if (DontBotherWithPDO_flag && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
-    // We write some dummy data just to get rid of PDO filling requirements
-    var frameData = objectIteration.FrameData
-    if (frameData.length % 2 != 0) {
-      frameData =
-        frameData.slice(0, frameData.length - 1) +
-        '0' +
-        frameData.slice(frameData.length - 1, frameData.length)
-    }
-
-    frameData = frameData.length * 4
-
-    PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping1[frameData]
-  }
-  if (!PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
-    setOpenPDOdectectedModal(true)
-    return DelayTimeForPDO(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
-  }
-  // Putting in the correct information for PDO
-
-  MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = DecodePDO(objectIteration)
-
-  setCurrentObjectIndex((prev) => prev + 1)
-}
-
-function DelayTimeForPDO(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
-  setTimeout(() => {
-    DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
-  }, 400)
 }

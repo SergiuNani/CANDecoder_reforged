@@ -55,9 +55,15 @@ const Sidebar = () => {
   useEffect(() => {
     //SHORTCUTS
     const handleKeyPress = (event) => {
-      if (event.altKey && event.key === '1') {
+      if (event.ctrlKey && event.key === '1') {
+        setSidebarSelectedItem('Home')
+        navigate('/Home')
+      } else if (event.ctrlKey && event.key === '2') {
         setSidebarSelectedItem('Registers')
         navigate('/Registers')
+      } else if (event.ctrlKey && event.key === '3') {
+        setSidebarSelectedItem('Decode CAN-Log')
+        navigate('/Decode_CAN_LOG')
       }
     }
     window.addEventListener('keydown', handleKeyPress)

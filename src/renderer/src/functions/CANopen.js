@@ -1,5 +1,13 @@
 import { filterHex, hexToDec } from './NumberConversion'
-import { DecodeSDO, DecodePDO, DecodeEMCY, DecodeNMT } from './CANopenFunctions'
+import {
+  DecodeSDO,
+  DecodePDO,
+  DecodeEMCY,
+  DecodeNMT,
+  DecodeNMT_Monitoring,
+  DecodeSYNC
+} from './CANopenFunctions'
+import { DecodeTCANglobal } from './TechnoCAN'
 
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
@@ -270,6 +278,8 @@ export function CreateDecodedArrayOfObjects(arr) {
   }
 
   arr.forEach((row) => {
+    console.log('🚀 ~ file: CANopen.js:279 ~ arr.forEach ~ row:', row)
+
     //Handle Empty Lines
     if (row[1] == '') {
       row[2] = 'Empty'
@@ -298,12 +308,26 @@ export function CreateDecodedArrayOfObjects(arr) {
       }
       //Declaring Object as nothing
       DecodedMessage[1] = '-'
+    } else if (aux_CobID[2] == 'NMT_Monitoring') {
+      if (row[3] == 'empty') {
+        row[3] = '-'
+        DecodedMessage[4] = 'RTR request from master'
+        DecodedMessage[5] = 'good'
+      }
+      aux_CobID[2] = 'NMT_M'
+    } else if (aux_CobID[2] == 'SYNC') {
+      if (row[3] == 'empty') {
+        row[3] = '-'
+        DecodedMessage[4] = 'SYNC'
+        DecodedMessage[5] = 'good'
+      }
+      aux_CobID[2] = 'SYNC'
     }
     createObject(
-      row[0],
+      row[0], //Message NR
       row[1], //OriginalMsg
       row[2], //CobID
-      row[3],
+      row[3], //Message
       aux_CobID[2], //type
       aux_CobID[1], //AxisID
       DecodedMessage[0], //CS
@@ -329,6 +353,12 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
     result = DecodeEMCY(message)
   } else if (cobID_array[0] == 'NMT') {
     result = DecodeNMT(message)
+  } else if (cobID_array[0] == 'NMT_Monitoring') {
+    result = DecodeNMT_Monitoring(message)
+  } else if (cobID_array[0] == 'SYNC') {
+    result = DecodeSYNC(message)
+  } else if (cobID_array[0] == 'TCAN') {
+    result = DecodeTCANglobal(cobID_array, message)
   } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result

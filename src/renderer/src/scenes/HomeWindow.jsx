@@ -7,7 +7,6 @@ import SearchIcon from '@mui/icons-material/Search'
 import { RadioGroup, FormControlLabel } from '@mui/material'
 import Radio from '@mui/material/Radio'
 import { Input_AutoFormat, Input_ChooseOption } from '../components/ForumsComponents.jsx'
-import { Types_of_CANopenMsgs_array } from '../data/SmallData.js'
 import {
   filterHex,
   filterDecimalWithComma,
@@ -29,9 +28,10 @@ import {
   FG_units_spd_lin,
   FG_units_pos_lin,
   FG_units_acc_lin,
-  FG_units_time
+  FG_units_time,
+  EMCYcodes,
+  SDO_abortCodes
 } from '../data/SmallData.js'
-import { SDO_abortCodes } from '../functions/CANopenFunctions.js'
 
 const HomeWindow = () => {
   const theme = useTheme()
@@ -60,6 +60,7 @@ const HomeWindow = () => {
                 : 'Search for an EMCY Code'
             }
             variant={tabsOption}
+            resetValueofInputFromParent={tabsOption}
           />
         </div>
         <div style={{ flex: '1', marginRight: '2rem' }}>
@@ -86,7 +87,7 @@ function BigObjectSearchInputComponent({
   } else if (variant == 1) {
     options = SDO_abortCodes
   } else {
-    options = Objects_collection_LS
+    options = EMCYcodes
   }
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -102,6 +103,7 @@ function BigObjectSearchInputComponent({
 
   useEffect(() => {
     setInputValue('')
+    setSelectedOptionIndex(-1)
   }, [resetValueofInputFromParent])
 
   const filterOptions = (value) => {

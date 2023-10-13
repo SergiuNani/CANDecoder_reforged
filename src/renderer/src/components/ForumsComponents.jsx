@@ -422,7 +422,11 @@ export function Input_AutoFormat({
   disabled,
   center,
   longer,
-  width
+  width,
+  color,
+  background,
+  padding,
+  border
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -480,14 +484,19 @@ export function Input_AutoFormat({
           placeholder={placeholder}
           disabled={disabled}
           style={{
-            backgroundColor: iteration == '1' ? `${colors.primary[200]}` : `${colors.primary[300]}`,
-            padding: iteration == '1' ? '0.2rem' : '0.5rem 1rem',
-            borderRadius: '2rem',
-            color: iteration == '1' ? `${colors.red[100]}` : `${colors.red[200]}`,
+            backgroundColor: background
+              ? background
+              : iteration == '1'
+              ? `${colors.primary[200]}`
+              : `${colors.primary[300]}`,
+            padding: padding ? padding : iteration == '1' ? '0.2rem' : '0.5rem 1rem',
+            borderRadius: '0.7rem',
+            color: color ? color : iteration == '1' ? `${colors.red[100]}` : `${colors.red[200]}`,
             outline: 'none',
             fontSize: '1rem',
             width: longer ? '10rem' : width ? width : iteration == '1' ? '5rem' : '7rem',
-            textAlign: iteration == '1' || center ? 'center' : 'inherit'
+            textAlign: iteration == '1' || center ? 'center' : 'inherit',
+            border: border ? border : null
           }}
         />
       </label>

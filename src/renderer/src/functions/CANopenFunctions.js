@@ -2,7 +2,12 @@ import { Objects_collection_LS } from '../App'
 import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from './NumberConversion'
 import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
-import { Mapping_objects_array, FG_Objects_Array, EMCYcodes } from '../data/SmallData'
+import {
+  Mapping_objects_array,
+  FG_Objects_Array,
+  EMCYcodes,
+  SDO_abortCodes
+} from '../data/SmallData'
 
 const ObjectDescriptions = {
   6060: {
@@ -432,7 +437,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       break
     case '80':
       if (sdoType == 'T_SDO') {
-        interpretation = findSDO_AbortCode(data)
+        interpretation = `SDO_Abort: ${findSDO_AbortCode(data)}`
         errorStatus = 'error'
       } else {
         //Drive don`t care what the data is
@@ -894,129 +899,6 @@ function checkSDOforMapping(object, data, axisID) {
   } else return null
 }
 
-export const SDO_abortCodes = [
-  {
-    Index: '05030000',
-    Name: 'Toggle bit not changed.'
-  },
-  {
-    Index: '05040000',
-    Name: 'SDO protocol timed out.'
-  },
-  {
-    Index: '05040001',
-    Name: 'Client/server command specifier not valid or unknown.'
-  },
-  {
-    Index: '05040002',
-    Name: 'Invalid block size (block mode only).'
-  },
-  {
-    Index: '05040003',
-    Name: 'Invalid sequence number (block mode only).'
-  },
-  {
-    Index: '05040004',
-    Name: 'CRC error (block mode only).'
-  },
-  {
-    Index: '05040005',
-    Name: 'Out of memory.'
-  },
-  {
-    Index: '06010000',
-    Name: 'Unsupported access to an object.'
-  },
-  {
-    Index: '06010001',
-    Name: 'Attempt to read a write-only object.'
-  },
-  {
-    Index: '06010002',
-    Name: 'Attempt to write a read-only object.'
-  },
-  {
-    Index: '06020000',
-    Name: 'Object does not exist in the object dictionary.'
-  },
-  {
-    Index: '06040041',
-    Name: 'Object cannot be mapped to the PDO.'
-  },
-  {
-    Index: '06040042',
-    Name: 'The number and length of the objects to be mapped would exceed PDO length.'
-  },
-  {
-    Index: '06040043',
-    Name: 'General parameter incompatibility reason.'
-  },
-  {
-    Index: '06040047',
-    Name: 'General internal incompatibility in the device.'
-  },
-  {
-    Index: '06060000',
-    Name: 'Access failed due to a hardware error.'
-  },
-  {
-    Index: '06070010',
-    Name: 'Data type does not match; length of service parameter does not match.'
-  },
-  {
-    Index: '06070012',
-    Name: 'Data type does not match; length of service parameter too high.'
-  },
-  {
-    Index: '06070013',
-    Name: 'Data type does not match; length of service parameter too low.'
-  },
-  {
-    Index: '06090011',
-    Name: 'Sub-index does not exist.'
-  },
-  {
-    Index: '06090030',
-    Name: 'Value range of parameter exceeded (only for write access).'
-  },
-  {
-    Index: '06090031',
-    Name: 'Value of parameter written too high.'
-  },
-  {
-    Index: '06090032',
-    Name: 'Value of parameter written too low.'
-  },
-  {
-    Index: '06090036',
-    Name: 'Maximum value is less than minimum value.'
-  },
-  {
-    Index: '08000000',
-    Name: 'General error.'
-  },
-  {
-    Index: '08000020',
-    Name: 'Data cannot be transferred or stored to the application.'
-  },
-  {
-    Index: '08000021',
-    Name: 'Data cannot be transferred or stored to the application because of local control.'
-  },
-  {
-    Index: '08000022',
-    Name: 'Data cannot be transferred or stored to the application because of the present device state.'
-  },
-  {
-    Index: '08000023',
-    Name: 'Object dictionary dynamic generation fails or no object dictionary is present (e.g. object dictionary is generated from file and generation fails because of a file error).'
-  },
-  {
-    Index: 'default',
-    Name: 'Unknown Abort Code'
-  }
-]
-
 function findSDO_AbortCode(data) {
   const result = SDO_abortCodes.find((item) => item.Index === data)
   if (result) {
@@ -1113,9 +995,17 @@ export function DecodeEMCY(message) {
   var Interpretation = 'EMCY : '
   var errorStatus = 'error'
 
+  function getEMCY(error_code) {
+    const result = EMCYcodes.find((item) => item.Index === error_code)
+    console.log('🚀 ~ file: CANopenFunctions.js:1000 ~ getEMCY ~ result:', result)
+    if (result) {
+      return result.Name
+    } else return 'Unknown EMCY Code'
+  }
+
   var error_code = LittleEndian(message.slice(0, 4))
   Interpretation = Interpretation.concat(error_code)
-  var temp = EMCYcodes[error_code]
+  var temp = getEMCY(error_code)
   if (!temp) temp = 'Unknown EMCY message'
   Interpretation = Interpretation.concat(' - ', temp)
 
@@ -1171,4 +1061,64 @@ export function DecodeNMT(message) {
   }
 
   return [CS, message.slice(2), '-', '-', interpretation, errorStatus]
+}
+
+export function DecodeNMT_Monitoring(message) {
+  //Possible bug for NodeGuarding protocol
+  //the CMD is one byte and bit 7 alternates between 1 and 0
+
+  var CS = message
+  var interpretation
+  var errorStatus
+
+  if (message.length > 2) {
+    interpretation = `${CS} - DATA too big for this type of message`
+    errorStatus = 'error'
+    CS = '-'
+  } else {
+    if (message == '') {
+      interpretation = 'RTR request from master'
+    } else {
+      switch (message) {
+        case '05':
+        case '5':
+          interpretation = 'NMT Operational'
+          break
+        case '04':
+        case '4':
+          interpretation = 'NMT Stopped'
+          break
+        case '7F':
+          interpretation = 'NMT Pre-Operational'
+          break
+        case '00':
+          interpretation = 'Boot Up'
+          break
+        case '0':
+          //we are making an assumption that the 0 means the length of the message
+          interpretation = 'RTR request from master'
+          break
+        default:
+          interpretation = `${CS} - Unknown NMT state for the slave`
+          CS = '-'
+          errorStatus = 'error'
+          break
+      }
+    }
+  }
+  return [CS, '-', '-', '-', interpretation, errorStatus]
+}
+
+export function DecodeSYNC(message) {
+  var interpretation
+  var errorStatus
+
+  if (message == '' || message == '0') {
+    interpretation = 'SYNC'
+  } else {
+    interpretation = 'SYNC: Data should be nothing, however this is still OK'
+    errorStatus = 'warning'
+  }
+
+  return ['-', '-', '-', '-', interpretation, errorStatus]
 }

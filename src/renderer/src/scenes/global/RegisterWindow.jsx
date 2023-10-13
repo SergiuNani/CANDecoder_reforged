@@ -17,6 +17,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { useNavigate } from 'react-router-dom'
 import { Header } from '../../components/SmallComponents'
 import { SidebarContext } from '../../App'
+
 export const RegisterWindow = () => {
   const navigate = useNavigate()
 
