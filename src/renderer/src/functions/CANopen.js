@@ -42,7 +42,7 @@ export function CobID_who_dis(cob_id) {
     return (aux = ['TCAN', axis_id, 'Group-TCAN'])
   }
   if (cob_id == 32) {
-    return (aux = ['TCAN', '-', 'SYNC-TCAN'])
+    return (aux = ['TCAN', 'All', 'SYNC-TCAN'])
   }
 
   if (cob_id >= 65 && cob_id <= 95) {
@@ -70,7 +70,7 @@ export function CobID_who_dis(cob_id) {
     return (aux = ['TCAN', axis_id, 'TakeData-TCAN'])
   }
   if (cob_id == 128) {
-    return (aux = ['SYNC', '-', 'SYNC'])
+    return (aux = ['SYNC', 'All', 'SYNC'])
   }
 
   if (cob_id >= 129 && cob_id <= 255) {
@@ -283,13 +283,12 @@ export function CreateDecodedArrayOfObjects(arr) {
     if (row[1] == '') {
       row[2] = 'Empty'
       row[3] = 'Line'
-      UpdateStatisticsBasedOnMessage(['', 'All', 'emptyLine'])
+      UpdateStatisticsBasedOnMessage('All', 'emptyLines')
 
       return createObject(row[0], row[1], row[2], row[3])
     }
     var aux_CobID = CobID_who_dis(row[2])
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
-    UpdateStatisticsBasedOnMessage(aux_CobID)
     if (aux_CobID[2] == 'NMT') {
       //Special case for NMT axisID
 
@@ -324,6 +323,8 @@ export function CreateDecodedArrayOfObjects(arr) {
       }
       aux_CobID[2] = 'SYNC'
     }
+    UpdateStatisticsBasedOnMessage(aux_CobID[1], aux_CobID[2])
+
     createObject(
       row[0], //Message NR
       row[1], //OriginalMsg
@@ -367,27 +368,27 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
 
 export let CanLogStatistics = [{ Axis: 'All', emptyLine: 0 }] // array of all the axes
 
-export function UpdateStatisticsBasedOnMessage(cobID) {
+export function UpdateStatisticsBasedOnMessage(axisID, type) {
   var searchResult = CanLogStatistics.filter((OneAxisObject) => {
-    return OneAxisObject.Axis == cobID[1]
+    return OneAxisObject.Axis == axisID
   })
 
   if (searchResult.length === 0) {
     // Nothing found, create a new object
     const newObj = {
-      Axis: cobID[1],
-      [cobID[2]]: 1
+      Axis: axisID,
+      [type]: 1
     }
     CanLogStatistics.push(newObj)
   } else {
     // Object with Axis exists, update the property
     const existingObj = searchResult[0]
-    if (cobID[2] in existingObj) {
+    if (type in existingObj) {
       // Increment the property
-      existingObj[cobID[2]]++
+      existingObj[type]++
     } else {
       // Create the property and set it to 1
-      existingObj[cobID[2]] = 1
+      existingObj[type] = 1
     }
   }
 }
