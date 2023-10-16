@@ -13,20 +13,19 @@ import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
+
 export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) {
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
-  console.log('inside DecodePDO_component++')
 
   useEffect(() => {
     setCurrentObjectIndex(0)
-    DontBotherWithPDO_flag = 0
+    DontBotherWithPDO_flag = 1 // BUG change it to zero
   }, [MessagesDecoded_ArrayOfObjects])
 
   useEffect(() => {
     // Check if there are more objects to process
-    console.log('useEffect ---' + currentObjectIndex)
     if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
       setPDOareDone(false)
       const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
@@ -62,7 +61,7 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareD
   )
 }
 
-let DontBotherWithPDO_flag = 0
+let DontBotherWithPDO_flag = 1
 
 export function PDOdetectedModal({ open, onClose, objectIteration }) {
   const theme = useTheme()

@@ -242,6 +242,7 @@ function returnMaxFromArr(arr) {
 }
 
 export function CreateDecodedArrayOfObjects(arr) {
+  CanLogStatistics = []
   console.log(`Only once === CreateDecodedArrayOfObjects`)
   var ResultingArray = []
 
@@ -278,17 +279,17 @@ export function CreateDecodedArrayOfObjects(arr) {
   }
 
   arr.forEach((row) => {
-    console.log('🚀 ~ file: CANopen.js:279 ~ arr.forEach ~ row:', row)
-
     //Handle Empty Lines
     if (row[1] == '') {
       row[2] = 'Empty'
       row[3] = 'Line'
+      UpdateStatisticsBasedOnMessage(['', 'All', 'emptyLine'])
+
       return createObject(row[0], row[1], row[2], row[3])
     }
     var aux_CobID = CobID_who_dis(row[2])
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
-
+    UpdateStatisticsBasedOnMessage(aux_CobID)
     if (aux_CobID[2] == 'NMT') {
       //Special case for NMT axisID
 
@@ -362,4 +363,31 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
   } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result
+}
+
+export let CanLogStatistics = [{ Axis: 'All', emptyLine: 0 }] // array of all the axes
+
+export function UpdateStatisticsBasedOnMessage(cobID) {
+  var searchResult = CanLogStatistics.filter((OneAxisObject) => {
+    return OneAxisObject.Axis == cobID[1]
+  })
+
+  if (searchResult.length === 0) {
+    // Nothing found, create a new object
+    const newObj = {
+      Axis: cobID[1],
+      [cobID[2]]: 1
+    }
+    CanLogStatistics.push(newObj)
+  } else {
+    // Object with Axis exists, update the property
+    const existingObj = searchResult[0]
+    if (cobID[2] in existingObj) {
+      // Increment the property
+      existingObj[cobID[2]]++
+    } else {
+      // Create the property and set it to 1
+      existingObj[cobID[2]] = 1
+    }
+  }
 }

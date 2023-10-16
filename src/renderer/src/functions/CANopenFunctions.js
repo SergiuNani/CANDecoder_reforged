@@ -997,7 +997,6 @@ export function DecodeEMCY(message) {
 
   function getEMCY(error_code) {
     const result = EMCYcodes.find((item) => item.Index === error_code)
-    console.log('🚀 ~ file: CANopenFunctions.js:1000 ~ getEMCY ~ result:', result)
     if (result) {
       return result.Name
     } else return 'Unknown EMCY Code'
