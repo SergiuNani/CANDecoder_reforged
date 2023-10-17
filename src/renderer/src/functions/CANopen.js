@@ -366,18 +366,18 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
   return result
 }
 
-export let CanLogStatistics = [{ Axis: 'All', emptyLine: 0 }] // array of all the axes
+export let CanLogStatistics = [] // array of all the axes
 
 export function UpdateStatisticsBasedOnMessage(axisID, type) {
   var searchResult = CanLogStatistics.filter((OneAxisObject) => {
-    return OneAxisObject.Axis == axisID
+    return OneAxisObject.Axis[0] == axisID
   })
 
   if (searchResult.length === 0) {
     // Nothing found, create a new object
     const newObj = {
-      Axis: axisID,
-      [type]: 1
+      Axis: [axisID, true],
+      [type]: [1, true]
     }
     CanLogStatistics.push(newObj)
   } else {
@@ -385,10 +385,10 @@ export function UpdateStatisticsBasedOnMessage(axisID, type) {
     const existingObj = searchResult[0]
     if (type in existingObj) {
       // Increment the property
-      existingObj[type]++
+      existingObj[type][0]++
     } else {
       // Create the property and set it to 1
-      existingObj[type] = 1
+      existingObj[type] = [1, true]
     }
   }
 }

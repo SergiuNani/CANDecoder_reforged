@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react'
 import { Box, IconButton, Button, Typography } from '@mui/material'
-import { Header, SwitchComponent, Button1 } from '../components/SmallComponents'
+import {
+  Header,
+  SwitchComponent,
+  Button1,
+  AvailableAxes_Component
+} from '../components/SmallComponents'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
@@ -17,6 +22,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
+import { CanLogStatistics } from '../functions/CANopen'
 
 export let MessagesDecoded_ArrayOfObjects = []
 
@@ -24,7 +30,7 @@ const Decode_CAN_LOG = () => {
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [TextAreaText, setTextAreaText] = useState('')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
-
+  const [displayTable, setDisplayTable] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const { userVsDebugMode } = useContext(UserVsDebugModeContext)
@@ -157,7 +163,11 @@ const Decode_CAN_LOG = () => {
         }}
       >
         {userVsDebugMode == 'USER' ? (
-          <UserCANopenDecodedTable fileInnerText={fileInnerText} />
+          <UserCANopenDecodedTable
+            fileInnerText={fileInnerText}
+            displayTable={displayTable}
+            setDisplayTable={setDisplayTable}
+          />
         ) : (
           <DebugCANopenDecodedTable fileInnerText={fileInnerText} />
         )}
@@ -259,10 +269,9 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
   )
 }
 
-const UserCANopenDecodedTable = ({ fileInnerText }) => {
+const UserCANopenDecodedTable = ({ fileInnerText, displayTable, setDisplayTable }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const [PDOareDone, setPDOareDone] = useState(false)
 
   if (fileInnerText == '') {
     fileInnerText = ` `
@@ -278,10 +287,10 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
       <Box>
         <DecodePDO_component
           MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
-          setPDOareDone={setPDOareDone}
+          setPDOareDone={setDisplayTable}
         />
 
-        {PDOareDone && (
+        {displayTable && (
           <table
             style={{
               width: '100%',
@@ -289,7 +298,8 @@ const UserCANopenDecodedTable = ({ fileInnerText }) => {
               color: `${colors.grey[100]}`,
               background: `${colors.blue[300]}`,
               fontFamily: 'Calibri',
-              marginBottom: '20rem'
+              marginBottom: '20rem',
+              fontSize: '1rem'
             }}
           >
             <thead
@@ -511,7 +521,7 @@ function CanOpenDisplaySettings() {
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
 
   return (
-    <Box>
+    <Box sx={{ userSelect: 'none' }}>
       {/* Reading Direction Radio Buttons ----------------- */}
       <Box
         sx={{
@@ -609,7 +619,6 @@ function CanOpenDisplaySettings() {
         />
       </Box>
       {/* Available Axes  ----------------- */}
-
       <Box
         sx={{
           border: `2px solid ${colors.primary[400]}`,
@@ -629,6 +638,7 @@ function CanOpenDisplaySettings() {
         >
           Available Axes:{' '}
         </p>
+        <AvailableAxes_Component />
       </Box>
 
       {/* Message Types ----------------- */}

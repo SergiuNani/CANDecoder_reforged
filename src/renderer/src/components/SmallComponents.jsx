@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { Typography, Box, useTheme } from '@mui/material'
+import { Typography, Box, useTheme, Checkbox, FormControlLabel, IconButton } from '@mui/material'
 import { tokens } from '../theme'
 import { Button, Switch } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import Fade from '@mui/material/Fade'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
-
+import { CanLogStatistics } from '../functions/CANopen'
 export const Header = ({ title, subtitle }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -93,7 +93,23 @@ export const Button3 = ({ children, onClick }) => {
     </Button>
   )
 }
-
+export const ButtonTransparent = ({ children, onClick, sx }) => {
+  //Cancel button
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const defaultSx = {
+    background: 'transparent',
+    '&:hover': {
+      background: 'transparent'
+    },
+    textTransform: 'none'
+  }
+  return (
+    <Button variant="contained" onClick={onClick} sx={{ ...defaultSx, ...sx }}>
+      {children}
+    </Button>
+  )
+}
 export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -172,3 +188,122 @@ export const TooltipClickable = styled(({ className, children, ...props }) => {
     }
   }
 })
+
+export function Checkbox_Component({ label, checked, onChange }) {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={checked}
+            sx={{
+              color: `${colors.primary[600]}`,
+              '&.Mui-checked': {
+                color: `${colors.primary[400]}`
+              },
+              margin: '0',
+              padding: '0rem'
+            }}
+            onChange={onChange}
+          />
+        }
+        label={label}
+      />
+      {/* <p>{children}</p> */}
+    </div>
+  )
+}
+
+export function AvailableAxes_Component({}) {
+  console.log('AvailableAxes_Component ++')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [renderToggle, setRenderToggle] = useState(true)
+
+  function handleAxisClick(e) {
+    var axis = e.target.textContent.split(': ')[1]
+    var arrayIndex = CanLogStatistics.findIndex((iteration) => {
+      return iteration.Axis[0] == axis
+    })
+    if (arrayIndex != -1) {
+      var AxisState = CanLogStatistics[arrayIndex].Axis[1]
+      Object.keys(CanLogStatistics[arrayIndex]).forEach((prop) => {
+        CanLogStatistics[arrayIndex][prop][1] = !AxisState
+      })
+    }
+    setRenderToggle((prev) => !prev)
+  }
+  function handleChecboxClicked(e) {
+    console.log(e)
+  }
+  return (
+    <Box>
+      {CanLogStatistics.map((axisIteration) => {
+        return (
+          <Box key={axisIteration.Axis}>
+            {/* ONE AXIS  ---------- */}
+            <Box
+              sx={{
+                border: axisIteration.Axis[1] ? `1px solid ${colors.red[500]}` : null,
+                borderRadius: '1rem',
+                marginBottom: '1rem',
+                padding: '0.1rem'
+              }}
+            >
+              <ButtonTransparent
+                sx={{
+                  fontSize: '1.1rem',
+                  color: `${colors.red[500]}`,
+                  fontWeight: '700'
+                }}
+                onClick={handleAxisClick}
+              >
+                Axis: {axisIteration.Axis[0]}
+              </ButtonTransparent>
+
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  margin: '0 0 1rem 1rem'
+                }}
+              >
+                {Object.keys(axisIteration).map((propName) => {
+                  if (propName == 'Axis') return
+                  return (
+                    <div key={propName}>
+                      <div
+                        key={propName}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          maxWidth: '9rem',
+                          whiteSpace: 'nowrap'
+                          // overflow: 'hidden'
+                        }}
+                      >
+                        <Checkbox_Component
+                          label={`${propName} - ${axisIteration[propName][0]}`}
+                          checked={axisIteration[propName][1]}
+                          onChange={handleChecboxClicked}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </Box>
+            </Box>
+          </Box>
+        )
+      })}
+    </Box>
+  )
+}

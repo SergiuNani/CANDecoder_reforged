@@ -30,3 +30,7 @@ The visual representation of the register will be updated on the fly by changing
 5) The fifth button "+" can clone the current tool up to three tools in general. All three clones have the same functionality and are working separately from each other. The idea behind it is that if the user has to query multiple registers or he wants to compere them between each other the tool can facilitate this option as well. The clones of the Register tool can also be deleted at any point by clicking on the 'X' close button. Adding another clone right after deleating the previous one will not memorize the previous data.
 
 6) the sixth component is The generated Register  itself. It contains multiple lines each line representing the number of bit , their description and the value of the bit itself. Try clicking on the box which contains the value of one specific bit and you see that the value changes in the opposite value and it also updates the value field (3) of the register. THis can be useful when you want to achieve a  certain functionality from the register but don`t know what value it needs to have so that the desired bit will be set or unset.
+
+
+
+//BUG1: For the PDO detected window add another option which the user can select when he has no idea what the object is part of and because if there are random shit it only hinders the canlog reading.
