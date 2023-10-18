@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Typography, Box, useTheme, Checkbox, FormControlLabel, IconButton } from '@mui/material'
 import { tokens } from '../theme'
 import { Button, Switch } from '@mui/material'
@@ -223,7 +223,7 @@ export function Checkbox_Component({ label, checked, onChange }) {
 }
 
 export function AvailableAxes_Component({}) {
-  console.log('AvailableAxes_Component ++')
+  console.log('6. AvailableAxes_Component ')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [renderToggle, setRenderToggle] = useState(true)
@@ -238,11 +238,41 @@ export function AvailableAxes_Component({}) {
       Object.keys(CanLogStatistics[arrayIndex]).forEach((prop) => {
         CanLogStatistics[arrayIndex][prop][1] = !AxisState
       })
+      setRenderToggle((prev) => !prev)
     }
-    setRenderToggle((prev) => !prev)
   }
+
   function handleChecboxClicked(e) {
-    console.log(e)
+    var axis = e.target.closest('.AxisIndication').querySelector('button').innerText
+    var propToChange = e.target.parentElement.parentElement.innerText.split(' - ')[0]
+    axis = axis.split(': ')[1]
+    var arrayIndex = CanLogStatistics.findIndex((iteration) => {
+      return iteration.Axis[0] == axis
+    })
+
+    if (arrayIndex != -1) {
+      // Check if all other props (except 'Axis') have the opposite value of the clicked checkbox
+      var currentCheckboxState = CanLogStatistics[arrayIndex][propToChange][1]
+      const allPropsAreTheSameState = Object.keys(CanLogStatistics[arrayIndex]).every((prop) => {
+        return (
+          prop === 'Axis' ||
+          prop === propToChange ||
+          CanLogStatistics[arrayIndex][prop][1] !== currentCheckboxState
+        )
+      })
+
+      // If all other props have the opposite value, update the 'Axis' property
+      if (allPropsAreTheSameState) {
+        CanLogStatistics[arrayIndex].Axis[1] = !currentCheckboxState
+      }
+
+      // Update the clicked checkbox's value
+      CanLogStatistics[arrayIndex][propToChange][1] = !currentCheckboxState
+      if (!currentCheckboxState == true) {
+        CanLogStatistics[arrayIndex].Axis[1] = true
+      }
+      setRenderToggle((prev) => !prev)
+    }
   }
   return (
     <Box>
@@ -257,6 +287,7 @@ export function AvailableAxes_Component({}) {
                 marginBottom: '1rem',
                 padding: '0.1rem'
               }}
+              className="AxisIndication"
             >
               <ButtonTransparent
                 sx={{

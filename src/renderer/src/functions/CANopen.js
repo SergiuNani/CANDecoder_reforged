@@ -51,7 +51,7 @@ export function CobID_who_dis(cob_id) {
   }
   if (cob_id == 256) {
     // axis_id = cob_id - 65 + 1
-    return (aux = ['TCAN', '-', 'TimeStamp-TCAN'])
+    return (aux = ['TCAN', 'All', 'TimeStamp-TCAN'])
   }
   if (cob_id >= 257 && cob_id <= 287) {
     axis_id = cob_id - 257 + 1
@@ -86,7 +86,7 @@ export function CobID_who_dis(cob_id) {
   }
 
   if (cob_id == 512) {
-    return (aux = ['TCAN', '-', 'Broadcast-TCAN'])
+    return (aux = ['TCAN', 'All', 'Broadcast-TCAN'])
   }
   if (cob_id >= 513 && cob_id <= 639) {
     axis_id = cob_id - 513 + 1

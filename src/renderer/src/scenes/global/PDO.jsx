@@ -14,7 +14,7 @@ import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 
-export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareDone }) {
+export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects }) {
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
@@ -27,7 +27,6 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareD
   useEffect(() => {
     // Check if there are more objects to process
     if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
-      setPDOareDone(false)
       const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
 
       // Check if the object is a PDO
@@ -40,8 +39,6 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setPDOareD
           //Solve the  Maximum update depth exceeded
         }, 1)
       }
-    } else {
-      setPDOareDone(true)
     }
   }, [currentObjectIndex, MessagesDecoded_ArrayOfObjects])
 

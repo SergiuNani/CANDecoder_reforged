@@ -1,12 +1,22 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react'
-import { Box, IconButton, Button, Typography } from '@mui/material'
+import {
+  Box,
+  IconButton,
+  Button,
+  Typography,
+  useTheme,
+  RadioGroup,
+  FormControlLabel,
+  Radio
+} from '@mui/material'
 import {
   Header,
   SwitchComponent,
-  Button1,
-  AvailableAxes_Component
+  Button3,
+  AvailableAxes_Component,
+  TooltipClickable,
+  Checkbox_Component
 } from '../components/SmallComponents'
-import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined'
@@ -14,22 +24,23 @@ import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { UserVsDebugModeContext } from '../App'
 import { InsertTextIntoTextArea } from '../data/TestingData'
-import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../functions/CANopen'
-import { TooltipClickable } from '../components/SmallComponents'
+import {
+  Extract_MSGs_from_text,
+  CreateDecodedArrayOfObjects,
+  CanLogStatistics
+} from '../functions/CANopen'
 import { Input_AutoFormat } from '../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../functions/NumberConversion'
 import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
-import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
-import { CanLogStatistics } from '../functions/CANopen'
-
 export let MessagesDecoded_ArrayOfObjects = []
 
 const Decode_CAN_LOG = () => {
+  console.log('1. Decode_CAN_LOG++')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [TextAreaText, setTextAreaText] = useState('')
-  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
+  const [fileInnerText, setFileInnerText] = useState('')
   const [displayTable, setDisplayTable] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -69,13 +80,12 @@ const Decode_CAN_LOG = () => {
       reader.readAsText(file)
     }
   }
-  function handleClickDecode() {
+  function handleClickArrow() {
     var lines = TextAreaText
     setFileInnerText(lines)
   }
   return (
     <Box style={{ position: 'relative' }}>
-      <DrawerComponent_DecodeOptions />
       <Header title="Decode a CAN LOG "></Header>
 
       {/* TOP MENU options --------------------------- */}
@@ -126,7 +136,7 @@ const Decode_CAN_LOG = () => {
             sx={{
               zoom: '2'
             }}
-            onClick={handleClickDecode}
+            onClick={handleClickArrow}
           >
             <ArrowCircleRightOutlinedIcon />
           </IconButton>
@@ -153,12 +163,6 @@ const Decode_CAN_LOG = () => {
 
       <Box
         style={{
-          // display: 'flex',
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          // border: `1px solid yellow`,
-          // height: '30vh',
-          // overflow: 'auto',
           fontSize: '1.2rem'
         }}
       >
@@ -179,6 +183,7 @@ const Decode_CAN_LOG = () => {
 export default Decode_CAN_LOG
 
 const DebugCANopenDecodedTable = ({ fileInnerText }) => {
+  console.log('2. DebugCANopenDecodedTable')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [lineToScroll, setLineToScroll] = useState('')
@@ -270,6 +275,7 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
 }
 
 const UserCANopenDecodedTable = ({ fileInnerText, displayTable, setDisplayTable }) => {
+  console.log('3. UserCANopenDecodedTable')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -285,10 +291,8 @@ const UserCANopenDecodedTable = ({ fileInnerText, displayTable, setDisplayTable 
   return (
     <section>
       <Box>
-        <DecodePDO_component
-          MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
-          setPDOareDone={setDisplayTable}
-        />
+        <DecodePDO_component MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects} />
+        <DrawerComponent_DecodeOptions setDisplayTable={setDisplayTable} />
 
         {displayTable && (
           <table
@@ -450,7 +454,8 @@ const UserCANopenDecodedTable = ({ fileInnerText, displayTable, setDisplayTable 
   )
 }
 
-export const DrawerComponent_DecodeOptions = () => {
+export const DrawerComponent_DecodeOptions = ({ setDisplayTable }) => {
+  console.log('4. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [isDrawerOpen, closeDrawer] = useState(true)
@@ -478,6 +483,7 @@ export const DrawerComponent_DecodeOptions = () => {
       <Box
         style={{
           position: 'fixed',
+          top: '3rem',
           width: '30rem',
           backgroundColor: '#333',
           color: 'white',
@@ -504,187 +510,173 @@ export const DrawerComponent_DecodeOptions = () => {
             <CloseIcon style={{ fontSize: '2rem' }} />
           </IconButton>
         </Box>
-        <CanOpenDisplaySettings />
+        <CanLogDisplaySettings setDisplayTable={setDisplayTable} />
       </Box>
     </Box>
   )
 }
 
-function CanOpenDisplaySettings() {
+function CanLogDisplaySettings({ setDisplayTable }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
   const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
-  const [lowerLimit, setLowerLimit] = useState(1)
-  const [upperLimit, setUpperLimit] = useState(3)
 
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
 
-  return (
-    <Box sx={{ userSelect: 'none' }}>
-      {/* Reading Direction Radio Buttons ----------------- */}
-      <Box
-        sx={{
-          border: `2px solid ${colors.primary[400]}`,
-          borderRadius: '1rem',
-          margin: '1rem 0',
-          background: `${colors.blue[200]}`,
-          padding: '0.4rem'
-        }}
-      >
-        <p
-          style={{
-            fontSize: '1rem',
-            marginBottom: '0.5rem',
-            marginLeft: '1rem',
-            color: `${colors.yellow[500]}`
-          }}
-        >
-          CAN_LOG reading direction:{' '}
-        </p>
-        <RadioGroup
-          row
-          onChange={(e) => {
-            setOptionReadingDirection(e.target.value)
-          }}
-          value={optionReadingDirection}
+  function handleDECODE() {
+    console.log('handleDECODE')
+    setDisplayTable(true)
+  }
+  const memoizedComponent = useMemo(
+    () => (
+      <Box sx={{ userSelect: 'none' }}>
+        {console.log('5. CanLogDisplaySettings')}
+        {/* Reading Direction Radio Buttons ----------------- */}
+        <Box
           sx={{
-            justifyContent: 'center',
-            '& .MuiSvgIcon-root': {
-              // fontSize: '1rem'
-              color: `${colors.green[400]}`
-            }
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
           }}
         >
-          <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
-          <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
-        </RadioGroup>
-      </Box>
-
-      {/* Choose interval  ----------------- */}
-
-      <Box
-        sx={{
-          border: `2px solid ${colors.primary[400]}`,
-          borderRadius: '1rem',
-          margin: '1rem 0',
-          background: `${colors.blue[200]}`,
-          padding: '0.4rem',
-          display: 'flex',
-          // justifyContent: 'center',
-          alignItems: 'center',
-          gap: '1.3rem'
-        }}
-      >
-        <Typography
-          style={{
-            fontSize: '1rem',
-            marginBottom: '0.5rem',
-            marginLeft: '1rem',
-            color: `${colors.yellow[500]}`
-          }}
-        >
-          Choose interval :
-        </Typography>
-        <Input_AutoFormat
-          callback={filterDecimal}
-          resolution={'TIME'}
-          tellParentValueChanged={(value) => {
-            if (value == '0') value = '1'
-            setLowerLimit(value)
-          }}
-          forceValueFromParent={lowerLimit}
-          width={'4rem'}
-          border={`2px solid ${colors.primary1[200]}`}
-          color={`${colors.primary[600]}`}
-          center
-          blockValueReset
-          padding="0.1rem"
-        />
-
-        <Input_AutoFormat
-          callback={filterDecimal}
-          resolution={'TIME'}
-          tellParentValueChanged={(value) => {
-            if (value == '0') value = '1'
-            setUpperLimit(value)
-          }}
-          forceValueFromParent={upperLimit}
-          width={'4rem'}
-          border={`2px solid ${colors.primary1[200]}`}
-          color={`${colors.primary[600]}`}
-          center
-          blockValueReset
-          padding="0.1rem"
-        />
-      </Box>
-      {/* Available Axes  ----------------- */}
-      <Box
-        sx={{
-          border: `2px solid ${colors.primary[400]}`,
-          borderRadius: '1rem',
-          margin: '1rem 0',
-          background: `${colors.blue[200]}`,
-          padding: '0.4rem'
-        }}
-      >
-        <p
-          style={{
-            fontSize: '1rem',
-            marginBottom: '0.5rem',
-            marginLeft: '1rem',
-            color: `${colors.yellow[500]}`
-          }}
-        >
-          Available Axes:{' '}
-        </p>
-        <AvailableAxes_Component />
-      </Box>
-
-      {/* Message Types ----------------- */}
-
-      <Box
-        sx={{
-          border: `2px solid ${colors.primary[400]}`,
-          borderRadius: '1rem',
-          margin: '1rem 0',
-          background: `${colors.blue[200]}`,
-          padding: '0.4rem'
-        }}
-      >
-        <p
-          style={{
-            fontSize: '1rem',
-            marginBottom: '0.5rem',
-            marginLeft: '1rem',
-            color: `${colors.yellow[500]}`
-          }}
-        >
-          Sort By:{' '}
-        </p>
-
-        <RadioGroup
-          row
-          onChange={(e) => {
-            setMessageTypeSorting(e.target.value)
-          }}
-          value={messageTypeSorting}
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            CAN_LOG reading direction:{' '}
+          </p>
+          <RadioGroup
+            row
+            onChange={(e) => {
+              setOptionReadingDirection(e.target.value)
+            }}
+            value={optionReadingDirection}
+            sx={{
+              justifyContent: 'center',
+              '& .MuiSvgIcon-root': {
+                // fontSize: '1rem'
+                color: `${colors.green[400]}`
+              }
+            }}
+          >
+            <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
+            <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
+          </RadioGroup>
+        </Box>
+        {/* GROUPING OPTIONS ----------------- */}
+        <Box
           sx={{
-            justifyContent: 'center',
-            '& .MuiSvgIcon-root': {
-              // fontSize: '1rem'
-              color: `${colors.green[400]}`,
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Grouping Options:{' '}
+          </p>
+          <div
+            style={{
               display: 'flex',
-              gap: '2rem'
-            }
+              flexDirection: 'column',
+              alignItems: 'start',
+              marginLeft: '2rem',
+              gap: '0.5rem'
+            }}
+          >
+            <Checkbox_Component label="Group by Axis ID" />
+            <Checkbox_Component label="Group by Modes of Operation" />
+            <Checkbox_Component label="Group by Repetitive messages" />
+          </div>
+        </Box>
+        {/* Available Axes  ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
           }}
         >
-          <FormControlLabel value="all" control={<Radio />} label="All" />
-          <FormControlLabel value="master" control={<Radio />} label="Master" />
-          <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
-          <FormControlLabel value="errors" control={<Radio />} label="Errors" />
-        </RadioGroup>
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Available Axes:{' '}
+          </p>
+          <AvailableAxes_Component />
+        </Box>
+        {/* Message Types ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Sort By:{' '}
+          </p>
+
+          <RadioGroup
+            row
+            onChange={(e) => {
+              setMessageTypeSorting(e.target.value)
+            }}
+            value={messageTypeSorting}
+            sx={{
+              justifyContent: 'center',
+              '& .MuiSvgIcon-root': {
+                // fontSize: '1rem'
+                color: `${colors.green[400]}`,
+                display: 'flex',
+                gap: '2rem'
+              }
+            }}
+          >
+            <FormControlLabel value="all" control={<Radio />} label="All" />
+            <FormControlLabel value="master" control={<Radio />} label="Master" />
+            <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
+            <FormControlLabel value="errors" control={<Radio />} label="Errors" />
+          </RadioGroup>
+        </Box>
+        {/* Display Messages Button ----------------- */}
+        <Box>
+          <Button3 onClick={handleDECODE}>DECODE</Button3>
+        </Box>
       </Box>
-    </Box>
+    ),
+    [CanLogStatistics]
   )
+
+  return memoizedComponent
 }
