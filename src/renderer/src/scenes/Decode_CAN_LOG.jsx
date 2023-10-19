@@ -13,9 +13,9 @@ import {
   Header,
   SwitchComponent,
   Button3,
-  AvailableAxes_Component,
   TooltipClickable,
-  Checkbox_Component
+  Checkbox_Component,
+  ButtonTransparent
 } from '../components/SmallComponents'
 import { tokens } from '../theme'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
@@ -34,18 +34,23 @@ import { filterDecimal, filterHex } from '../functions/NumberConversion'
 import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
+import { DontBotherWithPDO_flag } from './global/PDO'
+import { PDO_mapped } from '../functions/CANopenFunctions'
+
 export let MessagesDecoded_ArrayOfObjects = []
 
 const Decode_CAN_LOG = () => {
   console.log('1. Decode_CAN_LOG++')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
-  const [TextAreaText, setTextAreaText] = useState('')
-  const [fileInnerText, setFileInnerText] = useState('')
-  const [displayTable, setDisplayTable] = useState(false)
+  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
+  const [hideTableForceParent, sethideTableForceParent] = useState(false)
+  const [forceDecodeFromParent, setforceDecodeFromParent] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const { userVsDebugMode } = useContext(UserVsDebugModeContext)
 
+  const TextAreaText_Ref = useRef()
+  const Decode_CAN_LOG_ref = useRef()
   function handleMenuChange(event) {
     if (event === 'FreeText') {
       setFreeTextVsCanLog('FreeText')
@@ -73,17 +78,72 @@ const Decode_CAN_LOG = () => {
       const reader = new FileReader()
 
       reader.onload = (e) => {
+        DontBotherWithPDO_flag[0] = 0 // Force for PDO window to reapear
+        PDO_mapped = []
         const fileContent = e.target.result
         setFileInnerText(fileContent)
+        sethideTableForceParent((prev) => !prev)
       }
 
       reader.readAsText(file)
     }
   }
   function handleClickArrow() {
-    var lines = TextAreaText
+    DontBotherWithPDO_flag[0] = 0 // Force for PDO window to reapear
+    var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
+    sethideTableForceParent((prev) => !prev)
   }
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.ctrlKey && event.key === 'Enter') {
+        if (
+          !Decode_CAN_LOG_ref.current
+            .querySelector('#DrawerComponent')
+            .classList.contains('DrawerOpened')
+        ) {
+          console.log('YOOO')
+          handleClickArrow()
+        } else {
+          console.log('NOOO')
+          setforceDecodeFromParent((prev) => !prev)
+        }
+        // setIsDrawerOpen((prev) => !prev)
+      } else if (event.ctrlKey && event.key === 'Tab') {
+        TextAreaText_Ref.current.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
+  const TableDisplay = useMemo(() => {
+    return (
+      <Box
+        ref={Decode_CAN_LOG_ref}
+        style={{
+          fontSize: '1.2rem'
+        }}
+      >
+        {userVsDebugMode == 'USER' ? (
+          <UserCANopenDecodedTable
+            fileInnerText={fileInnerText}
+            hideTableForceParent={hideTableForceParent}
+            forceDecodeFromParent={forceDecodeFromParent}
+          />
+        ) : (
+          <DebugCANopenDecodedTable
+            fileInnerText={fileInnerText}
+            hideTableForceParent={hideTableForceParent}
+          />
+        )}
+      </Box>
+    )
+  }, [fileInnerText, forceDecodeFromParent])
+
   return (
     <Box style={{ position: 'relative' }}>
       <Header title="Decode a CAN LOG "></Header>
@@ -116,13 +176,8 @@ const Decode_CAN_LOG = () => {
           }}
         >
           <textarea
-            name=""
-            id=""
+            ref={TextAreaText_Ref}
             cols="100"
-            value={TextAreaText}
-            onChange={(e) => {
-              setTextAreaText(e.target.value)
-            }}
             style={{
               background: `${colors.primary[300]}`,
               color: `${colors.yellow[600]}`,
@@ -160,22 +215,7 @@ const Decode_CAN_LOG = () => {
       )}
 
       {/* TABLE ----------------------------------------- */}
-
-      <Box
-        style={{
-          fontSize: '1.2rem'
-        }}
-      >
-        {userVsDebugMode == 'USER' ? (
-          <UserCANopenDecodedTable
-            fileInnerText={fileInnerText}
-            displayTable={displayTable}
-            setDisplayTable={setDisplayTable}
-          />
-        ) : (
-          <DebugCANopenDecodedTable fileInnerText={fileInnerText} />
-        )}
-      </Box>
+      {TableDisplay}
     </Box>
   )
 }
@@ -274,14 +314,18 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
   )
 }
 
-const UserCANopenDecodedTable = ({ fileInnerText, displayTable, setDisplayTable }) => {
+const UserCANopenDecodedTable = ({
+  fileInnerText,
+  hideTableForceParent,
+  forceDecodeFromParent
+}) => {
   console.log('3. UserCANopenDecodedTable')
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
+  const [displayTable, setDisplayTable] = useState(false)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
-  if (fileInnerText == '') {
-    fileInnerText = ` `
-  }
+  useEffect(() => {
+    setDisplayTable(false)
+  }, [hideTableForceParent])
 
   var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(fileInnerText.split('\n'))
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
@@ -291,179 +335,195 @@ const UserCANopenDecodedTable = ({ fileInnerText, displayTable, setDisplayTable 
   return (
     <section>
       <Box>
-        <DecodePDO_component MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects} />
-        <DrawerComponent_DecodeOptions setDisplayTable={setDisplayTable} />
+        <DecodePDO_component
+          MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
+          setIsDrawerOpen={setIsDrawerOpen}
+        />
 
-        {displayTable && (
-          <table
-            style={{
-              width: '100%',
-              position: 'relative',
-              color: `${colors.grey[100]}`,
-              background: `${colors.blue[300]}`,
-              fontFamily: 'Calibri',
-              marginBottom: '20rem',
-              fontSize: '1rem'
-            }}
-          >
-            <thead
-              style={{
-                fontWeight: '700',
-                position: 'sticky',
-                top: '2.5rem',
-                background: `${colors.primary[300]}`,
-                zIndex: 1
-              }}
-            >
-              {/* Table ROW FOR THEAD---------------------------- */}
-              <tr>
-                <th
-                  style={{
-                    padding: '0.5rem'
-                  }}
-                >
-                  NR
-                </th>
-                <th>Original Message</th>
-                <th>Type</th>
-                <th>AxisID</th>
-                <th>CS</th>
-                <th>Object</th>
-                <th>Object Name</th>
-                <th>Data</th>
-                <th>Interpretation</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MessagesDecoded_ArrayOfObjects.map((iteration, index) => {
-                var isRecieveTypeMessage = [
-                  'R_SDO',
-                  'RPDO1',
-                  'RPDO2',
-                  'RPDO3',
-                  'RPDO4',
-                  'NMT'
-                ].includes(iteration.type)
-                return (
-                  <tr
-                    key={index}
-                    style={{
-                      borderBottom: `1px solid ${colors.grey[300]}`,
-                      background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
-                      borderLeft: isRecieveTypeMessage
-                        ? `0.5rem solid ${colors.primary[400]}`
-                        : 'inherit'
-                    }}
-                  >
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        padding: '0.7rem 0'
-                      }}
-                    >
-                      {iteration.msgNr}
-                    </td>
-                    <td style={{ textAlign: 'center', cursor: 'pointer' }}>
-                      <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
-                        <p>
-                          {iteration.CobID} - {iteration.FrameData}
-                        </p>
-                      </TooltipClickable>
-                    </td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        color: `${colors.blue[100]}`,
-                        fontWeight: '600'
-                      }}
-                    >
-                      {iteration.type}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        color: `${colors.personal[100]}`,
-                        fontWeight: '700'
-                      }}
-                    >
-                      {iteration.AxisID}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>{iteration.CS}</td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        color: `${colors.yellow[100]}`,
-                        fontWeight: '600'
-                      }}
-                    >
-                      {iteration.Object}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        maxWidth: '10rem',
-                        overflowY: 'auto'
-                      }}
-                    >
-                      {iteration.ObjectName}
-                    </td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        color: `${colors.green[100]}`,
-                        fontWeight: '700'
-                      }}
-                    >
-                      <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
-                        {iteration.Data}
-                      </RegisterTooltip>
-                    </td>
-                    <td
-                      style={{
-                        textAlign: 'center',
-                        maxWidth: '25rem',
-                        overflowY: 'auto',
-                        fontWeight:
-                          iteration.errorStatus == 'error'
-                            ? '700'
-                            : iteration.errorStatus == 'blue'
-                            ? '700'
-                            : 'inherit',
-                        color:
-                          iteration.errorStatus == 'error'
-                            ? `${colors.red[500]}`
-                            : iteration.errorStatus == 'warning'
-                            ? `${colors.yellow[500]}`
-                            : iteration.errorStatus == 'idk'
-                            ? `${colors.primary[400]}`
-                            : iteration.errorStatus == 'blue'
-                            ? `${colors.personal[300]}`
-                            : 'inherit'
-                      }}
-                    >
-                      {iteration.Interpretation}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        )}
+        <DrawerComponent_DecodeOptions
+          setDisplayTable={setDisplayTable}
+          isDrawerOpen={isDrawerOpen}
+          setIsDrawerOpen={setIsDrawerOpen}
+          forceDecodeFromParent={forceDecodeFromParent}
+        />
+
+        {displayTable && <TableComponent filtereGroupeddArray={MessagesDecoded_ArrayOfObjects} />}
       </Box>
     </section>
   )
 }
 
-export const DrawerComponent_DecodeOptions = ({ setDisplayTable }) => {
+const TableComponent = ({ filtereGroupeddArray }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <table
+      style={{
+        width: '100%',
+        position: 'relative',
+        color: `${colors.grey[100]}`,
+        background: `${colors.blue[300]}`,
+        fontFamily: 'Calibri',
+        marginBottom: '20rem',
+        fontSize: '1rem'
+      }}
+    >
+      <thead
+        style={{
+          fontWeight: '700',
+          position: 'sticky',
+          top: '2.5rem',
+          background: `${colors.primary[300]}`,
+          zIndex: 1
+        }}
+      >
+        {/* Table ROW FOR THEAD---------------------------- */}
+        <tr>
+          <th
+            style={{
+              padding: '0.5rem'
+            }}
+          >
+            NR
+          </th>
+          <th>Original Message</th>
+          <th>Type</th>
+          <th>AxisID</th>
+          <th>CS</th>
+          <th>Object</th>
+          <th>Object Name</th>
+          <th>Data</th>
+          <th>Interpretation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filtereGroupeddArray.map((iteration, index) => {
+          var isRecieveTypeMessage = ['R_SDO', 'RPDO1', 'RPDO2', 'RPDO3', 'RPDO4', 'NMT'].includes(
+            iteration.type
+          )
+          return (
+            <tr
+              key={index}
+              style={{
+                borderBottom: `1px solid ${colors.grey[300]}`,
+                background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
+                borderLeft: isRecieveTypeMessage ? `0.5rem solid ${colors.primary[400]}` : 'inherit'
+              }}
+            >
+              <td
+                style={{
+                  textAlign: 'center',
+                  padding: '0.7rem 0'
+                }}
+              >
+                {iteration.msgNr}
+              </td>
+              <td style={{ textAlign: 'center', cursor: 'pointer' }}>
+                <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
+                  <p>
+                    {iteration.CobID} - {iteration.FrameData}
+                  </p>
+                </TooltipClickable>
+              </td>
+              <td
+                style={{
+                  textAlign: 'center',
+                  color: `${colors.blue[100]}`,
+                  fontWeight: '600'
+                }}
+              >
+                {iteration.type}
+              </td>
+              <td
+                style={{
+                  textAlign: 'center',
+                  color: `${colors.personal[100]}`,
+                  fontWeight: '700'
+                }}
+              >
+                {iteration.AxisID}
+              </td>
+              <td style={{ textAlign: 'center' }}>{iteration.CS}</td>
+              <td
+                style={{
+                  textAlign: 'center',
+                  color: `${colors.yellow[100]}`,
+                  fontWeight: '600'
+                }}
+              >
+                {iteration.Object}
+              </td>
+              <td
+                style={{
+                  textAlign: 'center',
+                  maxWidth: '10rem',
+                  overflowY: 'auto'
+                }}
+              >
+                {iteration.ObjectName}
+              </td>
+              <td
+                style={{
+                  textAlign: 'center',
+                  color: `${colors.green[100]}`,
+                  fontWeight: '700'
+                }}
+              >
+                <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
+                  {iteration.Data}
+                </RegisterTooltip>
+              </td>
+              <td
+                style={{
+                  textAlign: 'center',
+                  maxWidth: '25rem',
+                  overflowY: 'auto',
+                  fontWeight:
+                    iteration.errorStatus == 'error'
+                      ? '700'
+                      : iteration.errorStatus == 'blue'
+                      ? '700'
+                      : 'inherit',
+                  color:
+                    iteration.errorStatus == 'error'
+                      ? `${colors.red[500]}`
+                      : iteration.errorStatus == 'warning'
+                      ? `${colors.yellow[500]}`
+                      : iteration.errorStatus == 'idk'
+                      ? `${colors.primary[400]}`
+                      : iteration.errorStatus == 'blue'
+                      ? `${colors.personal[300]}`
+                      : 'inherit'
+                }}
+              >
+                {iteration.Interpretation}
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+export const DrawerComponent_DecodeOptions = ({
+  setDisplayTable,
+  isDrawerOpen,
+  setIsDrawerOpen,
+  forceDecodeFromParent
+}) => {
   console.log('4. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const [isDrawerOpen, closeDrawer] = useState(true)
+  const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
+
+  const [messageTypeSorting, setMessageTypeSorting] = useState('all')
 
   useEffect(() => {
     const handleKeyPress = (event) => {
+      console.log('event.key')
       if (event.ctrlKey && event.key === '`') {
-        closeDrawer((prev) => !prev)
+        setIsDrawerOpen((prev) => !prev)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -471,15 +531,24 @@ export const DrawerComponent_DecodeOptions = ({ setDisplayTable }) => {
       window.removeEventListener('keydown', handleKeyPress)
     }
   }, [])
+  useEffect(() => {
+    handleDECODE()
+  }, [forceDecodeFromParent])
+
+  function handleDECODE() {
+    console.log('handleDECODE')
+    setDisplayTable(true)
+    setIsDrawerOpen(false)
+  }
 
   function handleClose() {
-    closeDrawer((prev) => {
+    setIsDrawerOpen((prev) => {
       !prev
     })
   }
 
   return (
-    <Box className="relative">
+    <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       <Box
         style={{
           position: 'fixed',
@@ -510,173 +579,267 @@ export const DrawerComponent_DecodeOptions = ({ setDisplayTable }) => {
             <CloseIcon style={{ fontSize: '2rem' }} />
           </IconButton>
         </Box>
-        <CanLogDisplaySettings setDisplayTable={setDisplayTable} />
+        <Box sx={{ userSelect: 'none' }}>
+          {console.log('5. CanLogDisplaySettings')}
+          {/* Reading Direction Radio Buttons ----------------- */}
+          <Box
+            sx={{
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
+            }}
+          >
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              CAN_LOG reading direction:{' '}
+            </p>
+            <RadioGroup
+              row
+              onChange={(e) => {
+                setOptionReadingDirection(e.target.value)
+              }}
+              value={optionReadingDirection}
+              sx={{
+                justifyContent: 'center',
+                '& .MuiSvgIcon-root': {
+                  // fontSize: '1rem'
+                  color: `${colors.green[400]}`
+                }
+              }}
+            >
+              <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
+              <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
+            </RadioGroup>
+          </Box>
+          {/* GROUPING OPTIONS ----------------- */}
+          <Box
+            sx={{
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
+            }}
+          >
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Grouping Options:{' '}
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'start',
+                marginLeft: '2rem',
+                gap: '0.5rem'
+              }}
+            >
+              <Checkbox_Component label="Group by Axis ID" />
+              <Checkbox_Component label="Group by Modes of Operation" />
+              <Checkbox_Component label="Group by Repetitive messages" />
+            </div>
+          </Box>
+          {/* Available Axes  ----------------- */}
+          <Box
+            sx={{
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
+            }}
+          >
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Available Axes:{' '}
+            </p>
+            <AvailableAxes_Component />
+          </Box>
+          {/* Message Types ----------------- */}
+          <Box
+            sx={{
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
+            }}
+          >
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Sort By:{' '}
+            </p>
+
+            <RadioGroup
+              row
+              onChange={(e) => {
+                setMessageTypeSorting(e.target.value)
+              }}
+              value={messageTypeSorting}
+              sx={{
+                justifyContent: 'center',
+                '& .MuiSvgIcon-root': {
+                  // fontSize: '1rem'
+                  color: `${colors.green[400]}`,
+                  display: 'flex',
+                  gap: '2rem'
+                }
+              }}
+            >
+              <FormControlLabel value="all" control={<Radio />} label="All" />
+              <FormControlLabel value="master" control={<Radio />} label="Master" />
+              <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
+              <FormControlLabel value="errors" control={<Radio />} label="Errors" />
+            </RadioGroup>
+          </Box>
+          {/* Display Messages Button ----------------- */}
+          <Box>
+            <Button3 onClick={handleDECODE}>DECODE</Button3>
+          </Box>
+        </Box>
       </Box>
     </Box>
   )
 }
-
-function CanLogDisplaySettings({ setDisplayTable }) {
+function AvailableAxes_Component({}) {
+  console.log('6. AvailableAxes_Component ---- NOTGOOD')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const [renderToggle, setRenderToggle] = useState(true)
 
-  const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
-
-  const [messageTypeSorting, setMessageTypeSorting] = useState('all')
-
-  function handleDECODE() {
-    console.log('handleDECODE')
-    setDisplayTable(true)
+  function handleAxisClick(e) {
+    var axis = e.target.textContent.split(': ')[1]
+    var arrayIndex = CanLogStatistics.findIndex((iteration) => {
+      return iteration.Axis[0] == axis
+    })
+    if (arrayIndex != -1) {
+      var AxisState = CanLogStatistics[arrayIndex].Axis[1]
+      Object.keys(CanLogStatistics[arrayIndex]).forEach((prop) => {
+        CanLogStatistics[arrayIndex][prop][1] = !AxisState
+      })
+      setRenderToggle((prev) => !prev)
+    }
   }
-  const memoizedComponent = useMemo(
-    () => (
-      <Box sx={{ userSelect: 'none' }}>
-        {console.log('5. CanLogDisplaySettings')}
-        {/* Reading Direction Radio Buttons ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            CAN_LOG reading direction:{' '}
-          </p>
-          <RadioGroup
-            row
-            onChange={(e) => {
-              setOptionReadingDirection(e.target.value)
-            }}
-            value={optionReadingDirection}
-            sx={{
-              justifyContent: 'center',
-              '& .MuiSvgIcon-root': {
-                // fontSize: '1rem'
-                color: `${colors.green[400]}`
-              }
-            }}
-          >
-            <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
-            <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
-          </RadioGroup>
-        </Box>
-        {/* GROUPING OPTIONS ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            Grouping Options:{' '}
-          </p>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'start',
-              marginLeft: '2rem',
-              gap: '0.5rem'
-            }}
-          >
-            <Checkbox_Component label="Group by Axis ID" />
-            <Checkbox_Component label="Group by Modes of Operation" />
-            <Checkbox_Component label="Group by Repetitive messages" />
-          </div>
-        </Box>
-        {/* Available Axes  ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            Available Axes:{' '}
-          </p>
-          <AvailableAxes_Component />
-        </Box>
-        {/* Message Types ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            Sort By:{' '}
-          </p>
 
-          <RadioGroup
-            row
-            onChange={(e) => {
-              setMessageTypeSorting(e.target.value)
-            }}
-            value={messageTypeSorting}
-            sx={{
-              justifyContent: 'center',
-              '& .MuiSvgIcon-root': {
-                // fontSize: '1rem'
-                color: `${colors.green[400]}`,
-                display: 'flex',
-                gap: '2rem'
-              }
-            }}
-          >
-            <FormControlLabel value="all" control={<Radio />} label="All" />
-            <FormControlLabel value="master" control={<Radio />} label="Master" />
-            <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
-            <FormControlLabel value="errors" control={<Radio />} label="Errors" />
-          </RadioGroup>
-        </Box>
-        {/* Display Messages Button ----------------- */}
-        <Box>
-          <Button3 onClick={handleDECODE}>DECODE</Button3>
-        </Box>
-      </Box>
-    ),
-    [CanLogStatistics]
+  function handleChecboxClicked(e) {
+    var axis = e.target.closest('.AxisIndication').querySelector('button').innerText
+    var propToChange = e.target.parentElement.parentElement.innerText.split(' - ')[0]
+    axis = axis.split(': ')[1]
+    var arrayIndex = CanLogStatistics.findIndex((iteration) => {
+      return iteration.Axis[0] == axis
+    })
+
+    if (arrayIndex != -1) {
+      // Check if all other props (except 'Axis') have the opposite value of the clicked checkbox
+      var currentCheckboxState = CanLogStatistics[arrayIndex][propToChange][1]
+      const allPropsAreTheSameState = Object.keys(CanLogStatistics[arrayIndex]).every((prop) => {
+        return (
+          prop === 'Axis' ||
+          prop === propToChange ||
+          CanLogStatistics[arrayIndex][prop][1] !== currentCheckboxState
+        )
+      })
+
+      // If all other props have the opposite value, update the 'Axis' property
+      if (allPropsAreTheSameState) {
+        CanLogStatistics[arrayIndex].Axis[1] = !currentCheckboxState
+      }
+
+      // Update the clicked checkbox's value
+      CanLogStatistics[arrayIndex][propToChange][1] = !currentCheckboxState
+      if (!currentCheckboxState == true) {
+        CanLogStatistics[arrayIndex].Axis[1] = true
+      }
+      setRenderToggle((prev) => !prev)
+    }
+  }
+  return (
+    <Box>
+      {CanLogStatistics.map((axisIteration) => {
+        return (
+          <Box key={axisIteration.Axis}>
+            {/* ONE AXIS  ---------- */}
+            <Box
+              sx={{
+                border: axisIteration.Axis[1] ? `1px solid ${colors.red[500]}` : null,
+                borderRadius: '1rem',
+                marginBottom: '1rem',
+                padding: '0.1rem'
+              }}
+              className="AxisIndication"
+            >
+              <ButtonTransparent
+                sx={{
+                  fontSize: '1.1rem',
+                  color: `${colors.red[500]}`,
+                  fontWeight: '700'
+                }}
+                onClick={handleAxisClick}
+              >
+                Axis: {axisIteration.Axis[0]}
+              </ButtonTransparent>
+
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                  margin: '0 0 1rem 1rem'
+                }}
+              >
+                {Object.keys(axisIteration).map((propName) => {
+                  if (propName == 'Axis') return
+                  return (
+                    <div key={propName}>
+                      <div
+                        key={propName}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          maxWidth: '9rem',
+                          whiteSpace: 'nowrap'
+                          // overflow: 'hidden'
+                        }}
+                      >
+                        <Checkbox_Component
+                          label={`${propName} - ${axisIteration[propName][0]}`}
+                          checked={axisIteration[propName][1]}
+                          onChange={handleChecboxClicked}
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </Box>
+            </Box>
+          </Box>
+        )
+      })}
+    </Box>
   )
-
-  return memoizedComponent
 }

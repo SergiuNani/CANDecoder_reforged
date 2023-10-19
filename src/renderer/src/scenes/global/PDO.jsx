@@ -14,18 +14,19 @@ import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 
-export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects }) {
+export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawerOpen }) {
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
 
   useEffect(() => {
     setCurrentObjectIndex(0)
-    DontBotherWithPDO_flag = 1 // BUG change it to zero
+    DontBotherWithPDO_flag[0] = 0 // BUG change it to zero
   }, [MessagesDecoded_ArrayOfObjects])
 
   useEffect(() => {
     // Check if there are more objects to process
+    console.log('useEffect++:', currentObjectIndex)
     if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
       const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
 
@@ -39,6 +40,8 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects }) {
           //Solve the  Maximum update depth exceeded
         }, 1)
       }
+    } else {
+      setIsDrawerOpen(true)
     }
   }, [currentObjectIndex, MessagesDecoded_ArrayOfObjects])
 
@@ -58,9 +61,10 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects }) {
   )
 }
 
-let DontBotherWithPDO_flag = 1
+export let DontBotherWithPDO_flag = [0]
 
 export function PDOdetectedModal({ open, onClose, objectIteration }) {
+  console.log('🚀 ~ PDOdetectedModal:')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -165,7 +169,7 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
       }
     } else if (radioOption == 'ALLCOMPATIBLE') {
       PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
-      DontBotherWithPDO_flag = 1
+      DontBotherWithPDO_flag[0] = 1
     } else {
       PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
     }
@@ -397,7 +401,7 @@ function InputRow({ label, resolution, object, setObject, objectSub, setObjectSu
 //--------------------------------------------------------
 function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
   console.log('Inside DecodeOnePDOmsg++')
-  if (DontBotherWithPDO_flag && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
+  if (DontBotherWithPDO_flag[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
     // We write some dummy data just to get rid of PDO filling requirements
     var frameData = objectIteration.FrameData
     if (frameData.length % 2 != 0) {
