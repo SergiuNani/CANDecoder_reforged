@@ -1,6 +1,11 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react'
 import { Box, IconButton, Button, Typography, Dialog } from '@mui/material'
-import { Header, SwitchComponent, Button1 } from '../../components/SmallComponents'
+import {
+  Header,
+  SwitchComponent,
+  Button1,
+  Checkbox_Component
+} from '../../components/SmallComponents'
 import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'
 
@@ -18,26 +23,30 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawe
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
-
+  const [weNeedTheModal, setWeNeedTheModal] = useState(false)
   useEffect(() => {
     setCurrentObjectIndex(0)
     DontBotherWithPDO_flag[0] = 0 // BUG change it to zero
+    SetAllPDOsEMPTY[0] = 0
   }, [MessagesDecoded_ArrayOfObjects])
 
   useEffect(() => {
     // Check if there are more objects to process
     console.log('useEffect++:', currentObjectIndex)
     if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
+      setIsDrawerOpen(false)
       const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
 
       // Check if the object is a PDO
       if (objectIteration.CS === 'PDO') {
+        setWeNeedTheModal(true)
         setobject(objectIteration)
         DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
       } else {
         setTimeout(() => {
-          setCurrentObjectIndex(currentObjectIndex + 1)
           //Solve the  Maximum update depth exceeded
+          setWeNeedTheModal(false)
+          setCurrentObjectIndex(currentObjectIndex + 1)
         }, 1)
       }
     } else {
@@ -47,7 +56,7 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawe
 
   return (
     <div>
-      {object && (
+      {object && weNeedTheModal && (
         <Box>
           <PDOdetectedModal
             key={currentObjectIndex}
@@ -62,6 +71,7 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawe
 }
 
 export let DontBotherWithPDO_flag = [0]
+export let SetAllPDOsEMPTY = [0]
 
 export function PDOdetectedModal({ open, onClose, objectIteration }) {
   console.log('🚀 ~ PDOdetectedModal:')
@@ -82,98 +92,113 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
 
   const [radioOption, setRadioOption] = useState('USER')
 
+  const [allDefault, setAllDefault] = useState(false)
+  const [allCompatible, setAllCompatible] = useState(false)
+  const [allEmpty, setAllEmpty] = useState(false)
+
   function handleApply() {
-    if (
-      (object1 == '' && object2 == '' && object3 == '' && object4 == '') ||
-      (object1 == '' && (object2 != '' || object3 != '' || object4 != '')) ||
-      (object2 == '' && (object3 != '' || object4 != '')) ||
-      (object3 == '' && object4 != '')
-    ) {
-      setOpenSnackBarError(true)
-      return setMessageSnackbar('Please insert objects one after another and in order! ')
-    }
-    var error = false
+    if (radioOption != 'EMPTY') {
+      // Cheking for errors only if EMPTY is not selected
 
-    function formatObject(object, objectSub) {
-      if (object.length != 4 && object != '') {
-        error = true
+      if (
+        (object1 == '' && object2 == '' && object3 == '' && object4 == '') ||
+        (object1 == '' && (object2 != '' || object3 != '' || object4 != '')) ||
+        (object2 == '' && (object3 != '' || object4 != '')) ||
+        (object3 == '' && object4 != '')
+      ) {
         setOpenSnackBarError(true)
-        return setMessageSnackbar('Object length must be 4 characters or above! ')
+        return setMessageSnackbar('Please insert objects one after another and in order! ')
       }
-      let aux = objectSub || '00'
-      if (aux.length == 1) {
-        aux = '0' + aux
-      }
-      aux = object + '_' + aux
-      var object = aux
-      aux = GetObject(aux)
+      var error = false
 
-      if (aux[1] == 'Nothing Found') {
-        error = true
+      function formatObject(object, objectSub) {
+        if (object.length != 4 && object != '') {
+          error = true
+          setOpenSnackBarError(true)
+          return setMessageSnackbar('Object length must be 4 characters or above! ')
+        }
+        let aux = objectSub || '00'
+        if (aux.length == 1) {
+          aux = '0' + aux
+        }
+        aux = object + '_' + aux
+        var object = aux
+        aux = GetObject(aux)
+
+        if (aux[1] == 'Nothing Found') {
+          error = true
+          setOpenSnackBarError(true)
+          return setMessageSnackbar(`Object "${object}" is not contained in the database `)
+        }
+        return aux
+      }
+
+      var aux_object1
+      var aux_object2
+      var aux_object3
+      var aux_object4
+      var sumSize = 0
+
+      if (object1 != '') {
+        aux_object1 = formatObject(object1, objectSub1)
+        if (!error) sumSize += aux_object1[2]
+      }
+      if (object2 != '') {
+        aux_object2 = formatObject(object2, objectSub2)
+        if (!error) sumSize += aux_object2[2]
+      }
+      if (object3 != '') {
+        aux_object3 = formatObject(object3, objectSub3)
+        if (!error) sumSize += aux_object3[2]
+      }
+      if (object4 != '') {
+        aux_object4 = formatObject(object4, objectSub4)
+        if (!error) sumSize += aux_object4[2]
+      }
+
+      if (error) return
+
+      var aux_msgSize = objectIteration.FrameData.length * 4
+      if (aux_msgSize != sumSize && radioOption != 'DONTMATCH') {
         setOpenSnackBarError(true)
-        return setMessageSnackbar(`Object "${object}" is not contained in the database `)
+        return setMessageSnackbar(
+          `Data size of the message ("${aux_msgSize}bits") doesn't match the combined size of all the objects: "${sumSize}bits" `
+        )
       }
-      return aux
-    }
 
-    var aux_object1
-    var aux_object2
-    var aux_object3
-    var aux_object4
-    var sumSize = 0
+      //DATA DISTRIBUTION ----------------
 
-    if (object1 != '') {
-      aux_object1 = formatObject(object1, objectSub1)
-      if (!error) sumSize += aux_object1[2]
-    }
-    if (object2 != '') {
-      aux_object2 = formatObject(object2, objectSub2)
-      if (!error) sumSize += aux_object2[2]
-    }
-    if (object3 != '') {
-      aux_object3 = formatObject(object3, objectSub3)
-      if (!error) sumSize += aux_object3[2]
-    }
-    if (object4 != '') {
-      aux_object4 = formatObject(object4, objectSub4)
-      if (!error) sumSize += aux_object4[2]
-    }
+      var resultArray
 
-    if (error) return
-
-    var aux_msgSize = objectIteration.FrameData.length * 4
-    if (aux_msgSize != sumSize && radioOption != 'DONTMATCH') {
-      setOpenSnackBarError(true)
-      return setMessageSnackbar(
-        `Data size of the message ("${aux_msgSize}bits") doesn't match the combined size of all the objects: "${sumSize}bits" `
-      )
-    }
-
-    //DATA DISTRIBUTION ----------------
-
-    var resultArray
-
-    if (aux_object1 && aux_object2 && aux_object3 && aux_object4) {
-      resultArray = [aux_object1[0], aux_object2[0], aux_object3[0], aux_object4[0]]
-    } else if (aux_object1 && aux_object2 && aux_object3) {
-      resultArray = [aux_object1[0], aux_object2[0], aux_object3[0]]
-    } else if (aux_object1 && aux_object2) {
-      resultArray = [aux_object1[0], aux_object2[0]]
-    } else if (aux_object1) {
-      resultArray = [aux_object1[0]]
-    }
-
-    if (radioOption == 'ALLDEFAUT') {
-      for (let i = 1; i < 128; i++) {
-        PDO_mapped[objectIteration.type][i] = resultArray
+      if (aux_object1 && aux_object2 && aux_object3 && aux_object4) {
+        resultArray = [aux_object1[0], aux_object2[0], aux_object3[0], aux_object4[0]]
+      } else if (aux_object1 && aux_object2 && aux_object3) {
+        resultArray = [aux_object1[0], aux_object2[0], aux_object3[0]]
+      } else if (aux_object1 && aux_object2) {
+        resultArray = [aux_object1[0], aux_object2[0]]
+      } else if (aux_object1) {
+        resultArray = [aux_object1[0]]
       }
-    } else if (radioOption == 'ALLCOMPATIBLE') {
-      PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
-      DontBotherWithPDO_flag[0] = 1
+
+      if (allDefault) {
+        for (let i = 1; i < 128; i++) {
+          PDO_mapped[objectIteration.type][i] = resultArray
+        }
+      } else if (allCompatible) {
+        PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
+        DontBotherWithPDO_flag[0] = 1
+      } else {
+        PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
+      }
     } else {
-      PDO_mapped[objectIteration.type][objectIteration.AxisID] = resultArray
+      // EMPTY PDOs is selected
+      if (allEmpty) {
+        PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']
+        SetAllPDOsEMPTY[0] = 1
+      } else {
+        PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']
+      }
     }
-
     console.log('--Close modal --')
     onClose(false)
   }
@@ -181,7 +206,11 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
   function handleChangedRadio(value) {
     setRadioOption(value)
 
-    if (value == 'DEFAUT' || value == 'ALLDEFAUT') {
+    setAllCompatible(false)
+    setAllEmpty(false)
+    setAllDefault(false)
+
+    if (value == 'DEFAULT') {
       var temp = DefaultPDOs[objectIteration.type]
 
       setObject1(temp[0])
@@ -192,14 +221,14 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
       setObjectSub3(temp[5])
       setObject4(temp[6])
       setObjectSub4(temp[7])
-    } else if (value == 'COMPATIBLE' || value == 'ALLCOMPATIBLE') {
+    } else if (value == 'COMPATIBLE') {
       var frameData = objectIteration.FrameData
+
       if (frameData.length % 2 != 0) {
         frameData =
           frameData.slice(0, frameData.length - 1) +
           '0' +
           frameData.slice(frameData.length - 1, frameData.length)
-
         objectIteration.FrameData = frameData
       }
 
@@ -217,8 +246,34 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
     }
   }
 
-  let Str1 = `Set default objects for ${objectIteration.type}`
-  let Str2 = `Set default objects for ${objectIteration.type} for all the axes`
+  function handleCheckBoxClicks(e) {
+    console.log('radioOption:', radioOption)
+    var whichCheckbox = e.target.closest('label').innerText
+    if (whichCheckbox == 'All PDOs') {
+      //All compatible
+      if (radioOption == 'COMPATIBLE') {
+        setAllCompatible((prev) => !prev)
+        setAllEmpty(false)
+        setAllDefault(false)
+      }
+    } else if (whichCheckbox == 'Empty PDOs') {
+      //All empty
+      if (radioOption == 'EMPTY') {
+        setAllCompatible(false)
+        setAllEmpty((prev) => !prev)
+        setAllDefault(false)
+      }
+    } else {
+      //All empty
+      if (radioOption == 'DEFAULT') {
+        setAllCompatible(false)
+        setAllEmpty(false)
+        setAllDefault((prev) => !prev)
+      }
+    }
+  }
+  let Str1 = `Default objects for ${objectIteration.type}`
+  let Str2 = `All ${objectIteration.type}`
   return (
     <Dialog open={open}>
       {openSnackBarError && (
@@ -234,7 +289,6 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
       <Box
         sx={{
           background: `${colors.primary[100]}`,
-
           padding: '1rem',
           border: `3px solid ${colors.primary[400]}`,
           borderRadius: '0.2rem'
@@ -321,7 +375,6 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
           </div>
           <div>
             <RadioGroup
-              row
               onChange={(e) => {
                 handleChangedRadio(e.target.value)
               }}
@@ -335,18 +388,63 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
               }}
             >
               <FormControlLabel value="USER" control={<Radio />} label="User input" />
-              <FormControlLabel value="DEFAUT" control={<Radio />} label={Str1} />
-              <FormControlLabel value="ALLDEFAUT" control={<Radio />} label={Str2} />
-              <FormControlLabel
-                value="COMPATIBLE"
-                control={<Radio />}
-                label="Set compatible objects"
-              />
-              <FormControlLabel
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <FormControlLabel value="DEFAULT" control={<Radio />} label={Str1} />
+                <Checkbox_Component
+                  onChange={handleCheckBoxClicks}
+                  label={Str2}
+                  checked={allDefault}
+                />
+              </div>
+              {/* <FormControlLabel value="ALLDEFAULT" control={<Radio />} label={Str2} /> */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <FormControlLabel
+                  value="COMPATIBLE"
+                  control={<Radio />}
+                  label="Set compatible objects"
+                />
+
+                <Checkbox_Component
+                  onChange={handleCheckBoxClicks}
+                  label="All PDOs"
+                  checked={allCompatible}
+                />
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <FormControlLabel value="EMPTY" control={<Radio />} label="Leave empty " />
+
+                <Checkbox_Component
+                  onChange={handleCheckBoxClicks}
+                  label="Empty PDOs"
+                  checked={allEmpty}
+                />
+              </div>
+              {/* <FormControlLabel
                 value="ALLCOMPATIBLE"
                 control={<Radio />}
                 label="Set compatible objects for all the remaining PDOs"
-              />
+              /> */}
               <FormControlLabel
                 value="DONTMATCH"
                 control={<Radio />}
@@ -414,11 +512,17 @@ function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdecte
     frameData = frameData.length * 4
 
     PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping1[frameData]
+  } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
+    //WE dont know anything about this PDO so we leave it empty
+    PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']
   }
+
   if (!PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
+    //We don't have any data for this PDO
     setOpenPDOdectectedModal(true)
     return DelayTimeForPDO(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
   }
+
   // Putting in the correct information for PDO
 
   MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = DecodePDO(objectIteration)

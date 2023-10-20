@@ -34,7 +34,7 @@ import { filterDecimal, filterHex } from '../functions/NumberConversion'
 import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
-import { DontBotherWithPDO_flag } from './global/PDO'
+import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
 import { PDO_mapped } from '../functions/CANopenFunctions'
 
 export let MessagesDecoded_ArrayOfObjects = []
@@ -43,7 +43,7 @@ const Decode_CAN_LOG = () => {
   console.log('1. Decode_CAN_LOG++')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
-  const [hideTableForceParent, sethideTableForceParent] = useState(false)
+  const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [forceDecodeFromParent, setforceDecodeFromParent] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -79,10 +79,15 @@ const Decode_CAN_LOG = () => {
 
       reader.onload = (e) => {
         DontBotherWithPDO_flag[0] = 0 // Force for PDO window to reapear
-        PDO_mapped = []
+        SetAllPDOsEMPTY[0] = 0
+        for (const prop in PDO_mapped) {
+          if (PDO_mapped.hasOwnProperty(prop)) {
+            PDO_mapped[prop] = []
+          }
+        }
         const fileContent = e.target.result
         setFileInnerText(fileContent)
-        sethideTableForceParent((prev) => !prev)
+        sethideTableForceParentToggle((prev) => !prev)
       }
 
       reader.readAsText(file)
@@ -90,9 +95,10 @@ const Decode_CAN_LOG = () => {
   }
   function handleClickArrow() {
     DontBotherWithPDO_flag[0] = 0 // Force for PDO window to reapear
+    SetAllPDOsEMPTY[0] = 0
     var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
-    sethideTableForceParent((prev) => !prev)
+    sethideTableForceParentToggle((prev) => !prev)
   }
 
   useEffect(() => {
@@ -103,6 +109,7 @@ const Decode_CAN_LOG = () => {
             .querySelector('#DrawerComponent')
             .classList.contains('DrawerOpened')
         ) {
+          //Open Drawer, close table
           console.log('YOOO')
           handleClickArrow()
         } else {
@@ -131,13 +138,13 @@ const Decode_CAN_LOG = () => {
         {userVsDebugMode == 'USER' ? (
           <UserCANopenDecodedTable
             fileInnerText={fileInnerText}
-            hideTableForceParent={hideTableForceParent}
+            hideTableForceParentToggle={hideTableForceParentToggle}
             forceDecodeFromParent={forceDecodeFromParent}
           />
         ) : (
           <DebugCANopenDecodedTable
             fileInnerText={fileInnerText}
-            hideTableForceParent={hideTableForceParent}
+            hideTableForceParentToggle={hideTableForceParentToggle}
           />
         )}
       </Box>
@@ -203,7 +210,7 @@ const Decode_CAN_LOG = () => {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            border: `1px solid yellow`,
+            border: `1px solid  ${colors.primary[400]}`,
             padding: '1rem'
           }}
         >
@@ -316,7 +323,7 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
 
 const UserCANopenDecodedTable = ({
   fileInnerText,
-  hideTableForceParent,
+  hideTableForceParentToggle,
   forceDecodeFromParent
 }) => {
   console.log('3. UserCANopenDecodedTable')
@@ -325,7 +332,7 @@ const UserCANopenDecodedTable = ({
 
   useEffect(() => {
     setDisplayTable(false)
-  }, [hideTableForceParent])
+  }, [hideTableForceParentToggle])
 
   var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(fileInnerText.split('\n'))
   MessagesDecoded_ArrayOfObjects = useMemo(() => {

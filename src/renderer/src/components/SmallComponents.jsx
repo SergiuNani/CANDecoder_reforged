@@ -196,11 +196,17 @@ export function Checkbox_Component({ label, checked, onChange }) {
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+        alignItems: 'center'
+        // justifyContent: 'center'
       }}
     >
       <FormControlLabel
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: '1'
+        }}
         control={
           <Checkbox
             checked={checked}
@@ -210,7 +216,8 @@ export function Checkbox_Component({ label, checked, onChange }) {
                 color: `${colors.primary[400]}`
               },
               margin: '0',
-              padding: '0rem'
+              padding: '0rem',
+              paddingBottom: '0.3rem'
             }}
             onChange={onChange}
           />
