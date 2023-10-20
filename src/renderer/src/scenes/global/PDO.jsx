@@ -524,9 +524,7 @@ function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdecte
   }
 
   // Putting in the correct information for PDO
-
   MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = DecodePDO(objectIteration)
-
   setCurrentObjectIndex((prev) => prev + 1)
 }
 

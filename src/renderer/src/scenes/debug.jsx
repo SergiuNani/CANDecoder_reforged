@@ -28,8 +28,7 @@ import { CanLogStatistics } from '../functions/CANopen'
 
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
-  console.log(CanLogStatistics)
-  console.log(`------ DEBUG BUTTON ----------`)
+  console.log(MessagesDecoded_ArrayOfObjects)
 }
 
 const DebugScene = () => {

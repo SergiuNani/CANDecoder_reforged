@@ -36,7 +36,7 @@ import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
 import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
 import { PDO_mapped } from '../functions/CANopenFunctions'
-
+import { TableComponent } from '../components/Table'
 export let MessagesDecoded_ArrayOfObjects = []
 
 const Decode_CAN_LOG = () => {
@@ -149,7 +149,7 @@ const Decode_CAN_LOG = () => {
         )}
       </Box>
     )
-  }, [fileInnerText, forceDecodeFromParent])
+  }, [fileInnerText, forceDecodeFromParent, userVsDebugMode])
 
   return (
     <Box style={{ position: 'relative' }}>
@@ -360,159 +360,6 @@ const UserCANopenDecodedTable = ({
   )
 }
 
-const TableComponent = ({ filtereGroupeddArray }) => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  return (
-    <table
-      style={{
-        width: '100%',
-        position: 'relative',
-        color: `${colors.grey[100]}`,
-        background: `${colors.blue[300]}`,
-        fontFamily: 'Calibri',
-        marginBottom: '20rem',
-        fontSize: '1rem'
-      }}
-    >
-      <thead
-        style={{
-          fontWeight: '700',
-          position: 'sticky',
-          top: '2.5rem',
-          background: `${colors.primary[300]}`,
-          zIndex: 1
-        }}
-      >
-        {/* Table ROW FOR THEAD---------------------------- */}
-        <tr>
-          <th
-            style={{
-              padding: '0.5rem'
-            }}
-          >
-            NR
-          </th>
-          <th>Original Message</th>
-          <th>Type</th>
-          <th>AxisID</th>
-          <th>CS</th>
-          <th>Object</th>
-          <th>Object Name</th>
-          <th>Data</th>
-          <th>Interpretation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filtereGroupeddArray.map((iteration, index) => {
-          var isRecieveTypeMessage = ['R_SDO', 'RPDO1', 'RPDO2', 'RPDO3', 'RPDO4', 'NMT'].includes(
-            iteration.type
-          )
-          return (
-            <tr
-              key={index}
-              style={{
-                borderBottom: `1px solid ${colors.grey[300]}`,
-                background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
-                borderLeft: isRecieveTypeMessage ? `0.5rem solid ${colors.primary[400]}` : 'inherit'
-              }}
-            >
-              <td
-                style={{
-                  textAlign: 'center',
-                  padding: '0.7rem 0'
-                }}
-              >
-                {iteration.msgNr}
-              </td>
-              <td style={{ textAlign: 'center', cursor: 'pointer' }}>
-                <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
-                  <p>
-                    {iteration.CobID} - {iteration.FrameData}
-                  </p>
-                </TooltipClickable>
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.blue[100]}`,
-                  fontWeight: '600'
-                }}
-              >
-                {iteration.type}
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.personal[100]}`,
-                  fontWeight: '700'
-                }}
-              >
-                {iteration.AxisID}
-              </td>
-              <td style={{ textAlign: 'center' }}>{iteration.CS}</td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.yellow[100]}`,
-                  fontWeight: '600'
-                }}
-              >
-                {iteration.Object}
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  maxWidth: '10rem',
-                  overflowY: 'auto'
-                }}
-              >
-                {iteration.ObjectName}
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.green[100]}`,
-                  fontWeight: '700'
-                }}
-              >
-                <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
-                  {iteration.Data}
-                </RegisterTooltip>
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  maxWidth: '25rem',
-                  overflowY: 'auto',
-                  fontWeight:
-                    iteration.errorStatus == 'error'
-                      ? '700'
-                      : iteration.errorStatus == 'blue'
-                      ? '700'
-                      : 'inherit',
-                  color:
-                    iteration.errorStatus == 'error'
-                      ? `${colors.red[500]}`
-                      : iteration.errorStatus == 'warning'
-                      ? `${colors.yellow[500]}`
-                      : iteration.errorStatus == 'idk'
-                      ? `${colors.primary[400]}`
-                      : iteration.errorStatus == 'blue'
-                      ? `${colors.personal[300]}`
-                      : 'inherit'
-                }}
-              >
-                {iteration.Interpretation}
-              </td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
-}
-
 export const DrawerComponent_DecodeOptions = ({
   setDisplayTable,
   isDrawerOpen,
@@ -522,11 +369,12 @@ export const DrawerComponent_DecodeOptions = ({
   console.log('4. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
 
+  const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
 
   useEffect(() => {
+    //Shortcut to open/close drawer
     const handleKeyPress = (event) => {
       console.log('event.key')
       if (event.ctrlKey && event.key === '`') {
@@ -538,6 +386,7 @@ export const DrawerComponent_DecodeOptions = ({
       window.removeEventListener('keydown', handleKeyPress)
     }
   }, [])
+
   useEffect(() => {
     handleDECODE()
   }, [forceDecodeFromParent])
@@ -657,6 +506,7 @@ export const DrawerComponent_DecodeOptions = ({
             >
               <Checkbox_Component label="Group by Axis ID" />
               <Checkbox_Component label="Group by Modes of Operation" />
+              <Checkbox_Component label="Group by Mapping Objects" />
               <Checkbox_Component label="Group by Repetitive messages" />
             </div>
           </Box>
