@@ -25,10 +25,12 @@ import { PDO_mapped } from '../functions/CANopenFunctions'
 import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
 import { RegisterTooltip } from '../components/Register'
 import { CanLogStatistics } from '../functions/CANopen'
-
+import { GroupingOptionsForMessages } from '../data/SmallData'
+import { groupedFilteredArray } from '../components/Table'
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
   console.log(MessagesDecoded_ArrayOfObjects)
+  console.log(groupedFilteredArray)
 }
 
 const DebugScene = () => {

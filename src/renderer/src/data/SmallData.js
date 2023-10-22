@@ -1,4 +1,10 @@
 /*------------------------------Global Parameters------------------------------ */
+export let GroupingOptionsForMessages = {
+  Axis: true,
+  Modes: false,
+  Mapping: false,
+  Repetitive: false
+}
 /*------------------------------Factor Group Units------------------------------ */
 
 export const FG_Objects_Array = {

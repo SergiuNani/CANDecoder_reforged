@@ -36,7 +36,9 @@ import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
 import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
 import { PDO_mapped } from '../functions/CANopenFunctions'
-import { TableComponent } from '../components/Table'
+import { TableComponent, CreateGroupedFilteredArray } from '../components/Table'
+import { GroupingOptionsForMessages } from '../data/SmallData'
+
 export let MessagesDecoded_ArrayOfObjects = []
 
 const Decode_CAN_LOG = () => {
@@ -353,8 +355,7 @@ const UserCANopenDecodedTable = ({
           setIsDrawerOpen={setIsDrawerOpen}
           forceDecodeFromParent={forceDecodeFromParent}
         />
-
-        {displayTable && <TableComponent filtereGroupeddArray={MessagesDecoded_ArrayOfObjects} />}
+        {displayTable && <TableComponent />}
       </Box>
     </section>
   )
@@ -388,19 +389,33 @@ export const DrawerComponent_DecodeOptions = ({
   }, [])
 
   useEffect(() => {
-    handleDECODE()
+    if (isDrawerOpen) {
+      //Facilitate decoding with shortcut and remove the first mounting call
+      handleDECODE()
+    }
   }, [forceDecodeFromParent])
 
   function handleDECODE() {
     console.log('handleDECODE')
     setDisplayTable(true)
     setIsDrawerOpen(false)
+    CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)
   }
 
   function handleClose() {
     setIsDrawerOpen((prev) => {
       !prev
     })
+  }
+
+  function handleGroupingOptions(e) {
+    var option = e.target.closest('label').innerText.split('by')[1].split(' ')[1]
+    var state = e.target.checked
+    for (const prop in GroupingOptionsForMessages) {
+      if (prop == option) {
+        GroupingOptionsForMessages[prop] = state
+      }
+    }
   }
 
   return (
@@ -504,10 +519,19 @@ export const DrawerComponent_DecodeOptions = ({
                 gap: '0.5rem'
               }}
             >
-              <Checkbox_Component label="Group by Axis ID" />
-              <Checkbox_Component label="Group by Modes of Operation" />
-              <Checkbox_Component label="Group by Mapping Objects" />
-              <Checkbox_Component label="Group by Repetitive messages" />
+              <Checkbox_Component label="Group by Axis ID" onChange={handleGroupingOptions} />
+              <Checkbox_Component
+                label="Group by Modes of Operation"
+                onChange={handleGroupingOptions}
+              />
+              <Checkbox_Component
+                label="Group by Mapping Objects"
+                onChange={handleGroupingOptions}
+              />
+              <Checkbox_Component
+                label="Group by Repetitive messages"
+                onChange={handleGroupingOptions}
+              />
             </div>
           </Box>
           {/* Available Axes  ----------------- */}

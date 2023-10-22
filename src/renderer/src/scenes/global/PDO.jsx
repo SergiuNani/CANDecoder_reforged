@@ -26,7 +26,7 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawe
   const [weNeedTheModal, setWeNeedTheModal] = useState(false)
   useEffect(() => {
     setCurrentObjectIndex(0)
-    DontBotherWithPDO_flag[0] = 0 // BUG change it to zero
+    DontBotherWithPDO_flag[0] = 1 // BUG change it to zero
     SetAllPDOsEMPTY[0] = 0
   }, [MessagesDecoded_ArrayOfObjects])
 
