@@ -13,9 +13,9 @@ import {
   AccordionDetails
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-
+import { checkSDOforMapping, whatPDOisObject } from '../functions/CANopenFunctions'
 import { tokens } from '../theme'
-
+import { Mapping_objects_array, GroupingOptionsForMessages } from '../data/SmallData'
 import { TooltipClickable } from '../components/SmallComponents'
 
 import { RegisterTooltip } from './Register'
@@ -749,28 +749,26 @@ export const TableComponent = () => {
     <Box
       style={{
         position: 'relative',
-        marginBottom: '20rem'
+        marginBottom: '20rem',
+        overflowX: 'hidden'
       }}
     >
       <table
         style={{
-          width: '99%',
+          width: '99.5%',
           fontWeight: '700',
           position: 'sticky',
           top: '2.5rem',
+          top: '0rem',
           background: `${colors.primary[300]}`,
           zIndex: 1,
           marginLeft: '0.5rem',
           fontSize: '1rem'
         }}
       >
-        <thead style={{}}>
+        <thead>
           {/* Table ROW FOR THEAD---------------------------- */}
-          <tr
-            style={{
-              width: '100%'
-            }}
-          >
+          <tr>
             <th
               style={{
                 padding: '0.5rem',
@@ -791,22 +789,8 @@ export const TableComponent = () => {
         </thead>
       </table>
 
-      <table
-        style={{
-          color: `${colors.grey[100]}`,
-          background: `${colors.blue[300]}`,
-          fontFamily: 'Calibri',
-          fontSize: '1rem'
-        }}
-      >
-        <tbody></tbody>
-      </table>
       {groupedFilteredArray.map((group, index) => {
-        if (group[0].Axis === '-' || group[0].Axis === 'invalid') {
-          return group.map((msg, msgIndex) => {
-            if (msgIndex != 0) return <TableROW key={msgIndex} iteration={msg} />
-          })
-        } else {
+        if (GroupingOptionsForMessages.Axis) {
           return (
             <TableRowGroup
               groupData={group}
@@ -815,6 +799,8 @@ export const TableComponent = () => {
               groupLength={group.length - 1} // first object is the obj describing the group
             />
           )
+        } else {
+          return <TableROW key={index} iteration={group} />
         }
       })}
     </Box>
@@ -844,8 +830,7 @@ const TableROW = ({ iteration }) => {
           style={{
             borderBottom: `1px solid ${colors.grey[300]}`,
             background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
-            borderLeft: isRecieveTypeMessage ? `0.5rem solid ${colors.primary[400]}` : 'inherit',
-            width: '100%'
+            borderLeft: isRecieveTypeMessage ? `0.5rem solid ${colors.primary[400]}` : 'inherit'
           }}
         >
           <td
@@ -957,33 +942,7 @@ const TableROW = ({ iteration }) => {
   )
 }
 
-const AccordionComponent = ({ title, children }) => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  return (
-    <Accordion defaultExpanded sx={{ background: `${colors.primary[300]}`, width: '100%' }}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        sx={{
-          color: colors.yellow[500],
-          fontSize: '1.2rem',
-          // mb: '1rem',
-          borderBottom: `1px solid ${colors.primary[400]}`,
-          '&.Mui-expanded': {
-            minHeight: '3rem !important'
-          },
-          '& .css-o4b71y-MuiAccordionSummary-content.Mui-expanded': {
-            margin: '0 !important'
-          }
-        }}
-      >
-        {title}
-      </AccordionSummary>
-      {children}
-    </Accordion>
-  )
-}
-const TableRowGroup = ({ groupTitle, groupLength, groupData }) => {
+const TableRowGroup = ({ groupTitle, groupLength, groupData, border }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -998,45 +957,70 @@ const TableRowGroup = ({ groupTitle, groupLength, groupData }) => {
       expanded={expanded}
       onChange={toggleAccordion}
       sx={{
-        width: '100%',
-
-        '& .css-15v22id-MuiAccordionDetails-root': {
-          padding: '0px',
-          margin: '0px'
-        }
+        width: '99.7%' // Because when collapsing the Accordions they are creating the horizontal scroll bar which looks bad
       }}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
-          borderBottom: `1px solid ${colors.primary[400]}`
+          border: border ? border : `2px solid ${colors.green[400]}`,
+          padding: '0px',
+          background: `${colors.primary[300]}`,
+          paddingLeft: '0.5rem',
+          margin: '0.5rem 0',
+          borderRadius: '0.5rem',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontWeight: '600',
+          fontSize: '1rem',
+          width: '50%'
         }}
       >
-        <Typography
-          sx={{
+        <div
+          style={{
             color: colors.yellow[500],
             fontSize: '1.2rem',
-            fontWeight: '600'
+            textAlign: 'center',
+            justifySelf: 'center',
+            padding: 0
           }}
         >
           {groupTitle}
-        </Typography>
-        <Typography
-          sx={{
+        </div>
+        <p
+          style={{
             color: `${colors.grey[200]}`,
-
-            fontSize: '1rem',
-            fontWeight: '600',
             marginLeft: '1rem'
           }}
         >
           - {groupLength} messages
-        </Typography>
+        </p>
       </AccordionSummary>
-      <AccordionDetails>
+
+      <AccordionDetails
+        sx={{
+          border: `1px solid ${colors.primary[400]}`,
+          padding: '0px'
+        }}
+      >
         <div>
           {groupData.map((iteration, index) => {
-            if (index != 0) return <TableROW key={index} iteration={iteration} />
+            if (index != 0) {
+              if (Array.isArray(iteration)) {
+                //Encountered mapping array
+                return (
+                  <TableRowGroup
+                    key={index}
+                    groupTitle={iteration[0].Type}
+                    groupLength={iteration.length - 1}
+                    groupData={iteration}
+                    border={`2px solid ${colors.red[500]}`}
+                  />
+                )
+              } else {
+                return <TableROW key={index} iteration={iteration} />
+              }
+            }
           })}
         </div>
       </AccordionDetails>
@@ -1048,16 +1032,43 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
   groupedFilteredArray = []
   var prevAxis = null
   var currentAxis
+  var prevMappingType = null
+  var currentMappingType
   allMessages.forEach((oneMessage) => {
     currentAxis = oneMessage.AxisID
-    console.log('🚀 ~ file: Table.jsx:1025 ~ allMessages.forEach ~ currentAxis:', currentAxis)
+    currentMappingType = whatPDOisObject(oneMessage.Object)
+
     if (GroupingOptionsForMessages.Axis) {
+      //GROUPING BY AXIS ENABLED -----------
       if (currentAxis != prevAxis) {
+        //Creating new group for new axis
         prevAxis = currentAxis
-        groupedFilteredArray.push([{ Axis: currentAxis }, oneMessage])
-      } else {
-        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+        groupedFilteredArray.push([{ Axis: currentAxis }])
       }
+
+      if (GroupingOptionsForMessages.Mapping && currentMappingType) {
+        var lastAxisGroup = groupedFilteredArray[groupedFilteredArray.length - 1]
+        var lastElementOfLastAxisGroup = lastAxisGroup[lastAxisGroup.length - 1]
+
+        if (Array.isArray(lastElementOfLastAxisGroup) && prevMappingType == currentMappingType) {
+          //Mapping array exists
+          groupedFilteredArray[groupedFilteredArray.length - 1][
+            groupedFilteredArray[groupedFilteredArray.length - 1].length - 1
+          ].push(oneMessage)
+        } else {
+          //Create mapping array
+          groupedFilteredArray[groupedFilteredArray.length - 1].push([{ Type: currentMappingType }])
+          groupedFilteredArray[groupedFilteredArray.length - 1][
+            groupedFilteredArray[groupedFilteredArray.length - 1].length - 1
+          ].push(oneMessage)
+        }
+        prevMappingType = currentMappingType
+      } else {
+        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage) //push object in the last AxisGroup
+      }
+    } else {
+      //NO GROUPING
+      if (oneMessage.AxisID == 3) groupedFilteredArray.push(oneMessage)
     }
   })
 }

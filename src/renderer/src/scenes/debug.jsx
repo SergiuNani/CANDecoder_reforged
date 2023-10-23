@@ -26,11 +26,16 @@ import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
 import { RegisterTooltip } from '../components/Register'
 import { CanLogStatistics } from '../functions/CANopen'
 import { GroupingOptionsForMessages } from '../data/SmallData'
+import { whatPDOisObject } from '../functions/CANopenFunctions'
 import { groupedFilteredArray } from '../components/Table'
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
   console.log(MessagesDecoded_ArrayOfObjects)
   console.log(groupedFilteredArray)
+  console.log(whatPDOisObject('1601_01'))
+  console.log(whatPDOisObject('1601_02'))
+  console.log(whatPDOisObject('1602_03'))
+  console.log(whatPDOisObject('1602_08'))
 }
 
 const DebugScene = () => {

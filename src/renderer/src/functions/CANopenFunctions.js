@@ -6,7 +6,8 @@ import {
   Mapping_objects_array,
   FG_Objects_Array,
   EMCYcodes,
-  SDO_abortCodes
+  SDO_abortCodes,
+  Mapping_objects_array_basedOnType
 } from '../data/SmallData'
 
 const ObjectDescriptions = {
@@ -494,7 +495,7 @@ function Check_SDOmsg_forFG(FG_typeObject, value) {
   return [interpretationInfo, errorStatus]
 }
 
-function checkSDOforMapping(object, data, axisID) {
+export function checkSDOforMapping(object, data, axisID) {
   //We will get only R_SDO because T_SDO have errorStatus="perfect"
   object = object.toUpperCase()
   var interpretationInfo = ''
@@ -1120,4 +1121,18 @@ export function DecodeSYNC(message) {
   }
 
   return ['-', '-', '-', '-', interpretation, errorStatus]
+}
+
+export function whatPDOisObject(object) {
+  object = object.toUpperCase()
+  if (object.slice(0, 2) == '0X' || object.slice(0, 2) == '#X') {
+    object = object.slice(2)
+  }
+
+  for (const prop in Mapping_objects_array_basedOnType) {
+    if (Mapping_objects_array_basedOnType[prop].includes(object)) {
+      return prop
+    }
+  }
+  return null
 }
