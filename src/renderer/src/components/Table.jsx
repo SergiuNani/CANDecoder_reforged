@@ -793,6 +793,7 @@ export const TableComponent = () => {
       {groupedFilteredArray.map((group, index) => {
         //-------------------Main Grouping Process-------------------
         if (GroupingOptionsForMessages.Axis) {
+          //Grouping by AxisID
           var stats = GroupingStatistics(group)
           if (
             (group.length == 2 || group.length == 3) &&
@@ -806,10 +807,32 @@ export const TableComponent = () => {
                 groupData={group}
                 key={index}
                 groupTitle={`AxisID: ${group[0].Axis}`}
-                groupLength={stats[0]} // first object is the obj describing the group
+                groupSubTitle={`${stats[0]} messages`} // first object is the obj describing the group
                 widthHeader={'60%'}
               />
             )
+          }
+        } else if (GroupingOptionsForMessages.Mapping) {
+          //Grouping by Mapping
+          if (Array.isArray(group)) {
+            var InterpretMapping = verifyValidityOfMappingGroup(group)
+            var cobID = InterpretMapping[0].slice(0, 6)
+            return (
+              <TableRowGroup
+                key={index}
+                groupTitle={`${cobID} - ${group[0].Type}`}
+                groupSubTitle={`${InterpretMapping[0].slice(6)} - ${group.length - 1} messages`}
+                groupData={group}
+                border={
+                  InterpretMapping[1] == 'error'
+                    ? `2px solid ${colors.red[500]}`
+                    : `2px solid ${colors.green[500]}`
+                }
+              />
+            )
+          } else {
+            //Simple message
+            return <TableROW key={index} iteration={group} />
           }
         } else {
           return <TableROW key={index} iteration={group} />
@@ -954,7 +977,7 @@ const TableROW = ({ iteration }) => {
   )
 }
 
-const TableRowGroup = ({ groupTitle, groupLength, groupData, border, widthHeader }) => {
+const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -1003,7 +1026,7 @@ const TableRowGroup = ({ groupTitle, groupLength, groupData, border, widthHeader
             marginLeft: '1rem'
           }}
         >
-          - {groupLength} messages
+          - {groupSubTitle}
         </p>
       </AccordionSummary>
 
@@ -1018,14 +1041,20 @@ const TableRowGroup = ({ groupTitle, groupLength, groupData, border, widthHeader
               if (Array.isArray(iteration)) {
                 //Encountered mapping array
                 var InterpretMapping = verifyValidityOfMappingGroup(iteration)
-                var cobID = InterpretMapping.slice(0, 5) //not good
+                var cobID = InterpretMapping[0].slice(0, 6)
                 return (
                   <TableRowGroup
                     key={index}
-                    groupTitle={`${iteration[0].Type} - ${InterpretMapping}`}
-                    groupLength={iteration.length - 1}
+                    groupTitle={`${cobID} - ${iteration[0].Type}`}
+                    groupSubTitle={`${InterpretMapping[0].slice(6)} - ${
+                      iteration.length - 1
+                    } messages`}
                     groupData={iteration}
-                    border={`2px solid ${colors.red[500]}`}
+                    border={
+                      InterpretMapping[1] == 'error'
+                        ? `2px solid ${colors.red[500]}`
+                        : `2px solid ${colors.green[500]}`
+                    }
                   />
                 )
               } else {
@@ -1045,6 +1074,8 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
   var currentAxis
   var prevMappingType = null
   var currentMappingType
+  var currentMode
+  var prevMode = null
   allMessages.forEach((oneMessage) => {
     currentAxis = oneMessage.AxisID
     currentMappingType = whatPDOisObject(oneMessage.Object)
@@ -1058,8 +1089,8 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
       }
 
       if (GroupingOptionsForMessages.Mapping && currentMappingType) {
-        var lastAxisGroup = groupedFilteredArray[groupedFilteredArray.length - 1]
-        var lastElementOfLastAxisGroup = lastAxisGroup[lastAxisGroup.length - 1]
+        var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
+        var lastElementOfLastAxisGroup = lastElementInArray[lastElementInArray.length - 1]
 
         if (Array.isArray(lastElementOfLastAxisGroup) && prevMappingType == currentMappingType) {
           //Mapping array exists
@@ -1077,6 +1108,28 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
       } else {
         groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage) //push object in the last AxisGroup
       }
+    } else if (GroupingOptionsForMessages.Mapping && currentMappingType) {
+      //GROUPING ONLY BY MAPPING -----------
+      var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
+
+      if (Array.isArray(lastElementInArray) && prevMappingType == currentMappingType) {
+        //Mapping array exists
+        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+      } else {
+        //Create mapping array
+        groupedFilteredArray.push([{ Type: currentMappingType }])
+        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+      }
+      prevMappingType = currentMappingType
+    } else if (GroupingOptionsForMessages.Modes) {
+      //GROUPING ONLY BY MODES OF OPERATION -----------
+      var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
+      if (Array.isArray(lastElementInArray)) {
+      } else {
+        //NO existing array
+      }
+
+      groupedFilteredArray.push(oneMessage)
     } else {
       //NO GROUPING
       // if (oneMessage.AxisID == 3)
@@ -1128,7 +1181,7 @@ function verifyValidityOfMappingGroup(group) {
   })
 
   if (errorStatus == 'error') {
-    return (returnText = returnText.concat('Error : One of the messages in the group has an error'))
+    returnText = returnText.concat('Error : One of the messages in the group has an error')
   } else {
     if (enableCobID.slice(-2).toString() == ['Disable', 'Enable'].toString()) {
       //Check if the Disabling and Enabling was done in the correct order
@@ -1137,14 +1190,16 @@ function verifyValidityOfMappingGroup(group) {
         mappingObjsOrder != parseInt(enableMapping[enableMapping.length - 1]) ||
         orderMapping.length != parseInt(enableMapping[enableMapping.length - 1])
       ) {
-        return (returnText = returnText.concat(
-          'Error: Length of the mapped objects is not correct '
-        ))
+        returnText = returnText.concat('Error: Length of the mapped objects is not correct ')
+        errorStatus = 'error'
       } else {
-        return (returnText = returnText.concat(`[${currectCOBID}] - ` + currentMapping.join(' / ')))
+        returnText = returnText.concat(`[${currectCOBID}] - ` + currentMapping.join(' / '))
       }
     } else {
-      return (returnText = returnText.concat('Error: we are missing Disable/Enable the COBID '))
+      returnText = returnText.concat('Error: we are missing Disable/Enable the COBID ')
+      errorStatus = 'error'
     }
   }
+
+  return [returnText, errorStatus]
 }

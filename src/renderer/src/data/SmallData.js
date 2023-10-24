@@ -1,6 +1,6 @@
 /*------------------------------Global Parameters------------------------------ */
 export let GroupingOptionsForMessages = {
-  Axis: true,
+  Axis: false,
   Modes: false,
   Mapping: true,
   Repetitive: false
