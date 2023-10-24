@@ -750,7 +750,9 @@ export const TableComponent = () => {
       style={{
         position: 'relative',
         marginBottom: '20rem',
-        overflowX: 'hidden'
+        width: '99.5%'
+
+        // overflowX: 'hidden'
       }}
     >
       <table
@@ -759,7 +761,6 @@ export const TableComponent = () => {
           fontWeight: '700',
           position: 'sticky',
           top: '2.5rem',
-          top: '0rem',
           background: `${colors.primary[300]}`,
           zIndex: 1,
           marginLeft: '0.5rem',
@@ -790,15 +791,26 @@ export const TableComponent = () => {
       </table>
 
       {groupedFilteredArray.map((group, index) => {
+        //-------------------Main Grouping Process-------------------
         if (GroupingOptionsForMessages.Axis) {
-          return (
-            <TableRowGroup
-              groupData={group}
-              key={index}
-              groupTitle={`AxisID: ${group[0].Axis}`}
-              groupLength={group.length - 1} // first object is the obj describing the group
-            />
-          )
+          var stats = GroupingStatistics(group)
+          if (
+            (group.length == 2 || group.length == 3) &&
+            (group[0].Axis == '-' || group[0].Axis == 'invalid')
+          ) {
+            //Disbale grouping for invalid and empty messages
+            return group.slice(1).map((it, idx) => <TableROW key={idx} iteration={it} />)
+          } else {
+            return (
+              <TableRowGroup
+                groupData={group}
+                key={index}
+                groupTitle={`AxisID: ${group[0].Axis}`}
+                groupLength={stats[0]} // first object is the obj describing the group
+                widthHeader={'60%'}
+              />
+            )
+          }
         } else {
           return <TableROW key={index} iteration={group} />
         }
@@ -942,7 +954,7 @@ const TableROW = ({ iteration }) => {
   )
 }
 
-const TableRowGroup = ({ groupTitle, groupLength, groupData, border }) => {
+const TableRowGroup = ({ groupTitle, groupLength, groupData, border, widthHeader }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -953,27 +965,25 @@ const TableRowGroup = ({ groupTitle, groupLength, groupData, border }) => {
   }
 
   return (
-    <Accordion
-      expanded={expanded}
-      onChange={toggleAccordion}
-      sx={{
-        width: '99.7%' // Because when collapsing the Accordions they are creating the horizontal scroll bar which looks bad
-      }}
-    >
+    <Accordion expanded={expanded} onChange={toggleAccordion}>
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
-          border: border ? border : `2px solid ${colors.green[400]}`,
-          padding: '0px',
+          border: border ? border : null,
           background: `${colors.primary[300]}`,
           paddingLeft: '0.5rem',
-          margin: '0.5rem 0',
           borderRadius: '0.5rem',
           justifyContent: 'center',
           alignItems: 'center',
           fontWeight: '600',
           fontSize: '1rem',
-          width: '50%'
+          margin: '0.5rem 0',
+          padding: '0px',
+          width: widthHeader ? widthHeader : '50%',
+
+          '& .css-o4b71y-MuiAccordionSummary-content': {
+            margin: '0 !important'
+          }
         }}
       >
         <div
@@ -999,7 +1009,6 @@ const TableRowGroup = ({ groupTitle, groupLength, groupData, border }) => {
 
       <AccordionDetails
         sx={{
-          border: `1px solid ${colors.primary[400]}`,
           padding: '0px'
         }}
       >
@@ -1008,10 +1017,12 @@ const TableRowGroup = ({ groupTitle, groupLength, groupData, border }) => {
             if (index != 0) {
               if (Array.isArray(iteration)) {
                 //Encountered mapping array
+                var InterpretMapping = verifyValidityOfMappingGroup(iteration)
+                var cobID = InterpretMapping.slice(0, 5) //not good
                 return (
                   <TableRowGroup
                     key={index}
-                    groupTitle={iteration[0].Type}
+                    groupTitle={`${iteration[0].Type} - ${InterpretMapping}`}
                     groupLength={iteration.length - 1}
                     groupData={iteration}
                     border={`2px solid ${colors.red[500]}`}
@@ -1068,7 +1079,72 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
       }
     } else {
       //NO GROUPING
-      if (oneMessage.AxisID == 3) groupedFilteredArray.push(oneMessage)
+      // if (oneMessage.AxisID == 3)
+      groupedFilteredArray.push(oneMessage)
     }
   })
+}
+
+function GroupingStatistics(group) {
+  var MsgsLength = 0
+
+  group.forEach((oneEl) => {
+    if (Array.isArray(oneEl)) {
+      MsgsLength += oneEl.length - 1
+    } else {
+      MsgsLength++
+    }
+  })
+  MsgsLength-- //Because the first object is the object describing the group
+  return [MsgsLength]
+}
+
+function verifyValidityOfMappingGroup(group) {
+  var returnText = ''
+  var errorStatus = 'good'
+  var enableCobID = []
+  var enableMapping = []
+  var orderMapping = []
+  var currectCOBID
+  var currentMapping = []
+
+  group.slice(1).forEach((oneMessage) => {
+    if (oneMessage.errorStatus == 'error') {
+      errorStatus = 'error'
+    }
+    var InterpretationInfo = oneMessage.Interpretation.split(' ')
+    if (['Disable', 'Enable'].includes(InterpretationInfo[0])) {
+      enableCobID[enableCobID.length] = InterpretationInfo[0]
+    } else if (InterpretationInfo.slice(1, -1).join(' ') == '-Nr of mapped objects :') {
+      enableMapping[enableMapping.length] = InterpretationInfo[InterpretationInfo.length - 1]
+    } else if (
+      InterpretationInfo[0][0] == '[' &&
+      InterpretationInfo[0][InterpretationInfo[0].length - 1] == ']'
+    ) {
+      orderMapping[orderMapping.length] = InterpretationInfo[0][7]
+      currectCOBID = InterpretationInfo[0].slice(1, 5)
+      currentMapping[currentMapping.length] = InterpretationInfo[2]
+    }
+  })
+
+  if (errorStatus == 'error') {
+    return (returnText = returnText.concat('Error : One of the messages in the group has an error'))
+  } else {
+    if (enableCobID.slice(-2).toString() == ['Disable', 'Enable'].toString()) {
+      //Check if the Disabling and Enabling was done in the correct order
+      var mappingObjsOrder = Math.max(...orderMapping.map(Number))
+      if (
+        mappingObjsOrder != parseInt(enableMapping[enableMapping.length - 1]) ||
+        orderMapping.length != parseInt(enableMapping[enableMapping.length - 1])
+      ) {
+        return (returnText = returnText.concat(
+          'Error: Length of the mapped objects is not correct '
+        ))
+      } else {
+        return (returnText = returnText.concat(`[${currectCOBID}] - ` + currentMapping.join(' / ')))
+      }
+    } else {
+      return (returnText = returnText.concat('Error: we are missing Disable/Enable the COBID '))
+    }
+  }
 }

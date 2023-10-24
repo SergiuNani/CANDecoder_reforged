@@ -277,7 +277,7 @@ export function LittleEndian(arr) {
       arr = arr.join('')
     }
     aux2 = arr.match(/.{1,2}/g)
-
+    if (aux2 == undefined) return ''
     for (var i = 0; i < aux2.length / 2; i++) {
       aux1 = aux2[i]
       aux2[i] = aux2[aux2.length - 1 - i]
