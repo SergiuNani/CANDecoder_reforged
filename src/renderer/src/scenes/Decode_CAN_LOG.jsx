@@ -36,7 +36,7 @@ import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
 import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
 import { PDO_mapped } from '../functions/CANopenFunctions'
-import { TableComponent, CreateGroupedFilteredArray } from '../components/Table'
+import { TableComponent, CreateGroupedFilteredArray, TempDisplayArray } from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 
 export let MessagesDecoded_ArrayOfObjects = []
@@ -349,13 +349,15 @@ const UserCANopenDecodedTable = ({
           setIsDrawerOpen={setIsDrawerOpen}
         />
 
-        <DrawerComponent_DecodeOptions
+        {/* <DrawerComponent_DecodeOptions
           setDisplayTable={setDisplayTable}
           isDrawerOpen={isDrawerOpen}
           setIsDrawerOpen={setIsDrawerOpen}
           forceDecodeFromParent={forceDecodeFromParent}
-        />
-        {displayTable && <TableComponent />}
+        /> */}
+        {/* {displayTable && <TableComponent />} */}
+        {CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)}
+        <TempDisplayArray />
       </Box>
     </section>
   )

@@ -449,7 +449,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
 
     default:
       interpretation = `${hex_to_ascii(fullMessage)}`
-      errorStatus = 'idk'
+      errorStatus = 'error'
       break
   }
   return [interpretation, errorStatus, data]

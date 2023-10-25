@@ -812,9 +812,12 @@ export const TableComponent = () => {
               />
             )
           }
-        } else if (GroupingOptionsForMessages.Mapping) {
+        } else if (
+          Array.isArray(group) &&
+          (GroupingOptionsForMessages.Mapping || GroupingOptionsForMessages.Modes)
+        ) {
           //Grouping by Mapping
-          if (Array.isArray(group)) {
+          if (group[0].Type.slice(1, 4) == 'PDO') {
             var InterpretMapping = verifyValidityOfMappingGroup(group)
             var cobID = InterpretMapping[0].slice(0, 6)
             return (
@@ -830,9 +833,18 @@ export const TableComponent = () => {
                 }
               />
             )
-          } else {
-            //Simple message
-            return <TableROW key={index} iteration={group} />
+          } else if (group[0].Type == 'Modes') {
+            //Grouping by Modes
+
+            return (
+              <TableRowGroup
+                key={index}
+                groupTitle={`Modes of Operation: ${group[0].Mode}`}
+                groupSubTitle={`${group.length - 1} messages`}
+                groupData={group}
+                border={`2px solid ${colors.green[500]}`}
+              />
+            )
           }
         } else {
           return <TableROW key={index} iteration={group} />
@@ -1110,9 +1122,14 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
       }
     } else if (GroupingOptionsForMessages.Mapping && currentMappingType) {
       //GROUPING ONLY BY MAPPING -----------
+
       var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
 
-      if (Array.isArray(lastElementInArray) && prevMappingType == currentMappingType) {
+      if (
+        Array.isArray(lastElementInArray) &&
+        prevMappingType == currentMappingType &&
+        lastElementInArray[0].Type == currentMappingType
+      ) {
         //Mapping array exists
         groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
       } else {
@@ -1124,16 +1141,63 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
     } else if (GroupingOptionsForMessages.Modes) {
       //GROUPING ONLY BY MODES OF OPERATION -----------
       var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
-      if (Array.isArray(lastElementInArray)) {
-      } else {
-        //NO existing array
-      }
+      var isLastElementInArrayanArray = Array.isArray(lastElementInArray)
+      if (oneMessage.Object.split(' / ').includes('#x6060')) {
+        var index = oneMessage.Object.split(' / ').indexOf('#x6060')
+        var currentMode = oneMessage.Data.split(' / ')[index]
+        if (!isLastElementInArrayanArray) {
+          console.log('-- ' + oneMessage.OriginalMessage)
+          if (oneMessage.type.slice(0, 4) == 'RPDO' || oneMessage.type == 'R_SDO') {
+            //Create modes array
 
-      groupedFilteredArray.push(oneMessage)
+            groupedFilteredArray.push([
+              { Type: 'Modes', Axis: oneMessage.AxisID, Mode: currentMode }
+            ])
+            groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          } else {
+            groupedFilteredArray.push(oneMessage)
+          }
+        } else {
+          if (oneMessage.type.slice(0, 4) == 'RPDO' || oneMessage.type == 'R_SDO') {
+            //Create modes array
+            var groupedModesAxis = groupedFilteredArray[groupedFilteredArray.length - 1][0].Axis
+            if (groupedModesAxis == oneMessage.AxisID) {
+              groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+            } else {
+              groupedFilteredArray.push([
+                { Type: 'Modes', Axis: oneMessage.AxisID, Mode: currentMode }
+              ])
+              groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+            }
+          } else {
+            var groupedModesAxis = groupedFilteredArray[groupedFilteredArray.length - 1][0].Axis
+            if (groupedModesAxis == oneMessage.AxisID) {
+              groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+            } else {
+              //individual object
+              groupedFilteredArray.push(oneMessage)
+            }
+          }
+        }
+      } else {
+        //NON #6060 OBJECT
+        if (!isLastElementInArrayanArray) {
+          groupedFilteredArray.push(oneMessage)
+        } else {
+          var groupedModesAxis = groupedFilteredArray[groupedFilteredArray.length - 1][0].Axis
+          if (groupedModesAxis == oneMessage.AxisID) {
+            groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          } else {
+            //individual object
+            groupedFilteredArray.push(oneMessage)
+          }
+        }
+      }
     } else {
       //NO GROUPING
-      // if (oneMessage.AxisID == 3)
-      groupedFilteredArray.push(oneMessage)
+      if (oneMessage.AxisID != 23 && oneMessage.type != 'SYNC') {
+        groupedFilteredArray.push(oneMessage)
+      }
     }
   })
 }
@@ -1202,4 +1266,108 @@ function verifyValidityOfMappingGroup(group) {
   }
 
   return [returnText, errorStatus]
+}
+
+export function TempDisplayArray() {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Box
+      style={{
+        border: `3px solid grey`
+      }}
+    >
+      <div>BABYYYYY</div>
+      <Box>
+        {groupedFilteredArray.map((group, index) => {
+          var groupisArray = Array.isArray(group)
+          if (groupisArray) {
+            return (
+              <Box key={index} sx={{ marginLeft: '2rem', border: `1px solid yellow` }}>
+                {group.map((obj, idx) => {
+                  let jsxElements = []
+                  let errorStatus = obj.errorStatus
+
+                  let msgNr = (
+                    <div style={{ color: `${colors.primary[400]}` }}> [{obj.msgNr}] - </div>
+                  )
+                  jsxElements.push(msgNr)
+                  let AxisID = (
+                    <div style={{ color: `${colors.green[100]}` }}> [{obj.AxisID}] - </div>
+                  )
+                  jsxElements.push(AxisID)
+                  let type = <div style={{ color: `${colors.grey[100]}` }}> [{obj.type}] - </div>
+                  jsxElements.push(type)
+                  let CobID = (
+                    <div style={{ color: `${colors.yellow[100]}` }}> [{obj.CobID}] - </div>
+                  )
+                  jsxElements.push(CobID)
+                  let Data = <div style={{ color: `${colors.primary[400]}` }}> [{obj.Data}] - </div>
+                  jsxElements.push(Data)
+                  let FrameData = (
+                    <div style={{ color: `${colors.primary[400]}` }}> [{obj.FrameData}] - </div>
+                  )
+                  jsxElements.push(FrameData)
+
+                  let Object = (
+                    <div style={{ color: `${colors.green[100]}` }}> [{obj.Object}] - </div>
+                  )
+                  jsxElements.push(Object)
+                  let ObjectName = (
+                    <div style={{ color: `${colors.primary[400]}` }}> [{obj.ObjectName}] - </div>
+                  )
+                  jsxElements.push(ObjectName)
+                  let Interpretation = (
+                    <div
+                      style={{
+                        color:
+                          errorStatus == 'error' ? `${colors.red[500]}` : `${colors.yellow[500]}`
+                      }}
+                    >
+                      [{obj.Interpretation}]
+                    </div>
+                  )
+                  jsxElements.push(Interpretation)
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        marginBottom: '0.5rem',
+                        borderBottom: '1px solid grey',
+                        padding: '0.4rem',
+                        fontSize: '1rem',
+                        display: 'flex'
+                      }}
+                    >
+                      {jsxElements}
+                    </div>
+                  )
+                })}
+              </Box>
+            )
+          } else {
+            let objectString = Object.entries(group)
+              .filter(([key]) => key !== 'OriginalMessage')
+              .map(([key, value]) => `${value}`)
+              .join(', ')
+            objectString = `[${group.AxisID}] - `.concat(objectString)
+
+            return (
+              <div
+                key={index}
+                style={{
+                  marginBottom: '0.5rem',
+                  borderBottom: '1px solid grey',
+                  padding: '0.4rem',
+                  fontSize: '1rem'
+                }}
+              >
+                {objectString}
+              </div>
+            )
+          }
+        })}
+      </Box>
+    </Box>
+  )
 }
