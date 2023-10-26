@@ -13,7 +13,11 @@ import {
   AccordionDetails
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { checkSDOforMapping, whatPDOisObject } from '../functions/CANopenFunctions'
+import {
+  checkSDOforMapping,
+  whatPDOisObject,
+  whatObjectValueMeans
+} from '../functions/CANopenFunctions'
 import { tokens } from '../theme'
 import { Mapping_objects_array, GroupingOptionsForMessages } from '../data/SmallData'
 import { TooltipClickable } from '../components/SmallComponents'
@@ -459,60 +463,36 @@ export const TableComponent = () => {
 
       {groupedFilteredArray.map((group, index) => {
         //-------------------Main Grouping Process-------------------
-        if (GroupingOptionsForMessages.Axis) {
-          //Grouping by AxisID
-          var stats = GroupingStatistics(group)
-          if (
-            (group.length == 2 || group.length == 3) &&
-            (group[0].Axis == '-' || group[0].Axis == 'invalid')
-          ) {
-            //Disbale grouping for invalid and empty messages
-            return group.slice(1).map((it, idx) => <TableROW key={idx} iteration={it} />)
-          } else {
-            return (
-              <TableRowGroup
-                groupData={group}
-                key={index}
-                groupTitle={`AxisID: ${group[0].Axis}`}
-                groupSubTitle={`${stats[0]} messages`} // first object is the obj describing the group
-                widthHeader={'60%'}
-              />
-            )
+        var groupisArray = Array.isArray(group)
+        if (groupisArray) {
+          let title = ''
+          let subtitle = ''
+          let errorStatus = ''
+          if (group[0].GroupType == 'Mapping') {
+            var temp = verifyValidityOfMappingGroup(group)
+            title = group[0].GroupIndicator.concat(' - ' + temp[1])
+            subtitle = temp[0].concat(' - ' + `${group.length - 1}` + ' messages')
+            errorStatus = temp[2]
+          } else if (group[0].GroupType == 'Modes') {
+            title = whatObjectValueMeans('6060', group[0].GroupIndicator, 8)[0]
+            subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
+              group.length - 1
+            }messages `
           }
-        } else if (
-          Array.isArray(group) &&
-          (GroupingOptionsForMessages.Mapping || GroupingOptionsForMessages.Modes)
-        ) {
-          //Grouping by Mapping
-          if (group[0].Type.slice(1, 4) == 'PDO') {
-            var InterpretMapping = verifyValidityOfMappingGroup(group)
-            var cobID = InterpretMapping[0].slice(0, 6)
-            return (
-              <TableRowGroup
-                key={index}
-                groupTitle={`${cobID} - ${group[0].Type}`}
-                groupSubTitle={`${InterpretMapping[0].slice(6)} - ${group.length - 1} messages`}
-                groupData={group}
-                border={
-                  InterpretMapping[1] == 'error'
-                    ? `2px solid ${colors.red[500]}`
-                    : `2px solid ${colors.green[500]}`
-                }
-              />
-            )
-          } else if (group[0].Type == 'Modes') {
-            //Grouping by Modes
-
-            return (
-              <TableRowGroup
-                key={index}
-                groupTitle={`Modes of Operation: ${group[0].Mode}`}
-                groupSubTitle={`${group.length - 1} messages`}
-                groupData={group}
-                border={`2px solid ${colors.green[500]}`}
-              />
-            )
-          }
+          return (
+            <TableRowGroup
+              key={index}
+              groupTitle={title}
+              groupSubTitle={subtitle}
+              groupData={group}
+              border={
+                errorStatus == 'error'
+                  ? `2px solid ${colors.red[500]}`
+                  : `2px solid ${colors.green[300]}`
+              }
+              widthHeader={'50%'}
+            />
+          )
         } else {
           return <TableROW key={index} iteration={group} />
         }
@@ -711,35 +691,13 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
 
       <AccordionDetails
         sx={{
-          padding: '0px'
+          padding: '0px',
+          borderBottom: `3px solid ${colors.green[400]}`
         }}
       >
         <div>
-          {groupData.map((iteration, index) => {
-            if (index != 0) {
-              if (Array.isArray(iteration)) {
-                //Encountered mapping array
-                var InterpretMapping = verifyValidityOfMappingGroup(iteration)
-                var cobID = InterpretMapping[0].slice(0, 6)
-                return (
-                  <TableRowGroup
-                    key={index}
-                    groupTitle={`${cobID} - ${iteration[0].Type}`}
-                    groupSubTitle={`${InterpretMapping[0].slice(6)} - ${
-                      iteration.length - 1
-                    } messages`}
-                    groupData={iteration}
-                    border={
-                      InterpretMapping[1] == 'error'
-                        ? `2px solid ${colors.red[500]}`
-                        : `2px solid ${colors.green[500]}`
-                    }
-                  />
-                )
-              } else {
-                return <TableROW key={index} iteration={iteration} />
-              }
-            }
+          {groupData.slice(1).map((iteration, index) => {
+            return <TableROW key={index} iteration={iteration} />
           })}
         </div>
       </AccordionDetails>
@@ -785,7 +743,6 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
       var isLastElementArray = Array.isArray(lastElementFromSortedArray)
       var objects = oneMessage.Object.split(' / ').indexOf('#x6060')
       var ObjectValue = oneMessage.Data.split(' / ')[objects]
-      console.log('🚀 ~ file: Table.jsx:787 ~ allMessages.forEach ~ ObjectValue:', ObjectValue)
       if (
         objects != -1 &&
         oneMessage.errorStatus != 'error' &&
@@ -827,20 +784,6 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
   })
 }
 
-function GroupingStatistics(group) {
-  var MsgsLength = 0
-
-  group.forEach((oneEl) => {
-    if (Array.isArray(oneEl)) {
-      MsgsLength += oneEl.length - 1
-    } else {
-      MsgsLength++
-    }
-  })
-  MsgsLength-- //Because the first object is the object describing the group
-  return [MsgsLength]
-}
-
 function verifyValidityOfMappingGroup(group) {
   var returnText = ''
   var errorStatus = 'good'
@@ -864,13 +807,18 @@ function verifyValidityOfMappingGroup(group) {
       InterpretationInfo[0][InterpretationInfo[0].length - 1] == ']'
     ) {
       orderMapping[orderMapping.length] = InterpretationInfo[0][7]
-      currectCOBID = InterpretationInfo[0].slice(1, 5)
       currentMapping[currentMapping.length] = InterpretationInfo[2]
+    }
+    if (
+      InterpretationInfo[0][0] == '[' &&
+      InterpretationInfo[0][InterpretationInfo[0].length - 1] == ']'
+    ) {
+      currectCOBID = InterpretationInfo[0].slice(1, 5)
     }
   })
 
   if (errorStatus == 'error') {
-    returnText = returnText.concat('Error : One of the messages in the group has an error')
+    returnText = returnText.concat('Error: One of the messages in the group has an error')
   } else {
     if (enableCobID.slice(-2).toString() == ['Disable', 'Enable'].toString()) {
       //Check if the Disabling and Enabling was done in the correct order
@@ -879,16 +827,16 @@ function verifyValidityOfMappingGroup(group) {
         mappingObjsOrder != parseInt(enableMapping[enableMapping.length - 1]) ||
         orderMapping.length != parseInt(enableMapping[enableMapping.length - 1])
       ) {
-        returnText = returnText.concat('Error: Length of the mapped objects is not correct ')
+        returnText = returnText.concat('Warning: Either missing or wrong number of mapped objects')
         errorStatus = 'error'
       } else {
-        returnText = returnText.concat(`[${currectCOBID}] - ` + currentMapping.join(' / '))
+        returnText = returnText.concat(currentMapping.join(' / '))
       }
     } else {
-      returnText = returnText.concat('Error: we are missing Disable/Enable the COBID ')
+      returnText = returnText.concat('Warning: missing Disable/Enable frames of the COBID ')
       errorStatus = 'error'
     }
   }
 
-  return [returnText, errorStatus]
+  return [returnText, currectCOBID, errorStatus]
 }

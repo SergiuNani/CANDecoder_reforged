@@ -346,15 +346,15 @@ const UserCANopenDecodedTable = ({
           setIsDrawerOpen={setIsDrawerOpen}
         />
 
-        {/* <DrawerComponent_DecodeOptions
+        <DrawerComponent_DecodeOptions
           setDisplayTable={setDisplayTable}
           isDrawerOpen={isDrawerOpen}
           setIsDrawerOpen={setIsDrawerOpen}
           forceDecodeFromParent={forceDecodeFromParent}
         />
-        {displayTable && <TableComponent />} */}
-        {CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)}
-        <TempDisplayArray />
+        {displayTable && <TableComponent />}
+        {/* {CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)}
+        <TempDisplayArray /> */}
       </Box>
     </section>
   )
