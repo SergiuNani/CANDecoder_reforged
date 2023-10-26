@@ -292,7 +292,7 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
                 padding: '0.2rem'
               }}
             >
-              <p style={{}}> [{iteration[0]}]. </p>
+              <p> [{iteration[0]}]. </p>
               <p style={{ color: `${colors.yellow[500]}` }}> {iteration[1]}</p>
               <div style={{ color: `${colors.red[300]}`, display: 'flex' }}>
                 {' '}
@@ -302,9 +302,6 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
                       key={ii + 'abc'}
                       style={{
                         display: 'flex'
-                        // justifyContent: 'center',
-                        // alignItems: 'center',
-                        // border: `1px solid yellow`
                       }}
                     >
                       {' '}
@@ -354,8 +351,8 @@ const UserCANopenDecodedTable = ({
           isDrawerOpen={isDrawerOpen}
           setIsDrawerOpen={setIsDrawerOpen}
           forceDecodeFromParent={forceDecodeFromParent}
-        /> */}
-        {/* {displayTable && <TableComponent />} */}
+        />
+        {displayTable && <TableComponent />} */}
         {CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)}
         <TempDisplayArray />
       </Box>

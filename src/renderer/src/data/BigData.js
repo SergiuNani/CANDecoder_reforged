@@ -3008,7 +3008,7 @@ export const Objects_collection = [
         {
           Index: '#x60C2_01',
           Name: 'Interpolation time period value',
-          BitSize: 16
+          BitSize: 8
         },
         {
           Index: '#x60C2_02',

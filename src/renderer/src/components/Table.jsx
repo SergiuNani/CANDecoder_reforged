@@ -173,575 +173,242 @@ export const TableComponent1 = ({ filtereGroupeddArray }) => {
     </table>
   )
 }
+export function TempDisplayArray() {
+  console.log('TempDisplayArray -- only Once')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Box
+      style={{
+        border: `3px solid grey`
+      }}
+    >
+      <div>SIMPLIFIED: </div>
+      <Box>
+        {groupedFilteredArray.map((group, index) => {
+          var groupisArray = Array.isArray(group)
+          if (groupisArray) {
+            //ARRAY DETECTED
+            return (
+              <Box key={index} sx={{ marginLeft: '2rem', border: `1px solid yellow` }}>
+                <Box>
+                  <div style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                    {' '}
+                    [`{group[0].GroupType} -- AxisID: {group[0].AxisID} -- {group[0].GroupIndicator}
+                    `] -{' '}
+                  </div>
+                </Box>
+                {group.slice(1).map((obj, idx) => {
+                  let jsxElements = []
+                  let errorStatus = obj.errorStatus
 
-const arrayOfObjects = [
-  [
-    {
-      AxisID: '-',
-      CS: '-',
-      CobID: 'Empty',
-      Data: '-',
-      FrameData: 'Line',
-      Interpretation: '-',
-      Object: '-',
-      ObjectName: '-',
-      OriginalMessage: '-',
-      errorStatus: '-',
-      msgNr: 1,
-      type: '-'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation: '[201h][1] - #x6040 - Controlword',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object Lorem ipsum dolor sit amet consectetur.',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation: '[201h][1] - #x6040 - Controlword',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object Lorem ipsum dolor sit amet consectetur.',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation: '[201h][1] - #x6040 - Controlword',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object Lorem ipsum dolor sit amet consectetur.',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laudantium, quae!',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object Lorem ipsum dolor sit amet consectetur.',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation: '-',
-      Object: '#x6040',
-      ObjectName: 'Controlword',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'good',
-      msgNr: 3,
-      type: 'RPDO1'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation:
-        'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum!',
-      Object: '#x6040',
-      ObjectName: 'Controlword ufheaiuf fehaiuofh',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'RPDO1'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation:
-        'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum!',
-      Object: '#x6040',
-      ObjectName: 'Controlword ufheaiuf fehaiuofh',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'RPDO1'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation:
-        'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum!',
-      Object: '#x6040',
-      ObjectName: 'Controlword ufheaiuf fehaiuofh',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'RPDO1'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation:
-        'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum!',
-      Object: '#x6040',
-      ObjectName: 'Controlword ufheaiuf fehaiuofh',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'RPDO1'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation:
-        'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum!',
-      Object: '#x6040',
-      ObjectName: 'Controlword ufheaiuf fehaiuofh',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'RPDO1'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation:
-        'lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum!',
-      Object: '#x6040',
-      ObjectName: 'Controlword ufheaiuf fehaiuofh',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'RPDO1'
-    }
-  ],
-  [
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation: '[201h][1] - #x6040 - Controlword',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object Lorem ipsum dolor sit amet consectetur.',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    }
-  ],
-  [
-    {
-      AxisID: 2,
-      CS: '23',
-      CobID: '602',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation: '[201h][1] - #x6040 - Controlword lorem ipsum dolor sit amet consectetur.',
-      Object: '#x1600_01 / #x1600_01 / #x1600_01',
-      ObjectName: '1st mapped object Lorem ipsum dolor sit amet consectetur.',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    }
-  ],
-  [
-    {
-      AxisID: '-',
-      CS: '-',
-      CobID: 'Empty',
-      Data: '-',
-      FrameData: 'Line',
-      Interpretation: '-',
-      Object: '-',
-      ObjectName: '-',
-      OriginalMessage: '-',
-      errorStatus: '-',
-      msgNr: 1,
-      type: '-'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '0000020012345678',
-      Interpretation: 'EMCY : 0000 - Error Reset or No Error',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 0000 0200 123456789',
-      errorStatus: 'error',
-      msgNr: 2,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '0010020012345678',
-      Interpretation:
-        'EMCY : 1000 - Generic Error; sent when a communication error occurs on CAN (object 2000h bit0=1; usually followed by EMCY code 0x7500',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 0010 0200 123456789',
-      errorStatus: 'error',
-      msgNr: 3,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '1023023412345678',
-      Interpretation: 'EMCY : 2310 - Continuous over-current',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 1023 0234 123456789',
-      errorStatus: 'error',
-      msgNr: 4,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '4023023412345678',
-      Interpretation: 'EMCY : 2340 - Short-circuit',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 4023 0234 123456789',
-      errorStatus: 'error',
-      msgNr: 5,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '1032023412345678',
-      Interpretation: 'EMCY : 3210 - DC-link over-voltage',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 1032 0234 123456789',
-      errorStatus: 'error',
-      msgNr: 6,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '2032023412345678',
-      Interpretation: 'EMCY : 3220 - DC-link under-voltage',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 2032 0234 123456789',
-      errorStatus: 'error',
-      msgNr: 7,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '8042023412345678',
-      Interpretation: 'EMCY : 4280 - Over temperature motor',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 8042 0234 123456789',
-      errorStatus: 'error',
-      msgNr: 8,
-      type: 'EMCY'
-    },
-    {
-      AxisID: 10,
-      CS: '-',
-      CobID: '0x08a',
-      Data: '02',
-      FrameData: '1043023412345678',
-      Interpretation: 'EMCY : 4310 - Over temperature drive',
-      Object: '1001',
-      ObjectName: 'Error Register',
-      OriginalMessage: '0x08a 1043 0234 123456789',
-      errorStatus: 'error',
-      msgNr: 9,
-      type: 'EMCY'
-    }
-  ]
-]
-const arrayOfObjects1 = [
-  [
-    {
-      AxisID: '-',
-      CS: '-',
-      CobID: 'Empty',
-      Data: '-',
-      FrameData: 'Line',
-      Interpretation: '-',
-      Object: '-',
-      ObjectName: '-',
-      OriginalMessage: '-',
-      errorStatus: '-',
-      msgNr: 1,
-      type: '-'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'R_SDO'
-    },
-    {
-      AxisID: 1,
-      CS: '23',
-      CobID: '601',
-      Data: '60400010',
-      FrameData: '2300160110004060',
-      Interpretation:
-        '[201h][1] - #x6040 - Controlword Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laboriosam doloremque, placeat voluptate consectetur sint quisquam veniam amet error numquam mollitia?',
-      Object: '#x1600_01',
-      ObjectName: '1st mapped object',
-      OriginalMessage: '601 23 0016 01 10004060',
-      errorStatus: 'blue',
-      msgNr: 2,
-      type: 'RPDO'
-    },
-    {
-      AxisID: 1,
-      CS: 1,
-      CobID: '201',
-      Data: '5555',
-      FrameData: '5555555',
-      Interpretation: '-',
-      Object: '#x6040',
-      ObjectName: 'Controlword',
-      OriginalMessage: '201 5555555',
-      errorStatus: 'good',
-      msgNr: 3,
-      type: 'RPDO1'
-    }
-  ]
-]
+                  let msgNr = (
+                    <div key={1} style={{ color: `${colors.blue[400]}` }}>
+                      {' '}
+                      [{obj.msgNr}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(msgNr)
+                  let AxisID = (
+                    <div key={2} style={{ color: `${colors.green[100]}` }}>
+                      {' '}
+                      [{obj.AxisID}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(AxisID)
+
+                  let CobID = (
+                    <div key={3} style={{ color: `${colors.yellow[500]}` }}>
+                      {' '}
+                      [{obj.CobID}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(CobID)
+
+                  let type = (
+                    <div key={4} style={{ color: `${colors.grey[100]}` }}>
+                      {' '}
+                      [{obj.type}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(type)
+
+                  let FrameData = (
+                    <div key={5} style={{ color: `${colors.yellow[100]}` }}>
+                      {' '}
+                      [{obj.FrameData}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(FrameData)
+
+                  let Object = (
+                    <div key={6} style={{ color: `${colors.green[100]}`, fontWeight: 700 }}>
+                      {' '}
+                      [{obj.Object}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(Object)
+
+                  let ObjectName = (
+                    <div key={7} style={{ color: `${colors.blue[500]}` }}>
+                      {' '}
+                      [{obj.ObjectName}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(ObjectName)
+
+                  let Data = (
+                    <div key={8} style={{ color: `${colors.primary[600]}` }}>
+                      {' '}
+                      [{obj.Data}] -{' '}
+                    </div>
+                  )
+                  jsxElements.push(Data)
+
+                  let Interpretation = (
+                    <div
+                      key={9}
+                      style={{
+                        color:
+                          errorStatus == 'error' ? `${colors.red[600]}` : `${colors.yellow[500]}`,
+                        fontWeight: 700
+                      }}
+                    >
+                      [{obj.Interpretation}]
+                    </div>
+                  )
+                  jsxElements.push(Interpretation)
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        marginBottom: '0.5rem',
+                        borderBottom: '1px solid grey',
+                        padding: '0.4rem',
+                        fontSize: '1rem',
+                        display: 'flex'
+                      }}
+                    >
+                      {jsxElements}
+                    </div>
+                  )
+                })}
+              </Box>
+            )
+          } else {
+            let jsxElements = []
+            let obj = group
+            let idx = index
+            let errorStatus = obj.errorStatus
+
+            let msgNr = (
+              <div key={1} style={{ color: `${colors.blue[400]}` }}>
+                {' '}
+                [{obj.msgNr}] -{' '}
+              </div>
+            )
+            jsxElements.push(msgNr)
+            let AxisID = (
+              <div key={2} style={{ color: `${colors.green[100]}` }}>
+                {' '}
+                [{obj.AxisID}] -{' '}
+              </div>
+            )
+            jsxElements.push(AxisID)
+
+            let CobID = (
+              <div key={3} style={{ color: `${colors.yellow[500]}` }}>
+                {' '}
+                [{obj.CobID}] -{' '}
+              </div>
+            )
+            jsxElements.push(CobID)
+
+            let type = (
+              <div key={4} style={{ color: `${colors.grey[100]}` }}>
+                {' '}
+                [{obj.type}] -{' '}
+              </div>
+            )
+            jsxElements.push(type)
+
+            let FrameData = (
+              <div key={5} style={{ color: `${colors.blue[400]}` }}>
+                {' '}
+                [{obj.FrameData}] -{' '}
+              </div>
+            )
+            jsxElements.push(FrameData)
+
+            let Object = (
+              <div key={6} style={{ color: `${colors.green[100]}`, fontWeight: 700 }}>
+                {' '}
+                [{obj.Object}] -{' '}
+              </div>
+            )
+            jsxElements.push(Object)
+
+            let ObjectName = (
+              <div key={7} style={{ color: `${colors.blue[500]}` }}>
+                {' '}
+                [{obj.ObjectName}] -{' '}
+              </div>
+            )
+            jsxElements.push(ObjectName)
+
+            let Data = (
+              <div key={8} style={{ color: `${colors.primary[600]}` }}>
+                {' '}
+                [{obj.Data}] -{' '}
+              </div>
+            )
+            jsxElements.push(Data)
+
+            let Interpretation = (
+              <div
+                key={9}
+                style={{
+                  color: errorStatus === 'error' ? `${colors.red[600]}` : `${colors.yellow[500]}`,
+                  fontWeight: 700
+                }}
+              >
+                [{obj.Interpretation}]
+              </div>
+            )
+            jsxElements.push(Interpretation)
+
+            return (
+              <Box
+                key={index}
+                style={{
+                  marginBottom: '0.5rem',
+                  borderBottom: '1px solid grey',
+                  padding: '0.4rem',
+                  fontSize: '1rem'
+                }}
+              >
+                <div
+                  style={{
+                    marginBottom: '0.5rem',
+                    borderBottom: '1px solid grey',
+                    padding: '0.4rem',
+                    fontSize: '1rem',
+                    display: 'flex'
+                  }}
+                >
+                  {jsxElements}
+                </div>
+              </Box>
+            )
+          }
+        })}
+      </Box>
+    </Box>
+  )
+}
+
 export const TableComponent = () => {
+  console.log('TableComponent -- only Once')
   // groupedFilteredArray = arrayOfObjects
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -1081,124 +748,82 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
 }
 
 export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessages) {
+  console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
-  var prevAxis = null
-  var currentAxis
-  var prevMappingType = null
-  var currentMappingType
-  var currentMode
-  var prevMode = null
+
   allMessages.forEach((oneMessage) => {
-    currentAxis = oneMessage.AxisID
-    currentMappingType = whatPDOisObject(oneMessage.Object)
+    if (GroupingOptionsForMessages.Mapping) {
+      //Either Mapping or Modes -----------------------------------------------------
+      var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
+      var isLastElementArray = Array.isArray(lastElementFromSortedArray)
+      var isObjectRelatedToMapping = whatPDOisObject(oneMessage.Object)
 
-    if (GroupingOptionsForMessages.Axis) {
-      //GROUPING BY AXIS ENABLED -----------
-      if (currentAxis != prevAxis) {
-        //Creating new group for new axis
-        prevAxis = currentAxis
-        groupedFilteredArray.push([{ Axis: currentAxis }])
-      }
-
-      if (GroupingOptionsForMessages.Mapping && currentMappingType) {
-        var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
-        var lastElementOfLastAxisGroup = lastElementInArray[lastElementInArray.length - 1]
-
-        if (Array.isArray(lastElementOfLastAxisGroup) && prevMappingType == currentMappingType) {
-          //Mapping array exists
-          groupedFilteredArray[groupedFilteredArray.length - 1][
-            groupedFilteredArray[groupedFilteredArray.length - 1].length - 1
-          ].push(oneMessage)
+      if (isObjectRelatedToMapping && oneMessage.type.slice(2) == 'SDO') {
+        if (
+          isLastElementArray &&
+          lastElementFromSortedArray[0].GroupType == 'Mapping' &&
+          lastElementFromSortedArray[0].AxisID == oneMessage.AxisID &&
+          lastElementFromSortedArray[0].GroupIndicator == isObjectRelatedToMapping
+        ) {
+          // Same Group Type, AxisID, and Group Indicator
+          return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
         } else {
-          //Create mapping array
-          groupedFilteredArray[groupedFilteredArray.length - 1].push([{ Type: currentMappingType }])
-          groupedFilteredArray[groupedFilteredArray.length - 1][
-            groupedFilteredArray[groupedFilteredArray.length - 1].length - 1
-          ].push(oneMessage)
-        }
-        prevMappingType = currentMappingType
-      } else {
-        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage) //push object in the last AxisGroup
-      }
-    } else if (GroupingOptionsForMessages.Mapping && currentMappingType) {
-      //GROUPING ONLY BY MAPPING -----------
-
-      var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
-
-      if (
-        Array.isArray(lastElementInArray) &&
-        prevMappingType == currentMappingType &&
-        lastElementInArray[0].Type == currentMappingType
-      ) {
-        //Mapping array exists
-        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
-      } else {
-        //Create mapping array
-        groupedFilteredArray.push([{ Type: currentMappingType }])
-        groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
-      }
-      prevMappingType = currentMappingType
-    } else if (GroupingOptionsForMessages.Modes) {
-      //GROUPING ONLY BY MODES OF OPERATION -----------
-      var lastElementInArray = groupedFilteredArray[groupedFilteredArray.length - 1]
-      var isLastElementInArrayanArray = Array.isArray(lastElementInArray)
-      if (oneMessage.Object.split(' / ').includes('#x6060')) {
-        var index = oneMessage.Object.split(' / ').indexOf('#x6060')
-        var currentMode = oneMessage.Data.split(' / ')[index]
-        if (!isLastElementInArrayanArray) {
-          console.log('-- ' + oneMessage.OriginalMessage)
-          if (oneMessage.type.slice(0, 4) == 'RPDO' || oneMessage.type == 'R_SDO') {
-            //Create modes array
-
-            groupedFilteredArray.push([
-              { Type: 'Modes', Axis: oneMessage.AxisID, Mode: currentMode }
-            ])
-            groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
-          } else {
-            groupedFilteredArray.push(oneMessage)
-          }
-        } else {
-          if (oneMessage.type.slice(0, 4) == 'RPDO' || oneMessage.type == 'R_SDO') {
-            //Create modes array
-            var groupedModesAxis = groupedFilteredArray[groupedFilteredArray.length - 1][0].Axis
-            if (groupedModesAxis == oneMessage.AxisID) {
-              groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
-            } else {
-              groupedFilteredArray.push([
-                { Type: 'Modes', Axis: oneMessage.AxisID, Mode: currentMode }
-              ])
-              groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          // Different Group Type, AxisID, or Group Indicator
+          groupedFilteredArray.push([
+            {
+              GroupType: 'Mapping',
+              AxisID: oneMessage.AxisID,
+              GroupIndicator: isObjectRelatedToMapping
             }
-          } else {
-            var groupedModesAxis = groupedFilteredArray[groupedFilteredArray.length - 1][0].Axis
-            if (groupedModesAxis == oneMessage.AxisID) {
-              groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
-            } else {
-              //individual object
-              groupedFilteredArray.push(oneMessage)
-            }
-          }
+          ])
+          return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
         }
-      } else {
-        //NON #6060 OBJECT
-        if (!isLastElementInArrayanArray) {
-          groupedFilteredArray.push(oneMessage)
-        } else {
-          var groupedModesAxis = groupedFilteredArray[groupedFilteredArray.length - 1][0].Axis
-          if (groupedModesAxis == oneMessage.AxisID) {
-            groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
-          } else {
-            //individual object
-            groupedFilteredArray.push(oneMessage)
-          }
-        }
-      }
-    } else {
-      //NO GROUPING
-      if (oneMessage.AxisID != 23 && oneMessage.type != 'SYNC') {
-        groupedFilteredArray.push(oneMessage)
       }
     }
+    if (GroupingOptionsForMessages.Modes) {
+      var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
+      var isLastElementArray = Array.isArray(lastElementFromSortedArray)
+      var objects = oneMessage.Object.split(' / ').indexOf('#x6060')
+      var ObjectValue = oneMessage.Data.split(' / ')[objects]
+      console.log('🚀 ~ file: Table.jsx:787 ~ allMessages.forEach ~ ObjectValue:', ObjectValue)
+      if (
+        objects != -1 &&
+        oneMessage.errorStatus != 'error' &&
+        ((oneMessage.type == 'R_SDO' && oneMessage.CS.slice(0, 1) == '2') ||
+          oneMessage.type.slice(0, 4) == 'RPDO')
+      ) {
+        if (
+          isLastElementArray &&
+          lastElementFromSortedArray[0].GroupType == 'Modes' &&
+          lastElementFromSortedArray[0].AxisID == oneMessage.AxisID &&
+          lastElementFromSortedArray[0].GroupIndicator == ObjectValue
+        ) {
+          //Last Element is an array
+          return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+        } else {
+          groupedFilteredArray.push([
+            {
+              GroupType: 'Modes',
+              AxisID: oneMessage.AxisID,
+              GroupIndicator: ObjectValue
+            }
+          ])
+          return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+        }
+      } else {
+        //The remaining messages will try to fit into a group
+        if (
+          isLastElementArray &&
+          lastElementFromSortedArray[0].GroupType == 'Modes' &&
+          lastElementFromSortedArray[0].AxisID == oneMessage.AxisID
+        ) {
+          return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+        }
+      }
+    }
+
+    //Simply add the object to the array--------------------
+    groupedFilteredArray.push(oneMessage)
   })
 }
 
@@ -1266,108 +891,4 @@ function verifyValidityOfMappingGroup(group) {
   }
 
   return [returnText, errorStatus]
-}
-
-export function TempDisplayArray() {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  return (
-    <Box
-      style={{
-        border: `3px solid grey`
-      }}
-    >
-      <div>BABYYYYY</div>
-      <Box>
-        {groupedFilteredArray.map((group, index) => {
-          var groupisArray = Array.isArray(group)
-          if (groupisArray) {
-            return (
-              <Box key={index} sx={{ marginLeft: '2rem', border: `1px solid yellow` }}>
-                {group.map((obj, idx) => {
-                  let jsxElements = []
-                  let errorStatus = obj.errorStatus
-
-                  let msgNr = (
-                    <div style={{ color: `${colors.primary[400]}` }}> [{obj.msgNr}] - </div>
-                  )
-                  jsxElements.push(msgNr)
-                  let AxisID = (
-                    <div style={{ color: `${colors.green[100]}` }}> [{obj.AxisID}] - </div>
-                  )
-                  jsxElements.push(AxisID)
-                  let type = <div style={{ color: `${colors.grey[100]}` }}> [{obj.type}] - </div>
-                  jsxElements.push(type)
-                  let CobID = (
-                    <div style={{ color: `${colors.yellow[100]}` }}> [{obj.CobID}] - </div>
-                  )
-                  jsxElements.push(CobID)
-                  let Data = <div style={{ color: `${colors.primary[400]}` }}> [{obj.Data}] - </div>
-                  jsxElements.push(Data)
-                  let FrameData = (
-                    <div style={{ color: `${colors.primary[400]}` }}> [{obj.FrameData}] - </div>
-                  )
-                  jsxElements.push(FrameData)
-
-                  let Object = (
-                    <div style={{ color: `${colors.green[100]}` }}> [{obj.Object}] - </div>
-                  )
-                  jsxElements.push(Object)
-                  let ObjectName = (
-                    <div style={{ color: `${colors.primary[400]}` }}> [{obj.ObjectName}] - </div>
-                  )
-                  jsxElements.push(ObjectName)
-                  let Interpretation = (
-                    <div
-                      style={{
-                        color:
-                          errorStatus == 'error' ? `${colors.red[500]}` : `${colors.yellow[500]}`
-                      }}
-                    >
-                      [{obj.Interpretation}]
-                    </div>
-                  )
-                  jsxElements.push(Interpretation)
-                  return (
-                    <div
-                      key={idx}
-                      style={{
-                        marginBottom: '0.5rem',
-                        borderBottom: '1px solid grey',
-                        padding: '0.4rem',
-                        fontSize: '1rem',
-                        display: 'flex'
-                      }}
-                    >
-                      {jsxElements}
-                    </div>
-                  )
-                })}
-              </Box>
-            )
-          } else {
-            let objectString = Object.entries(group)
-              .filter(([key]) => key !== 'OriginalMessage')
-              .map(([key, value]) => `${value}`)
-              .join(', ')
-            objectString = `[${group.AxisID}] - `.concat(objectString)
-
-            return (
-              <div
-                key={index}
-                style={{
-                  marginBottom: '0.5rem',
-                  borderBottom: '1px solid grey',
-                  padding: '0.4rem',
-                  fontSize: '1rem'
-                }}
-              >
-                {objectString}
-              </div>
-            )
-          }
-        })}
-      </Box>
-    </Box>
-  )
 }

@@ -14,7 +14,7 @@ export function CobID_who_dis(cob_id) {
   var axis_id = 0
   var aux
   if (cob_id.slice(0, 2).toUpperCase() == '0X') {
-    cob_id = cob_id.slice(2, cob_id[cob_id.length])
+    cob_id = cob_id.slice(2)
   }
 
   var temp = cob_id
@@ -147,11 +147,19 @@ export function Extract_MSGs_from_text(text) {
     var filteredRow = row.split(FirstPatternEntireRowSplitter)
     filteredRow = filteredRow.filter((element) => !element == '')
     filteredRow = filteredRow.filter((element) => element.match(hexPattern))
+    var original = filteredRow
+    filteredRow = filteredRow.map((element) => {
+      //Remove all the annoying 0x element indicating a hex number
+      if (element.slice(0, 2).toUpperCase() == '0X') {
+        element = element.slice(2)
+      }
+      return element
+    })
     var CobID = Check4PotentialCobID(filteredRow)
 
     var aux_data
     if (CobID[0] != 'invalid') {
-      aux_data = extractDATAfromROW(filteredRow, CobID[1])
+      aux_data = extractDATAfromROW(filteredRow, CobID[1], original)
     } else {
       aux_data = 'invalid'
     }
@@ -168,6 +176,7 @@ export function Check4PotentialCobID(row) {
   var all_COBiDs = []
   var count = 0
   var arrayCount = []
+
   for (var j = 0; j < row.length; j++) {
     if ([1, 2].includes(row[j].length)) {
       count++
@@ -194,24 +203,70 @@ export function Check4PotentialCobID(row) {
   //Return [TheCobID, indexOfCobId_inTheRow]
 }
 
-function extractDATAfromROW(row, index) {
-  var OneDigitPattern = /^\d$/g
+function extractDATAfromROW(row, index, original) {
   var aux_data = ''
-  for (var aa = index + 1; aa < row.length; aa++) {
-    //putting the tail together
+  var potentialLength = row[index + 1]
+  var potentialLengthinDec = hexToDec(potentialLength, 8)
+  if (potentialLength == undefined) {
+    return 'invalid'
+  }
+  for (var aa = index + 2; aa < row.length; aa++) {
+    //putting the tail together without the cobID and potential message length
     aux_data = aux_data.concat(row[aa])
   }
-  if (OneDigitPattern.test(row[index + 1])) {
-    //Conditions if lenght is specified (only as a single digit) -remove it
-    aux_data = aux_data.slice(1, aux_data.length)
-    if (aux_data.length > parseInt(row[index + 1]) * 2) {
-      //If length says its smaller than the array, we cutting it accordingly
-      aux_data = aux_data.slice(0, parseInt(row[index + 1]) * 2)
+
+  if (potentialLength && potentialLength.length < 3) {
+    if ([0, 1, 2, 3, 4, 5, 6, 7, 8].includes(potentialLengthinDec)) {
+      if (parseInt(potentialLength) * 2 != aux_data.length) {
+        //If the evaluated length don`t match the recived data
+        if (
+          potentialLength.length == 2 &&
+          original[index + 1] &&
+          original[index + 2] &&
+          original[index + 1].length == original[index + 2].length
+        ) {
+          //Potentially this is a part of the message not its length. If its one digit it doesnt matter
+
+          if (aux_data.length > parseInt(potentialLength) * 2) {
+            //Msg length bigger than the evaluated length
+            if (!/^0+$/.test(aux_data.slice(parseInt(potentialLength) * 2))) {
+              //If the remaining message is not zero
+              if (aux_data.length < 14) {
+                aux_data = potentialLength.concat(aux_data)
+              }
+            } else {
+              //Exceeded length but its all zeros
+              if (potentialLength == '00') {
+                aux_data = potentialLength.concat(aux_data)
+              }
+            }
+          } else {
+            //Length smaller
+            aux_data = potentialLength.concat(aux_data)
+          }
+        }
+      } else {
+        if (potentialLength.length == 2) {
+          //If data matches and the length is a full byte
+          if (
+            original[index + 1] &&
+            original[index + 2] &&
+            original[index + 1].length == original[index + 2].length
+          ) {
+            //If length is expressed as 01 and message as xx
+            aux_data = potentialLength.concat(aux_data)
+          }
+        }
+      }
+    } else {
+      //If the evaluated length is not included between 0-8 then its not the length
+      aux_data = potentialLength.concat(aux_data)
     }
-    if (aux_data == '') {
-      aux_data = row[index + 1]
-    }
+  } else {
+    //If length bigger than 2 digits then its sure not be the length
+    aux_data = potentialLength.concat(aux_data)
   }
+
   if (aux_data.length > 16) {
     //Max data length is 16 characters
     aux_data = aux_data.slice(0, 16)

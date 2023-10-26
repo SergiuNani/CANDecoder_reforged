@@ -7,133 +7,10 @@ import {
   FG_Objects_Array,
   EMCYcodes,
   SDO_abortCodes,
-  Mapping_objects_array_basedOnType
+  Mapping_objects_array_basedOnType,
+  ObjectDescriptions
 } from '../data/SmallData'
 
-const ObjectDescriptions = {
-  6060: {
-    '-5': 'Manufacturer specific – External Reference Torque Mode1',
-    '-4': 'Manufacturer specific – External Reference Speed Mode1',
-    '-3': 'Manufacturer specific – External Reference Position Mode1',
-    '-2': 'Manufacturer specific – Electronic Camming Position Mode',
-    '-1': 'Manufacturer specific – Electronic Gearing Position Mode',
-    0: 'Reserved',
-    1: 'Profile Position Mode',
-    2: 'Reserved',
-    3: 'Profile Velocity Mode',
-    4: 'Profile Torque Mode1',
-    5: 'Reserved',
-    6: 'Homing Mode',
-    7: 'Interpolated Position Mode',
-    8: 'Cyclic Synchronous Position Mode (CSP)',
-    9: 'Cyclic sync Velocity Mode (CSV)2',
-    10: 'Cyclic sync Torque Mode (CST)2'
-  },
-  6061: {
-    '-5': 'Manufacturer specific – External Reference Torque Mode1',
-    '-4': 'Manufacturer specific – External Reference Speed Mode1',
-    '-3': 'Manufacturer specific – External Reference Position Mode1',
-    '-2': 'Manufacturer specific – Electronic Camming Position Mode',
-    '-1': 'Manufacturer specific – Electronic Gearing Position Mode',
-    0: 'Reserved',
-    1: 'Profile Position Mode',
-    2: 'Reserved',
-    3: 'Profile Velocity Mode',
-    4: 'Profile Torque Mode1',
-    5: 'Reserved',
-    6: 'Homing Mode',
-    7: 'Interpolated Position Mode',
-    8: 'Cyclic Synchronous Position Mode (CSP)',
-    9: 'Cyclic sync Velocity Mode (CSV)2',
-    10: 'Cyclic sync Torque Mode (CST)2'
-  },
-  '605E': {
-    '-1': 'No action',
-    0: 'Disable drive, motor is free to rotate',
-    1: 'Reserved',
-    2: 'Slow down with quick stop ramp'
-  },
-  '605A': {
-    0: 'Disable drive function',
-    1: 'Slow down on slow down ramp and transit into Switch On Disabled',
-    2: 'Slow down on quick stop ramp and transit into Switch On Disabled',
-    3: 'Reserved',
-    4: 'Reserved',
-    5: 'Slow down on slow down ramp and stay in Quick Stop Active',
-    6: 'Slow down on quick stop ramp and stay in Quick Stop Active'
-  },
-  '605B': {
-    0: 'Disable drive function (switch-off the drive power stage)',
-    1: 'Slow down on slowdown ramp'
-  },
-  '605C': {
-    0: 'Disable drive function (switch-off the drive power stage)',
-    1: 'Slow down on slow down ramp and disable the drive function'
-  },
-  '605D': {
-    0: 'Reserved',
-    1: 'Slow down on slow down ramp and stay in Operation Enabled',
-    2: 'Slow down on quick stop ramp'
-  },
-  6007: {
-    0: 'No action',
-    1: 'Fault signal - Execute specific fault routine set in Object 605Eh: Fault reaction option code',
-    2: 'Disable voltage command',
-    3: 'Quick stop command'
-  },
-  6098: {
-    '-4': 'Method -4',
-    '-3': 'Method -3',
-    '-2': 'Method -2',
-    '-1': 'Method -1',
-    0: 'No homing operation will be executed',
-    1: 'Method 1',
-    2: 'Method 2',
-    3: 'Method 3',
-    4: 'Method 4',
-    5: 'Method 5',
-    6: 'Method 6',
-    7: 'Method 7',
-    8: 'Method 8',
-    9: 'Method 9',
-    10: 'Method 10',
-    11: 'Method 11',
-    12: 'Method 12',
-    13: 'Method 13',
-    14: 'Method 14',
-    15: 'Reserved',
-    16: 'Reserved',
-    17: 'Method 17',
-    18: 'Method 18',
-    19: 'Method 19',
-    20: 'Method 20',
-    21: 'Method 21',
-    22: 'Method 22',
-    23: 'Method 23',
-    24: 'Method 24',
-    25: 'Method 25',
-    26: 'Method 26',
-    27: 'Method 27',
-    28: 'Method 28',
-    29: 'Method 29',
-    30: 'Method 30',
-    31: 'Reserved',
-    32: 'Reserved',
-    33: 'Method 33',
-    34: 'Method 34',
-    35: 'Method 35'
-  },
-  6086: {
-    0: 'Linear ramp (trapezoidal profile)',
-    1: 'Reserved',
-    2: 'Reserved',
-    3: 'Jerk-limited ramp (S-curve)'
-  },
-  '60C0': {
-    '-1': 'PVT (Position – Velocity – Time) cubic interpolation',
-    0: 'Linear Interpolation or PT (Position –Time) '
-  }
-}
 export function whatFG_isObject(obj) {
   obj = obj.toUpperCase()
 
@@ -226,7 +103,21 @@ export function DecodeSDO(sdoType, message, axisID) {
   var CS = message.slice(0, 2)
   var Object = LittleEndian(message.slice(2, 6))
   Object = GetObject(Object.concat('_' + message.slice(6, 8)))
-  var aux_message = LittleEndian(message.slice(8, 16))
+  var aux_message = message.slice(8, 16)
+
+  if (['2F', '2B'].includes(CS) && sdoType == 'R_SDO') {
+    //Shortening the data because anyway the drive doesn`t care if you send more bytes then necessary
+    switch (CS) {
+      case '2F':
+        aux_message = aux_message.slice(0, 2)
+        break
+      case '2B':
+        aux_message = aux_message.slice(0, 4)
+        break
+    }
+  }
+
+  var aux_message = LittleEndian(aux_message)
 
   if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS) && sdoType == 'R_SDO') {
     return [
@@ -265,6 +156,7 @@ export function DecodeSDO(sdoType, message, axisID) {
       interpretationInfo = ObjectValueDescription[0]
       errorStatus = ObjectValueDescription[1]
     }
+
     var MappingObject = checkSDOforMapping(Object[0], aux_message, axisID)
     if (MappingObject) {
       interpretationInfo = MappingObject[0]
