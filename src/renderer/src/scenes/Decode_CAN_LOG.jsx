@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useContext, useMemo, Profiler } from 'react'
 import {
   Box,
   IconButton,
@@ -15,7 +15,8 @@ import {
   Button3,
   TooltipClickable,
   Checkbox_Component,
-  ButtonTransparent
+  ButtonTransparent,
+  CircularProgressWithLabel
 } from '../components/SmallComponents'
 import { tokens } from '../theme'
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
@@ -47,6 +48,7 @@ const Decode_CAN_LOG = () => {
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [forceDecodeFromParent, setforceDecodeFromParent] = useState(false)
+  const [resetMainProgressBar, setResetMainProgressBar] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const { userVsDebugMode } = useContext(UserVsDebugModeContext)
@@ -90,6 +92,7 @@ const Decode_CAN_LOG = () => {
         const fileContent = e.target.result
         setFileInnerText(fileContent)
         sethideTableForceParentToggle((prev) => !prev)
+        setResetMainProgressBar((prev) => !prev)
       }
 
       reader.readAsText(file)
@@ -101,6 +104,7 @@ const Decode_CAN_LOG = () => {
     var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
     sethideTableForceParentToggle((prev) => !prev)
+    setResetMainProgressBar((prev) => !prev)
   }
 
   useEffect(() => {
@@ -142,6 +146,7 @@ const Decode_CAN_LOG = () => {
             fileInnerText={fileInnerText}
             hideTableForceParentToggle={hideTableForceParentToggle}
             forceDecodeFromParent={forceDecodeFromParent}
+            resetMainProgressBar={resetMainProgressBar}
           />
         ) : (
           <DebugCANopenDecodedTable
@@ -323,7 +328,8 @@ const DebugCANopenDecodedTable = ({ fileInnerText }) => {
 const UserCANopenDecodedTable = ({
   fileInnerText,
   hideTableForceParentToggle,
-  forceDecodeFromParent
+  forceDecodeFromParent,
+  resetMainProgressBar
 }) => {
   console.log('3. UserCANopenDecodedTable')
   const [displayTable, setDisplayTable] = useState(false)
@@ -333,7 +339,10 @@ const UserCANopenDecodedTable = ({
     setDisplayTable(false)
   }, [hideTableForceParentToggle])
 
-  var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(fileInnerText.split('\n'))
+  var AllCAN_MsgsExtracted_array = useMemo(() => {
+    return Extract_MSGs_from_text(fileInnerText.split('\n'))
+  }, [fileInnerText])
+
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
     return CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array)
   }, [fileInnerText])
@@ -344,6 +353,7 @@ const UserCANopenDecodedTable = ({
         <DecodePDO_component
           MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
           setIsDrawerOpen={setIsDrawerOpen}
+          resetMainProgressBar={resetMainProgressBar}
         />
 
         <DrawerComponent_DecodeOptions
@@ -352,7 +362,9 @@ const UserCANopenDecodedTable = ({
           setIsDrawerOpen={setIsDrawerOpen}
           forceDecodeFromParent={forceDecodeFromParent}
         />
-        {displayTable && <TableComponent />}
+        <Profiler id="MyComponent" onRender={logProfilerData}>
+          {displayTable && <TableComponent />}
+        </Profiler>
         {/* {CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)}
         <TempDisplayArray /> */}
       </Box>
@@ -372,7 +384,7 @@ export const DrawerComponent_DecodeOptions = ({
 
   const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
-
+  const [progressBarDrawer, setProgressBar] = useState(0)
   useEffect(() => {
     //Shortcut to open/close drawer
     const handleKeyPress = (event) => {
@@ -395,10 +407,15 @@ export const DrawerComponent_DecodeOptions = ({
   }, [forceDecodeFromParent])
 
   function handleDECODE() {
+    setProgressBar(0)
     console.log('handleDECODE')
     setDisplayTable(true)
     setIsDrawerOpen(false)
-    CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)
+    CreateGroupedFilteredArray(
+      MessagesDecoded_ArrayOfObjects,
+      GroupingOptionsForMessages,
+      setProgressBar
+    )
   }
 
   function handleClose() {
@@ -599,8 +616,15 @@ export const DrawerComponent_DecodeOptions = ({
             </RadioGroup>
           </Box>
           {/* Display Messages Button ----------------- */}
-          <Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'start',
+              alignItems: 'center'
+            }}
+          >
             <Button3 onClick={handleDECODE}>DECODE</Button3>
+            <CircularProgressWithLabel value={progressBarDrawer} />
           </Box>
         </Box>
       </Box>
@@ -722,4 +746,7 @@ function AvailableAxes_Component({}) {
       })}
     </Box>
   )
+}
+function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime) {
+  console.log(`${id} (${phase}) took ${actualTime} ms`)
 }

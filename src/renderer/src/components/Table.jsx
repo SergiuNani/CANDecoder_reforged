@@ -652,6 +652,7 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
         expandIcon={<ExpandMoreIcon />}
         sx={{
           border: border ? border : null,
+          border: null,
           background: `${colors.primary[300]}`,
           paddingLeft: '0.5rem',
           borderRadius: '0.5rem',
@@ -692,7 +693,7 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
       <AccordionDetails
         sx={{
           padding: '0px',
-          borderBottom: `3px solid ${colors.green[400]}`
+          borderBottom: `3px solid ${colors.blue[100]}`
         }}
       >
         <div>
@@ -705,7 +706,11 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
   )
 }
 
-export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessages) {
+export function CreateGroupedFilteredArray(
+  allMessages,
+  GroupingOptionsForMessages,
+  setProgressBar
+) {
   console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
 
@@ -781,6 +786,8 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
 
     //Simply add the object to the array--------------------
     groupedFilteredArray.push(oneMessage)
+    var procent = (oneMessage.msgNr / allMessages.length) * 100
+    setProgressBar(procent)
   })
 }
 

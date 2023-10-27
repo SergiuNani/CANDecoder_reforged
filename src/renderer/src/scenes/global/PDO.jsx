@@ -4,7 +4,8 @@ import {
   Header,
   SwitchComponent,
   Button1,
-  Checkbox_Component
+  Checkbox_Component,
+  CircularProgressWithLabel
 } from '../../components/SmallComponents'
 import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'
@@ -19,11 +20,22 @@ import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 
-export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawerOpen }) {
+export function DecodePDO_component({
+  MessagesDecoded_ArrayOfObjects,
+  setIsDrawerOpen,
+  resetMainProgressBar
+}) {
   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
   const [object, setobject] = useState(null)
   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
   const [weNeedTheModal, setWeNeedTheModal] = useState(false)
+  const [statusBarMain, setStatusBar] = useState(0)
+
+  useEffect(() => {
+    console.log('resetMainProgressBar:', resetMainProgressBar)
+    setStatusBar(0)
+  }, [resetMainProgressBar])
+
   useEffect(() => {
     setCurrentObjectIndex(0)
     DontBotherWithPDO_flag[0] = 1 // BUG change it to zero
@@ -47,10 +59,12 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawe
           //Solve the  Maximum update depth exceeded
           setWeNeedTheModal(false)
           setCurrentObjectIndex(currentObjectIndex + 1)
+          setStatusBar((currentObjectIndex / MessagesDecoded_ArrayOfObjects.length) * 100)
         }, 1)
       }
     } else {
       setIsDrawerOpen(true)
+      setStatusBar(100)
     }
   }, [currentObjectIndex, MessagesDecoded_ArrayOfObjects])
 
@@ -66,6 +80,15 @@ export function DecodePDO_component({ MessagesDecoded_ArrayOfObjects, setIsDrawe
           />
         </Box>
       )}
+      <div
+        style={{
+          position: 'absolute',
+          top: '2rem',
+          right: '20%'
+        }}
+      >
+        <CircularProgressWithLabel value={statusBarMain} />
+      </div>
     </div>
   )
 }
