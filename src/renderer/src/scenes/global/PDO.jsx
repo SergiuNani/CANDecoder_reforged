@@ -70,7 +70,7 @@ export function DecodePDO_component({
 
   return (
     <div>
-      {object && weNeedTheModal && (
+      {openPDOdectectedModal && object && weNeedTheModal && (
         <Box>
           <PDOdetectedModal
             key={currentObjectIndex}
@@ -97,7 +97,8 @@ export let DontBotherWithPDO_flag = [0]
 export let SetAllPDOsEMPTY = [0]
 
 export function PDOdetectedModal({ open, onClose, objectIteration }) {
-  console.log('🚀 ~ PDOdetectedModal:')
+  console.log('🚀 ~ PDOdetectedModal:' + open)
+
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 

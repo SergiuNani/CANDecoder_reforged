@@ -249,3 +249,45 @@ export function CircularProgressWithLabel(props) {
     </Box>
   )
 }
+export function ProgressComponent() {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <div>
+      <div
+        id="ProgressComponent"
+        style={{
+          position: 'relative',
+          width: '3rem',
+          height: '3rem',
+          backgroundColor: `${colors.primary[400]}`,
+
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: `conic-gradient(${colors.primary[400]} 180deg, white 0deg)`
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            width: '2.5rem',
+            height: '2.5rem',
+            backgroundColor: `${colors.primary[300]}`,
+            borderRadius: '50%'
+          }}
+        ></div>
+        <p
+          style={{
+            color: `${colors.yellow[400]}`,
+            zIndex: '1',
+            fontWeight: '500'
+          }}
+        >
+          gr
+        </p>
+      </div>
+    </div>
+  )
+}

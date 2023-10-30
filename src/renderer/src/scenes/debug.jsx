@@ -51,11 +51,7 @@ const DebugScene = () => {
         style={{
           marginLeft: '23rem'
         }}
-      >
-        <RegisterTooltip>
-          <Button1>HTML</Button1>
-        </RegisterTooltip>
-      </div>
+      ></div>
       {/* <Registers_logic /> */}
     </>
   )

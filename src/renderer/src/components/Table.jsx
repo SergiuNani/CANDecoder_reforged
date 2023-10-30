@@ -20,7 +20,7 @@ import {
 } from '../functions/CANopenFunctions'
 import { tokens } from '../theme'
 import { Mapping_objects_array, GroupingOptionsForMessages } from '../data/SmallData'
-import { TooltipClickable } from '../components/SmallComponents'
+import { TooltipClickable, ProgressComponent } from '../components/SmallComponents'
 
 import { RegisterTooltip } from './Register'
 
@@ -410,12 +410,13 @@ export function TempDisplayArray() {
     </Box>
   )
 }
-
 export const TableComponent = () => {
   console.log('TableComponent -- only Once')
   // groupedFilteredArray = arrayOfObjects
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  // mountStartTime = performance.now() - mountStartTime
+  // console.log(`SS Component mounted in ${mountDuration}ms`)
   return (
     <Box
       style={{
@@ -706,11 +707,7 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
   )
 }
 
-export function CreateGroupedFilteredArray(
-  allMessages,
-  GroupingOptionsForMessages,
-  setProgressBar
-) {
+export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessages) {
   console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
 
@@ -787,7 +784,12 @@ export function CreateGroupedFilteredArray(
     //Simply add the object to the array--------------------
     groupedFilteredArray.push(oneMessage)
     var procent = (oneMessage.msgNr / allMessages.length) * 100
-    setProgressBar(procent)
+
+    // document.querySelector(
+    //   '#ProgressComponent'
+    // ).style.background = `conic-gradient(rgb(20, 158, 202) ${procent * 3.6}deg, white 0deg)`
+    // document.querySelector('#ProgressComponent p').innerText = `${procent}%`
+    // console.log('🚀 ~ file: Table.jsx:787 ~ allMessages.forEach ~ procent:', procent)
   })
 }
 
@@ -847,3 +849,5 @@ function verifyValidityOfMappingGroup(group) {
 
   return [returnText, currectCOBID, errorStatus]
 }
+
+function testComp({ el1, el2 }) {}
