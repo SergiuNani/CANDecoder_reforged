@@ -177,111 +177,36 @@ export const TableComponent1 = ({ filtereGroupeddArray }) => {
     </table>
   )
 }
+
 export function TempDisplayArray() {
   console.log('TempDisplayArray -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+
   return (
-    <Box
-      style={{
-        border: `3px solid grey`
-      }}
-    >
+    <Box style={{ border: '3px solid grey' }}>
       <div>SIMPLIFIED: </div>
       <Box>
         {groupedFilteredArray.map((group, index) => {
-          var groupisArray = Array.isArray(group)
+          const groupisArray = Array.isArray(group)
+
           if (groupisArray) {
-            //ARRAY DETECTED
             return (
-              <Box key={index} sx={{ marginLeft: '2rem', border: `1px solid yellow` }}>
+              <Box
+                key={index}
+                sx={{
+                  border: `2px solid ${colors.green[300]}`,
+                  margin: '1rem 0 2rem 1rem',
+                  borderRadius: '1rem',
+                  padding: '0.5rem'
+                }}
+              >
                 <Box>
-                  <div style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
-                    {' '}
-                    [`{group[0].GroupType} -- AxisID: {group[0].AxisID} -- {group[0].GroupIndicator}
-                    `] -{' '}
+                  <div style={{ color: colors.primary[400], fontWeight: 700 }}>
+                    {`[${group[0].GroupType} -- AxisID: ${group[0].AxisID} -- ${group[0].GroupIndicator}] - `}
                   </div>
                 </Box>
                 {group.slice(1).map((obj, idx) => {
-                  let jsxElements = []
-                  let errorStatus = obj.errorStatus
-
-                  let msgNr = (
-                    <div key={1} style={{ color: `${colors.blue[400]}` }}>
-                      {' '}
-                      [{obj.msgNr}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(msgNr)
-                  let AxisID = (
-                    <div key={2} style={{ color: `${colors.green[100]}` }}>
-                      {' '}
-                      [{obj.AxisID}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(AxisID)
-
-                  let CobID = (
-                    <div key={3} style={{ color: `${colors.yellow[500]}` }}>
-                      {' '}
-                      [{obj.CobID}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(CobID)
-
-                  let type = (
-                    <div key={4} style={{ color: `${colors.grey[100]}` }}>
-                      {' '}
-                      [{obj.type}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(type)
-
-                  let FrameData = (
-                    <div key={5} style={{ color: `${colors.yellow[100]}` }}>
-                      {' '}
-                      [{obj.FrameData}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(FrameData)
-
-                  let Object = (
-                    <div key={6} style={{ color: `${colors.green[100]}`, fontWeight: 700 }}>
-                      {' '}
-                      [{obj.Object}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(Object)
-
-                  let ObjectName = (
-                    <div key={7} style={{ color: `${colors.blue[500]}` }}>
-                      {' '}
-                      [{obj.ObjectName}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(ObjectName)
-
-                  let Data = (
-                    <div key={8} style={{ color: `${colors.primary[600]}` }}>
-                      {' '}
-                      [{obj.Data}] -{' '}
-                    </div>
-                  )
-                  jsxElements.push(Data)
-
-                  let Interpretation = (
-                    <div
-                      key={9}
-                      style={{
-                        color:
-                          errorStatus == 'error' ? `${colors.red[600]}` : `${colors.yellow[500]}`,
-                        fontWeight: 700
-                      }}
-                    >
-                      [{obj.Interpretation}]
-                    </div>
-                  )
-                  jsxElements.push(Interpretation)
                   return (
                     <div
                       key={idx}
@@ -290,97 +215,33 @@ export function TempDisplayArray() {
                         borderBottom: '1px solid grey',
                         padding: '0.4rem',
                         fontSize: '1rem',
-                        display: 'flex'
+                        display: 'flex',
+                        fontWeight: '540'
                       }}
                     >
-                      {jsxElements}
+                      <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
+                      <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
+                      <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
+                      <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
+                      <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
+                      <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
+                      <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
+                      <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
+                      <div
+                        style={{
+                          color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+                          fontWeight: 700
+                        }}
+                      >
+                        [{obj.Interpretation}]
+                      </div>
                     </div>
                   )
                 })}
               </Box>
             )
           } else {
-            let jsxElements = []
-            let obj = group
-            let idx = index
-            let errorStatus = obj.errorStatus
-
-            let msgNr = (
-              <div key={1} style={{ color: `${colors.blue[400]}` }}>
-                {' '}
-                [{obj.msgNr}] -{' '}
-              </div>
-            )
-            jsxElements.push(msgNr)
-            let AxisID = (
-              <div key={2} style={{ color: `${colors.green[100]}` }}>
-                {' '}
-                [{obj.AxisID}] -{' '}
-              </div>
-            )
-            jsxElements.push(AxisID)
-
-            let CobID = (
-              <div key={3} style={{ color: `${colors.yellow[500]}` }}>
-                {' '}
-                [{obj.CobID}] -{' '}
-              </div>
-            )
-            jsxElements.push(CobID)
-
-            let type = (
-              <div key={4} style={{ color: `${colors.grey[100]}` }}>
-                {' '}
-                [{obj.type}] -{' '}
-              </div>
-            )
-            jsxElements.push(type)
-
-            let FrameData = (
-              <div key={5} style={{ color: `${colors.blue[400]}` }}>
-                {' '}
-                [{obj.FrameData}] -{' '}
-              </div>
-            )
-            jsxElements.push(FrameData)
-
-            let Object = (
-              <div key={6} style={{ color: `${colors.green[100]}`, fontWeight: 700 }}>
-                {' '}
-                [{obj.Object}] -{' '}
-              </div>
-            )
-            jsxElements.push(Object)
-
-            let ObjectName = (
-              <div key={7} style={{ color: `${colors.blue[500]}` }}>
-                {' '}
-                [{obj.ObjectName}] -{' '}
-              </div>
-            )
-            jsxElements.push(ObjectName)
-
-            let Data = (
-              <div key={8} style={{ color: `${colors.primary[600]}` }}>
-                {' '}
-                [{obj.Data}] -{' '}
-              </div>
-            )
-            jsxElements.push(Data)
-
-            let Interpretation = (
-              <div
-                key={9}
-                style={{
-                  color: errorStatus === 'error' ? `${colors.red[600]}` : `${colors.yellow[500]}`,
-                  fontWeight: 700
-                }}
-              >
-                [{obj.Interpretation}]
-              </div>
-            )
-            jsxElements.push(Interpretation)
-
+            const obj = group
             return (
               <Box
                 key={index}
@@ -388,19 +249,27 @@ export function TempDisplayArray() {
                   marginBottom: '0.5rem',
                   borderBottom: '1px solid grey',
                   padding: '0.4rem',
-                  fontSize: '1rem'
+                  fontSize: '1rem',
+                  fontWeight: '540'
                 }}
               >
-                <div
-                  style={{
-                    marginBottom: '0.5rem',
-                    borderBottom: '1px solid grey',
-                    padding: '0.4rem',
-                    fontSize: '1rem',
-                    display: 'flex'
-                  }}
-                >
-                  {jsxElements}
+                <div style={{ display: 'flex' }}>
+                  <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
+                  <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
+                  <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
+                  <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
+                  <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
+                  <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
+                  <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
+                  <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
+                  <div
+                    style={{
+                      color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+                      fontWeight: 700
+                    }}
+                  >
+                    [{obj.Interpretation}]
+                  </div>
                 </div>
               </Box>
             )
@@ -410,6 +279,7 @@ export function TempDisplayArray() {
     </Box>
   )
 }
+
 export const TableComponent = () => {
   console.log('TableComponent -- only Once')
   // groupedFilteredArray = arrayOfObjects
@@ -707,7 +577,11 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
   )
 }
 
-export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessages) {
+export function CreateGroupedFilteredArray(
+  allMessages,
+  GroupingOptionsForMessages,
+  setProgressBar
+) {
   console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
 
@@ -783,14 +657,9 @@ export function CreateGroupedFilteredArray(allMessages, GroupingOptionsForMessag
 
     //Simply add the object to the array--------------------
     groupedFilteredArray.push(oneMessage)
-    var procent = (oneMessage.msgNr / allMessages.length) * 100
-
-    // document.querySelector(
-    //   '#ProgressComponent'
-    // ).style.background = `conic-gradient(rgb(20, 158, 202) ${procent * 3.6}deg, white 0deg)`
-    // document.querySelector('#ProgressComponent p').innerText = `${procent}%`
-    // console.log('🚀 ~ file: Table.jsx:787 ~ allMessages.forEach ~ procent:', procent)
+    // var procent = (oneMessage.msgNr / allMessages.length) * 100
   })
+  setProgressBar(false)
 }
 
 function verifyValidityOfMappingGroup(group) {
@@ -849,5 +718,3 @@ function verifyValidityOfMappingGroup(group) {
 
   return [returnText, currectCOBID, errorStatus]
 }
-
-function testComp({ el1, el2 }) {}

@@ -1,9 +1,8 @@
 /*------------------------------Global Parameters------------------------------ */
 export let GroupingOptionsForMessages = {
-  Axis: false,
   Mapping: true,
   Modes: true,
-  Repetitive: false
+  Repetitive: true
 }
 
 export const ObjectDescriptions = {

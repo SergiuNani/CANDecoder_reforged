@@ -360,30 +360,38 @@ const UserCANopenDecodedTable = ({
       />
     )
   }, [fileInnerText, resetMainProgressBar])
-  const MemoReturn = useMemo(() => {
+
+  const DrawerComponent = useMemo(() => {
     return (
-      <Box>
-        <ProgressComponent />
-
-        {displayTable && <TableComponent />}
-        {/* {CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)}
-  <TempDisplayArray /> */}
-      </Box>
-    )
-  }, [fileInnerText, displayTable])
-
-  return (
-    <section>
-      {DecodePDO_component_var}
-
       <DrawerComponent_DecodeOptions
         setDisplayTable={setDisplayTable}
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
         forceDecodeFromParent={forceDecodeFromParent}
       />
+    )
+  }, [fileInnerText, isDrawerOpen, forceDecodeFromParent])
 
-      {MemoReturn}
+  const TableComponent = useMemo(() => {
+    return (
+      <Box>
+        {/* {displayTable && <TableComponent />} */}
+        {CreateGroupedFilteredArray(
+          MessagesDecoded_ArrayOfObjects,
+          GroupingOptionsForMessages,
+          tempFct
+        )}
+        <TempDisplayArray />
+      </Box>
+    )
+  }, [fileInnerText, displayTable])
+
+  function tempFct() {}
+  return (
+    <section>
+      {DecodePDO_component_var}
+      {/* {DrawerComponent} */}
+      {TableComponent}
     </section>
   )
 }
@@ -424,10 +432,15 @@ export const DrawerComponent_DecodeOptions = ({
 
   function handleDECODE() {
     console.log('handleDECODE')
-    setDisplayTable(true)
-    setIsDrawerOpen(false)
+    setProgressBar(true)
     setTimeout(() => {
-      CreateGroupedFilteredArray(MessagesDecoded_ArrayOfObjects, GroupingOptionsForMessages)
+      setDisplayTable(true)
+      setIsDrawerOpen(false)
+      CreateGroupedFilteredArray(
+        MessagesDecoded_ArrayOfObjects,
+        GroupingOptionsForMessages,
+        setProgressBar
+      )
     }, 1000)
   }
 
@@ -449,198 +462,199 @@ export const DrawerComponent_DecodeOptions = ({
 
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
-      <Box
-        style={{
-          position: 'fixed',
-          top: '3rem',
-          width: '30rem',
-          backgroundColor: '#333',
-          color: 'white',
-          borderRadius: '1rem',
-          height: '95vh',
-          padding: '20px',
-          boxShadow: '5px 0px 15px rgba(0, 0, 0, 0.2)',
-          transition: 'right 0.3s ease-in-out',
-          overflow: 'auto',
-          background: `${colors.primary[100]}`,
-          border: `1px solid ${colors.grey[400]}`,
-          zIndex: 2,
-          right: isDrawerOpen ? '0' : '-200rem'
-        }}
-      >
+      {isDrawerOpen ? (
         <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          style={{ borderBottom: `1px solid ${colors.grey[400]}` }}
+          style={{
+            position: 'fixed',
+            top: '3rem',
+            width: '30rem',
+            backgroundColor: '#333',
+            color: 'white',
+            borderRadius: '1rem',
+            height: '95vh',
+            padding: '20px',
+            boxShadow: '5px 0px 15px rgba(0, 0, 0, 0.2)',
+            transition: 'right 0.3s ease-in-out',
+            overflow: 'auto',
+            background: `${colors.primary[100]}`,
+            border: `1px solid ${colors.grey[400]}`,
+            zIndex: 2,
+            right: isDrawerOpen ? '0' : '-200rem'
+          }}
         >
-          <Typography variant="h3">CAN-LOG Display Settings </Typography>
-          <IconButton onClick={handleClose}>
-            <CloseIcon style={{ fontSize: '2rem' }} />
-          </IconButton>
-        </Box>
-        <Box sx={{ userSelect: 'none' }}>
-          {console.log('5. CanLogDisplaySettings')}
-          {/* Reading Direction Radio Buttons ----------------- */}
           <Box
-            sx={{
-              border: `2px solid ${colors.primary[400]}`,
-              borderRadius: '1rem',
-              margin: '1rem 0',
-              background: `${colors.blue[200]}`,
-              padding: '0.4rem'
-            }}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            style={{ borderBottom: `1px solid ${colors.grey[400]}` }}
           >
-            <p
-              style={{
-                fontSize: '1rem',
-                marginBottom: '0.5rem',
-                marginLeft: '1rem',
-                color: `${colors.yellow[500]}`
-              }}
-            >
-              CAN_LOG reading direction:{' '}
-            </p>
-            <RadioGroup
-              row
-              onChange={(e) => {
-                setOptionReadingDirection(e.target.value)
-              }}
-              value={optionReadingDirection}
+            <Typography variant="h3">CAN-LOG Display Settings </Typography>
+            <IconButton onClick={handleClose}>
+              <CloseIcon style={{ fontSize: '2rem' }} />
+            </IconButton>
+          </Box>
+          <Box sx={{ userSelect: 'none' }}>
+            {console.log('5. CanLogDisplaySettings')}
+            {/* Reading Direction Radio Buttons ----------------- */}
+            <Box
               sx={{
-                justifyContent: 'center',
-                '& .MuiSvgIcon-root': {
-                  // fontSize: '1rem'
-                  color: `${colors.green[400]}`
-                }
+                border: `2px solid ${colors.primary[400]}`,
+                borderRadius: '1rem',
+                margin: '1rem 0',
+                background: `${colors.blue[200]}`,
+                padding: '0.4rem'
               }}
             >
-              <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
-              <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
-            </RadioGroup>
-          </Box>
-          {/* GROUPING OPTIONS ----------------- */}
-          <Box
-            sx={{
-              border: `2px solid ${colors.primary[400]}`,
-              borderRadius: '1rem',
-              margin: '1rem 0',
-              background: `${colors.blue[200]}`,
-              padding: '0.4rem'
-            }}
-          >
-            <p
-              style={{
-                fontSize: '1rem',
-                marginBottom: '0.5rem',
-                marginLeft: '1rem',
-                color: `${colors.yellow[500]}`
-              }}
-            >
-              Grouping Options:{' '}
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'start',
-                marginLeft: '2rem',
-                gap: '0.5rem'
-              }}
-            >
-              <Checkbox_Component label="Group by Axis ID" onChange={handleGroupingOptions} />
-              <Checkbox_Component
-                label="Group by Modes of Operation"
-                onChange={handleGroupingOptions}
-              />
-              <Checkbox_Component
-                label="Group by Mapping Objects"
-                onChange={handleGroupingOptions}
-              />
-              <Checkbox_Component
-                label="Group by Repetitive messages"
-                onChange={handleGroupingOptions}
-              />
-            </div>
-          </Box>
-          {/* Available Axes  ----------------- */}
-          <Box
-            sx={{
-              border: `2px solid ${colors.primary[400]}`,
-              borderRadius: '1rem',
-              margin: '1rem 0',
-              background: `${colors.blue[200]}`,
-              padding: '0.4rem'
-            }}
-          >
-            <p
-              style={{
-                fontSize: '1rem',
-                marginBottom: '0.5rem',
-                marginLeft: '1rem',
-                color: `${colors.yellow[500]}`
-              }}
-            >
-              Available Axes:{' '}
-            </p>
-            <AvailableAxes_Component />
-          </Box>
-          {/* Message Types ----------------- */}
-          <Box
-            sx={{
-              border: `2px solid ${colors.primary[400]}`,
-              borderRadius: '1rem',
-              margin: '1rem 0',
-              background: `${colors.blue[200]}`,
-              padding: '0.4rem'
-            }}
-          >
-            <p
-              style={{
-                fontSize: '1rem',
-                marginBottom: '0.5rem',
-                marginLeft: '1rem',
-                color: `${colors.yellow[500]}`
-              }}
-            >
-              Sort By:{' '}
-            </p>
-
-            <RadioGroup
-              row
-              onChange={(e) => {
-                setMessageTypeSorting(e.target.value)
-              }}
-              value={messageTypeSorting}
+              <p
+                style={{
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem',
+                  marginLeft: '1rem',
+                  color: `${colors.yellow[500]}`
+                }}
+              >
+                CAN_LOG reading direction:{' '}
+              </p>
+              <RadioGroup
+                row
+                onChange={(e) => {
+                  setOptionReadingDirection(e.target.value)
+                }}
+                value={optionReadingDirection}
+                sx={{
+                  justifyContent: 'center',
+                  '& .MuiSvgIcon-root': {
+                    // fontSize: '1rem'
+                    color: `${colors.green[400]}`
+                  }
+                }}
+              >
+                <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
+                <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
+              </RadioGroup>
+            </Box>
+            {/* GROUPING OPTIONS ----------------- */}
+            <Box
               sx={{
-                justifyContent: 'center',
-                '& .MuiSvgIcon-root': {
-                  // fontSize: '1rem'
-                  color: `${colors.green[400]}`,
+                border: `2px solid ${colors.primary[400]}`,
+                borderRadius: '1rem',
+                margin: '1rem 0',
+                background: `${colors.blue[200]}`,
+                padding: '0.4rem'
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem',
+                  marginLeft: '1rem',
+                  color: `${colors.yellow[500]}`
+                }}
+              >
+                Grouping Options:{' '}
+              </p>
+              <div
+                style={{
                   display: 'flex',
-                  gap: '2rem'
-                }
+                  flexDirection: 'column',
+                  alignItems: 'start',
+                  marginLeft: '2rem',
+                  gap: '0.5rem'
+                }}
+              >
+                <Checkbox_Component
+                  label="Group by Modes of Operation"
+                  onChange={handleGroupingOptions}
+                />
+                <Checkbox_Component
+                  label="Group by Mapping Objects"
+                  onChange={handleGroupingOptions}
+                />
+                <Checkbox_Component
+                  label="Group by Repetitive Messages (SYNC, Heartbeat, etc)"
+                  onChange={handleGroupingOptions}
+                />
+              </div>
+            </Box>
+            {/* Available Axes  ----------------- */}
+            <Box
+              sx={{
+                border: `2px solid ${colors.primary[400]}`,
+                borderRadius: '1rem',
+                margin: '1rem 0',
+                background: `${colors.blue[200]}`,
+                padding: '0.4rem'
               }}
             >
-              <FormControlLabel value="all" control={<Radio />} label="All" />
-              <FormControlLabel value="master" control={<Radio />} label="Master" />
-              <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
-              <FormControlLabel value="errors" control={<Radio />} label="Errors" />
-            </RadioGroup>
-          </Box>
-          {/* Display Messages Button + Progress BAR----------------- */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'start',
-              alignItems: 'center'
-            }}
-          >
-            <Button3 onClick={handleDECODE}>DECODE</Button3>
-            {progressBar && <CircularProgress />}
+              <p
+                style={{
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem',
+                  marginLeft: '1rem',
+                  color: `${colors.yellow[500]}`
+                }}
+              >
+                Available Axes:{' '}
+              </p>
+              <AvailableAxes_Component />
+            </Box>
+            {/* Message Types ----------------- */}
+            <Box
+              sx={{
+                border: `2px solid ${colors.primary[400]}`,
+                borderRadius: '1rem',
+                margin: '1rem 0',
+                background: `${colors.blue[200]}`,
+                padding: '0.4rem'
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem',
+                  marginLeft: '1rem',
+                  color: `${colors.yellow[500]}`
+                }}
+              >
+                Sort By:{' '}
+              </p>
+
+              <RadioGroup
+                row
+                onChange={(e) => {
+                  setMessageTypeSorting(e.target.value)
+                }}
+                value={messageTypeSorting}
+                sx={{
+                  justifyContent: 'center',
+                  '& .MuiSvgIcon-root': {
+                    // fontSize: '1rem'
+                    color: `${colors.green[400]}`,
+                    display: 'flex',
+                    gap: '2rem'
+                  }
+                }}
+              >
+                <FormControlLabel value="all" control={<Radio />} label="All" />
+                <FormControlLabel value="master" control={<Radio />} label="Master" />
+                <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
+                <FormControlLabel value="errors" control={<Radio />} label="Errors" />
+              </RadioGroup>
+            </Box>
+            {/* Display Messages Button + Progress BAR----------------- */}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'start',
+                alignItems: 'center'
+              }}
+            >
+              <Button3 onClick={handleDECODE}>DECODE</Button3>
+              {progressBar && <CircularProgress />}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      ) : null}
     </Box>
   )
 }
