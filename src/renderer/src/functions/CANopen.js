@@ -447,3 +447,59 @@ export function UpdateStatisticsBasedOnMessage(axisID, type) {
     }
   }
 }
+export function verifyValidityOfMappingGroup(group) {
+  var returnText = ''
+  var errorStatus = 'good'
+  var enableCobID = []
+  var enableMapping = []
+  var orderMapping = []
+  var currectCOBID
+  var currentMapping = []
+
+  group.slice(1).forEach((oneMessage) => {
+    if (oneMessage.errorStatus == 'error') {
+      errorStatus = 'error'
+    }
+    var InterpretationInfo = oneMessage.Interpretation.split(' ')
+    if (['Disable', 'Enable'].includes(InterpretationInfo[0])) {
+      enableCobID[enableCobID.length] = InterpretationInfo[0]
+    } else if (InterpretationInfo.slice(1, -1).join(' ') == '-Nr of mapped objects :') {
+      enableMapping[enableMapping.length] = InterpretationInfo[InterpretationInfo.length - 1]
+    } else if (
+      InterpretationInfo[0][0] == '[' &&
+      InterpretationInfo[0][InterpretationInfo[0].length - 1] == ']'
+    ) {
+      orderMapping[orderMapping.length] = InterpretationInfo[0][7]
+      currentMapping[currentMapping.length] = InterpretationInfo[2]
+    }
+    if (
+      InterpretationInfo[0][0] == '[' &&
+      InterpretationInfo[0][InterpretationInfo[0].length - 1] == ']'
+    ) {
+      currectCOBID = InterpretationInfo[0].slice(1, 5)
+    }
+  })
+
+  if (errorStatus == 'error') {
+    returnText = returnText.concat('Error: One of the messages in the group has an error')
+  } else {
+    if (enableCobID.slice(-2).toString() == ['Disable', 'Enable'].toString()) {
+      //Check if the Disabling and Enabling was done in the correct order
+      var mappingObjsOrder = Math.max(...orderMapping.map(Number))
+      if (
+        mappingObjsOrder != parseInt(enableMapping[enableMapping.length - 1]) ||
+        orderMapping.length != parseInt(enableMapping[enableMapping.length - 1])
+      ) {
+        returnText = returnText.concat('Warning: Either missing or wrong number of mapped objects')
+        errorStatus = 'error'
+      } else {
+        returnText = returnText.concat(currentMapping.join(' / '))
+      }
+    } else {
+      returnText = returnText.concat('Warning: missing Disable/Enable frames of the COBID ')
+      errorStatus = 'error'
+    }
+  }
+
+  return [returnText, currectCOBID, errorStatus]
+}
