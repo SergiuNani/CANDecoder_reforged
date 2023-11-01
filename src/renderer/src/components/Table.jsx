@@ -27,164 +27,41 @@ import { TooltipClickable, ProgressComponent } from '../components/SmallComponen
 import { RegisterTooltip } from './Register'
 
 export let groupedFilteredArray = []
-export const TableComponent1 = ({ filtereGroupeddArray }) => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  return (
-    <table
-      style={{
-        width: '100%',
-        position: 'relative',
-        color: `${colors.grey[100]}`,
-        background: `${colors.blue[300]}`,
-        fontFamily: 'Calibri',
-        marginBottom: '20rem',
-        fontSize: '1rem'
-      }}
-    >
-      <thead
-        style={{
-          fontWeight: '700',
-          position: 'sticky',
-          top: '2.5rem',
-          background: `${colors.primary[300]}`,
-          zIndex: 1
-        }}
-      >
-        {/* Table ROW FOR THEAD---------------------------- */}
-        <tr>
-          <th
-            style={{
-              padding: '0.5rem'
-            }}
-          >
-            NR
-          </th>
-          <th>Original Message</th>
-          <th>Type</th>
-          <th>AxisID</th>
-          <th>CS</th>
-          <th>Object</th>
-          <th>Object Name</th>
-          <th>Data</th>
-          <th>Interpretation</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filtereGroupeddArray.map((iteration, index) => {
-          var isRecieveTypeMessage = ['R_SDO', 'RPDO1', 'RPDO2', 'RPDO3', 'RPDO4', 'NMT'].includes(
-            iteration.type
-          )
-          return (
-            <tr
-              key={index}
-              style={{
-                borderBottom: `1px solid ${colors.grey[300]}`,
-                background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
-                borderLeft: isRecieveTypeMessage ? `0.5rem solid ${colors.primary[400]}` : 'inherit'
-              }}
-            >
-              <td
-                style={{
-                  textAlign: 'center',
-                  padding: '0.7rem 0'
-                }}
-              >
-                {iteration.msgNr}
-              </td>
-              <td style={{ textAlign: 'center', cursor: 'pointer' }}>
-                <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
-                  <p>
-                    {iteration.CobID} - {iteration.FrameData}
-                  </p>
-                </TooltipClickable>
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.blue[100]}`,
-                  fontWeight: '600'
-                }}
-              >
-                {iteration.type}
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.personal[100]}`,
-                  fontWeight: '700'
-                }}
-              >
-                {iteration.AxisID}
-              </td>
-              <td style={{ textAlign: 'center' }}>{iteration.CS}</td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.yellow[100]}`,
-                  fontWeight: '600'
-                }}
-              >
-                {iteration.Object}
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  maxWidth: '10rem',
-                  overflowY: 'auto'
-                }}
-              >
-                {iteration.ObjectName}
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  color: `${colors.green[100]}`,
-                  fontWeight: '700'
-                }}
-              >
-                <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
-                  {iteration.Data}
-                </RegisterTooltip>
-              </td>
-              <td
-                style={{
-                  textAlign: 'center',
-                  maxWidth: '25rem',
-                  overflowY: 'auto',
-                  fontWeight:
-                    iteration.errorStatus == 'error'
-                      ? '700'
-                      : iteration.errorStatus == 'blue'
-                      ? '700'
-                      : 'inherit',
-                  color:
-                    iteration.errorStatus == 'error'
-                      ? `${colors.red[500]}`
-                      : iteration.errorStatus == 'warning'
-                      ? `${colors.yellow[500]}`
-                      : iteration.errorStatus == 'idk'
-                      ? `${colors.primary[400]}`
-                      : iteration.errorStatus == 'blue'
-                      ? `${colors.personal[300]}`
-                      : 'inherit'
-                }}
-              >
-                {iteration.Interpretation}
-              </td>
-            </tr>
-          )
-        })}
-      </tbody>
-    </table>
-  )
-}
 
 export function TempDisplayArray() {
   console.log('TempDisplayArray -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
+  const ROW = ({ obj }) => {
+    return (
+      <>
+        <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
+        <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
+        <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
+        <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
+        <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
+        <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
+        <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
+        <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
+        <div
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+            fontWeight: 700
+          }}
+        >
+          [{obj.Interpretation}]
+        </div>
+      </>
+    )
+  }
+
+  function handleClick(event) {
+    console.log('clicked')
+    if (event.target.parentElement.querySelector('.Group').style.display == 'none') {
+      event.target.parentElement.querySelector('.Group').style.display = 'block'
+    } else event.target.parentElement.querySelector('.Group').style.display = 'none'
+  }
   return (
     <Box style={{ border: '3px solid grey' }}>
       <div>SIMPLIFIED: </div>
@@ -203,47 +80,40 @@ export function TempDisplayArray() {
                   padding: '0.5rem'
                 }}
               >
-                <Box>
-                  <div style={{ color: colors.primary[400], fontWeight: 700 }}>
-                    {`[${group[0].GroupType} -- AxisID: ${group[0].AxisID} -- ${group[0].GroupIndicator}] - `}
-                  </div>
-                </Box>
-                {group.slice(1).map((obj, idx) => {
-                  return (
-                    <div
-                      key={idx}
-                      style={{
-                        marginBottom: '0.5rem',
-                        borderBottom: '1px solid grey',
-                        padding: '0.4rem',
-                        fontSize: '1rem',
-                        display: 'flex',
-                        fontWeight: '540'
-                      }}
-                    >
-                      <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
-                      <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
-                      <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
-                      <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
-                      <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
-                      <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
-                      <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
-                      <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
+                <div
+                  style={{
+                    color: colors.primary[400],
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    userSelect: 'none'
+                  }}
+                  onClick={handleClick}
+                >
+                  {`[${group[0].GroupType} -- AxisID: ${group[0].AxisID} -- ${group[0].GroupIndicator}] - `}
+                </div>
+
+                <div className="Group" style={{ display: 'none' }}>
+                  {group.slice(1).map((obj, idx) => {
+                    return (
                       <div
+                        key={idx}
                         style={{
-                          color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-                          fontWeight: 700
+                          marginBottom: '0.5rem',
+                          borderBottom: '1px solid grey',
+                          padding: '0.4rem',
+                          fontSize: '1rem',
+                          display: 'flex',
+                          fontWeight: '540'
                         }}
                       >
-                        [{obj.Interpretation}]
+                        <ROW obj={obj} />
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </Box>
             )
           } else {
-            const obj = group
             return (
               <Box
                 key={index}
@@ -256,22 +126,7 @@ export function TempDisplayArray() {
                 }}
               >
                 <div style={{ display: 'flex' }}>
-                  <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
-                  <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
-                  <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
-                  <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
-                  <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
-                  <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
-                  <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
-                  <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
-                  <div
-                    style={{
-                      color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-                      fontWeight: 700
-                    }}
-                  >
-                    [{obj.Interpretation}]
-                  </div>
+                  <ROW obj={group} />
                 </div>
               </Box>
             )
@@ -587,11 +442,13 @@ export function CreateGroupedFilteredArray(
   console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
 
-  allMessages.forEach((oneMessage) => {
+  allMessages.forEach((oneMessage, index) => {
+    var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
+    var isLastElementArray = Array.isArray(lastElementFromSortedArray)
+
     if (GroupingOptionsForMessages.Mapping) {
       //Either Mapping or Modes -----------------------------------------------------
-      var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
-      var isLastElementArray = Array.isArray(lastElementFromSortedArray)
+
       var isObjectRelatedToMapping = whatPDOisObject(oneMessage.Object)
 
       if (isObjectRelatedToMapping && oneMessage.type.slice(2) == 'SDO') {
@@ -617,8 +474,6 @@ export function CreateGroupedFilteredArray(
       }
     }
     if (GroupingOptionsForMessages.Modes) {
-      var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
-      var isLastElementArray = Array.isArray(lastElementFromSortedArray)
       var objects = oneMessage.Object.split(' / ').indexOf('#x6060')
       var ObjectValue = oneMessage.Data.split(' / ')[objects]
       if (
@@ -657,8 +512,46 @@ export function CreateGroupedFilteredArray(
       }
     }
     if (GroupingOptionsForMessages.Repetitive) {
-      if (['NMT_M', 'SYNC'].includes(oneMessage.type)) {
-        console.log('uee')
+      var spamElementsArray = ['NMT_M', 'SYNC', '-', 'invalid']
+      if (spamElementsArray.includes(oneMessage.type)) {
+        if (isLastElementArray) {
+          //Not done
+          if (lastElementFromSortedArray[0].GroupType == 'Repetitive') {
+            return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          } else {
+            // All 5 elements have the type included in the array
+            var Next5ElemQualify = true
+            for (let i = index + 1; i < index + 5; i++) {
+              if (!allMessages[i] || !spamElementsArray.includes(allMessages[i].type)) {
+                Next5ElemQualify = false
+              }
+            }
+            if (Next5ElemQualify) {
+              groupedFilteredArray.push([
+                {
+                  GroupType: 'Repetitive'
+                }
+              ])
+              return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+            }
+          }
+        } else {
+          // All 5 elements have the type included in the array
+          var Next5ElemQualify = true
+          for (let i = index + 1; i < index + 5; i++) {
+            if (!allMessages[i] || !spamElementsArray.includes(allMessages[i].type)) {
+              Next5ElemQualify = false
+            }
+          }
+          if (Next5ElemQualify) {
+            groupedFilteredArray.push([
+              {
+                GroupType: 'Repetitive'
+              }
+            ])
+            return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          }
+        }
       }
     }
 

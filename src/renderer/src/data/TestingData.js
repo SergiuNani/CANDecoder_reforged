@@ -1,4 +1,10 @@
 export var InsertTextIntoTextArea = `
+spanac
+1   2357101.920 DT     0080 Rx 0  
+2   2357111.890 DT     0080 Rx 0  
+3   2357121.860 DT     0080 Rx 0  
+3   2357121.860 DT     0080 Rx 0  
+601 854545454545
 1   2357101.920 DT     0080 Rx 0  
 2   2357111.890 DT     0080 Rx 0  
 3   2357121.860 DT     0080 Rx 0  
@@ -368,6 +374,16 @@ export var InsertTextIntoTextArea = `
 /******  EMCY VALIDATION **********/
 
 0x0308 12345
+
+
+
+
+
+
+
+
+
+
 `
 
 export var InsertTextIntoTextArea1 = `
