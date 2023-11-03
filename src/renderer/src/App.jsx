@@ -4,7 +4,7 @@ import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
-import Decode_CAN_LOG from './scenes/Decode_CAN_LOG'
+import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG'
 import { RegisterWindow } from './scenes/global/RegisterWindow'
 import React_Logic from './scenes/React_logic'
 import React_Logic2 from './scenes/React_Logic2'
@@ -45,7 +45,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomeWindow />} />
               <Route path="/Home" element={<HomeWindow />} />
-              <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG />} />
+              <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
               <Route path="/Registers" element={<RegisterWindow />} />
               <Route path="/React_Logic" element={<React_Logic />} />
               <Route path="/React_Logic2" element={<React_Logic2 />} />

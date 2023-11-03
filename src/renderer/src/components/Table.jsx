@@ -18,216 +18,16 @@ import {
   whatPDOisObject,
   whatObjectValueMeans
 } from '../functions/CANopenFunctions'
-
+import { Input_AutoFormat } from './ForumsComponents'
+import { filterDecimal } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
 import { Mapping_objects_array, GroupingOptionsForMessages } from '../data/SmallData'
 import { TooltipClickable, ProgressComponent } from '../components/SmallComponents'
-
+import { AllCAN_MsgsExtracted_array } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
 
 export let groupedFilteredArray = []
-
-export function TempDisplayArray() {
-  console.log('TempDisplayArray -- only Once')
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-
-  const ROW = ({ obj }) => {
-    return (
-      <>
-        <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
-        <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
-        <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
-        <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
-        <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
-        <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
-        <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
-        <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
-        <div
-          style={{
-            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-            fontWeight: 700
-          }}
-        >
-          [{obj.Interpretation}]
-        </div>
-      </>
-    )
-  }
-
-  function handleClick(event) {
-    console.log('clicked')
-    if (event.target.parentElement.querySelector('.Group').style.display == 'none') {
-      event.target.parentElement.querySelector('.Group').style.display = 'block'
-    } else event.target.parentElement.querySelector('.Group').style.display = 'none'
-  }
-  return (
-    <Box style={{ border: '3px solid grey' }}>
-      <div>SIMPLIFIED: </div>
-      <Box>
-        {groupedFilteredArray.map((group, index) => {
-          const groupisArray = Array.isArray(group)
-
-          if (groupisArray) {
-            return (
-              <Box
-                key={index}
-                sx={{
-                  border: `2px solid ${colors.green[300]}`,
-                  margin: '1rem 0 2rem 1rem',
-                  borderRadius: '1rem',
-                  padding: '0.5rem'
-                }}
-              >
-                <div
-                  style={{
-                    color: colors.primary[400],
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                  onClick={handleClick}
-                >
-                  {`[${group[0].GroupType} -- AxisID: ${group[0].AxisID} -- ${group[0].GroupIndicator}] - `}
-                </div>
-
-                <div className="Group" style={{ display: 'none' }}>
-                  {group.slice(1).map((obj, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          marginBottom: '0.5rem',
-                          borderBottom: '1px solid grey',
-                          padding: '0.4rem',
-                          fontSize: '1rem',
-                          display: 'flex',
-                          fontWeight: '540'
-                        }}
-                      >
-                        <ROW obj={obj} />
-                      </div>
-                    )
-                  })}
-                </div>
-              </Box>
-            )
-          } else {
-            return (
-              <Box
-                key={index}
-                style={{
-                  marginBottom: '0.5rem',
-                  borderBottom: '1px solid grey',
-                  padding: '0.4rem',
-                  fontSize: '1rem',
-                  fontWeight: '540'
-                }}
-              >
-                <div style={{ display: 'flex' }}>
-                  <ROW obj={group} />
-                </div>
-              </Box>
-            )
-          }
-        })}
-      </Box>
-    </Box>
-  )
-}
-
-export const TableComponent = () => {
-  console.log('TableComponent -- only Once')
-  // groupedFilteredArray = arrayOfObjects
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  // mountStartTime = performance.now() - mountStartTime
-  // console.log(`SS Component mounted in ${mountDuration}ms`)
-  return (
-    <Box
-      style={{
-        position: 'relative',
-        marginBottom: '20rem',
-        width: '99.5%'
-
-        // overflowX: 'hidden'
-      }}
-    >
-      <table
-        style={{
-          width: '99.5%',
-          fontWeight: '700',
-          position: 'sticky',
-          top: '2.5rem',
-          background: `${colors.primary[300]}`,
-          zIndex: 1,
-          marginLeft: '0.5rem',
-          fontSize: '1rem'
-        }}
-      >
-        <thead>
-          {/* Table ROW FOR THEAD---------------------------- */}
-          <tr>
-            <th
-              style={{
-                padding: '0.5rem',
-                width: '2.5rem'
-              }}
-            >
-              NR
-            </th>
-            <th style={{ width: '13rem' }}>Original Message</th>
-            <th style={{ width: '4.5rem' }}>Type</th>
-            <th style={{ width: '2rem' }}>AxisID</th>
-            <th style={{ width: '2rem' }}>CS</th>
-            <th style={{ width: '8rem' }}>Object</th>
-            <th style={{ width: '13rem' }}>Object Name</th>
-            <th style={{ width: '7rem' }}>Data</th>
-            <th style={{ width: '28rem' }}>Interpretation</th>
-          </tr>
-        </thead>
-      </table>
-
-      {groupedFilteredArray.map((group, index) => {
-        //-------------------Main Grouping Process-------------------
-        var groupisArray = Array.isArray(group)
-        if (groupisArray) {
-          let title = ''
-          let subtitle = ''
-          let errorStatus = ''
-          if (group[0].GroupType == 'Mapping') {
-            var temp = verifyValidityOfMappingGroup(group)
-            title = group[0].GroupIndicator.concat(' - ' + temp[1])
-            subtitle = temp[0].concat(' - ' + `${group.length - 1}` + ' messages')
-            errorStatus = temp[2]
-          } else if (group[0].GroupType == 'Modes') {
-            title = whatObjectValueMeans('6060', group[0].GroupIndicator, 8)[0]
-            subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
-              group.length - 1
-            }messages `
-          }
-          return (
-            <TableRowGroup
-              key={index}
-              groupTitle={title}
-              groupSubTitle={subtitle}
-              groupData={group}
-              border={
-                errorStatus == 'error'
-                  ? `2px solid ${colors.red[500]}`
-                  : `2px solid ${colors.green[300]}`
-              }
-              widthHeader={'50%'}
-            />
-          )
-        } else {
-          return <TableROW key={index} iteration={group} />
-        }
-      })}
-    </Box>
-  )
-}
 
 const TableROW = ({ iteration }) => {
   const theme = useTheme()
@@ -560,4 +360,285 @@ export function CreateGroupedFilteredArray(
     // var procent = (oneMessage.msgNr / allMessages.length) * 100
   })
   setProgressBar(false)
+}
+
+//-------------------ALL TYPES OF TABLE-------------------
+export const DefaultTable = () => {
+  console.log('TableComponent -- only Once')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Box
+      style={{
+        position: 'relative',
+        marginBottom: '20rem',
+        width: '99.5%'
+      }}
+    >
+      <table
+        style={{
+          width: '99.5%',
+          fontWeight: '700',
+          position: 'sticky',
+          top: '2.5rem',
+          background: `${colors.primary[300]}`,
+          zIndex: 1,
+          marginLeft: '0.5rem',
+          fontSize: '1rem'
+        }}
+      >
+        <thead>
+          {/* Table ROW FOR THEAD---------------------------- */}
+          <tr>
+            <th
+              style={{
+                padding: '0.5rem',
+                width: '2.5rem'
+              }}
+            >
+              NR
+            </th>
+            <th style={{ width: '13rem' }}>Original Message</th>
+            <th style={{ width: '4.5rem' }}>Type</th>
+            <th style={{ width: '2rem' }}>AxisID</th>
+            <th style={{ width: '2rem' }}>CS</th>
+            <th style={{ width: '8rem' }}>Object</th>
+            <th style={{ width: '13rem' }}>Object Name</th>
+            <th style={{ width: '7rem' }}>Data</th>
+            <th style={{ width: '28rem' }}>Interpretation</th>
+          </tr>
+        </thead>
+      </table>
+
+      {groupedFilteredArray.map((group, index) => {
+        //-------------------Main Grouping Process-------------------
+        var groupisArray = Array.isArray(group)
+        if (groupisArray) {
+          let title = ''
+          let subtitle = ''
+          let errorStatus = ''
+          if (group[0].GroupType == 'Mapping') {
+            var temp = verifyValidityOfMappingGroup(group)
+            title = group[0].GroupIndicator.concat(' - ' + temp[1])
+            subtitle = temp[0].concat(' - ' + `${group.length - 1}` + ' messages')
+            errorStatus = temp[2]
+          } else if (group[0].GroupType == 'Modes') {
+            title = whatObjectValueMeans('6060', group[0].GroupIndicator, 8)[0]
+            subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
+              group.length - 1
+            }messages `
+          }
+          return (
+            <TableRowGroup
+              key={index}
+              groupTitle={title}
+              groupSubTitle={subtitle}
+              groupData={group}
+              border={
+                errorStatus == 'error'
+                  ? `2px solid ${colors.red[500]}`
+                  : `2px solid ${colors.green[300]}`
+              }
+              widthHeader={'50%'}
+            />
+          )
+        } else {
+          return <TableROW key={index} iteration={group} />
+        }
+      })}
+    </Box>
+  )
+}
+export const SimplifiedTable = () => {
+  console.log('SimplifiedTable -- only Once')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const ROW = ({ obj }) => {
+    return (
+      <>
+        <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
+        <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
+        <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
+        <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
+        <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
+        <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
+        <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
+        <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
+        <div
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+            fontWeight: 700
+          }}
+        >
+          [{obj.Interpretation}]
+        </div>
+      </>
+    )
+  }
+
+  function handleClick(event) {
+    console.log('clicked')
+    if (event.target.parentElement.querySelector('.Group').style.display == 'none') {
+      event.target.parentElement.querySelector('.Group').style.display = 'block'
+    } else event.target.parentElement.querySelector('.Group').style.display = 'none'
+  }
+  return (
+    <Box style={{ border: '3px solid grey' }}>
+      <div>SIMPLIFIED: </div>
+      <Box>
+        {groupedFilteredArray.map((group, index) => {
+          const groupisArray = Array.isArray(group)
+
+          if (groupisArray) {
+            return (
+              <Box
+                key={index}
+                sx={{
+                  border: `2px solid ${colors.green[300]}`,
+                  margin: '1rem 0 2rem 1rem',
+                  borderRadius: '1rem',
+                  padding: '0.5rem'
+                }}
+              >
+                <div
+                  style={{
+                    color: colors.primary[400],
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    userSelect: 'none'
+                  }}
+                  onClick={handleClick}
+                >
+                  {`[${group[0].GroupType} -- AxisID: ${group[0].AxisID} -- ${group[0].GroupIndicator}] - `}
+                </div>
+
+                <div className="Group" style={{ display: 'none' }}>
+                  {group.slice(1).map((obj, idx) => {
+                    return (
+                      <div
+                        key={idx}
+                        style={{
+                          marginBottom: '0.5rem',
+                          borderBottom: '1px solid grey',
+                          padding: '0.4rem',
+                          fontSize: '1rem',
+                          display: 'flex',
+                          fontWeight: '540'
+                        }}
+                      >
+                        <ROW obj={obj} />
+                      </div>
+                    )
+                  })}
+                </div>
+              </Box>
+            )
+          } else {
+            return (
+              <Box
+                key={index}
+                style={{
+                  marginBottom: '0.5rem',
+                  borderBottom: '1px solid grey',
+                  padding: '0.4rem',
+                  fontSize: '1rem',
+                  fontWeight: '540'
+                }}
+              >
+                <div style={{ display: 'flex' }}>
+                  <ROW obj={group} />
+                </div>
+              </Box>
+            )
+          }
+        })}
+      </Box>
+    </Box>
+  )
+}
+export const DebugTable = () => {
+  console.log('DebugTable -- only Once')
+
+  const [lineToScroll, setLineToScroll] = useState('')
+  const scrollRef = useRef(null)
+
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  useEffect(() => {
+    if (lineToScroll !== '') {
+      if (scrollRef.current) {
+        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }
+  }, [lineToScroll])
+
+  function handleNewSearch(event) {
+    setLineToScroll(event)
+  }
+
+  return (
+    <Box sx={{ position: 'relative' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'start',
+          alignItems: 'center',
+          position: 'sticky',
+          top: '2.5rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4">GOTO LINE: </Typography>
+        <Input_AutoFormat
+          callback={filterDecimal}
+          resolution={'TIME'}
+          tellParentValueChanged={handleNewSearch}
+          forceValueFromParent={lineToScroll}
+        />
+      </div>
+      <Box>
+        {AllCAN_MsgsExtracted_array.map((iteration, index) => {
+          const isHighlighted = index === lineToScroll - 1
+          return (
+            <div
+              key={index}
+              ref={isHighlighted ? scrollRef : null}
+              style={{
+                display: 'flex',
+                border: isHighlighted
+                  ? `4px solid ${colors.yellow[500]}`
+                  : `1px solid ${colors.primary[400]}`,
+
+                gap: '1rem',
+                padding: '0.2rem'
+              }}
+            >
+              <p> [{iteration[0]}]. </p>
+              <p style={{ color: `${colors.yellow[500]}` }}> {iteration[1]}</p>
+              <div style={{ color: `${colors.red[300]}`, display: 'flex' }}>
+                {' '}
+                {iteration[4].map((i, ii) => {
+                  return (
+                    <p
+                      key={ii + 'abc'}
+                      style={{
+                        display: 'flex'
+                      }}
+                    >
+                      {' '}
+                      {i} -
+                    </p>
+                  )
+                })}
+              </div>
+              <p style={{ color: `${colors.green[100]}` }}>-- [{iteration[2]}]</p>
+              <p style={{ color: `${colors.personal[100]}` }}>-- [{iteration[3]}]</p>
+            </div>
+          )
+        })}
+      </Box>
+    </Box>
+  )
 }

@@ -84,7 +84,7 @@ export function DecodePDO_component({
         style={{
           position: 'absolute',
           top: '2rem',
-          right: '20%'
+          right: '15rem'
         }}
       >
         <CircularProgressWithLabel value={statusBarMain} />

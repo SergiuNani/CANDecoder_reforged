@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext, useMemo, Profiler } from 'react'
+import React, { useState, useRef, useEffect, useContext, useMemo, Profiler, memo } from 'react'
 import {
   Box,
   IconButton,
@@ -39,24 +39,30 @@ import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
 import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
 import { PDO_mapped } from '../functions/CANopenFunctions'
-import { TableComponent, CreateGroupedFilteredArray, TempDisplayArray } from '../components/Table'
+import {
+  DefaultTable,
+  CreateGroupedFilteredArray,
+  SimplifiedTable,
+  DebugTable
+} from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 
 export let MessagesDecoded_ArrayOfObjects = []
+export let AllCAN_MsgsExtracted_array = []
 
-const Decode_CAN_LOG = () => {
+const Decode_CAN_LOG_Window = () => {
   console.log('1. Decode_CAN_LOG++')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
-  const [forceDecodeFromParent, setforceDecodeFromParent] = useState(false)
+  const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [resetMainProgressBar, setResetMainProgressBar] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const { userVsDebugMode } = useContext(UserVsDebugModeContext)
 
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
+
   function handleMenuChange(event) {
     if (event === 'FreeText') {
       setFreeTextVsCanLog('FreeText')
@@ -65,18 +71,6 @@ const Decode_CAN_LOG = () => {
     }
   }
 
-  const VisuallyHiddenInput = styled('input')({
-    clip: 'rect(0 0 0 0)',
-    clipPath: 'inset(50%)',
-    height: 1,
-    overflow: 'hidden',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    whiteSpace: 'nowrap',
-    width: 1
-  })
-
   function handleFileUpload(e) {
     const file = e.target.files[0]
 
@@ -84,9 +78,10 @@ const Decode_CAN_LOG = () => {
       const reader = new FileReader()
 
       reader.onload = (e) => {
-        DontBotherWithPDO_flag[0] = 0 // Force for PDO window to reapear
+        DontBotherWithPDO_flag[0] = 0 // Reset the convinience not to specify the PDOs
         SetAllPDOsEMPTY[0] = 0
         for (const prop in PDO_mapped) {
+          //We reseting all the mapping which was done up to now
           if (PDO_mapped.hasOwnProperty(prop)) {
             PDO_mapped[prop] = []
           }
@@ -101,14 +96,14 @@ const Decode_CAN_LOG = () => {
     }
   }
   function handleClickArrow() {
-    DontBotherWithPDO_flag[0] = 0 // Force for PDO window to reapear
+    DontBotherWithPDO_flag[0] = 0 // Reset the convinience not to specify the PDOs
     SetAllPDOsEMPTY[0] = 0
     var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
     sethideTableForceParentToggle((prev) => !prev)
     setResetMainProgressBar((prev) => !prev)
   }
-
+  //SHORTCUTS ---------------------------
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === 'Enter') {
@@ -117,14 +112,11 @@ const Decode_CAN_LOG = () => {
             .querySelector('#DrawerComponent')
             .classList.contains('DrawerOpened')
         ) {
-          //Open Drawer, close table
-          console.log('YOOO')
+          //Open Drawer, hide table
           handleClickArrow()
         } else {
-          console.log('NOOO')
-          setforceDecodeFromParent((prev) => !prev)
+          setShortcutToDecodeMessages((prev) => !prev)
         }
-        // setIsDrawerOpen((prev) => !prev)
       } else if (event.ctrlKey && event.key === 'Tab') {
         TextAreaText_Ref.current.focus()
       }
@@ -135,7 +127,7 @@ const Decode_CAN_LOG = () => {
     }
   }, [])
 
-  const TableDisplay = useMemo(() => {
+  const TableAndDrawerComponent = useMemo(() => {
     return (
       <Box
         ref={Decode_CAN_LOG_ref}
@@ -143,29 +135,21 @@ const Decode_CAN_LOG = () => {
           fontSize: '1.2rem'
         }}
       >
-        {userVsDebugMode == 'USER' ? (
-          <Profiler id="MyComponent" onRender={logProfilerData}>
-            <UserCANopenDecodedTable
-              fileInnerText={fileInnerText}
-              hideTableForceParentToggle={hideTableForceParentToggle}
-              forceDecodeFromParent={forceDecodeFromParent}
-              resetMainProgressBar={resetMainProgressBar}
-            />
-          </Profiler>
-        ) : (
-          <DebugCANopenDecodedTable
+        <Profiler id="MyComponent" onRender={logProfilerData}>
+          <DecodedTableOptions
             fileInnerText={fileInnerText}
+            shortcutToDecodeMessages={shortcutToDecodeMessages}
+            resetMainProgressBar={resetMainProgressBar}
             hideTableForceParentToggle={hideTableForceParentToggle}
           />
-        )}
+        </Profiler>
       </Box>
     )
-  }, [fileInnerText, forceDecodeFromParent, userVsDebugMode])
+  }, [fileInnerText, shortcutToDecodeMessages])
 
   return (
     <Box style={{ position: 'relative' }}>
       <Header title="Decode a CAN LOG "></Header>
-
       {/* TOP MENU options --------------------------- */}
       <Box>
         <section
@@ -227,131 +211,55 @@ const Decode_CAN_LOG = () => {
         >
           <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
             Upload file
-            <VisuallyHiddenInput type="file" onChange={handleFileUpload} />
+            {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
+            <input
+              type="file"
+              style={{
+                clip: 'rect(0 0 0 0)',
+                clipPath: 'inset(50%)',
+                height: 1,
+                overflow: 'hidden',
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                whiteSpace: 'nowrap',
+                width: 1
+              }}
+              onChange={handleFileUpload}
+            />
           </Button>
         </section>
       )}
 
       {/* TABLE ----------------------------------------- */}
-      {TableDisplay}
+      {TableAndDrawerComponent}
     </Box>
   )
 }
 
-export default Decode_CAN_LOG
+export default Decode_CAN_LOG_Window
 
-const DebugCANopenDecodedTable = ({ fileInnerText }) => {
-  console.log('2. DebugCANopenDecodedTable')
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  const [lineToScroll, setLineToScroll] = useState('')
-
-  if (fileInnerText == '') {
-    return <div> Nothing to decode. Oh Dear. Maybe try writing something so I can Decode</div>
-  }
-  const scrollRef = useRef(null)
-
-  useEffect(() => {
-    if (lineToScroll !== '') {
-      if (scrollRef.current) {
-        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-    }
-  }, [lineToScroll])
-
-  function handleNewSearch(event) {
-    setLineToScroll(event)
-  }
-  var originalLines = fileInnerText.split('\n')
-  var AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(originalLines)
-  return (
-    <Box sx={{ position: 'relative' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'start',
-          alignItems: 'center',
-          position: 'sticky',
-          top: '2.5rem',
-          background: `${colors.primary[200]}`
-        }}
-      >
-        <Typography variant="h4">GOTO LINE: </Typography>
-        <Input_AutoFormat
-          callback={filterDecimal}
-          resolution={'TIME'}
-          tellParentValueChanged={handleNewSearch}
-          forceValueFromParent={lineToScroll}
-        />
-      </div>
-      <Box>
-        {AllCAN_MsgsExtracted_array.map((iteration, index) => {
-          const isHighlighted = index === lineToScroll - 1
-          return (
-            <div
-              key={index}
-              ref={isHighlighted ? scrollRef : null}
-              style={{
-                display: 'flex',
-                border: isHighlighted
-                  ? `4px solid ${colors.yellow[500]}`
-                  : `1px solid ${colors.primary[400]}`,
-
-                gap: '1rem',
-                padding: '0.2rem'
-              }}
-            >
-              <p> [{iteration[0]}]. </p>
-              <p style={{ color: `${colors.yellow[500]}` }}> {iteration[1]}</p>
-              <div style={{ color: `${colors.red[300]}`, display: 'flex' }}>
-                {' '}
-                {iteration[4].map((i, ii) => {
-                  return (
-                    <p
-                      key={ii + 'abc'}
-                      style={{
-                        display: 'flex'
-                      }}
-                    >
-                      {' '}
-                      {i} -
-                    </p>
-                  )
-                })}
-              </div>
-              <p style={{ color: `${colors.green[100]}` }}>-- [{iteration[2]}]</p>
-              <p style={{ color: `${colors.personal[100]}` }}>-- [{iteration[3]}]</p>
-            </div>
-          )
-        })}
-      </Box>
-    </Box>
-  )
-}
-
-const UserCANopenDecodedTable = ({
+const DecodedTableOptions = ({
   fileInnerText,
   hideTableForceParentToggle,
-  forceDecodeFromParent,
+  shortcutToDecodeMessages,
   resetMainProgressBar
 }) => {
   console.log('3. --------------- UserCANopenDecodedTable')
-  const [displayTable, setDisplayTable] = useState(false)
+  const [TableOption, setTableOption] = useState('Default')
+  const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  // Record mount start time
+
   useEffect(() => {
-    setDisplayTable(false)
+    setisTableVisible(false)
   }, [hideTableForceParentToggle])
 
-  var AllCAN_MsgsExtracted_array = useMemo(() => {
-    return Extract_MSGs_from_text(fileInnerText.split('\n'))
-  }, [fileInnerText])
-
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
+    AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(fileInnerText.split('\n'))
     return CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array)
   }, [fileInnerText])
 
-  const DecodePDO_component_var = useMemo(() => {
+  const DecodePDOs_Memo = useMemo(() => {
     return (
       <DecodePDO_component
         MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
@@ -361,46 +269,50 @@ const UserCANopenDecodedTable = ({
     )
   }, [fileInnerText, resetMainProgressBar])
 
-  const DrawerComponent = useMemo(() => {
+  const Drawer_Memo = useMemo(() => {
     return (
       <DrawerComponent_DecodeOptions
-        setDisplayTable={setDisplayTable}
+        setisTableVisible={setisTableVisible}
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
-        forceDecodeFromParent={forceDecodeFromParent}
+        shortcutToDecodeMessages={shortcutToDecodeMessages}
+        TableOption={TableOption}
+        setTableOption={setTableOption}
       />
     )
-  }, [fileInnerText, isDrawerOpen, forceDecodeFromParent])
+  }, [fileInnerText, isDrawerOpen, shortcutToDecodeMessages, TableOption])
 
-  const TableComponent = useMemo(() => {
+  const Table_Memo = useMemo(() => {
     return (
       <Box>
-        {/* {displayTable && <TableComponent />} */}
-        {CreateGroupedFilteredArray(
-          MessagesDecoded_ArrayOfObjects,
-          GroupingOptionsForMessages,
-          tempFct
-        )}
-        <TempDisplayArray />
+        {isTableVisible &&
+          (TableOption == 'Default' ? (
+            <DefaultTable />
+          ) : TableOption == 'Simplified' ? (
+            <SimplifiedTable />
+          ) : (
+            <DebugTable />
+          ))}
       </Box>
     )
-  }, [fileInnerText, displayTable])
+  }, [fileInnerText, isTableVisible])
 
-  function tempFct() {}
   return (
     <section>
-      {DecodePDO_component_var}
-      {/* {DrawerComponent} */}
-      {TableComponent}
+      {DecodePDOs_Memo}
+      {Drawer_Memo}
+      {Table_Memo}
     </section>
   )
 }
 
-export const DrawerComponent_DecodeOptions = ({
-  setDisplayTable,
+const DrawerComponent_DecodeOptions = ({
+  setisTableVisible,
   isDrawerOpen,
   setIsDrawerOpen,
-  forceDecodeFromParent
+  TableOption,
+  setTableOption,
+  shortcutToDecodeMessages
 }) => {
   console.log('4. DrawerComponent_DecodeOptions')
   const theme = useTheme()
@@ -408,9 +320,11 @@ export const DrawerComponent_DecodeOptions = ({
 
   const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
-  const [progressBar, setProgressBar] = useState(false)
+  const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
+  const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
+
+  //Shortcut to open/close drawer
   useEffect(() => {
-    //Shortcut to open/close drawer
     const handleKeyPress = (event) => {
       console.log('event.key')
       if (event.ctrlKey && event.key === '`') {
@@ -423,25 +337,26 @@ export const DrawerComponent_DecodeOptions = ({
     }
   }, [])
 
+  //On CTRL+ENTER start decoding
   useEffect(() => {
     if (isDrawerOpen) {
-      //Facilitate decoding with shortcut and remove the first mounting call
       handleDECODE()
     }
-  }, [forceDecodeFromParent])
-
+  }, [shortcutToDecodeMessages])
+  //Groups the messages and shows the table
   function handleDECODE() {
     console.log('handleDECODE')
-    setProgressBar(true)
+    setProgressBarInsideDrawer(true)
+    setisTableVisible(false)
     setTimeout(() => {
-      setDisplayTable(true)
+      setisTableVisible(true)
       setIsDrawerOpen(false)
       CreateGroupedFilteredArray(
         MessagesDecoded_ArrayOfObjects,
         GroupingOptionsForMessages,
-        setProgressBar
+        setProgressBarInsideDrawer
       )
-    }, 1000)
+    }, 800)
   }
 
   function handleClose() {
@@ -458,7 +373,12 @@ export const DrawerComponent_DecodeOptions = ({
         GroupingOptionsForMessages[prop] = state
       }
     }
+    setGroupingOptionsRender((prev) => !prev)
   }
+
+  const AvailableAxes_Component_Memo = useMemo(() => {
+    return <AvailableAxes_Component />
+  }, [])
 
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
@@ -494,7 +414,45 @@ export const DrawerComponent_DecodeOptions = ({
             </IconButton>
           </Box>
           <Box sx={{ userSelect: 'none' }}>
-            {console.log('5. CanLogDisplaySettings')}
+            {/* TABLE DISPLAY OPTIONS ----------------- */}
+            <Box
+              sx={{
+                border: `2px solid ${colors.primary[400]}`,
+                borderRadius: '1rem',
+                margin: '1rem 0',
+                background: `${colors.blue[200]}`,
+                padding: '0.4rem'
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem',
+                  marginLeft: '1rem',
+                  color: `${colors.yellow[500]}`
+                }}
+              >
+                Table display options:{' '}
+              </p>
+              <RadioGroup
+                row
+                onChange={(e) => {
+                  setTableOption(e.target.value)
+                }}
+                value={TableOption}
+                sx={{
+                  justifyContent: 'center',
+                  '& .MuiSvgIcon-root': {
+                    // fontSize: '1rem'
+                    color: `${colors.green[400]}`
+                  }
+                }}
+              >
+                <FormControlLabel value="Default" control={<Radio />} label="Default" />
+                <FormControlLabel value="Simplified" control={<Radio />} label="Simplified" />
+                <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
+              </RadioGroup>
+            </Box>
             {/* Reading Direction Radio Buttons ----------------- */}
             <Box
               sx={{
@@ -565,14 +523,17 @@ export const DrawerComponent_DecodeOptions = ({
                 <Checkbox_Component
                   label="Group by Modes of Operation"
                   onChange={handleGroupingOptions}
+                  checked={GroupingOptionsForMessages.Modes}
                 />
                 <Checkbox_Component
                   label="Group by Mapping Objects"
                   onChange={handleGroupingOptions}
+                  checked={GroupingOptionsForMessages.Mapping}
                 />
                 <Checkbox_Component
                   label="Group by Repetitive Messages (SYNC, Heartbeat, etc)"
                   onChange={handleGroupingOptions}
+                  checked={GroupingOptionsForMessages.Repetitive}
                 />
               </div>
             </Box>
@@ -596,9 +557,9 @@ export const DrawerComponent_DecodeOptions = ({
               >
                 Available Axes:{' '}
               </p>
-              <AvailableAxes_Component />
+              {AvailableAxes_Component_Memo}
             </Box>
-            {/* Message Types ----------------- */}
+            {/* MESSAGES TYPE ----------------- */}
             <Box
               sx={{
                 border: `2px solid ${colors.primary[400]}`,
@@ -641,7 +602,7 @@ export const DrawerComponent_DecodeOptions = ({
                 <FormControlLabel value="errors" control={<Radio />} label="Errors" />
               </RadioGroup>
             </Box>
-            {/* Display Messages Button + Progress BAR----------------- */}
+            {/* DISPLAY MESSAGES BUTTON + PROGRESS BAR----------------- */}
             <Box
               sx={{
                 display: 'flex',
@@ -650,7 +611,7 @@ export const DrawerComponent_DecodeOptions = ({
               }}
             >
               <Button3 onClick={handleDECODE}>DECODE</Button3>
-              {progressBar && <CircularProgress />}
+              {progressBarInsideDrawer && <CircularProgress />}
             </Box>
           </Box>
         </Box>
@@ -658,8 +619,8 @@ export const DrawerComponent_DecodeOptions = ({
     </Box>
   )
 }
-function AvailableAxes_Component({}) {
-  console.log('6. AvailableAxes_Component ---- NOTGOOD')
+function AvailableAxes_Component() {
+  console.log('6. AvailableAxes_Component ---- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [renderToggle, setRenderToggle] = useState(true)
@@ -779,5 +740,5 @@ var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
   console.log(actualTime)
-  console.log(diffTime)
+  // console.log(diffTime)
 }
