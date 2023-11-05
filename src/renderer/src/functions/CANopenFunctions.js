@@ -768,11 +768,43 @@ export let PDO_mapped = {
   TPDO3: [],
   TPDO4: []
 }
-export function DecodePDO(objectIteration) {
-  var MappedObjects = PDO_mapped[objectIteration.type][objectIteration.AxisID]
-  objectIteration.CS = MappedObjects.length
 
-  var aux_frame = objectIteration.FrameData
+export let DontBotherWithPDO_flag = [0]
+export let SetAllPDOsEMPTY = [0]
+
+export function DecodeOnePDOmsg(cobID_array, message) {
+  console.log('DecodeOnePDOmsg++')
+  if (DontBotherWithPDO_flag[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
+    // We write some dummy data just to get rid of PDO filling requirements
+    var frameData = message
+    if (frameData.length % 2 != 0) {
+      frameData =
+        frameData.slice(0, frameData.length - 1) +
+        '0' +
+        frameData.slice(frameData.length - 1, frameData.length)
+    }
+
+    frameData = frameData.length * 4
+
+    PDO_mapped[cobID_array[2]][cobID_array[1]] = CompatibleMapping1[frameData]
+  } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
+    //WE dont know anything about this PDO so we leave it empty
+    PDO_mapped[cobID_array[2]][cobID_array[1]] = ['-']
+  }
+  //---------------zzz
+  if (!PDO_mapped[cobID_array[2]][cobID_array[1]]) {
+    //We don't have any data for this PDO
+    return ['MissingPDO', '-', '-', '-', 'PDO_Error: No data for this PDO', 'error']
+  }
+
+  return helping_DecodePDO(cobID_array, message)
+}
+
+export function helping_DecodePDO(cobID_array, message) {
+  var MappedObjects = PDO_mapped[cobID_array[2]][cobID_array[1]]
+  var CS = MappedObjects.length
+
+  var aux_frame = message
 
   let aux_objects = []
   let aux_objectsName = []
@@ -822,21 +854,15 @@ export function DecodePDO(objectIteration) {
   aux_objectsData = aux_objectsData.join('')
   aux_Interpretation = aux_Interpretation.join('')
 
-  objectIteration.Object = aux_objects
-  objectIteration.ObjectName = aux_objectsName
-  objectIteration.Data = aux_objectsData
-  objectIteration.Interpretation = aux_Interpretation
-
   if (aux_error.includes('error')) {
     aux_error = 'error'
   } else if (aux_error.includes('blue')) {
     aux_error = 'blue'
   }
-  objectIteration.errorStatus = aux_error
 
-  return objectIteration
-  //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]
+  return [CS, aux_objects, aux_objectsName, aux_objectsData, aux_Interpretation, aux_error]
 }
+
 // ********************** //Remaining CANopen Protocols FUNCTIONS// ********************************
 
 export function DecodeEMCY(message) {

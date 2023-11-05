@@ -1,13 +1,15 @@
 import { filterHex, hexToDec } from './NumberConversion'
 import {
   DecodeSDO,
-  DecodePDO,
   DecodeEMCY,
   DecodeNMT,
   DecodeNMT_Monitoring,
   DecodeSYNC
 } from './CANopenFunctions'
 import { DecodeTCANglobal } from './TechnoCAN'
+import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
+import { DecodeOnePDOmsg } from './CANopenFunctions'
+import { globalIndex } from '../scenes/Decode_CAN_LOG'
 
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
@@ -296,10 +298,15 @@ function returnMaxFromArr(arr) {
   //Returns [MAX_nr, index_in_array]
 }
 
-export function CreateDecodedArrayOfObjects(arr) {
-  CanLogStatistics = []
-  console.log(`Only once === CreateDecodedArrayOfObjects`)
-  var ResultingArray = []
+export function CreateDecodedArrayOfObjects(arr, setIsDrawerOpen, setObjectIterationPDO) {
+  console.log(`CreateDecodedArrayOfObjects`)
+  var ResultingArray = MessagesDecoded_ArrayOfObjects
+
+  if (globalIndex[0] == 0) {
+    // We reset only if we have a new log file
+    CanLogStatistics = []
+    ResultingArray = []
+  }
 
   function createObject(
     msgNr,
@@ -333,7 +340,9 @@ export function CreateDecodedArrayOfObjects(arr) {
     ResultingArray.push(newObj)
   }
 
-  arr.forEach((row) => {
+  for (let index = globalIndex[0]; index < arr.length; index++) {
+    let row = arr[index]
+    console.log('🚀 ~ file: CANopen.js:347 ~ arr.slice ~ index:', index)
     //Handle Empty Lines
     if (row[1] == '') {
       row[2] = 'Empty'
@@ -344,6 +353,11 @@ export function CreateDecodedArrayOfObjects(arr) {
     }
     var aux_CobID = CobID_who_dis(row[2])
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
+    if (DecodedMessage[0] == 'MissingPDO') {
+      console.log('BAD')
+      globalIndex[0] = index
+      return (index = arr.length)
+    }
     if (aux_CobID[2] == 'NMT') {
       //Special case for NMT axisID
 
@@ -394,8 +408,9 @@ export function CreateDecodedArrayOfObjects(arr) {
       DecodedMessage[4], //Interpretation
       DecodedMessage[5] //Error
     )
-  })
+  }
 
+  setIsDrawerOpen(true)
   return ResultingArray
 }
 
@@ -405,7 +420,7 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
   if (cobID_array[0] == 'SDO') {
     result = DecodeSDO(cobID_array[2], message, cobID_array[1])
   } else if (cobID_array[0] == 'PDO') {
-    result = ['PDO', 'Object', 'ObjectName', 'Data', 'Interpretation', '']
+    result = DecodeOnePDOmsg(cobID_array, message)
   } else if (cobID_array[0] == 'EMCY') {
     result = DecodeEMCY(message)
   } else if (cobID_array[0] == 'NMT') {

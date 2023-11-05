@@ -14,11 +14,13 @@ import { Input_AutoFormat } from '../../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../../functions/NumberConversion'
 
 import { RegisterTooltip } from '../../components/Register'
-import { PDO_mapped, GetObject, DecodePDO } from '../../functions/CANopenFunctions'
+import { PDO_mapped, GetObject, helping_DecodePDO } from '../../functions/CANopenFunctions'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
+let DontBotherWithPDO_flag = [0]
+let SetAllPDOsEMPTY = [0]
 
 export function DecodePDO_component({
   MessagesDecoded_ArrayOfObjects,
@@ -38,7 +40,7 @@ export function DecodePDO_component({
 
   useEffect(() => {
     setCurrentObjectIndex(0)
-    DontBotherWithPDO_flag[0] = 0 // BUG change it to zero
+    DontBotherWithPDO_flag[0] = 1 // BUG change it to zero
     SetAllPDOsEMPTY[0] = 0
   }, [MessagesDecoded_ArrayOfObjects])
 
@@ -92,9 +94,6 @@ export function DecodePDO_component({
     </div>
   )
 }
-
-export let DontBotherWithPDO_flag = [0]
-export let SetAllPDOsEMPTY = [0]
 
 export function PDOdetectedModal({ open, onClose, objectIteration }) {
   console.log('🚀 ~ PDOdetectedModal:' + open)
@@ -521,7 +520,7 @@ function InputRow({ label, resolution, object, setObject, objectSub, setObjectSu
 }
 
 //--------------------------------------------------------
-function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
+export function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
   console.log('Inside DecodeOnePDOmsg++')
   if (DontBotherWithPDO_flag[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
     // We write some dummy data just to get rid of PDO filling requirements
@@ -548,7 +547,7 @@ function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdecte
   }
 
   // Putting in the correct information for PDO
-  MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = DecodePDO(objectIteration)
+  MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = helping_DecodePDO(objectIteration)
   setCurrentObjectIndex((prev) => prev + 1)
 }
 

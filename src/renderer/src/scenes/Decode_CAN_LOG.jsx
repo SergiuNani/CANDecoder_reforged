@@ -40,8 +40,13 @@ import { filterDecimal, filterHex } from '../functions/NumberConversion'
 import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
-import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
-import { PDO_mapped, SortMappingByAxis } from '../functions/CANopenFunctions'
+import { PDOdetectedModal } from './global/PDO'
+import {
+  PDO_mapped,
+  SortMappingByAxis,
+  DontBotherWithPDO_flag,
+  SetAllPDOsEMPTY
+} from '../functions/CANopenFunctions'
 import {
   DefaultTable,
   CreateGroupedFilteredArray,
@@ -54,7 +59,7 @@ export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 
 const Decode_CAN_LOG_Window = () => {
-  console.log('1. Decode_CAN_LOG++')
+  console.log('1. Decode_CAN_LOG_Window')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
@@ -248,33 +253,51 @@ const Decode_CAN_LOG_Window = () => {
 
 export default Decode_CAN_LOG_Window
 
+export let globalIndex = [0]
+
 const DecodedTableOptions = ({
   fileInnerText,
   hideTableForceParentToggle,
   shortcutToDecodeMessages,
   resetMainProgressBar
 }) => {
-  console.log('3. --------------- UserCANopenDecodedTable')
+  console.log('2. DecodedTableOptions')
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [openPDOModal, setOpenPDOModal] = useState(false)
+  const [objectIterationPDO, setObjectIterationPDO] = useState(null)
 
   useEffect(() => {
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
 
-  MessagesDecoded_ArrayOfObjects = useMemo(() => {
-    AllCAN_MsgsExtracted_array = Extract_MSGs_from_text(fileInnerText.split('\n'))
-    return CreateDecodedArrayOfObjects(AllCAN_MsgsExtracted_array)
+  AllCAN_MsgsExtracted_array = useMemo(() => {
+    console.log('XXXX - AllCAN_MsgsExtracted_array -  only once')
+    return Extract_MSGs_from_text(fileInnerText.split('\n'))
   }, [fileInnerText])
+
+  MessagesDecoded_ArrayOfObjects = useMemo(() => {
+    console.log('OFFFFFFFFFFF - MessagesDecoded_ArrayOfObjects')
+    return CreateDecodedArrayOfObjects(
+      AllCAN_MsgsExtracted_array,
+      setIsDrawerOpen,
+      globalIndex,
+      setObjectIterationPDO
+    )
+  }, [fileInnerText, objectIterationPDO])
 
   const DecodePDOs_Memo = useMemo(() => {
     return (
-      <DecodePDO_component
-        MessagesDecoded_ArrayOfObjects={MessagesDecoded_ArrayOfObjects}
-        setIsDrawerOpen={setIsDrawerOpen}
-        resetMainProgressBar={resetMainProgressBar}
-      />
+      <div>
+        {openPDOModal && (
+          <PDOdetectedModal
+            open={openPDOModal}
+            onClose={setOpenPDOModal}
+            objectIteration={objectIterationPDO}
+          />
+        )}
+      </div>
     )
   }, [fileInnerText, resetMainProgressBar])
 
@@ -323,7 +346,7 @@ const DrawerComponent_DecodeOptions = ({
   setTableOption,
   shortcutToDecodeMessages
 }) => {
-  console.log('4. DrawerComponent_DecodeOptions')
+  console.log('3. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -349,7 +372,7 @@ const DrawerComponent_DecodeOptions = ({
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
-    if (isDrawerOpen) {
+    if (isDrawerOpen && false) {
       handleDECODE()
     }
   }, [shortcutToDecodeMessages])
@@ -645,7 +668,7 @@ const DrawerComponent_DecodeOptions = ({
   )
 }
 const AvailableAxes_Component = () => {
-  console.log('6. AvailableAxes_Component ---- only once')
+  console.log('4. AvailableAxes_Component ---- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [renderToggle, setRenderToggle] = useState(true)
@@ -762,7 +785,7 @@ const AvailableAxes_Component = () => {
 }
 
 const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => {
-  console.log('7. MappingWindowforDrawer -- only once')
+  console.log('5. MappingWindowforDrawer -- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var SortedMapping = SortMappingByAxis(PDO_mapped)
