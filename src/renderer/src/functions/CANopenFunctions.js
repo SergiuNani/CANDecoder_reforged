@@ -1,5 +1,12 @@
 import { Objects_collection_LS } from '../App'
-import { LittleEndian, hexToDec, hex_to_ascii, hex2Fixed, UnitsConvertor } from './NumberConversion'
+import {
+  LittleEndian,
+  hexToDec,
+  hex_to_ascii,
+  hex2Fixed,
+  UnitsConvertor,
+  decToHex
+} from './NumberConversion'
 import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
 import {
@@ -395,6 +402,35 @@ export function checkSDOforMapping(object, data, axisID) {
   if (object.slice(0, 2) == '0X' || object.slice(0, 2) == '#X') {
     object = object.slice(2)
   }
+
+  function SwitchForTPDO(pattern, cobID) {
+    const cobIDOffsets = [384, 640, 896, 1152]
+    const typePDOs = ['TPDO1', 'TPDO2', 'TPDO3', 'TPDO4']
+
+    const index = parseInt(pattern, 10)
+    if (index >= 0 && index < cobIDOffsets.length) {
+      cobID += cobIDOffsets[index]
+      cobID = cobID.toString(16).toUpperCase()
+      const interpretationInfo = `[${cobID}h]`
+      return [interpretationInfo, cobID, typePDOs[index]]
+    }
+
+    return ['', '']
+  }
+  function SwitchForRPDO(pattern, cobID) {
+    const cobIDOffsets = [512, 768, 1024, 1280]
+    const typePDOs = ['RPDO1', 'RPDO2', 'RPDO3', 'RPDO4']
+
+    const index = parseInt(pattern, 10)
+    if (index >= 0 && index < cobIDOffsets.length) {
+      cobID += cobIDOffsets[index]
+      cobID = cobID.toString(16).toUpperCase()
+      const interpretationInfo = `[${cobID}h]`
+      return [interpretationInfo, cobID, typePDOs[index]]
+    }
+
+    return ['', '']
+  }
   if (Mapping_objects_array.includes(object)) {
     var aux_firstByte = object.slice(0, 2)
     var aux_secondByte = object.slice(2, 4)
@@ -407,27 +443,9 @@ export function checkSDOforMapping(object, data, axisID) {
     var cobID = axisID
     //Configuring COB_ID for TPDOs --------
     if (aux_firstByte == '18') {
-      switch (aux_secondByte) {
-        case '00':
-          cobID += 180
-          interpretationInfo = interpretationInfo.concat(`TPDO1 - [${cobID}h]`)
-          break
-        case '01':
-          cobID += 280
-
-          interpretationInfo = interpretationInfo.concat(`TPDO2 - [${cobID}h]`)
-          break
-        case '02':
-          cobID += 380
-
-          interpretationInfo = interpretationInfo.concat(`TPDO3 - [${cobID}h]`)
-          break
-        case '03':
-          cobID += 480
-
-          interpretationInfo = interpretationInfo.concat(`TPDO4 - [${cobID}h]`)
-          break
-      }
+      var temp = SwitchForTPDO(aux_secondByte, cobID)
+      interpretationInfo = temp[0]
+      cobID = temp[1]
       switch (aux_thirdByte) {
         case '00':
           interpretationInfo = interpretationInfo.concat(` -Nr of entries : ${data}`)
@@ -468,32 +486,11 @@ export function checkSDOforMapping(object, data, axisID) {
           break
       }
     } else if (aux_firstByte == '1A') {
-      var typePDO = ''
-      switch (aux_secondByte) {
-        case '00':
-          typePDO = 'TPDO1'
-          cobID += 180
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-        case '01':
-          typePDO = 'TPDO2'
-          cobID += 280
+      var temp = SwitchForTPDO(aux_secondByte, cobID)
+      interpretationInfo = temp[0]
+      cobID = temp[1]
+      var typePDO = temp[2]
 
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-        case '02':
-          typePDO = 'TPDO3'
-          cobID += 380
-
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-        case '03':
-          typePDO = 'TPDO4'
-          cobID += 480
-
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-      }
       switch (aux_thirdByte) {
         case '00':
           interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
@@ -601,27 +598,10 @@ export function checkSDOforMapping(object, data, axisID) {
           break
       }
     } else if (aux_firstByte == '14') {
-      switch (aux_secondByte) {
-        case '00':
-          cobID += 200
-          interpretationInfo = interpretationInfo.concat(`RPDO1 - [${cobID}h]`)
-          break
-        case '01':
-          cobID += 300
+      var temp = SwitchForRPDO(aux_secondByte, cobID)
+      interpretationInfo = temp[0]
+      cobID = temp[1]
 
-          interpretationInfo = interpretationInfo.concat(`RPDO2 - [${cobID}h]`)
-          break
-        case '02':
-          cobID += 400
-
-          interpretationInfo = interpretationInfo.concat(`RPDO3 - [${cobID}h]`)
-          break
-        case '03':
-          cobID += 500
-
-          interpretationInfo = interpretationInfo.concat(`RPDO4 - [${cobID}h]`)
-          break
-      }
       switch (aux_thirdByte) {
         case '00':
           interpretationInfo = interpretationInfo.concat(` -Nr of entries : ${data}`)
@@ -653,33 +633,11 @@ export function checkSDOforMapping(object, data, axisID) {
           break
       }
     } else if (aux_firstByte == '16') {
-      var typePDO = ''
+      var temp = SwitchForRPDO(aux_secondByte, cobID)
+      interpretationInfo = temp[0]
+      cobID = temp[1]
+      var typePDO = temp[2]
 
-      switch (aux_secondByte) {
-        case '00':
-          typePDO = 'RPDO1'
-          cobID += 200
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-        case '01':
-          typePDO = 'RPDO2'
-          cobID += 300
-
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-        case '02':
-          typePDO = 'RPDO3'
-          cobID += 400
-
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-        case '03':
-          typePDO = 'RPDO4'
-          cobID += 500
-
-          interpretationInfo = interpretationInfo.concat(`[${cobID}h]`)
-          break
-      }
       switch (aux_thirdByte) {
         case '00':
           interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
@@ -879,6 +837,7 @@ export function DecodePDO(objectIteration) {
   return objectIteration
   //Return: [CS, Object , ObjectName , data , Interpretation,errorStatus ]
 }
+// ********************** //Remaining CANopen Protocols FUNCTIONS// ********************************
 
 export function DecodeEMCY(message) {
   var CS = ''
@@ -1014,6 +973,7 @@ export function DecodeSYNC(message) {
 
   return ['-', '-', '-', '-', interpretation, errorStatus]
 }
+// ********************** //MAPPING FUNCTIONS// ********************************
 
 export function whatPDOisObject(object) {
   object = object.toUpperCase()
@@ -1027,4 +987,80 @@ export function whatPDOisObject(object) {
     }
   }
   return null
+}
+
+export function SortMappingByAxis(PDO_mapped) {
+  var sortedArray = []
+
+  Object.keys(PDO_mapped).forEach((PDO_type) => {
+    PDO_mapped[PDO_type].forEach((oneMapping, AxisID) => {
+      let found = false
+      //Checking if the AxisID Array already exists in the array
+      for (let i = 0; i < sortedArray.length; i++) {
+        if (sortedArray[i].AxisID === AxisID) {
+          sortedArray[i][PDO_type] = helping_ProvideMappingInfo(PDO_type, AxisID, oneMapping)
+          found = true
+          break
+        }
+      }
+      if (!found) {
+        let newObj = { AxisID: AxisID }
+        newObj[PDO_type] = helping_ProvideMappingInfo(PDO_type, AxisID, oneMapping)
+        sortedArray.push(newObj)
+      }
+    })
+  })
+
+  return sortedArray
+}
+
+function helping_ProvideMappingInfo(PDO_type, AxisID, oneMapping) {
+  var NrOfMappedObj = oneMapping.length
+  var aux_CobID
+  var arrayOfObjectsInfo = []
+  switch (PDO_type) {
+    case 'TPDO1':
+      aux_CobID = decToHex(384 + AxisID, 16)
+
+      break
+    case 'TPDO2':
+      aux_CobID = decToHex(640 + AxisID, 16)
+
+      break
+    case 'TPDO3':
+      aux_CobID = decToHex(896 + AxisID, 16)
+
+      break
+    case 'TPDO4':
+      aux_CobID = decToHex(1152 + AxisID, 16)
+
+      break
+    case 'RPDO1':
+      aux_CobID = decToHex(512 + AxisID, 16)
+
+      break
+    case 'RPDO2':
+      aux_CobID = decToHex(768 + AxisID, 16)
+
+      break
+    case 'RPDO3':
+      aux_CobID = decToHex(1024 + AxisID, 16)
+
+      break
+    case 'RPDO4':
+      aux_CobID = decToHex(1280 + AxisID, 16)
+
+      break
+  }
+  oneMapping.forEach((oneObject, index) => {
+    var objectFound = GetObject(oneObject)
+    arrayOfObjectsInfo[index] = [
+      `${aux_CobID}h [${index + 1}] `,
+      objectFound[0],
+      objectFound[1],
+      objectFound[2]
+    ]
+  })
+
+  return arrayOfObjectsInfo
 }

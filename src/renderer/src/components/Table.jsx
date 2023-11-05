@@ -20,7 +20,7 @@ import {
 } from '../functions/CANopenFunctions'
 import { Input_AutoFormat } from './ForumsComponents'
 import { filterDecimal } from '../functions/NumberConversion'
-import { verifyValidityOfMappingGroup } from '../functions/CANopen'
+import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
 import { Mapping_objects_array, GroupingOptionsForMessages } from '../data/SmallData'
 import { TooltipClickable, ProgressComponent } from '../components/SmallComponents'
@@ -427,6 +427,10 @@ export const DefaultTable = () => {
             subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
               group.length - 1
             }messages `
+          } else {
+            //Repetitiveq
+            title = 'Repetitive'
+            subtitle = verifyRepetitiveGroup(group)
           }
           return (
             <TableRowGroup

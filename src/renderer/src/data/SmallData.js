@@ -1,4 +1,6 @@
 /*------------------------------Global Parameters------------------------------ */
+//PDO_mapped
+//CanLogStatistics
 export let GroupingOptionsForMessages = {
   Mapping: true,
   Modes: true,

@@ -8,12 +8,15 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  CircularProgress
+  CircularProgress,
+  Dialog
 } from '@mui/material'
 import {
   Header,
   SwitchComponent,
   Button3,
+  Button1,
+  Button2,
   TooltipClickable,
   Checkbox_Component,
   ButtonTransparent,
@@ -38,7 +41,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
 import { DecodePDO_component } from './global/PDO'
 import { DontBotherWithPDO_flag, SetAllPDOsEMPTY } from './global/PDO'
-import { PDO_mapped } from '../functions/CANopenFunctions'
+import { PDO_mapped, SortMappingByAxis } from '../functions/CANopenFunctions'
 import {
   DefaultTable,
   CreateGroupedFilteredArray,
@@ -98,6 +101,12 @@ const Decode_CAN_LOG_Window = () => {
   function handleClickArrow() {
     DontBotherWithPDO_flag[0] = 0 // Reset the convinience not to specify the PDOs
     SetAllPDOsEMPTY[0] = 0
+    for (const prop in PDO_mapped) {
+      //We reseting all the mapping which was done up to now
+      if (PDO_mapped.hasOwnProperty(prop)) {
+        PDO_mapped[prop] = []
+      }
+    }
     var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
     sethideTableForceParentToggle((prev) => !prev)
@@ -322,6 +331,7 @@ const DrawerComponent_DecodeOptions = ({
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
+  const [showMappingWindow, setShowMappingWindow] = useState(true)
 
   //Shortcut to open/close drawer
   useEffect(() => {
@@ -364,7 +374,6 @@ const DrawerComponent_DecodeOptions = ({
       !prev
     })
   }
-
   function handleGroupingOptions(e) {
     var option = e.target.closest('label').innerText.split('by')[1].split(' ')[1]
     var state = e.target.checked
@@ -380,6 +389,14 @@ const DrawerComponent_DecodeOptions = ({
     return <AvailableAxes_Component />
   }, [])
 
+  const MappingWindowforDrawer_Memo = useMemo(() => {
+    return (
+      <MappingWindowforDrawer
+        showMappingWindow={showMappingWindow}
+        setShowMappingWindow={setShowMappingWindow}
+      />
+    )
+  }, [showMappingWindow])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -612,6 +629,14 @@ const DrawerComponent_DecodeOptions = ({
             >
               <Button3 onClick={handleDECODE}>DECODE</Button3>
               {progressBarInsideDrawer && <CircularProgress />}
+              <Button1
+                onClick={() => {
+                  setShowMappingWindow(true)
+                }}
+              >
+                Show Mapping
+              </Button1>
+              {MappingWindowforDrawer_Memo}
             </Box>
           </Box>
         </Box>
@@ -619,7 +644,7 @@ const DrawerComponent_DecodeOptions = ({
     </Box>
   )
 }
-function AvailableAxes_Component() {
+const AvailableAxes_Component = () => {
   console.log('6. AvailableAxes_Component ---- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -736,9 +761,79 @@ function AvailableAxes_Component() {
   )
 }
 
+const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => {
+  console.log('7. MappingWindowforDrawer -- only once')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  var SortedMapping = SortMappingByAxis(PDO_mapped)
+  return (
+    <Dialog open={showMappingWindow} onClose={() => setShowMappingWindow(false)}>
+      <div
+        style={{
+          border: `1px solid ${colors.primary[400]}`,
+          padding: '1rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: '1rem' }}>
+          Recorded Mapping
+        </Typography>
+
+        {SortedMapping.map((OneAxis, index) => {
+          return (
+            <Box key={index}>
+              <Typography
+                variant="h5"
+                sx={{ display: 'flex', m: '1rem 0', gap: '0.4rem', color: `${colors.blue[400]}` }}
+              >
+                -- AxisID:
+                <p style={{ fontWeight: '700' }}>{OneAxis.AxisID}</p>
+              </Typography>
+              <div>
+                {Object.keys(OneAxis).map((propName) => {
+                  if (propName === 'AxisID') return null
+                  var Content = OneAxis[propName] // Array of objects
+                  return (
+                    <div
+                      key={propName}
+                      style={{
+                        display: 'flex',
+                        gap: '2rem',
+                        borderBottom: `1px solid ${colors.grey[400]}`,
+                        marginBottom: '0.4rem'
+                      }}
+                    >
+                      {/*  COBID TYPE */}
+                      <Typography variant="h5" sx={{ color: `${colors.yellow[400]}` }}>
+                        {propName}
+                      </Typography>
+                      {/* List of mapped objects */}
+                      <Box>
+                        {Content.map((object, indx) => (
+                          <div key={indx} style={{ display: 'flex', gap: '0.5rem' }}>
+                            <p style={{ color: `${colors.yellow[500]}`, fontWeight: '500' }}>
+                              {object[0]}:
+                            </p>
+                            <p style={{ color: `${colors.green[400]}` }}>{object[1]}</p>
+                            <p>{object[2]}</p>
+                            <p style={{ color: `${colors.green[400]}` }}> {object[3]}</p>
+                          </div>
+                        ))}
+                      </Box>
+                    </div>
+                  )
+                })}
+              </div>
+            </Box>
+          )
+        })}
+      </div>
+    </Dialog>
+  )
+}
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
   console.log(actualTime)
-  // console.log(diffTime)
+  console.log(diffTime)
 }

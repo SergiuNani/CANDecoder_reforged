@@ -32,10 +32,7 @@ export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
   console.log(MessagesDecoded_ArrayOfObjects)
   console.log(groupedFilteredArray)
-  console.log(whatPDOisObject('1601_01'))
-  console.log(whatPDOisObject('1601_02'))
-  console.log(whatPDOisObject('1602_03'))
-  console.log(whatPDOisObject('1602_08'))
+  console.log(PDO_mapped)
 }
 
 const DebugScene = () => {
@@ -43,7 +40,6 @@ const DebugScene = () => {
   const { FG_OptionsObject } = useContext(FG_Context)
   function handleDebugClick() {}
 
-  const title = `Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore accusamus qui obcaecati amet sequi ad nam architecto magnam laboriosam numquam atque, sed fugit consectetur omnis quod ipsum a nihil ratione nemo non autem. Cum iste itaque dicta esse, sequi quaerat, nam dolorum fugiat exercitationem deleniti, quibusdam accusantium! Cumque unde non nisi earum illo distinctio nemo amet reprehenderit repellat minus! Nemo, tempora? Facere, atque hic id incidunt necessitatibus, animi at quidem nulla ipsam omnis expedita ab accusamus aliquam iusto est vero ipsa repellat commodi placeat earum debitis! Ipsam aliquid quae eligendi, delectus quisquam excepturi explicabo dolores ipsum nemo amet? Eveniet aliquid asperiores voluptatum rem minus molestias quibusdam ipsam pariatur vero neque rerum commodi veritatis numquam odio ipsa mollitia, molestiae quam quod consequuntur error quaerat omnis. Eaque at officiis, soluta molestiae itaque temporibus accusamus veniam excepturi, corrupti, rem sint ut laborum error architecto modi debitis minima. Ex ea minima non, iusto sint et nostrum alias incidunt eligendi aperiam recusandae aliquam similique laudantium neque veritatis tempora consequuntur doloremque distinctio quam maiores inventore. Ipsa, aliquid esse. Quos placeat corporis dolorem, culpa dolores fugiat! Dolore officia nulla suscipit tenetur ad, iusto recusandae sequi enim totam autem magnam, commodi corrupti? Repellendus mollitia nostrum dicta officiis debitis?`
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>

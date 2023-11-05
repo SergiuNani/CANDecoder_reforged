@@ -469,8 +469,10 @@ export function verifyValidityOfMappingGroup(group) {
       InterpretationInfo[0][0] == '[' &&
       InterpretationInfo[0][InterpretationInfo[0].length - 1] == ']'
     ) {
-      orderMapping[orderMapping.length] = InterpretationInfo[0][7]
-      currentMapping[currentMapping.length] = InterpretationInfo[2]
+      if (InterpretationInfo[0][7]) {
+        orderMapping[orderMapping.length] = InterpretationInfo[0][7]
+        currentMapping[currentMapping.length] = InterpretationInfo[2]
+      }
     }
     if (
       InterpretationInfo[0][0] == '[' &&
@@ -502,4 +504,39 @@ export function verifyValidityOfMappingGroup(group) {
   }
 
   return [returnText, currectCOBID, errorStatus]
+}
+export function verifyRepetitiveGroup(group) {
+  var emptyLines = 0
+  var syncLines = 0
+  var NMT_M = 0
+  var invalidLines = 0
+  var returnText = ''
+  group.forEach((oneMessage) => {
+    if (oneMessage.CobID == 'invalid') {
+      invalidLines++
+    } else if (oneMessage.type == 'SYNC') {
+      syncLines++
+    } else if (oneMessage.CobID == 'Empty') {
+      emptyLines++
+    } else if (oneMessage.type == 'NMT_M') {
+      NMT_M++
+    }
+  })
+  var sum = emptyLines + syncLines + NMT_M + invalidLines
+  if (emptyLines) {
+    returnText = returnText.concat('Empty: ', emptyLines, ', ')
+  }
+  if (syncLines) {
+    returnText = returnText.concat('SYNC: ', syncLines, ', ')
+  }
+  if (NMT_M) {
+    returnText = returnText.concat('NMT_M: ', NMT_M, ', ')
+  }
+  if (invalidLines) {
+    returnText = returnText.concat('Invalid: ', invalidLines, ', ')
+  }
+  if (sum) {
+    returnText = returnText.concat('Total: ', sum)
+  }
+  return returnText
 }
