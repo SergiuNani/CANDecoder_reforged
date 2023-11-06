@@ -39,7 +39,6 @@ import { Input_AutoFormat } from '../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../functions/NumberConversion'
 import CloseIcon from '@mui/icons-material/Close'
 import { RegisterTooltip } from '../components/Register'
-import { DecodePDO_component } from './global/PDO'
 import { PDOdetectedModal } from './global/PDO'
 import {
   PDO_mapped,
@@ -267,6 +266,7 @@ const DecodedTableOptions = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
+  const [restartDecoding, setRestartDecoding] = useState(false)
 
   useEffect(() => {
     setisTableVisible(false)
@@ -282,12 +282,14 @@ const DecodedTableOptions = ({
     return CreateDecodedArrayOfObjects(
       AllCAN_MsgsExtracted_array,
       setIsDrawerOpen,
-      globalIndex,
+      setOpenPDOModal,
       setObjectIterationPDO
     )
-  }, [fileInnerText, objectIterationPDO])
+  }, [fileInnerText, restartDecoding])
 
   const DecodePDOs_Memo = useMemo(() => {
+    console.log('DecodePDOs_Memo')
+
     return (
       <div>
         {openPDOModal && (
@@ -295,11 +297,12 @@ const DecodedTableOptions = ({
             open={openPDOModal}
             onClose={setOpenPDOModal}
             objectIteration={objectIterationPDO}
+            setRestartDecoding={setRestartDecoding}
           />
         )}
       </div>
     )
-  }, [fileInnerText, resetMainProgressBar])
+  }, [fileInnerText, resetMainProgressBar, openPDOModal])
 
   const Drawer_Memo = useMemo(() => {
     return (

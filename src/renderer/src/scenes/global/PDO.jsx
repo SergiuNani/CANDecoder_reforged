@@ -22,80 +22,80 @@ import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 let DontBotherWithPDO_flag = [0]
 let SetAllPDOsEMPTY = [0]
 
-export function DecodePDO_component({
-  MessagesDecoded_ArrayOfObjects,
-  setIsDrawerOpen,
-  resetMainProgressBar
-}) {
-  const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
-  const [object, setobject] = useState(null)
-  const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
-  const [weNeedTheModal, setWeNeedTheModal] = useState(false)
-  const [statusBarMain, setStatusBar] = useState(0)
+// export function DecodePDO_component({
+//   MessagesDecoded_ArrayOfObjects,
+//   setIsDrawerOpen,
+//   resetMainProgressBar
+// }) {
+//   const [openPDOdectectedModal, setOpenPDOdectectedModal] = useState(false)
+//   const [object, setobject] = useState(null)
+//   const [currentObjectIndex, setCurrentObjectIndex] = useState(0)
+//   const [weNeedTheModal, setWeNeedTheModal] = useState(false)
+//   const [statusBarMain, setStatusBar] = useState(0)
 
-  useEffect(() => {
-    console.log('resetMainProgressBar:', resetMainProgressBar)
-    setStatusBar(0)
-  }, [resetMainProgressBar])
+//   useEffect(() => {
+//     console.log('resetMainProgressBar:', resetMainProgressBar)
+//     setStatusBar(0)
+//   }, [resetMainProgressBar])
 
-  useEffect(() => {
-    setCurrentObjectIndex(0)
-    DontBotherWithPDO_flag[0] = 1 // BUG change it to zero
-    SetAllPDOsEMPTY[0] = 0
-  }, [MessagesDecoded_ArrayOfObjects])
+//   useEffect(() => {
+//     setCurrentObjectIndex(0)
+//     DontBotherWithPDO_flag[0] = 1 // BUG change it to zero
+//     SetAllPDOsEMPTY[0] = 0
+//   }, [MessagesDecoded_ArrayOfObjects])
 
-  useEffect(() => {
-    // Check if there are more objects to process
-    console.log('useEffect++:', currentObjectIndex)
-    if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
-      setIsDrawerOpen(false)
-      const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
+//   useEffect(() => {
+//     // Check if there are more objects to process
+//     console.log('useEffect++:', currentObjectIndex)
+//     if (currentObjectIndex < MessagesDecoded_ArrayOfObjects.length) {
+//       setIsDrawerOpen(false)
+//       const objectIteration = MessagesDecoded_ArrayOfObjects[currentObjectIndex]
 
-      // Check if the object is a PDO
-      if (objectIteration.CS === 'PDO') {
-        setWeNeedTheModal(true)
-        setobject(objectIteration)
-        DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
-      } else {
-        setTimeout(() => {
-          //Solve the  Maximum update depth exceeded
-          setWeNeedTheModal(false)
-          setCurrentObjectIndex(currentObjectIndex + 1)
-          setStatusBar((currentObjectIndex / MessagesDecoded_ArrayOfObjects.length) * 100)
-        }, 1)
-      }
-    } else {
-      setIsDrawerOpen(true)
-      setStatusBar(100)
-    }
-  }, [currentObjectIndex, MessagesDecoded_ArrayOfObjects])
+//       // Check if the object is a PDO
+//       if (objectIteration.CS === 'PDO') {
+//         setWeNeedTheModal(true)
+//         setobject(objectIteration)
+//         DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
+//       } else {
+//         setTimeout(() => {
+//           //Solve the  Maximum update depth exceeded
+//           setWeNeedTheModal(false)
+//           setCurrentObjectIndex(currentObjectIndex + 1)
+//           setStatusBar((currentObjectIndex / MessagesDecoded_ArrayOfObjects.length) * 100)
+//         }, 1)
+//       }
+//     } else {
+//       setIsDrawerOpen(true)
+//       setStatusBar(100)
+//     }
+//   }, [currentObjectIndex, MessagesDecoded_ArrayOfObjects])
 
-  return (
-    <div>
-      {openPDOdectectedModal && object && weNeedTheModal && (
-        <Box>
-          <PDOdetectedModal
-            key={currentObjectIndex}
-            open={openPDOdectectedModal}
-            onClose={setOpenPDOdectectedModal}
-            objectIteration={object}
-          />
-        </Box>
-      )}
-      <div
-        style={{
-          position: 'absolute',
-          top: '2rem',
-          right: '15rem'
-        }}
-      >
-        <CircularProgressWithLabel value={statusBarMain} />
-      </div>
-    </div>
-  )
-}
+//   return (
+//     <div>
+//       {openPDOdectectedModal && object && weNeedTheModal && (
+//         <Box>
+//           <PDOdetectedModal
+//             key={currentObjectIndex}
+//             open={openPDOdectectedModal}
+//             onClose={setOpenPDOdectectedModal}
+//             objectIteration={object}
+//           />
+//         </Box>
+//       )}
+//       <div
+//         style={{
+//           position: 'absolute',
+//           top: '2rem',
+//           right: '15rem'
+//         }}
+//       >
+//         <CircularProgressWithLabel value={statusBarMain} />
+//       </div>
+//     </div>
+//   )
+// }
 
-export function PDOdetectedModal({ open, onClose, objectIteration }) {
+export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDecoding }) {
   console.log('🚀 ~ PDOdetectedModal:' + open)
 
   const theme = useTheme()
@@ -223,6 +223,7 @@ export function PDOdetectedModal({ open, onClose, objectIteration }) {
       }
     }
     console.log('--Close modal --')
+    setRestartDecoding((prev) => !prev)
     onClose(false)
   }
 

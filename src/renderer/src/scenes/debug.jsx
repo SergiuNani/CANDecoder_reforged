@@ -30,6 +30,7 @@ import { whatPDOisObject } from '../functions/CANopenFunctions'
 import { groupedFilteredArray } from '../components/Table'
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
+
   console.log(MessagesDecoded_ArrayOfObjects)
   console.log(groupedFilteredArray)
   console.log(PDO_mapped)

@@ -246,6 +246,9 @@ function extractDATAfromROW(row, index, original) {
             //Length smaller
             aux_data = potentialLength.concat(aux_data)
           }
+        } else {
+          //--fix 201 01
+          aux_data = potentialLength.concat(aux_data)
         }
       } else {
         if (potentialLength.length == 2) {
@@ -298,14 +301,24 @@ function returnMaxFromArr(arr) {
   //Returns [MAX_nr, index_in_array]
 }
 
-export function CreateDecodedArrayOfObjects(arr, setIsDrawerOpen, setObjectIterationPDO) {
+export function CreateDecodedArrayOfObjects(
+  AllCAN_MsgsExtracted_array,
+  setIsDrawerOpen,
+  setOpenPDOModal,
+  setObjectIterationPDO
+) {
   console.log(`CreateDecodedArrayOfObjects`)
+  var arr = AllCAN_MsgsExtracted_array
+  var PDOMessageToDecode
   var ResultingArray = MessagesDecoded_ArrayOfObjects
-
+  console.log('🚀 ~Memory- we gon add shit ', ResultingArray)
+  var prematureEnd = false
   if (globalIndex[0] == 0) {
     // We reset only if we have a new log file
     CanLogStatistics = []
     ResultingArray = []
+  } else {
+    ResultingArray = ResultingArray.slice(0, ResultingArray.length - 1)
   }
 
   function createObject(
@@ -340,6 +353,7 @@ export function CreateDecodedArrayOfObjects(arr, setIsDrawerOpen, setObjectItera
     ResultingArray.push(newObj)
   }
 
+  console.log('🚀 ~ file: CANopen.js:355 ~ globalIndex:', globalIndex[0])
   for (let index = globalIndex[0]; index < arr.length; index++) {
     let row = arr[index]
     console.log('🚀 ~ file: CANopen.js:347 ~ arr.slice ~ index:', index)
@@ -348,16 +362,12 @@ export function CreateDecodedArrayOfObjects(arr, setIsDrawerOpen, setObjectItera
       row[2] = 'Empty'
       row[3] = 'Line'
       UpdateStatisticsBasedOnMessage('All', 'emptyLines')
-
-      return createObject(row[0], row[1], row[2], row[3])
+      createObject(row[0], row[1], row[2], row[3])
+      continue
     }
     var aux_CobID = CobID_who_dis(row[2])
     var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
-    if (DecodedMessage[0] == 'MissingPDO') {
-      console.log('BAD')
-      globalIndex[0] = index
-      return (index = arr.length)
-    }
+
     if (aux_CobID[2] == 'NMT') {
       //Special case for NMT axisID
 
@@ -408,9 +418,23 @@ export function CreateDecodedArrayOfObjects(arr, setIsDrawerOpen, setObjectItera
       DecodedMessage[4], //Interpretation
       DecodedMessage[5] //Error
     )
+    if (DecodedMessage[0] == 'MissingPDO') {
+      console.log('BAD')
+      PDOMessageToDecode = ResultingArray[index]
+      prematureEnd = true
+      globalIndex[0] = index
+      index = arr.length
+      continue
+    }
   }
 
-  setIsDrawerOpen(true)
+  if (!prematureEnd) {
+    setIsDrawerOpen(true)
+  } else {
+    console.log('-------------------PREMATURE EXIT')
+    setOpenPDOModal(true)
+    setObjectIterationPDO(PDOMessageToDecode)
+  }
   return ResultingArray
 }
 
