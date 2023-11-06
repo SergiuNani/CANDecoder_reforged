@@ -14,13 +14,17 @@ import { Input_AutoFormat } from '../../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../../functions/NumberConversion'
 
 import { RegisterTooltip } from '../../components/Register'
-import { PDO_mapped, GetObject, helping_DecodePDO } from '../../functions/CANopenFunctions'
+import {
+  PDO_mapped,
+  GetObject,
+  helping_DecodePDO,
+  DontBotherWithPDO_flag,
+  SetAllPDOsEMPTY
+} from '../../functions/CANopenFunctions'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../../components/FloatingComponents'
-import { DefaultPDOs, CompatibleMapping, CompatibleMapping1 } from '../../data/SmallData'
+import { DefaultPDOs, CompatibleMapping, CompatibleMapping_NoSpace } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
-let DontBotherWithPDO_flag = [0]
-let SetAllPDOsEMPTY = [0]
 
 // export function DecodePDO_component({
 //   MessagesDecoded_ArrayOfObjects,
@@ -535,7 +539,7 @@ export function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenP
 
     frameData = frameData.length * 4
 
-    PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping1[frameData]
+    PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping_NoSpace[frameData]
   } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
     //WE dont know anything about this PDO so we leave it empty
     PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']

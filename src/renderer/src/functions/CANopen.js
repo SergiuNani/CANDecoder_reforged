@@ -311,7 +311,6 @@ export function CreateDecodedArrayOfObjects(
   var arr = AllCAN_MsgsExtracted_array
   var PDOMessageToDecode
   var ResultingArray = MessagesDecoded_ArrayOfObjects
-  console.log('🚀 ~Memory- we gon add shit ', ResultingArray)
   var prematureEnd = false
   if (globalIndex[0] == 0) {
     // We reset only if we have a new log file
@@ -353,7 +352,7 @@ export function CreateDecodedArrayOfObjects(
     ResultingArray.push(newObj)
   }
 
-  console.log('🚀 ~ file: CANopen.js:355 ~ globalIndex:', globalIndex[0])
+  // console.log('🚀 ~ file: CANopen.js:355 ~ globalIndex:', globalIndex[0])
   for (let index = globalIndex[0]; index < arr.length; index++) {
     let row = arr[index]
     console.log('🚀 ~ file: CANopen.js:347 ~ arr.slice ~ index:', index)

@@ -58,7 +58,7 @@ export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 
 const Decode_CAN_LOG_Window = () => {
-  console.log('1. Decode_CAN_LOG_Window')
+  console.log('-1---. Decode_CAN_LOG_Window')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
@@ -260,7 +260,7 @@ const DecodedTableOptions = ({
   shortcutToDecodeMessages,
   resetMainProgressBar
 }) => {
-  console.log('2. DecodedTableOptions')
+  console.log('-2---. DecodedTableOptions')
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -271,14 +271,13 @@ const DecodedTableOptions = ({
   useEffect(() => {
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
-
   AllCAN_MsgsExtracted_array = useMemo(() => {
     console.log('XXXX - AllCAN_MsgsExtracted_array -  only once')
     return Extract_MSGs_from_text(fileInnerText.split('\n'))
   }, [fileInnerText])
 
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
-    console.log('OFFFFFFFFFFF - MessagesDecoded_ArrayOfObjects')
+    console.log('OFFF - MessagesDecoded_ArrayOfObjects')
     return CreateDecodedArrayOfObjects(
       AllCAN_MsgsExtracted_array,
       setIsDrawerOpen,
@@ -288,8 +287,6 @@ const DecodedTableOptions = ({
   }, [fileInnerText, restartDecoding])
 
   const DecodePDOs_Memo = useMemo(() => {
-    console.log('DecodePDOs_Memo')
-
     return (
       <div>
         {openPDOModal && (

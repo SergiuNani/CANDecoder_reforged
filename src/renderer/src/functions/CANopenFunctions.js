@@ -17,7 +17,7 @@ import {
   Mapping_objects_array_basedOnType,
   ObjectDescriptions
 } from '../data/SmallData'
-
+import { CompatibleMapping_NoSpace } from '../data/SmallData'
 export function whatFG_isObject(obj) {
   obj = obj.toUpperCase()
 
@@ -786,7 +786,7 @@ export function DecodeOnePDOmsg(cobID_array, message) {
 
     frameData = frameData.length * 4
 
-    PDO_mapped[cobID_array[2]][cobID_array[1]] = CompatibleMapping1[frameData]
+    PDO_mapped[cobID_array[2]][cobID_array[1]] = CompatibleMapping_NoSpace[frameData]
   } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
     //WE dont know anything about this PDO so we leave it empty
     PDO_mapped[cobID_array[2]][cobID_array[1]] = ['-']
