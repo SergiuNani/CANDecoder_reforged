@@ -317,8 +317,9 @@ export function CreateDecodedArrayOfObjects(
     CanLogStatistics = []
     ResultingArray = []
   } else {
-    ResultingArray = ResultingArray.slice(0, ResultingArray.length - 1)
+    ResultingArray = ResultingArray.slice(0, globalIndex[0])
   }
+  console.log('🚀  ResultingArray Before:', ResultingArray)
 
   function createObject(
     msgNr,
@@ -355,7 +356,7 @@ export function CreateDecodedArrayOfObjects(
   // console.log('🚀 ~ file: CANopen.js:355 ~ globalIndex:', globalIndex[0])
   for (let index = globalIndex[0]; index < arr.length; index++) {
     let row = arr[index]
-    console.log('🚀 ~ file: CANopen.js:347 ~ arr.slice ~ index:', index)
+    console.log('🚀Iteration: ', index)
     //Handle Empty Lines
     if (row[1] == '') {
       row[2] = 'Empty'
@@ -431,6 +432,8 @@ export function CreateDecodedArrayOfObjects(
     setIsDrawerOpen(true)
   } else {
     console.log('-------------------PREMATURE EXIT')
+    console.log('🚀  ResultingArray After:', ResultingArray)
+
     setOpenPDOModal(true)
     setObjectIterationPDO(PDOMessageToDecode)
   }

@@ -85,7 +85,7 @@ const Decode_CAN_LOG_Window = () => {
       const reader = new FileReader()
 
       reader.onload = (e) => {
-        DontBotherWithPDO_flag[0] = 0 // Reset the convinience not to specify the PDOs
+        DontBotherWithPDO_flag[0] = 0 //BUG -  Reset the convinience not to specify the PDOs
         SetAllPDOsEMPTY[0] = 0
         for (const prop in PDO_mapped) {
           //We reseting all the mapping which was done up to now
@@ -273,6 +273,7 @@ const DecodedTableOptions = ({
   }, [hideTableForceParentToggle])
   AllCAN_MsgsExtracted_array = useMemo(() => {
     console.log('XXXX - AllCAN_MsgsExtracted_array -  only once')
+    globalIndex = [0]
     return Extract_MSGs_from_text(fileInnerText.split('\n'))
   }, [fileInnerText])
 
@@ -356,6 +357,7 @@ const DrawerComponent_DecodeOptions = ({
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(true)
 
+  const isInitialMount = useRef(true)
   //Shortcut to open/close drawer
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -369,10 +371,18 @@ const DrawerComponent_DecodeOptions = ({
       window.removeEventListener('keydown', handleKeyPress)
     }
   }, [])
+  console.log(
+    '🚀 ~ file: Decode_CAN_LOG.jsx:385 ~ shortcutToDecodeMessages:',
+    shortcutToDecodeMessages
+  )
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
-    if (isDrawerOpen && false) {
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return
+    }
+    if (isDrawerOpen) {
       handleDECODE()
     }
   }, [shortcutToDecodeMessages])
@@ -857,6 +867,6 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
-  console.log(actualTime)
-  console.log(diffTime)
+  // console.log(actualTime)
+  // console.log(diffTime)
 }
