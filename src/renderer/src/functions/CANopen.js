@@ -310,7 +310,7 @@ export function CreateDecodedArrayOfObjects(
   setOpenPDOModal,
   setObjectIterationPDO
 ) {
-  console.log(`CreateDecodedArrayOfObjects`)
+  console.log(`DANGER -- CreateDecodedArrayOfObjects`)
   var arr = AllCAN_MsgsExtracted_array
   var PDOMessageToDecode
   var ResultingArray = MessagesDecoded_ArrayOfObjects
@@ -322,8 +322,6 @@ export function CreateDecodedArrayOfObjects(
   } else {
     ResultingArray = ResultingArray.slice(0, globalIndex[0])
   }
-  console.log('🚀  ResultingArray Before:', ResultingArray)
-
   function createObject(
     msgNr,
     OriginalMessage,
@@ -355,11 +353,8 @@ export function CreateDecodedArrayOfObjects(
 
     ResultingArray.push(newObj)
   }
-
-  // console.log('🚀 ~ file: CANopen.js:355 ~ globalIndex:', globalIndex[0])
   for (let index = globalIndex[0]; index < arr.length; index++) {
     let row = arr[index]
-    console.log('🚀Iteration: ', index)
     //Handle Empty Lines
     if (row[1] == '') {
       row[2] = 'Empty'
@@ -435,8 +430,6 @@ export function CreateDecodedArrayOfObjects(
     setIsDrawerOpen(true)
   } else {
     console.log('-------------------PREMATURE EXIT')
-    console.log('🚀  ResultingArray After:', ResultingArray)
-
     setOpenPDOModal(true)
     setObjectIterationPDO(PDOMessageToDecode)
   }

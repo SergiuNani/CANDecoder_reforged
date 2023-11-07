@@ -74,6 +74,9 @@ export function GetObject(index) {
     subIndex = index.slice(4, 7)
     index = index.slice(0, 4)
   } else if (index.length < 4) {
+    if (index == '--') {
+      return [`${index}`, 'Left Empty', 0]
+    }
     return [`${index}`, 'Nothing Found', 0]
   }
   var SearchResult = Objects_collection_LS.filter((object) => object.Index.match(index))
@@ -496,84 +499,12 @@ export function checkSDOforMapping(object, data, axisID) {
           interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
           break
         case '01':
-          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
-          object = GetObject(object)
-
-          //How many bytes the object is being mapped on
-          var mappingSize = data.slice(6, 8)
-          if (mappingSize == '08') {
-            mappingSize = 8
-          } else if (mappingSize == '10') {
-            mappingSize = 16
-          } else if (mappingSize == '20') {
-            mappingSize = 32
-          }
-          //Check if Object size is not equal to the defined mapping size
-          if (mappingSize != object[2]) {
-            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
-            errorStatus = 'error'
-          } else {
-            interpretationInfo = interpretationInfo.concat(`[1] - ${object[0]} - ${object[1]}`)
-            if (!PDO_mapped[typePDO][axisID]) {
-              PDO_mapped[typePDO][axisID] = []
-            }
-            PDO_mapped[typePDO][axisID][0] = object[0]
-          }
-
-          break
         case '02':
-          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
-          object = GetObject(object)
-          //How many bytes the object is being mapped on
-          var mappingSize = data.slice(6, 8)
-          if (mappingSize == '08') {
-            mappingSize = 8
-          } else if (mappingSize == '10') {
-            mappingSize = 16
-          } else if (mappingSize == '20') {
-            mappingSize = 32
-          }
-          //Check if Object size is not equal to the defined mapping size
-          if (mappingSize != object[2]) {
-            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
-            errorStatus = 'error'
-          } else {
-            interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
-            if (!PDO_mapped[typePDO][axisID]) {
-              PDO_mapped[typePDO][axisID] = []
-            }
-            PDO_mapped[typePDO][axisID][1] = object[0]
-          }
-
-          break
         case '03':
-          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
-          object = GetObject(object)
-          //How many bytes the object is being mapped on
-          var mappingSize = data.slice(6, 8)
-          if (mappingSize == '08') {
-            mappingSize = 8
-          } else if (mappingSize == '10') {
-            mappingSize = 16
-          } else if (mappingSize == '20') {
-            mappingSize = 32
-          }
-          //Check if Object size is not equal to the defined mapping size
-          if (mappingSize != object[2]) {
-            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
-            errorStatus = 'error'
-          } else {
-            interpretationInfo = interpretationInfo.concat(`[3] - ${object[0]} - ${object[1]}`)
-            if (!PDO_mapped[typePDO][axisID]) {
-              PDO_mapped[typePDO][axisID] = []
-            }
-            PDO_mapped[typePDO][axisID][2] = object[0]
-          }
-
-          break
         case '04':
           var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
           object = GetObject(object)
+          var subindexNr = parseInt(aux_thirdByte)
           //How many bytes the object is being mapped on
           var mappingSize = data.slice(6, 8)
           if (mappingSize == '08') {
@@ -588,11 +519,13 @@ export function checkSDOforMapping(object, data, axisID) {
             interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
             errorStatus = 'error'
           } else {
-            interpretationInfo = interpretationInfo.concat(`[4] - ${object[0]} - ${object[1]}`)
+            interpretationInfo = interpretationInfo.concat(
+              `[${subindexNr}] - ${object[0]} - ${object[1]}`
+            )
             if (!PDO_mapped[typePDO][axisID]) {
               PDO_mapped[typePDO][axisID] = []
             }
-            PDO_mapped[typePDO][axisID][3] = object[0]
+            PDO_mapped[typePDO][axisID][subindexNr - 1] = object[0]
           }
 
           break
@@ -643,83 +576,12 @@ export function checkSDOforMapping(object, data, axisID) {
           interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
           break
         case '01':
-          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
-          object = GetObject(object)
-          //How many bytes the object is being mapped on
-          var mappingSize = data.slice(6, 8)
-          if (mappingSize == '08') {
-            mappingSize = 8
-          } else if (mappingSize == '10') {
-            mappingSize = 16
-          } else if (mappingSize == '20') {
-            mappingSize = 32
-          }
-          //Check if Object size is not equal to the defined mapping size
-          if (mappingSize != object[2]) {
-            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
-            errorStatus = 'error'
-          } else {
-            interpretationInfo = interpretationInfo.concat(`[1] - ${object[0]} - ${object[1]}`)
-            if (!PDO_mapped[typePDO][axisID]) {
-              PDO_mapped[typePDO][axisID] = []
-            }
-            PDO_mapped[typePDO][axisID][0] = object[0]
-          }
-
-          break
         case '02':
-          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
-          object = GetObject(object)
-          //How many bytes the object is being mapped on
-          var mappingSize = data.slice(6, 8)
-          if (mappingSize == '08') {
-            mappingSize = 8
-          } else if (mappingSize == '10') {
-            mappingSize = 16
-          } else if (mappingSize == '20') {
-            mappingSize = 32
-          }
-          //Check if Object size is not equal to the defined mapping size
-          if (mappingSize != object[2]) {
-            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
-            errorStatus = 'error'
-          } else {
-            interpretationInfo = interpretationInfo.concat(`[2] - ${object[0]} - ${object[1]}`)
-            if (!PDO_mapped[typePDO][axisID]) {
-              PDO_mapped[typePDO][axisID] = []
-            }
-            PDO_mapped[typePDO][axisID][1] = object[0]
-          }
-
-          break
         case '03':
-          var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
-          object = GetObject(object)
-          //How many bytes the object is being mapped on
-          var mappingSize = data.slice(6, 8)
-          if (mappingSize == '08') {
-            mappingSize = 8
-          } else if (mappingSize == '10') {
-            mappingSize = 16
-          } else if (mappingSize == '20') {
-            mappingSize = 32
-          }
-          //Check if Object size is not equal to the defined mapping size
-          if (mappingSize != object[2]) {
-            interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
-            errorStatus = 'error'
-          } else {
-            interpretationInfo = interpretationInfo.concat(`[3] - ${object[0]} - ${object[1]}`)
-            if (!PDO_mapped[typePDO][axisID]) {
-              PDO_mapped[typePDO][axisID] = []
-            }
-            PDO_mapped[typePDO][axisID][2] = object[0]
-          }
-
-          break
         case '04':
           var object = ''.concat(data.slice(0, 4) + '_' + data.slice(4, 6))
           object = GetObject(object)
+          var subindexNr = parseInt(aux_thirdByte)
           //How many bytes the object is being mapped on
           var mappingSize = data.slice(6, 8)
           if (mappingSize == '08') {
@@ -734,11 +596,13 @@ export function checkSDOforMapping(object, data, axisID) {
             interpretationInfo = `Mapping Error:  ${object[0]} has ${object[2]} bits, not ${mappingSize}bits`
             errorStatus = 'error'
           } else {
-            interpretationInfo = interpretationInfo.concat(`[4] - ${object[0]} - ${object[1]}`)
+            interpretationInfo = interpretationInfo.concat(
+              `[${subindexNr}] - ${object[0]} - ${object[1]}`
+            )
             if (!PDO_mapped[typePDO][axisID]) {
               PDO_mapped[typePDO][axisID] = []
             }
-            PDO_mapped[typePDO][axisID][3] = object[0]
+            PDO_mapped[typePDO][axisID][subindexNr - 1] = object[0]
           }
 
           break
@@ -746,6 +610,7 @@ export function checkSDOforMapping(object, data, axisID) {
     }
 
     if (errorStatus == '') errorStatus = 'blue'
+    console.log('END of one SDO mapping: ', PDO_mapped)
     return [interpretationInfo, errorStatus]
   } else return null
 }
@@ -986,15 +851,8 @@ export function DecodeNMT_Monitoring(message) {
 }
 
 export function DecodeSYNC(message) {
-  var interpretation
-  var errorStatus
-
-  if (message == '' || message == '0') {
-    interpretation = 'SYNC'
-  } else {
-    interpretation = 'SYNC: Data should be nothing, however this is still OK'
-    errorStatus = 'warning'
-  }
+  var interpretation = 'SYNC'
+  var errorStatus = 'good'
 
   return ['-', '-', '-', '-', interpretation, errorStatus]
 }

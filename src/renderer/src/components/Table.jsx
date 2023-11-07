@@ -164,7 +164,7 @@ const TableROW = ({ iteration }) => {
   )
 }
 
-const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
+const TableRowGroup1 = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -233,7 +233,57 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
     </Accordion>
   )
 }
+const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
+  const [expanded, setExpanded] = useState(false)
+
+  const toggleAccordion = () => {
+    setExpanded(!expanded)
+  }
+
+  return (
+    <section style={{ border: `1px solid yellow` }}>
+      {/* HEADER */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <p
+          style={{
+            // color: colors.yellow[500],
+            fontSize: '1.2rem',
+            textAlign: 'center',
+            justifySelf: 'center',
+            padding: 0
+          }}
+        >
+          {groupTitle}
+        </p>
+        <p
+          style={{
+            color: `${colors.grey[200]}`,
+            marginLeft: '1rem'
+          }}
+        >
+          - {groupSubTitle}
+        </p>
+        <ExpandMoreIcon />
+      </div>
+      {/* ALL THE MESSAGES IN THE GROUP */}
+      <div
+        sx={{
+          padding: '0px',
+          borderBottom: `3px solid ${colors.blue[100]}`
+        }}
+      >
+        <div>
+          {groupData.slice(1).map((iteration, index) => {
+            return <TableROW key={index} iteration={iteration} />
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
 export function CreateGroupedFilteredArray(
   allMessages,
   GroupingOptionsForMessages,

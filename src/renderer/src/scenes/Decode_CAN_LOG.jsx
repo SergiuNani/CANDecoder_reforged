@@ -287,12 +287,14 @@ const DecodedTableOptions = ({
       setObjectIterationPDO
     )
   }, [fileInnerText, restartDecoding])
-
+  console.log('opa: ----------------- ')
+  console.log(MessagesDecoded_ArrayOfObjects)
   const DecodePDOs_Memo = useMemo(() => {
     return (
       <div>
         {openPDOModal && (
           <PDOdetectedModal
+            key={openPDOModal}
             open={openPDOModal}
             onClose={setOpenPDOModal}
             objectIteration={objectIterationPDO}
@@ -374,11 +376,13 @@ const DrawerComponent_DecodeOptions = ({
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
+    handleDECODE() // BUG - remvoe
+
     if (isInitialMount.current) {
       isInitialMount.current = false
       return // Skip the first render on mount
     } else if (isDrawerOpen) {
-      handleDECODE() // BUG - this is not working with StrictMode
+      // handleDECODE() // BUG - this is not working with StrictMode
     }
   }, [shortcutToDecodeMessages])
   //Groups the messages and shows the table

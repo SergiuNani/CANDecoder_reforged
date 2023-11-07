@@ -100,8 +100,6 @@ import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 // }
 
 export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDecoding }) {
-  console.log('🚀 ~ PDOdetectedModal:' + open)
-
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -220,10 +218,10 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
     } else {
       // EMPTY PDOs is selected
       if (allEmpty) {
-        PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']
+        PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['--']
         SetAllPDOsEMPTY[0] = 1
       } else {
-        PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']
+        PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['--']
       }
     }
     console.log('--Close modal --')
