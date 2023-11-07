@@ -1,7 +1,10 @@
 export var InsertTextIntoTextArea = `
 7664 15108.218 DT 0080 Rx 0
 201 00
+201 0
+201 1
 201 01
+202 01
 7721     15183.995 DT     0080 Rx 0
  `
 

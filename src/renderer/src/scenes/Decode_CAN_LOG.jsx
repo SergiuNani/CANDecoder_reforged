@@ -128,6 +128,7 @@ const Decode_CAN_LOG_Window = () => {
           //Open Drawer, hide table
           handleClickArrow()
         } else {
+          console.log('IT IS BAD ---------')
           setShortcutToDecodeMessages((prev) => !prev)
         }
       } else if (event.ctrlKey && event.key === 'Tab') {
@@ -355,13 +356,12 @@ const DrawerComponent_DecodeOptions = ({
   const [messageTypeSorting, setMessageTypeSorting] = useState('all')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
-  const [showMappingWindow, setShowMappingWindow] = useState(true)
+  const [showMappingWindow, setShowMappingWindow] = useState(false)
 
   const isInitialMount = useRef(true)
   //Shortcut to open/close drawer
   useEffect(() => {
     const handleKeyPress = (event) => {
-      console.log('event.key')
       if (event.ctrlKey && event.key === '`') {
         setIsDrawerOpen((prev) => !prev)
       }
@@ -371,19 +371,14 @@ const DrawerComponent_DecodeOptions = ({
       window.removeEventListener('keydown', handleKeyPress)
     }
   }, [])
-  console.log(
-    '🚀 ~ file: Decode_CAN_LOG.jsx:385 ~ shortcutToDecodeMessages:',
-    shortcutToDecodeMessages
-  )
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
-      return
-    }
-    if (isDrawerOpen) {
-      handleDECODE()
+      // Skip the first render on mount
+    } else if (isDrawerOpen) {
+      handleDECODE() // BUG - this is not working with StrictMode
     }
   }, [shortcutToDecodeMessages])
   //Groups the messages and shows the table
