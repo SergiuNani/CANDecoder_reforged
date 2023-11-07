@@ -261,6 +261,9 @@ function extractDATAfromROW(row, index, original) {
             //If length is expressed as 01 and message as xx
             aux_data = potentialLength.concat(aux_data)
           }
+          if (potentialLength == '00' && row[index] != '080' && row[index] != '80') {
+            aux_data = potentialLength.concat(aux_data)
+          }
         }
       }
     } else {

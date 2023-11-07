@@ -376,7 +376,7 @@ const DrawerComponent_DecodeOptions = ({
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
-      // Skip the first render on mount
+      return // Skip the first render on mount
     } else if (isDrawerOpen) {
       handleDECODE() // BUG - this is not working with StrictMode
     }
