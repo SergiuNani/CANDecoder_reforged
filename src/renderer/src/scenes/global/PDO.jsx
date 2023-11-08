@@ -100,6 +100,7 @@ import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 // }
 
 export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDecoding }) {
+  console.log('!!! PDOdetectedModal:')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 

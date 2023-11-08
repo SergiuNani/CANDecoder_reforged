@@ -58,7 +58,7 @@ export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 
 const Decode_CAN_LOG_Window = () => {
-  console.log('-1---. Decode_CAN_LOG_Window')
+  console.log('---1---. Decode_CAN_LOG_Window')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
@@ -261,7 +261,7 @@ const DecodedTableOptions = ({
   shortcutToDecodeMessages,
   resetMainProgressBar
 }) => {
-  console.log('-2---. DecodedTableOptions')
+  console.log('---2---. DecodedTableOptions')
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -273,13 +273,13 @@ const DecodedTableOptions = ({
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
   AllCAN_MsgsExtracted_array = useMemo(() => {
-    console.log('XXXX - AllCAN_MsgsExtracted_array -  only once')
+    console.log('-2.1- - AllCAN_MsgsExtracted_array -  only once')
     globalIndex = [0]
     return Extract_MSGs_from_text(fileInnerText.split('\n'))
   }, [fileInnerText])
 
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
-    console.log('OFFF - MessagesDecoded_ArrayOfObjects')
+    console.log('-2.2- - MessagesDecoded_ArrayOfObjects')
     return CreateDecodedArrayOfObjects(
       AllCAN_MsgsExtracted_array,
       setIsDrawerOpen,
@@ -287,8 +287,6 @@ const DecodedTableOptions = ({
       setObjectIterationPDO
     )
   }, [fileInnerText, restartDecoding])
-  console.log('opa: ----------------- ')
-  console.log(MessagesDecoded_ArrayOfObjects)
   const DecodePDOs_Memo = useMemo(() => {
     return (
       <div>
@@ -306,6 +304,7 @@ const DecodedTableOptions = ({
   }, [fileInnerText, resetMainProgressBar, openPDOModal])
 
   const Drawer_Memo = useMemo(() => {
+    // return null
     return (
       <DrawerComponent_DecodeOptions
         setisTableVisible={setisTableVisible}
@@ -350,7 +349,7 @@ const DrawerComponent_DecodeOptions = ({
   setTableOption,
   shortcutToDecodeMessages
 }) => {
-  console.log('3. DrawerComponent_DecodeOptions')
+  console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -376,7 +375,7 @@ const DrawerComponent_DecodeOptions = ({
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
-    handleDECODE() // BUG - remvoe
+    // handleDECODE() // BUG - remvoe
 
     if (isInitialMount.current) {
       isInitialMount.current = false
@@ -677,7 +676,7 @@ const DrawerComponent_DecodeOptions = ({
   )
 }
 const AvailableAxes_Component = () => {
-  console.log('4. AvailableAxes_Component ---- only once')
+  console.log('---4---. AvailableAxes_Component ---- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [renderToggle, setRenderToggle] = useState(true)
@@ -794,7 +793,7 @@ const AvailableAxes_Component = () => {
 }
 
 const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => {
-  console.log('5. MappingWindowforDrawer -- only once')
+  console.log('---5---. MappingWindowforDrawer -- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var SortedMapping = SortMappingByAxis(PDO_mapped)

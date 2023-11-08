@@ -8,9 +8,9 @@ import {
 } from './CANopenFunctions'
 import { DecodeTCANglobal } from './TechnoCAN'
 import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
-import { DecodeOnePDOmsg } from './CANopenFunctions'
+import { DecodeOnePDOmsg, PDO_mapped } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
-
+import { CompatibleMapping_NoSpace } from '../data/SmallData'
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
   var axis_id = 0
@@ -319,9 +319,18 @@ export function CreateDecodedArrayOfObjects(
     // We reset only if we have a new log file
     CanLogStatistics = []
     ResultingArray = []
+
+    for (const prop in PDO_mapped) {
+      //We reseting all the mapping which was done up to now - this is for dear old Strict mode
+      if (PDO_mapped.hasOwnProperty(prop)) {
+        PDO_mapped[prop] = []
+      }
+    }
   } else {
     ResultingArray = ResultingArray.slice(0, globalIndex[0])
+    console.log('🚀 ~ file: CANopen.js:324 ~ [0]:', [0])
   }
+
   function createObject(
     msgNr,
     OriginalMessage,
@@ -353,7 +362,11 @@ export function CreateDecodedArrayOfObjects(
 
     ResultingArray.push(newObj)
   }
+
   for (let index = globalIndex[0]; index < arr.length; index++) {
+    console.log('🚀 index:', index)
+    console.log('🚀 RPDO1:', PDO_mapped.RPDO1)
+
     let row = arr[index]
     //Handle Empty Lines
     if (row[1] == '') {

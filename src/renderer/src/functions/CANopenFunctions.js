@@ -526,6 +526,7 @@ export function checkSDOforMapping(object, data, axisID) {
               PDO_mapped[typePDO][axisID] = []
             }
             PDO_mapped[typePDO][axisID][subindexNr - 1] = object[0]
+            console.log(`We mapped ${object[0]} on ${typePDO} for axis ${axisID}`)
           }
 
           break
@@ -603,6 +604,7 @@ export function checkSDOforMapping(object, data, axisID) {
               PDO_mapped[typePDO][axisID] = []
             }
             PDO_mapped[typePDO][axisID][subindexNr - 1] = object[0]
+            console.log(`We mapped ${object[0]} on ${typePDO} for axis ${axisID}`)
           }
 
           break
@@ -610,7 +612,6 @@ export function checkSDOforMapping(object, data, axisID) {
     }
 
     if (errorStatus == '') errorStatus = 'blue'
-    console.log('END of one SDO mapping: ', PDO_mapped)
     return [interpretationInfo, errorStatus]
   } else return null
 }
@@ -653,7 +654,7 @@ export function DecodeOnePDOmsg(cobID_array, message) {
     PDO_mapped[cobID_array[2]][cobID_array[1]] = CompatibleMapping_NoSpace[frameData]
   } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
     //WE dont know anything about this PDO so we leave it empty
-    PDO_mapped[cobID_array[2]][cobID_array[1]] = ['-']
+    PDO_mapped[cobID_array[2]][cobID_array[1]] = ['--']
   }
   //---------------zzz
   if (!PDO_mapped[cobID_array[2]][cobID_array[1]]) {
@@ -665,6 +666,8 @@ export function DecodeOnePDOmsg(cobID_array, message) {
 }
 
 export function helping_DecodePDO(cobID_array, message) {
+  console.log('🚀 helping_DecodePDO:')
+  // console.log('🚀 :', PDO_mapped)
   var MappedObjects = PDO_mapped[cobID_array[2]][cobID_array[1]]
   var CS = MappedObjects.length
 
