@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react'
+import { useState, createContext, Profiler } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
@@ -90,28 +90,36 @@ function MyProviders({ children }) {
   const [FG_OptionsObject, setFG_OptionsObject] = useState(FG_OptionsStarter)
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <MotorSpecificationsContext.Provider
-          value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
-        >
-          <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-            <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
-              <FG_Context.Provider
-                value={{
-                  FG_DisplayVSApplied,
-                  setFG_DisplayVSApplied,
-                  FG_OptionsObject,
-                  setFG_OptionsObject
-                }}
-              >
-                {children}
-              </FG_Context.Provider>
-            </UserVsDebugModeContext.Provider>
-          </SidebarContext.Provider>
-        </MotorSpecificationsContext.Provider>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <Profiler id="MyComponent" onRender={logProfilerData}>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <MotorSpecificationsContext.Provider
+            value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+          >
+            <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
+              <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
+                <FG_Context.Provider
+                  value={{
+                    FG_DisplayVSApplied,
+                    setFG_DisplayVSApplied,
+                    FG_OptionsObject,
+                    setFG_OptionsObject
+                  }}
+                >
+                  {children}
+                </FG_Context.Provider>
+              </UserVsDebugModeContext.Provider>
+            </SidebarContext.Provider>
+          </MotorSpecificationsContext.Provider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </Profiler>
   )
+}
+var diffTime = 0
+function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
+  diffTime += commitTime - startTime
+  console.log(actualTime)
+  // console.log(diffTime)
 }

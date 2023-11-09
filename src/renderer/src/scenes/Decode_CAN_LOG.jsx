@@ -149,14 +149,12 @@ const Decode_CAN_LOG_Window = () => {
           fontSize: '1.2rem'
         }}
       >
-        <Profiler id="MyComponent" onRender={logProfilerData}>
-          <DecodedTableOptions
-            fileInnerText={fileInnerText}
-            shortcutToDecodeMessages={shortcutToDecodeMessages}
-            resetMainProgressBar={resetMainProgressBar}
-            hideTableForceParentToggle={hideTableForceParentToggle}
-          />
-        </Profiler>
+        <DecodedTableOptions
+          fileInnerText={fileInnerText}
+          shortcutToDecodeMessages={shortcutToDecodeMessages}
+          resetMainProgressBar={resetMainProgressBar}
+          hideTableForceParentToggle={hideTableForceParentToggle}
+        />
       </Box>
     )
   }, [fileInnerText, shortcutToDecodeMessages])
@@ -375,7 +373,7 @@ const DrawerComponent_DecodeOptions = ({
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
-    // handleDECODE() // BUG - remvoe
+    handleDECODE() // BUG - remvoe
 
     if (isInitialMount.current) {
       isInitialMount.current = false
@@ -861,10 +859,4 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
       </div>
     </Dialog>
   )
-}
-var diffTime = 0
-function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
-  diffTime += commitTime - startTime
-  // console.log(actualTime)
-  // console.log(diffTime)
 }

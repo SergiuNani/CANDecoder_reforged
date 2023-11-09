@@ -10,7 +10,6 @@ import { DecodeTCANglobal } from './TechnoCAN'
 import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
 import { DecodeOnePDOmsg, PDO_mapped } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
-import { CompatibleMapping_NoSpace } from '../data/SmallData'
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
   var axis_id = 0
@@ -365,7 +364,6 @@ export function CreateDecodedArrayOfObjects(
 
   for (let index = globalIndex[0]; index < arr.length; index++) {
     console.log('🚀 index:', index)
-    console.log('🚀 RPDO1:', PDO_mapped.RPDO1)
 
     let row = arr[index]
     //Handle Empty Lines

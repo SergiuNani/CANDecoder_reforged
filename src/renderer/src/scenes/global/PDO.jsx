@@ -23,7 +23,7 @@ import {
 } from '../../functions/CANopenFunctions'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../../components/FloatingComponents'
-import { DefaultPDOs, CompatibleMapping, CompatibleMapping_NoSpace } from '../../data/SmallData'
+import { DefaultPDOs, CompatibleMapping } from '../../data/SmallData'
 import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 
 // export function DecodePDO_component({
@@ -526,6 +526,16 @@ function InputRow({ label, resolution, object, setObject, objectSub, setObjectSu
 //--------------------------------------------------------
 export function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
   console.log('Inside DecodeOnePDOmsg++')
+  const CompatibleMapping_NoSpace1 = {
+    8: ['6060'],
+    16: ['6040'],
+    24: ['6040', '100D'],
+    32: ['6041', '208E'],
+    40: ['6081', '6060'],
+    48: ['607A', '2023'],
+    56: ['607A', '6041', '6061'],
+    64: ['607A', '6081']
+  }
   if (DontBotherWithPDO_flag[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
     // We write some dummy data just to get rid of PDO filling requirements
     var frameData = objectIteration.FrameData
@@ -538,7 +548,7 @@ export function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenP
 
     frameData = frameData.length * 4
 
-    PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping_NoSpace[frameData]
+    PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping_NoSpace1[frameData]
   } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
     //WE dont know anything about this PDO so we leave it empty
     PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']

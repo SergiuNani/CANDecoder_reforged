@@ -1,29 +1,20 @@
-import React, { useState, useRef, useEffect, useContext, useMemo } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   Box,
-  IconButton,
-  Button,
   Typography,
   useTheme,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Accordion,
   AccordionSummary,
   AccordionDetails
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import {
-  checkSDOforMapping,
-  whatPDOisObject,
-  whatObjectValueMeans
-} from '../functions/CANopenFunctions'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import { whatPDOisObject, whatObjectValueMeans } from '../functions/CANopenFunctions'
 import { Input_AutoFormat } from './ForumsComponents'
 import { filterDecimal } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
-import { Mapping_objects_array, GroupingOptionsForMessages } from '../data/SmallData'
-import { TooltipClickable, ProgressComponent } from '../components/SmallComponents'
+import { TooltipClickable } from '../components/SmallComponents'
 import { AllCAN_MsgsExtracted_array } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
 
@@ -164,96 +155,58 @@ const TableROW = ({ iteration }) => {
   )
 }
 
-const TableRowGroup1 = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-
-  const [expanded, setExpanded] = useState(false)
-
-  const toggleAccordion = () => {
-    setExpanded(!expanded)
-  }
-
-  return (
-    <Accordion expanded={expanded} onChange={toggleAccordion}>
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        sx={{
-          border: border ? border : null,
-          border: null,
-          background: `${colors.primary[300]}`,
-          paddingLeft: '0.5rem',
-          borderRadius: '0.5rem',
-          justifyContent: 'center',
-          alignItems: 'center',
-          fontWeight: '600',
-          fontSize: '1rem',
-          margin: '0.5rem 0',
-          padding: '0px',
-          width: widthHeader ? widthHeader : '50%',
-
-          '& .css-o4b71y-MuiAccordionSummary-content': {
-            margin: '0 !important'
-          }
-        }}
-      >
-        <div
-          style={{
-            color: colors.yellow[500],
-            fontSize: '1.2rem',
-            textAlign: 'center',
-            justifySelf: 'center',
-            padding: 0
-          }}
-        >
-          {groupTitle}
-        </div>
-        <p
-          style={{
-            color: `${colors.grey[200]}`,
-            marginLeft: '1rem'
-          }}
-        >
-          - {groupSubTitle}
-        </p>
-      </AccordionSummary>
-
-      <AccordionDetails
-        sx={{
-          padding: '0px',
-          borderBottom: `3px solid ${colors.blue[100]}`
-        }}
-      >
-        <div>
-          {groupData.slice(1).map((iteration, index) => {
-            return <TableROW key={index} iteration={iteration} />
-          })}
-        </div>
-      </AccordionDetails>
-    </Accordion>
-  )
-}
 const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
-  const [expanded, setExpanded] = useState(false)
-
-  const toggleAccordion = () => {
-    setExpanded(!expanded)
+  const groupType = groupData[0].GroupType
+  function handleClick(e) {
+    if (
+      e.target.closest('.GroupHeader').parentElement.querySelector('.GroupBody').style.display ==
+      'none'
+    ) {
+      e.target.closest('.GroupHeader').parentElement.querySelector('.GroupBody').style.display =
+        'block'
+      e.target.closest('.GroupHeader').querySelector('.IconExpand').style.transform =
+        'rotate(180deg)'
+      e.target.closest('.GroupHeader').style.background = `${colors.personal[200]}`
+    } else {
+      e.target.closest('.GroupHeader').parentElement.querySelector('.GroupBody').style.display =
+        'none'
+      e.target.closest('.GroupHeader').querySelector('.IconExpand').style.transform = 'rotate(0deg)'
+      e.target.closest('.GroupHeader').style.background = `${colors.primary[300]}`
+    }
   }
 
   return (
-    <section style={{ border: `1px solid yellow` }}>
+    <section>
       {/* HEADER */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          transition: 'all 0.3s ease-in-out',
+          padding: '0.5rem',
+          cursor: 'pointer',
+          userSelect: 'none',
+          width: '50%',
+          background: `${colors.primary[300]}`,
+          margin: '0.5rem  0 ',
+          borderRadius: '0.5rem'
+        }}
+        onClick={handleClick}
+        className="GroupHeader"
+      >
         <p
           style={{
-            // color: colors.yellow[500],
             fontSize: '1.2rem',
             textAlign: 'center',
             justifySelf: 'center',
-            padding: 0
+            color:
+              groupType == 'Repetitive'
+                ? colors.blue[500]
+                : groupType == 'Mapping'
+                ? colors.yellow[500]
+                : colors.green[500]
           }}
         >
           {groupTitle}
@@ -261,19 +214,24 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
         <p
           style={{
             color: `${colors.grey[200]}`,
-            marginLeft: '1rem'
+            marginLeft: '1rem',
+            fontSize: '0.9rem'
           }}
         >
           - {groupSubTitle}
         </p>
-        <ExpandMoreIcon />
+        <p className="IconExpand" style={{ marginLeft: 'auto' }}>
+          <ExpandMoreIcon />
+        </p>
       </div>
-      {/* ALL THE MESSAGES IN THE GROUP */}
+      {/* GROUP BODY*/}
       <div
-        sx={{
+        style={{
           padding: '0px',
-          borderBottom: `3px solid ${colors.blue[100]}`
+          borderBottom: `3px solid ${colors.blue[100]}`,
+          display: 'none'
         }}
+        className="GroupBody"
       >
         <div>
           {groupData.slice(1).map((iteration, index) => {
@@ -469,14 +427,14 @@ export const DefaultTable = () => {
           let errorStatus = ''
           if (group[0].GroupType == 'Mapping') {
             var temp = verifyValidityOfMappingGroup(group)
-            title = group[0].GroupIndicator.concat(' - ' + temp[1])
-            subtitle = temp[0].concat(' - ' + `${group.length - 1}` + ' messages')
+            title = group[0].GroupIndicator.concat(` - ${temp[1]}`)
+            subtitle = temp[0].concat(' - ' + `${group.length - 1}` + 'msg(s)')
             errorStatus = temp[2]
           } else if (group[0].GroupType == 'Modes') {
             title = whatObjectValueMeans('6060', group[0].GroupIndicator, 8)[0]
             subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
               group.length - 1
-            }messages `
+            }msg(s)`
           } else {
             //Repetitiveq
             title = 'Repetitive'
@@ -488,12 +446,6 @@ export const DefaultTable = () => {
               groupTitle={title}
               groupSubTitle={subtitle}
               groupData={group}
-              border={
-                errorStatus == 'error'
-                  ? `2px solid ${colors.red[500]}`
-                  : `2px solid ${colors.green[300]}`
-              }
-              widthHeader={'50%'}
             />
           )
         } else {

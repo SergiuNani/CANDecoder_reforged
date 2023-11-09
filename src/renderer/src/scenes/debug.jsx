@@ -3,105 +3,93 @@ import { Header } from '../components/SmallComponents'
 import { Box, Dialog, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
-import { Registers_CANopen_LS, Registers_THS_LS, FG_Context } from '../App'
-import { useLocation } from 'react-router-dom'
-import { Tooltip, Button } from '@mui/material'
-import {
-  getMaxNumberFromStringRange,
-  getRangeNumberFromStringRange,
-  decToHex,
-  hexToDec,
-  filterDecimal,
-  fixed2Hex,
-  filterDecimalWithComma,
-  LittleEndian
-} from '../functions/NumberConversion'
-import { SnackBarMessage } from '../components/FloatingComponents'
-import { Button1 } from '../components/SmallComponents'
-import { AutocompleteInput_RegisterList } from '../components/ForumsComponents'
-import { TooltipClickable } from '../components/SmallComponents'
-import { GetObject } from '../functions/CANopenFunctions'
 import { PDO_mapped } from '../functions/CANopenFunctions'
 import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
-import { RegisterTooltip } from '../components/Register'
-import { CanLogStatistics } from '../functions/CANopen'
-import { GroupingOptionsForMessages } from '../data/SmallData'
-import { whatPDOisObject } from '../functions/CANopenFunctions'
 import { groupedFilteredArray } from '../components/Table'
-export function handleDebugButton() {
-  console.log(`------ DEBUG BUTTON ----------`)
-
-  console.log(MessagesDecoded_ArrayOfObjects)
-  console.log(groupedFilteredArray)
-  console.log(PDO_mapped)
-}
-
+import {
+  VerifyCANopenValidityArray_RAW,
+  VerifyCANopenValidityArray_Decoded
+} from '../data/VerifyAlgorithmData'
+import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../functions/CANopen'
+import { Button2 } from '../components/SmallComponents'
 const DebugScene = () => {
-  const location = useLocation()
-  const { FG_OptionsObject } = useContext(FG_Context)
-  function handleDebugClick() {}
+  const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(true)
 
   return (
     <>
       <Header title="Debug" subtitle="A bunch of references "></Header>
-      <div
-        style={{
-          marginLeft: '23rem'
-        }}
-      ></div>
-      {/* <Registers_logic /> */}
+      <section>
+        <Typography variant="h4">Verify Decoding Algorithm </Typography>
+        <Button2
+          onClick={() => {
+            setverifyCANopenAlgorithm(true)
+          }}
+        >
+          Verify Algorithm
+        </Button2>
+      </section>
+      {verifyCANopenAlgorithm && (
+        <DialogVerifyAlgorithmComponent
+          verifyCANopenAlgorithm={verifyCANopenAlgorithm}
+          setverifyCANopenAlgorithm={setverifyCANopenAlgorithm}
+        />
+      )}
     </>
   )
 }
 
 export default DebugScene
 
-const Temp = () => {
-  return (
-    <div
-      style={{
-        border: `1px solid yellow`
-      }}
-    >
-      <RegisterComponent register={Registers_CANopen_LS[1]} value="1234" />
-    </div>
+const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANopenAlgorithm }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  var ReturnText = `All Good`
+  var errorStatus = 'good'
+  function DoNothing() {}
+
+  var MsgsExtracted_array = Extract_MSGs_from_text(VerifyCANopenValidityArray_RAW.split('\n'))
+
+  var MessagesDecoded = CreateDecodedArrayOfObjects(
+    MsgsExtracted_array,
+    DoNothing,
+    DoNothing,
+    DoNothing
   )
-}
-const array = ['Number: 1', 'Number: 2', 'Number: 3', 'Number: 4', 'Number: 100-----']
+  console.log('🚀 MessagesDecoded_ArrayOfObjects:', MessagesDecoded)
+  console.log('🚀 MessagesDecoded_ArrayOfObjects:', VerifyCANopenValidityArray_Decoded)
 
-function PDOcomponent() {
-  const [openModal, setOpenModal] = useState(true)
-  const [iteration, setIteration] = useState(0)
-
-  const handleApply = () => {
-    if (iteration < array.length) {
-      console.log(array[iteration])
-      setIteration(iteration + 1)
-    } else {
-      setOpenModal(false)
-    }
+  if (MessagesDecoded.length != VerifyCANopenValidityArray_Decoded.length) {
+    ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${VerifyCANopenValidityArray_Decoded.length} length`
+    errorStatus = 'error'
   }
 
   return (
-    <div>
-      <p>HELLO from PDOcomponent</p>
-      <ModalComponent openModal={openModal} setOpenModal={setOpenModal} handleApply={handleApply} />
-    </div>
+    <Dialog
+      open={verifyCANopenAlgorithm}
+      onClose={() => {
+        setverifyCANopenAlgorithm(true) //BUG - turn to false
+      }}
+    >
+      <section
+        style={{
+          padding: '1rem 2rem',
+          border: `2px solid`,
+          borderColor: errorStatus == 'error' ? `${colors.red[500]}` : `${colors.green[400]}`,
+          background: `${colors.primary[300]}`
+        }}
+      >
+        <div>{ReturnText}</div>
+      </section>
+    </Dialog>
   )
 }
 
-function ModalComponent({ openModal, setOpenModal, handleApply }) {
-  return (
-    <div>
-      {openModal && (
-        <div>
-          <Dialog open={openModal}>
-            <Button1 onClick={handleApply}>APPLY</Button1>
-          </Dialog>
-        </div>
-      )}
-    </div>
-  )
+export function handleDebugButton() {
+  console.log(`------ DEBUG BUTTON ----------`)
+
+  console.log(MessagesDecoded_ArrayOfObjects)
+  console.log(groupedFilteredArray)
+  console.log(PDO_mapped)
 }
 
 //------DONT NEED-------------------------------------------
@@ -147,21 +135,4 @@ export const ColorsComponent = () => {
       </Box>
     </Box>
   )
-}
-
-const Registers_logic = () => {
-  for (let i = 0; i < Registers_THS_LS.length; i++) {
-    console.log(
-      Registers_THS_LS[i].BitInfo[0].bit +
-        ` ---- ` +
-        getRangeNumberFromStringRange(Registers_THS_LS[i].BitInfo[0].bit)
-    )
-  }
-  for (let i = 0; i < Registers_CANopen_LS.length; i++) {
-    console.log(
-      Registers_CANopen_LS[i].BitInfo[0].bit +
-        ' --- ' +
-        getRangeNumberFromStringRange(Registers_CANopen_LS[i].BitInfo[0].bit)
-    )
-  }
 }

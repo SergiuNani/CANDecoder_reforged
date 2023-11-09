@@ -257,22 +257,17 @@ export const RegisterTooltip = ({ objects, objectData, children }) => {
   const [stayOpen, setStayOpen] = useState(false)
 
   const handleMouseOver = () => {
-    console.log('🚀  handleMouseOver++:')
-
     if (!stayOpen) {
       setShowRegister(true)
     }
   }
 
   const handleMouseLeave = () => {
-    console.log('🚀  handleMouseLeave++:')
     if (!stayOpen) {
       setShowRegister(false)
     }
   }
   const handleClick = (event) => {
-    console.log('🚀 ~  handleClick ~:++')
-
     event.stopPropagation()
     setShowRegister(true)
     setStayOpen(true)
@@ -280,7 +275,6 @@ export const RegisterTooltip = ({ objects, objectData, children }) => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      console.log('handleClickOutside ++')
       if (stayOpen) {
         // Check if the click is outside of the component
         setShowRegister(false)

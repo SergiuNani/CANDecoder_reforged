@@ -639,6 +639,16 @@ export let DontBotherWithPDO_flag = [1] // BUG change to zero
 export let SetAllPDOsEMPTY = [0]
 
 export function DecodeOnePDOmsg(cobID_array, message) {
+  const CompatibleMapping_NoSpace1 = {
+    8: ['6060'],
+    16: ['6040'],
+    24: ['6040', '100D'],
+    32: ['6041', '208E'],
+    40: ['6081', '6060'],
+    48: ['607A', '2023'],
+    56: ['607A', '6041', '6061'],
+    64: ['607A', '6081']
+  }
   if (DontBotherWithPDO_flag[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
     // We write some dummy data just to get rid of PDO filling requirements
     var frameData = message
@@ -651,7 +661,7 @@ export function DecodeOnePDOmsg(cobID_array, message) {
 
     frameData = frameData.length * 4
 
-    PDO_mapped[cobID_array[2]][cobID_array[1]] = CompatibleMapping_NoSpace[frameData]
+    PDO_mapped[cobID_array[2]][cobID_array[1]] = CompatibleMapping_NoSpace1[frameData]
   } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
     //WE dont know anything about this PDO so we leave it empty
     PDO_mapped[cobID_array[2]][cobID_array[1]] = ['--']
