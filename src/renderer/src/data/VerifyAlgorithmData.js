@@ -22,7 +22,7 @@ export const VerifyCANopenValidityArray_RAW = `
 41F 0B //via PDO BS
 21F 0455 // x6040 in BS
 31F 04551155889922 // x6041 in BS
-61F 2F 6060 00 01 05 00 00 //good SDO
+61F 2F 6060 00 01 05 00 00 //neutral SDO
 61F 21 6060 00 01 05 00 00 //bad SDO
 21F 0455 // x6040 in PP
 31F 04551155889922 // x6041 in PP
@@ -54,7 +54,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     ObjectName: 'Controlword / Life time factor',
     Data: '4503 / 85',
     Interpretation: '- / -',
-    errorStatus: 'good'
+    errorStatus: 'neutral'
   },
   {
     msgNr: 3,
@@ -68,7 +68,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     ObjectName: 'Controlword / Life time factor',
     Data: '4503 / 85',
     Interpretation: '- / -',
-    errorStatus: 'good'
+    errorStatus: 'neutral'
   },
   {
     msgNr: 4,
@@ -82,7 +82,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     ObjectName: 'Controlword / Life time factor',
     Data: '8545 / 11',
     Interpretation: '- / -',
-    errorStatus: 'good'
+    errorStatus: 'neutral'
   },
   {
     msgNr: 5,

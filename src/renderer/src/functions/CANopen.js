@@ -404,14 +404,14 @@ export function CreateDecodedArrayOfObjects(
       if (row[3] == 'empty') {
         row[3] = '-'
         DecodedMessage[4] = 'RTR request from master'
-        DecodedMessage[5] = 'good'
+        DecodedMessage[5] = 'neutral'
       }
       aux_CobID[2] = 'NMT_M'
     } else if (aux_CobID[2] == 'SYNC') {
       if (row[3] == 'empty') {
         row[3] = '-'
         DecodedMessage[4] = 'SYNC'
-        DecodedMessage[5] = 'good'
+        DecodedMessage[5] = 'neutral'
       }
       aux_CobID[2] = 'SYNC'
     }
@@ -499,7 +499,7 @@ export function UpdateStatisticsBasedOnMessage(axisID, type) {
 }
 export function verifyValidityOfMappingGroup(group) {
   var returnText = ''
-  var errorStatus = 'good'
+  var errorStatus = 'neutral'
   var enableCobID = []
   var enableMapping = []
   var orderMapping = []

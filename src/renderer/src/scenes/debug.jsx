@@ -44,7 +44,7 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var ReturnText = `All Good`
-  var errorStatus = 'good'
+  var errorStatus = 'neutral'
   var ReturnText2 = '---- We also have problems at line(s): '
   DontBotherWithPDO_flag[0] = 1
   function DoNothing() {}

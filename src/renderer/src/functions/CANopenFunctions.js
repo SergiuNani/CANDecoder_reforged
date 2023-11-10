@@ -74,21 +74,32 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
 
       if (filterOptions.length > 0) {
         //Register Exists
-        return [globalModesOfOperation[axisID], 'good', 'adjust_StatusWord_or_ControlWord']
+        return [globalModesOfOperation[axisID], 'neutral', 'adjust_StatusWord_or_ControlWord']
       }
     }
   }
-
+  //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
   for (const type in ObjectDescriptions) {
     if (ObjectDescriptions[type] && type == obj) {
       var decValue = hexToDec(value, objectSize)
 
       for (const description in ObjectDescriptions[type]) {
         if (parseInt(description) == parseInt(decValue)) {
-          return [ObjectDescriptions[type][description], 'blue', 'generic']
+          return [ObjectDescriptions[type][description], 'blue', 'whatValueMeansInObj']
         }
       }
     }
+  }
+
+  if (['1018_04'].includes(obj) && type == 'T_SDO') {
+    var TextReturn = ''
+    if (obj == '1018_04') {
+      var temp = value.slice(0, 4)
+      TextReturn = `${hex_to_ascii(temp)}${value.slice(4, 8)}`
+    } else {
+      TextReturn = `${hex_to_ascii(value)}`
+    }
+    return [TextReturn, 'random', 'valueIsASCII']
   }
 
   //[ObjectDescription or GlobalMoO, errorStatus, type between ObjDesc or 604X value]
@@ -185,13 +196,14 @@ export function DecodeSDO(sdoType, message, axisID) {
   errorStatus = checkForErrors[1]
   aux_message = checkForErrors[2]
   var FG_typeObject = whatFG_isObject(Object[0])
-  if (FG_typeObject && errorStatus == 'good') {
+
+  if (FG_typeObject && errorStatus == 'neutral') {
     var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message)
     interpretationInfo = checkForFG[0]
-    errorStatus = checkForFG[1]
+    errorStatus = checkForFG[1] // blue or neutral
   }
 
-  if (errorStatus == 'good') {
+  if (errorStatus == 'neutral') {
     //No error and the other functions didnt write anything in interpretationInfo
     var ObjectValueDescription = whatObjectValueMeans(
       Object[0],
@@ -200,18 +212,21 @@ export function DecodeSDO(sdoType, message, axisID) {
       sdoType,
       axisID
     )
-    if (ObjectValueDescription[0] && ObjectValueDescription[2] == 'generic') {
+    if (ObjectValueDescription[0] && ObjectValueDescription[2] == 'whatValueMeansInObj') {
       interpretationInfo = ObjectValueDescription[0]
-      errorStatus = ObjectValueDescription[1]
+      errorStatus = ObjectValueDescription[1] //blue
     } else if (ObjectValueDescription[2] == 'adjust_StatusWord_or_ControlWord') {
       Object[0] = Object[0].concat(ObjectValueDescription[0])
-      errorStatus = ObjectValueDescription[1]
+      errorStatus = ObjectValueDescription[1] //neutral
+    } else if (ObjectValueDescription[2] == 'valueIsASCII') {
+      interpretationInfo = ObjectValueDescription[0]
+      errorStatus = ObjectValueDescription[1] //random
     }
 
     var MappingObject = checkSDOforMapping(Object[0], aux_message, axisID)
     if (MappingObject) {
       interpretationInfo = MappingObject[0]
-      errorStatus = MappingObject[1]
+      errorStatus = MappingObject[1] //Blue or error
     }
   }
 
@@ -237,7 +252,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
           if (data.length != 2) data = data.slice(data.length - 2)
 
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
-          errorStatus = 'good'
+          errorStatus = 'neutral'
         }
       } else {
         //T_SDO
@@ -258,7 +273,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
           if (data.length != 4) data = data.slice(data.length - 4)
 
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
-          errorStatus = 'good'
+          errorStatus = 'neutral'
         }
       } else {
         //T_SDO
@@ -282,7 +297,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
           errorStatus = 'warning'
         } else {
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
-          errorStatus = 'good'
+          errorStatus = 'neutral'
         }
       } else {
         //T_SDO
@@ -297,7 +312,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         errorStatus = 'warning'
       } else if (sdoType == 'T_SDO') {
         interpretation = `Read: ${ObjectIndex} -> ${data}h`
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       }
 
       break
@@ -312,7 +327,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         if (data.length != 2) data = data.slice(data.length - 2)
 
         interpretation = `Read: ${ObjectIndex} -> ${data}h`
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       }
 
       break
@@ -327,7 +342,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         if (data.length != 4) data = data.slice(data.length - 4)
 
         interpretation = `Read: ${ObjectIndex} ->  ${data}h`
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       }
 
       break
@@ -340,14 +355,14 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         errorStatus = 'warning'
       } else {
         interpretation = `Read object ${ObjectIndex}`
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       }
       break
 
     case '41':
       if (sdoType == 'T_SDO') {
         interpretation = `Use Segmented Reading. There are ${hexToDec(data, 32)}bytes of Info`
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       } else {
         interpretation = '"41" - Invalid CS for a R_SDO'
         errorStatus = 'warning'
@@ -366,7 +381,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       } else {
         //Drive don`t care what the data is
         interpretation = 'Request a segmented Read'
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       }
       break
     case '70':
@@ -376,7 +391,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       } else {
         //Drive don`t care what the data is
         interpretation = 'Request a segmented Read'
-        errorStatus = 'good'
+        errorStatus = 'neutral'
       }
       break
     case '80':
@@ -391,8 +406,14 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       break
 
     default:
-      interpretation = `${hex_to_ascii(fullMessage)}`
-      errorStatus = 'error'
+      if (sdoType == 'T_SDO') {
+        //Hoping for segmented reading
+        interpretation = `${hex_to_ascii(fullMessage)}`
+        errorStatus = 'random'
+      } else {
+        interpretation = `unknown SDO message`
+        errorStatus = 'error'
+      }
       break
   }
   return [interpretation, errorStatus, data]
@@ -400,7 +421,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
 
 function Check_SDOmsg_forFG(FG_typeObject, value) {
   var interpretationInfo = ''
-  var errorStatus = ''
+  var errorStatus = 'neutral'
   const conversionParams = {
     Display: {
       POS: { converter: hexToDec, display: FG_OptionsObject_1.FG_Display_POS },
@@ -767,12 +788,7 @@ export function helping_DecodePDO(cobID_array, message) {
         cobID_array[2],
         cobID_array[1]
       )
-
-      console.log(
-        '🚀 ~ file: CANopenFunctions.js:765 ~ MappedObjects.forEach ~ objectIndex:',
-        objectIndex
-      )
-      if (aux[2] == 'generic') {
+      if (aux[2] == 'whatValueMeansInObj') {
         tempInterpretation = aux[0]
         tempError = aux[1]
         if (aux[0] == false) tempInterpretation = '-'
@@ -807,7 +823,7 @@ export function helping_DecodePDO(cobID_array, message) {
   } else if (aux_error.includes('blue')) {
     aux_error = 'blue'
   } else {
-    aux_error = 'good'
+    aux_error = 'neutral'
   }
 
   return [CS, aux_objects, aux_objectsName, aux_objectsData, aux_Interpretation, aux_error]
@@ -938,7 +954,7 @@ export function DecodeNMT_Monitoring(message) {
 
 export function DecodeSYNC(message) {
   var interpretation = 'SYNC'
-  var errorStatus = 'good'
+  var errorStatus = 'neutral'
 
   return ['-', '-', '-', '-', interpretation, errorStatus]
 }

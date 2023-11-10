@@ -140,7 +140,7 @@ const TableROW = ({ iteration }) => {
                   ? `${colors.red[500]}`
                   : iteration.errorStatus == 'warning'
                   ? `${colors.yellow[500]}`
-                  : iteration.errorStatus == 'idk'
+                  : iteration.errorStatus == 'random'
                   ? `${colors.primary[400]}`
                   : iteration.errorStatus == 'blue'
                   ? `${colors.personal[300]}`
