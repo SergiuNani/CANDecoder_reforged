@@ -1,4 +1,39 @@
 export var InsertTextIntoTextArea = `
+//====== Testing x6060 and its influence over x6040 and x6041 AXIS 31 ======
+21F 0455 //Simple x6040
+61F 2f 6060 00 01 00 00 00 //via SDO in PP
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+61F 2f 6060 00 FE 00 00 00 // El Camming
+21F 0455 // x6040 in El Camming
+31F 04551155889922 // x6041 
+41F 08 // In CSP changed via PDO
+21F 0455 // x6040 in CSP
+31F 04551155889922 // x6041 in CSP 
+61F 2f 6060 00 01 00 00 00 //via SDO in PP
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+61F 2f 6060 00 0F 00 00 00 //via SDO BS
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+61F 2f 6060 00 01 00 00 00 //via SDO in PP
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+41F 0B //via PDO BS
+21F 0455 // x6040 in BS
+31F 04551155889922 // x6041 in BS
+61F 2F 6060 00 01 05 00 00 //good SDO
+61F 21 6060 00 01 05 00 00 //bad SDO
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+904      4023.599 DT     0601 Rx 8  40 00 10 00 00 00 00 00 
+905      4023.882 DT     0581 Rx 8  43 00 10 00 92 01 06 00 
+906      4027.463 DT     0080 Rx 0  
+907      4031.455 DT     0080 Rx 0  
+908      4031.574 DT     0601 Rx 8  2B 17 10 00 E8 03 01 00 
+909      4031.847 DT     0581 Rx 8  60 17 10 00 00 00 00 00 
+`
+export var InsertTextIntoTextArea88 = `
 284 03
 [1970-01-01 00:00:16.056998]	<debug>	(0xb52fe400) : <0x00000604> [8] 23 01 1a 01 10 00 40 60 
 201 01
@@ -7,13 +42,9 @@ export var InsertTextIntoTextArea = `
 [1970-01-01 00:00:16.059546]	<debug>	(0xb52fe400) : <0x00000604> [8] 23 01 1a 02 20 00 6c 60 
 284 0255
 
+355 8566
 
 
-
-
-
-`
-export var InsertTextIntoTextArea88 = `
 7664 15108.218 DT 0080 Rx 0
 201 00
 7664 15108.218 DT 0080 Rx 0

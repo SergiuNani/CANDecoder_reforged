@@ -228,7 +228,7 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
       <div
         style={{
           padding: '0px',
-          borderBottom: `3px solid ${colors.blue[100]}`,
+          borderBottom: `3px solid ${colors.personal[100]}`,
           display: 'none'
         }}
         className="GroupBody"
@@ -431,7 +431,13 @@ export const DefaultTable = () => {
             subtitle = temp[0].concat(' - ' + `${group.length - 1}` + 'msg(s)')
             errorStatus = temp[2]
           } else if (group[0].GroupType == 'Modes') {
-            title = whatObjectValueMeans('6060', group[0].GroupIndicator, 8)[0]
+            title = whatObjectValueMeans(
+              '6060',
+              group[0].GroupIndicator,
+              8,
+              'ignoreType',
+              'ignoreAxis'
+            )[0]
             subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
               group.length - 1
             }msg(s)`

@@ -17,7 +17,9 @@ import {
   Mapping_objects_array_basedOnType,
   ObjectDescriptions
 } from '../data/SmallData'
-import { CompatibleMapping_NoSpace } from '../data/SmallData'
+import { Registers_CANopen_LS } from '../App'
+import { globalModesOfOperation } from './CANopen'
+
 export function whatFG_isObject(obj) {
   obj = obj.toUpperCase()
 
@@ -38,7 +40,7 @@ export function whatFG_isObject(obj) {
   return false
 }
 
-export function whatObjectValueMeans(obj, value, objectSize) {
+export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
   obj = obj.toUpperCase()
   if (obj.slice(0, 2) == '#X' || obj.slice(0, 2) == '0X') {
     obj = obj.slice(2, obj.length)
@@ -48,19 +50,49 @@ export function whatObjectValueMeans(obj, value, objectSize) {
     obj = obj.slice(0, 4)
   }
 
+  //Updating the globalModesOfOperation
+  if ((type == 'R_SDO' || type.slice(0, 4) == 'RPDO') && obj == '6060') {
+    if (value.length == 2 && value[0] == '0') {
+      // Change value 01 into 1
+      value = value.slice(1)
+    }
+    if (globalModesOfOperation[axisID] == undefined) {
+      globalModesOfOperation[axisID] = value
+    } else {
+      globalModesOfOperation[axisID] = value
+    }
+  }
+  //Modify 6040 -> 60401 to have the correct register when displaying in the table
+  if (obj == '6040' || obj == '6041') {
+    if (globalModesOfOperation[axisID]) {
+      //We change somthing only if there is a global value for this axis ModesOfOperation
+
+      var aux_value = obj.concat(globalModesOfOperation[axisID])
+      const filterOptions = Registers_CANopen_LS.filter(
+        (oneRegister) => oneRegister.Index == aux_value
+      )
+
+      if (filterOptions.length > 0) {
+        //Register Exists
+        return [globalModesOfOperation[axisID], 'good', 'adjust_StatusWord_or_ControlWord']
+      }
+    }
+  }
+
   for (const type in ObjectDescriptions) {
     if (ObjectDescriptions[type] && type == obj) {
       var decValue = hexToDec(value, objectSize)
 
       for (const description in ObjectDescriptions[type]) {
         if (parseInt(description) == parseInt(decValue)) {
-          return [ObjectDescriptions[type][description], 'blue']
+          return [ObjectDescriptions[type][description], 'blue', 'generic']
         }
       }
     }
   }
 
-  return [false, false]
+  //[ObjectDescription or GlobalMoO, errorStatus, type between ObjDesc or 604X value]
+  return [false, false, false]
 }
 export function GetObject(index) {
   //Input: 1013 or 1013_05
@@ -161,9 +193,18 @@ export function DecodeSDO(sdoType, message, axisID) {
 
   if (errorStatus == 'good') {
     //No error and the other functions didnt write anything in interpretationInfo
-    var ObjectValueDescription = whatObjectValueMeans(Object[0], aux_message, Object[2])
-    if (ObjectValueDescription[0]) {
+    var ObjectValueDescription = whatObjectValueMeans(
+      Object[0],
+      aux_message,
+      Object[2],
+      sdoType,
+      axisID
+    )
+    if (ObjectValueDescription[0] && ObjectValueDescription[2] == 'generic') {
       interpretationInfo = ObjectValueDescription[0]
+      errorStatus = ObjectValueDescription[1]
+    } else if (ObjectValueDescription[2] == 'adjust_StatusWord_or_ControlWord') {
+      Object[0] = Object[0].concat(ObjectValueDescription[0])
       errorStatus = ObjectValueDescription[1]
     }
 
@@ -649,6 +690,9 @@ export function DecodeOnePDOmsg(cobID_array, message) {
     56: ['607A', '6041', '6061'],
     64: ['607A', '6081']
   }
+  if (message == 'INVALID') {
+    return helping_DecodePDO(cobID_array, message)
+  }
   if (DontBotherWithPDO_flag[0] && !PDO_mapped[cobID_array[2]][cobID_array[1]]) {
     // We write some dummy data just to get rid of PDO filling requirements
     var frameData = message
@@ -678,6 +722,10 @@ export function DecodeOnePDOmsg(cobID_array, message) {
 export function helping_DecodePDO(cobID_array, message) {
   console.log('🚀 helping_DecodePDO:')
   // console.log('🚀 :', PDO_mapped)
+
+  if (message == 'INVALID') {
+    return ['-', '-', '-', '-', 'PDO_Error: invalid message', 'error']
+  }
   var MappedObjects = PDO_mapped[cobID_array[2]][cobID_array[1]]
   var CS = MappedObjects.length
 
@@ -705,14 +753,37 @@ export function helping_DecodePDO(cobID_array, message) {
     aux_objectsData = aux_objectsData.concat(obj_msg)
     aux_frame = aux_frame.slice(objectSize / 4)
 
-    var tempInterpretation, tempError
+    var tempInterpretation, tempError, typeFct
     if (FG_typeObject) {
       // Factor Group
       ;[tempInterpretation, tempError] = Check_SDOmsg_forFG(FG_typeObject, obj_msg)
     } else {
-      //Maybe we have info on the object
-      ;[tempInterpretation, tempError] = whatObjectValueMeans(objectIndex, obj_msg, objectSize)
-      if (tempInterpretation == false) tempInterpretation = '-'
+      //Maybe we have info on the object or we do something with 6060 6041 and 6040
+
+      var aux = whatObjectValueMeans(
+        objectIndex,
+        obj_msg,
+        objectSize,
+        cobID_array[2],
+        cobID_array[1]
+      )
+
+      console.log(
+        '🚀 ~ file: CANopenFunctions.js:765 ~ MappedObjects.forEach ~ objectIndex:',
+        objectIndex
+      )
+      if (aux[2] == 'generic') {
+        tempInterpretation = aux[0]
+        tempError = aux[1]
+        if (aux[0] == false) tempInterpretation = '-'
+      } else if (aux[2] == 'adjust_StatusWord_or_ControlWord') {
+        aux_objects = aux_objects.concat(aux[0])
+        tempError = aux[1]
+        tempInterpretation = '-'
+      } else {
+        //Nothing found or done
+        tempInterpretation = '-'
+      }
     }
     aux_Interpretation = aux_Interpretation.concat(tempInterpretation)
     aux_error = aux_error.concat(tempError)
@@ -735,6 +806,8 @@ export function helping_DecodePDO(cobID_array, message) {
     aux_error = 'error'
   } else if (aux_error.includes('blue')) {
     aux_error = 'blue'
+  } else {
+    aux_error = 'good'
   }
 
   return [CS, aux_objects, aux_objectsName, aux_objectsData, aux_Interpretation, aux_error]

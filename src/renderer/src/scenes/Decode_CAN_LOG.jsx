@@ -56,7 +56,6 @@ import { GroupingOptionsForMessages } from '../data/SmallData'
 
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
-
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')

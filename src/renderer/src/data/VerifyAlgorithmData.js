@@ -1,13 +1,33 @@
 export const VerifyCANopenValidityArray_RAW = `
-301 0x03 45 85 
-301 03 45 85 11
-301 3 45 85 11
-0	接收	13:44:51.684			701	数据帧	标准帧	0x01	7F 	
-3	接收	13:44:53.972			0x00000000	数据帧	标准帧	0x02	80 00 	
-13	接收	13:44:57.382			0x00000601	数据帧	标准帧	0x08	2F 00 18 02 01 00 47 95 
-
+//====== Testing x6060 and its influence over x6040 and x6041 AXIS 31 ======
+21F 0455 //Simple x6040
+61F 2f 6060 00 01 00 00 00 //via SDO in PP
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+61F 2f 6060 00 FE 00 00 00 // El Camming
+21F 0455 // x6040 in El Camming
+31F 04551155889922 // x6041 
+41F 08 // In CSP changed via PDO
+21F 0455 // x6040 in CSP
+31F 04551155889922 // x6041 in CSP 
+61F 2f 6060 00 01 00 00 00 //via SDO in PP
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+61F 2f 6060 00 0F 00 00 00 //via SDO BS
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+61F 2f 6060 00 01 00 00 00 //via SDO in PP
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
+41F 0B //via PDO BS
+21F 0455 // x6040 in BS
+31F 04551155889922 // x6041 in BS
+61F 2F 6060 00 01 05 00 00 //good SDO
+61F 21 6060 00 01 05 00 00 //bad SDO
+21F 0455 // x6040 in PP
+31F 04551155889922 // x6041 in PP
 `
-export const VerifyCANopenValidityArray_Decoded = [
+export const Hardcoded_VerifyCANopenValidityArray = [
   {
     msgNr: 1,
     OriginalMessage: '-',
@@ -34,7 +54,7 @@ export const VerifyCANopenValidityArray_Decoded = [
     ObjectName: 'Controlword / Life time factor',
     Data: '4503 / 85',
     Interpretation: '- / -',
-    errorStatus: [false, false]
+    errorStatus: 'good'
   },
   {
     msgNr: 3,
@@ -48,7 +68,7 @@ export const VerifyCANopenValidityArray_Decoded = [
     ObjectName: 'Controlword / Life time factor',
     Data: '4503 / 85',
     Interpretation: '- / -',
-    errorStatus: [false, false]
+    errorStatus: 'good'
   },
   {
     msgNr: 4,
@@ -62,7 +82,7 @@ export const VerifyCANopenValidityArray_Decoded = [
     ObjectName: 'Controlword / Life time factor',
     Data: '8545 / 11',
     Interpretation: '- / -',
-    errorStatus: [false, false]
+    errorStatus: 'good'
   },
   {
     msgNr: 5,

@@ -3,17 +3,17 @@ import { Header } from '../components/SmallComponents'
 import { Box, Dialog, Typography, useTheme } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
-import { PDO_mapped } from '../functions/CANopenFunctions'
+import { PDO_mapped, DontBotherWithPDO_flag } from '../functions/CANopenFunctions'
 import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
 import { groupedFilteredArray } from '../components/Table'
 import {
   VerifyCANopenValidityArray_RAW,
-  VerifyCANopenValidityArray_Decoded
+  Hardcoded_VerifyCANopenValidityArray
 } from '../data/VerifyAlgorithmData'
 import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../functions/CANopen'
 import { Button2 } from '../components/SmallComponents'
 const DebugScene = () => {
-  const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(true)
+  const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
 
   return (
     <>
@@ -45,6 +45,8 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
   const colors = tokens(theme.palette.mode)
   var ReturnText = `All Good`
   var errorStatus = 'good'
+  var ReturnText2 = '---- We also have problems at line(s): '
+  DontBotherWithPDO_flag[0] = 1
   function DoNothing() {}
 
   var MsgsExtracted_array = Extract_MSGs_from_text(VerifyCANopenValidityArray_RAW.split('\n'))
@@ -56,18 +58,58 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
     DoNothing
   )
   console.log('🚀 MessagesDecoded_ArrayOfObjects:', MessagesDecoded)
-  console.log('🚀 MessagesDecoded_ArrayOfObjects:', VerifyCANopenValidityArray_Decoded)
+  console.log('🚀 Hardcoded_VerifyCANopenValidityArray:', Hardcoded_VerifyCANopenValidityArray)
 
-  if (MessagesDecoded.length != VerifyCANopenValidityArray_Decoded.length) {
-    ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${VerifyCANopenValidityArray_Decoded.length} length`
+  if (MessagesDecoded.length != Hardcoded_VerifyCANopenValidityArray.length) {
+    ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${Hardcoded_VerifyCANopenValidityArray.length} length`
     errorStatus = 'error'
+  } else {
+    MessagesDecoded.forEach((oneObjectMessage, index) => {
+      for (const key in oneObjectMessage) {
+        if (key != 'msgNr') {
+          if (oneObjectMessage[key] != Hardcoded_VerifyCANopenValidityArray[index][key]) {
+            if (errorStatus != 'error') {
+              ReturnText = (
+                <div>
+                  Message:
+                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                    {' '}
+                    //{oneObjectMessage.OriginalMessage}//{' '}
+                  </span>
+                  at line
+                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                    {' '}
+                    "{oneObjectMessage.msgNr}"{' '}
+                  </span>
+                  has the key :
+                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                    {' '}
+                    {key}{' '}
+                  </span>
+                  <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
+                    - {`${oneObjectMessage[key]}`} -{' '}
+                  </span>
+                  which is not equal to the hardcoded
+                  <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
+                    {' '}
+                    - {`${Hardcoded_VerifyCANopenValidityArray[index][key]}`} -
+                  </span>
+                </div>
+              )
+              return (errorStatus = 'error')
+            } else {
+              return (ReturnText2 = ReturnText2.concat(` ${oneObjectMessage.msgNr} - `))
+            }
+          }
+        }
+      }
+    })
   }
-
   return (
     <Dialog
       open={verifyCANopenAlgorithm}
       onClose={() => {
-        setverifyCANopenAlgorithm(true) //BUG - turn to false
+        setverifyCANopenAlgorithm(false) //BUG - turn to false
       }}
     >
       <section
@@ -79,6 +121,9 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
         }}
       >
         <div>{ReturnText}</div>
+        {errorStatus == 'error' && ReturnText2 != '---- We also have problems at line(s): ' && (
+          <div>{ReturnText2}</div>
+        )}
       </section>
     </Dialog>
   )
