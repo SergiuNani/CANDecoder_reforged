@@ -1,4 +1,4 @@
-import { filterHex, hexToDec } from './NumberConversion'
+import { filterHex, hexToDec, addSpacesOfTwo } from './NumberConversion'
 import {
   DecodeSDO,
   DecodeEMCY,
@@ -352,7 +352,7 @@ export function CreateDecodedArrayOfObjects(
       msgNr: msgNr || '-',
       OriginalMessage: OriginalMessage || '-',
       CobID: CobID || '-',
-      FrameData: FrameData || '-',
+      FrameData: addSpacesOfTwo(FrameData) || '-',
       type: type || '-',
       AxisID: AxisID ? AxisID : '-',
       CS: CS || '-',

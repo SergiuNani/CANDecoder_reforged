@@ -175,19 +175,24 @@ export const TableROW_simple = ({ obj }) => {
         borderBottom: `1px solid ${colors.grey[400]}`
       }}
     >
-      <p style={{ color: colors.primary[600], width: '2rem' }}>{obj.msgNr} - </p>
-      <p style={{ color: colors.primary[400], width: '2rem' }}>[{obj.AxisID}] - </p>
-      <p style={{ color: colors.blue[600], width: '15rem' }}>
+      <p style={{ color: colors.primary[600], minWidth: '2rem', textAlign: 'center' }}>
+        {obj.msgNr}{' '}
+      </p>
+      <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
+      <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
         `{obj.CobID} - {obj.FrameData}`
       </p>
       <p
-        style={{ color: colors.yellow[300], fontWeight: 700, width: '17rem' }}
-      >{` -  ${obj.Object} - ${obj.ObjectName} - `}</p>
+        style={{ color: colors.yellow[300], fontWeight: 700, minWidth: '12rem' }}
+      >{` -  ${obj.Object} -`}</p>
+      <p
+        style={{ color: colors.personal[100], fontWeight: 700, minWidth: '12rem' }}
+      >{` ${obj.Data} `}</p>
       <p
         style={{
           color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
           fontWeight: 700,
-          width: '15rem'
+          minWidth: '15rem'
         }}
       >
         {obj.Interpretation}

@@ -891,19 +891,33 @@ const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [FilteredArray, setFilteredArray] = useState([])
+  const InputRef = useRef()
 
   function handleUserInput(e) {
-    const searchValue = e.target.value.toLowerCase()
+    const searchValue = e.toLowerCase()
     if (searchValue == '') return setFilteredArray([])
     const searchProperties = ['msgNr', 'Object', 'ObjectName', 'CobID', 'AxisID', 'Interpretation']
-    setFilteredArray(
-      MessagesDecoded_ArrayOfObjects.filter((iteration) => {
-        return searchProperties.some((property) =>
-          iteration[property].toString().toLowerCase().includes(searchValue)
-        )
-      })
-    )
+    var FilterResult = MessagesDecoded_ArrayOfObjects.filter((iteration) => {
+      return searchProperties.some((property) =>
+        iteration[property].toString().toLowerCase().includes(searchValue)
+      )
+    })
+    setFilteredArray(FilterResult)
   }
+
+  //SHORTCUTS ---------------------------
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      console.log('not good')
+      if (event.key === 'Enter') {
+        handleUserInput(InputRef.current.value)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
 
   return (
     <Dialog
@@ -930,7 +944,7 @@ const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen
 
         <input
           type="text"
-          onChange={handleUserInput}
+          ref={InputRef}
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
