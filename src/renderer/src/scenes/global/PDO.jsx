@@ -122,6 +122,21 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
   const [allCompatible, setAllCompatible] = useState(false)
   const [allEmpty, setAllEmpty] = useState(false)
 
+  useEffect(() => {
+    if (radioOption == 'USER' || radioOption == 'DONTMATCH') {
+      setObject1('')
+      setObjectSub1('')
+      setObject2('')
+      setObjectSub2('')
+      setObject3('')
+      setObjectSub3('')
+      setObject4('')
+      setObjectSub4('')
+    } else {
+      handleChangedRadio(radioOption)
+    }
+  }, [objectIteration])
+
   function handleApply() {
     if (radioOption != 'EMPTY') {
       // Cheking for errors only if EMPTY is not selected
@@ -430,7 +445,6 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
                   checked={allDefault}
                 />
               </div>
-              {/* <FormControlLabel value="ALLDEFAULT" control={<Radio />} label={Str2} /> */}
               <div
                 style={{
                   display: 'flex',
@@ -467,11 +481,6 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
                   checked={allEmpty}
                 />
               </div>
-              {/* <FormControlLabel
-                value="ALLCOMPATIBLE"
-                control={<Radio />}
-                label="Set compatible objects for all the remaining PDOs"
-              /> */}
               <FormControlLabel
                 value="DONTMATCH"
                 control={<Radio />}

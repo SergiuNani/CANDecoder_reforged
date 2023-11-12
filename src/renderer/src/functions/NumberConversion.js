@@ -237,6 +237,17 @@ export function hex2Fixed(input) {
   var result = hexToDec(input, 32)
   return parseFloat(result) / 65536
 }
+export function addSpacesOfTwo(inputString) {
+  // Check if the input is empty or has less than 2 characters
+  if (!inputString || inputString.length < 2) {
+    return inputString
+  }
+
+  // Use a regular expression to add a space after every two characters
+  var result = inputString.match(/.{1,2}/g).join(' ')
+
+  return result
+}
 //Untested
 export function hex_to_ascii(str1) {
   var hex = str1.toString()

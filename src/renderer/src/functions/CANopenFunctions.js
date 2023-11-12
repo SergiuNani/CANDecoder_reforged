@@ -91,11 +91,16 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
     }
   }
 
-  if (['1018_04'].includes(obj) && type == 'T_SDO') {
+  if (['1018_04', '1018_02'].includes(obj) && type == 'T_SDO') {
     var TextReturn = ''
     if (obj == '1018_04') {
+      //Serial Number
       var temp = value.slice(0, 4)
       TextReturn = `${hex_to_ascii(temp)}${value.slice(4, 8)}`
+    } else if (obj == '1018_02') {
+      //ProductID
+      var temp = hexToDec(value, 32).toString()
+      TextReturn = `P0${temp.slice(0, 2)}.${temp.slice(2, 5)}.${temp.slice(5)}`
     } else {
       TextReturn = `${hex_to_ascii(value)}`
     }
@@ -744,7 +749,7 @@ export function helping_DecodePDO(cobID_array, message) {
   console.log('🚀 helping_DecodePDO:')
   // console.log('🚀 :', PDO_mapped)
 
-  if (message == 'INVALID') {
+  if (message == '-') {
     return ['-', '-', '-', '-', 'PDO_Error: invalid message', 'error']
   }
   var MappedObjects = PDO_mapped[cobID_array[2]][cobID_array[1]]

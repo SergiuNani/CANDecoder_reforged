@@ -28,7 +28,7 @@ import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined'
 import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { UserVsDebugModeContext } from '../App'
+import { UserVsDebugModeContext, DecodeCANlog_topbarOptionsContext } from '../App'
 import { InsertTextIntoTextArea } from '../data/TestingData'
 import {
   Extract_MSGs_from_text,
@@ -50,15 +50,16 @@ import {
   DefaultTable,
   CreateGroupedFilteredArray,
   SimplifiedTable,
-  DebugTable
+  DebugTable,
+  TableROW_simple
 } from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
+
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
-  const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
@@ -66,16 +67,10 @@ const Decode_CAN_LOG_Window = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
+  var { freeTextVsCanLog } = useContext(DecodeCANlog_topbarOptionsContext)
+
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
-
-  function handleMenuChange(event) {
-    if (event === 'FreeText') {
-      setFreeTextVsCanLog('FreeText')
-    } else {
-      setFreeTextVsCanLog('UploadFile')
-    }
-  }
 
   function handleFileUpload(e) {
     const file = e.target.files[0]
@@ -162,21 +157,6 @@ const Decode_CAN_LOG_Window = () => {
     <Box style={{ position: 'relative' }}>
       <Header title="Decode a CAN LOG "></Header>
       {/* TOP MENU options --------------------------- */}
-      <Box>
-        <section
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            paddingRight: '2rem'
-          }}
-        >
-          <SwitchComponent
-            option1="FreeText"
-            option2="Upload File"
-            tellParentValueChanged={handleMenuChange}
-          />
-        </section>
-      </Box>
 
       {freeTextVsCanLog === 'FreeText' ? (
         <section
@@ -262,13 +242,40 @@ const DecodedTableOptions = ({
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(true)
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
 
+  const { toggleFilterWindow } = useContext(DecodeCANlog_topbarOptionsContext)
+  const { toggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
+  const initialRender = useRef(true)
+
+  // SHORTCUTS==========================
+  useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false
+    } else {
+      if (isTableVisible) {
+        setIsDrawerOpen((prev) => !prev)
+      }
+    }
+  }, [toggleFilterWindow])
+
+  useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false
+    } else {
+      if (isTableVisible) {
+        setIsAdvancedSearchOpen((prev) => !prev)
+      }
+    }
+  }, [toggleAdvancedSearch])
+
   useEffect(() => {
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
+
   AllCAN_MsgsExtracted_array = useMemo(() => {
     console.log('-2.1- - AllCAN_MsgsExtracted_array -  only once')
     globalIndex = [0]
@@ -284,12 +291,13 @@ const DecodedTableOptions = ({
       setObjectIterationPDO
     )
   }, [fileInnerText, restartDecoding])
+
   const DecodePDOs_Memo = useMemo(() => {
     return (
       <div>
         {openPDOModal && (
           <PDOdetectedModal
-            key={openPDOModal}
+            key={objectIterationPDO}
             open={openPDOModal}
             onClose={setOpenPDOModal}
             objectIteration={objectIterationPDO}
@@ -329,11 +337,24 @@ const DecodedTableOptions = ({
     )
   }, [fileInnerText, isTableVisible])
 
+  const AdvancedSearch_Memo = useMemo(() => {
+    return (
+      <div>
+        {isAdvancedSearchOpen && (
+          <AdvancedSearchComponent
+            isAdvancedSearchOpen={isAdvancedSearchOpen}
+            setIsAdvancedSearchOpen={setIsAdvancedSearchOpen}
+          />
+        )}
+      </div>
+    )
+  }, [isAdvancedSearchOpen])
   return (
     <section>
       {DecodePDOs_Memo}
       {Drawer_Memo}
       {Table_Memo}
+      {AdvancedSearch_Memo}
     </section>
   )
 }
@@ -418,12 +439,17 @@ const DrawerComponent_DecodeOptions = ({
   }, [])
 
   const MappingWindowforDrawer_Memo = useMemo(() => {
-    return (
-      <MappingWindowforDrawer
-        showMappingWindow={showMappingWindow}
-        setShowMappingWindow={setShowMappingWindow}
-      />
-    )
+    if (isInitialMount.current) {
+      isInitialMount.current = false
+      return null
+    } else {
+      return (
+        <MappingWindowforDrawer
+          showMappingWindow={showMappingWindow}
+          setShowMappingWindow={setShowMappingWindow}
+        />
+      )
+    }
   }, [showMappingWindow])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
@@ -855,6 +881,73 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
             </Box>
           )
         })}
+      </div>
+    </Dialog>
+  )
+}
+
+const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen }) => {
+  console.log('---6---. AdvancedSearchComponent -- only once')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const [FilteredArray, setFilteredArray] = useState([])
+
+  function handleUserInput(e) {
+    const searchValue = e.target.value.toLowerCase()
+    if (searchValue == '') return setFilteredArray([])
+    const searchProperties = ['msgNr', 'Object', 'ObjectName', 'CobID', 'AxisID', 'Interpretation']
+    setFilteredArray(
+      MessagesDecoded_ArrayOfObjects.filter((iteration) => {
+        return searchProperties.some((property) =>
+          iteration[property].toString().toLowerCase().includes(searchValue)
+        )
+      })
+    )
+  }
+
+  return (
+    <Dialog
+      open={isAdvancedSearchOpen}
+      onClose={() => setIsAdvancedSearchOpen(false)}
+      sx={{
+        maxWidth: 'none',
+
+        '& .MuiDialog-paper': {
+          maxWidth: 'none'
+        }
+      }}
+    >
+      <div
+        style={{
+          border: `1px solid ${colors.primary[400]}`,
+          padding: '1rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: '1rem' }}>
+          Search a message
+        </Typography>
+
+        <input
+          type="text"
+          onChange={handleUserInput}
+          style={{
+            backgroundColor: `${colors.primary[300]}`,
+            padding: '0.5rem 1rem',
+            borderRadius: '2rem',
+            color: `${colors.red[200]}`,
+            outline: 'none',
+            margin: '0.2rem 0 0 1rem',
+            width: '20rem',
+            fontSize: '1.3rem'
+          }}
+        />
+
+        {FilteredArray.length > 0
+          ? FilteredArray.map((iteration) => {
+              return <TableROW_simple key={iteration.msgNr} obj={iteration} />
+            })
+          : null}
       </div>
     </Dialog>
   )

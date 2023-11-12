@@ -5,7 +5,8 @@ import {
   useTheme,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
+  IconButton
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
@@ -17,10 +18,11 @@ import { tokens } from '../theme'
 import { TooltipClickable } from '../components/SmallComponents'
 import { AllCAN_MsgsExtracted_array } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
+import SearchIcon from '@mui/icons-material/Search'
 
 export let groupedFilteredArray = []
 
-const TableROW = ({ iteration }) => {
+export const TableROW = ({ iteration }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -155,6 +157,44 @@ const TableROW = ({ iteration }) => {
   )
 }
 
+export const TableROW_simple = ({ obj }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  for (const prop in obj) {
+    if (obj[prop] === '-') {
+      obj[prop] = ''
+    }
+  }
+
+  return (
+    <section
+      style={{
+        display: 'flex',
+        width: '100%',
+        borderBottom: `1px solid ${colors.grey[400]}`
+      }}
+    >
+      <p style={{ color: colors.primary[600], width: '2rem' }}>{obj.msgNr} - </p>
+      <p style={{ color: colors.primary[400], width: '2rem' }}>[{obj.AxisID}] - </p>
+      <p style={{ color: colors.blue[600], width: '15rem' }}>
+        `{obj.CobID} - {obj.FrameData}`
+      </p>
+      <p
+        style={{ color: colors.yellow[300], fontWeight: 700, width: '17rem' }}
+      >{` -  ${obj.Object} - ${obj.ObjectName} - `}</p>
+      <p
+        style={{
+          color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+          fontWeight: 700,
+          width: '15rem'
+        }}
+      >
+        {obj.Interpretation}
+      </p>
+    </section>
+  )
+}
 const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -388,7 +428,7 @@ export const DefaultTable = () => {
           width: '99.5%',
           fontWeight: '700',
           position: 'sticky',
-          top: '2.5rem',
+          top: '3rem',
           background: `${colors.primary[300]}`,
           zIndex: 1,
           marginLeft: '0.5rem',
@@ -466,29 +506,6 @@ export const SimplifiedTable = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const ROW = ({ obj }) => {
-    return (
-      <>
-        <div style={{ color: colors.primary[600] }}>[{obj.msgNr}] - </div>
-        <div style={{ color: colors.green[100] }}>[{obj.AxisID}] - </div>
-        <div style={{ color: colors.blue[500] }}>[{obj.CobID}] - </div>
-        <div style={{ color: colors.primary[600] }}>[{obj.type}] - </div>
-        <div style={{ color: colors.blue[500] }}>[{obj.FrameData}] - </div>
-        <div style={{ color: colors.green[100] }}>[{obj.Object}] - </div>
-        <div style={{ color: colors.blue[500] }}>[{obj.ObjectName}] - </div>
-        <div style={{ color: colors.primary[600] }}>[{obj.Data}] - </div>
-        <div
-          style={{
-            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-            fontWeight: 700
-          }}
-        >
-          [{obj.Interpretation}]
-        </div>
-      </>
-    )
-  }
-
   function handleClick(event) {
     console.log('clicked')
     if (event.target.parentElement.querySelector('.Group').style.display == 'none') {
@@ -539,7 +556,7 @@ export const SimplifiedTable = () => {
                           fontWeight: '540'
                         }}
                       >
-                        <ROW obj={obj} />
+                        <TableROW_simple obj={obj} />
                       </div>
                     )
                   })}
@@ -559,7 +576,7 @@ export const SimplifiedTable = () => {
                 }}
               >
                 <div style={{ display: 'flex' }}>
-                  <ROW obj={group} />
+                  <TableROW_simple obj={group} />
                 </div>
               </Box>
             )

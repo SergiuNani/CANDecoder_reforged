@@ -127,7 +127,7 @@ export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) =>
     }
   }
   return (
-    <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zoom: '0.85' }}>
       <p>{option1}</p>
       <Switch
         onChange={handleChange}

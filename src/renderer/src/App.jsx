@@ -1,4 +1,4 @@
-import { useState, createContext, Profiler } from 'react'
+import { useState, createContext, Profiler, useContext } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
@@ -66,6 +66,7 @@ export const SidebarContext = createContext(null)
 export const MotorSpecificationsContext = createContext()
 export const UserVsDebugModeContext = createContext()
 export const FG_Context = createContext()
+export const DecodeCANlog_topbarOptionsContext = createContext()
 
 export const FG_OptionsStarter = {
   FG_Display_POS: 'IU',
@@ -85,6 +86,11 @@ function MyProviders({ children }) {
   const [slowLoop, setSlowLoop] = useState(1)
   const [userVsDebugMode, setUserVsDebugMode] = useState('USER') //USER --DEBUG
 
+  //Decode CANlog Options
+  const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
+  const [toggleFilterWindow, setToggleFilterWindow] = useState(false)
+  const [toggleAdvancedSearch, setToggleAdvancedSearch] = useState(false)
+
   // FG OPTIONS
   const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('Display')
   const [FG_OptionsObject, setFG_OptionsObject] = useState(FG_OptionsStarter)
@@ -94,24 +100,35 @@ function MyProviders({ children }) {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <MotorSpecificationsContext.Provider
-            value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+          <DecodeCANlog_topbarOptionsContext.Provider
+            value={{
+              freeTextVsCanLog,
+              setFreeTextVsCanLog,
+              toggleFilterWindow,
+              setToggleFilterWindow,
+              toggleAdvancedSearch,
+              setToggleAdvancedSearch
+            }}
           >
-            <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-              <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
-                <FG_Context.Provider
-                  value={{
-                    FG_DisplayVSApplied,
-                    setFG_DisplayVSApplied,
-                    FG_OptionsObject,
-                    setFG_OptionsObject
-                  }}
-                >
-                  {children}
-                </FG_Context.Provider>
-              </UserVsDebugModeContext.Provider>
-            </SidebarContext.Provider>
-          </MotorSpecificationsContext.Provider>
+            <MotorSpecificationsContext.Provider
+              value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+            >
+              <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
+                <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
+                  <FG_Context.Provider
+                    value={{
+                      FG_DisplayVSApplied,
+                      setFG_DisplayVSApplied,
+                      FG_OptionsObject,
+                      setFG_OptionsObject
+                    }}
+                  >
+                    {children}
+                  </FG_Context.Provider>
+                </UserVsDebugModeContext.Provider>
+              </SidebarContext.Provider>
+            </MotorSpecificationsContext.Provider>
+          </DecodeCANlog_topbarOptionsContext.Provider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </Profiler>
@@ -121,5 +138,5 @@ var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
   console.log(actualTime)
-  // console.log(diffTime)
+  console.log(diffTime)
 }

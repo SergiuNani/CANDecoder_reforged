@@ -356,7 +356,7 @@ export function AutocompleteInput_RegisterList({
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
-            borderRadius: '2rem',
+            borderRadius: '0.7rem',
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: extendStyle ? '0.2rem 0 0 1rem' : '0',

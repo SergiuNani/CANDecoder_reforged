@@ -11,15 +11,19 @@ import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
+import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import {
   MotorSpecificationsContext,
   UserVsDebugModeContext,
   FG_Context,
-  FG_OptionsStarter
+  FG_OptionsStarter,
+  DecodeCANlog_topbarOptionsContext,
+  SidebarContext
 } from '../../App'
 import { Input_AutoFormat, Input_ChooseOption } from '../../components/ForumsComponents'
 import { filterDecimal, filterDecimalWithComma } from '../../functions/NumberConversion'
-
+import { SwitchComponent } from '../../components/SmallComponents'
+import SearchIcon from '@mui/icons-material/Search'
 import {
   FG_units_pos_rot,
   FG_units_spd_rot,
@@ -66,7 +70,9 @@ const Topbar = () => {
       }}
     >
       {/* SEARCH BAR */}
-      <Box></Box>
+      <Box>
+        <DecodeCANlogOptionsInsertPart />
+      </Box>
       <SettingsDialog
         settingsDialogOpen={settingsDialogOpen}
         setSettingsDialogOpen={setSettingsDialogOpen}
@@ -409,6 +415,54 @@ const FactorGroupInsertPart = () => {
           />
         </div>
       </RadioGroup>
+    </section>
+  )
+}
+
+// ========Decode CANlog Options================
+
+const DecodeCANlogOptionsInsertPart = () => {
+  var { setFreeTextVsCanLog, setToggleFilterWindow, setToggleAdvancedSearch } = useContext(
+    DecodeCANlog_topbarOptionsContext
+  )
+  var { sidebarSelectedItem } = useContext(SidebarContext)
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <section>
+      {/* {sidebarSelectedItem == 'Decode CAN-Log' ? ( */}
+      {true ? (
+        <section style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div
+            style={{
+              borderRight: `1px solid ${colors.green[400]}`,
+              paddingRight: '0.5rem'
+            }}
+          >
+            <SwitchComponent
+              option1="FreeText"
+              option2="Upload File"
+              tellParentValueChanged={setFreeTextVsCanLog}
+            />
+          </div>
+          <IconButton
+            sx={{ zoom: '1.1' }}
+            onClick={() => {
+              setToggleFilterWindow((prev) => !prev)
+            }}
+          >
+            <FilterAltIcon />
+          </IconButton>
+          <IconButton
+            sx={{ zoom: '1.1' }}
+            onClick={() => {
+              setToggleAdvancedSearch((prev) => !prev)
+            }}
+          >
+            <SearchIcon />
+          </IconButton>
+        </section>
+      ) : null}
     </section>
   )
 }
