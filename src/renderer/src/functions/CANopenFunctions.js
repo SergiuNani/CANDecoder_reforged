@@ -91,7 +91,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
     }
   }
 
-  if (['1018_04', '1018_02'].includes(obj) && type == 'T_SDO') {
+  if (['1018_04', '1018_02', '1018_03'].includes(obj) && type == 'T_SDO') {
     var TextReturn = ''
     if (obj == '1018_04') {
       //Serial Number
@@ -227,11 +227,20 @@ export function DecodeSDO(sdoType, message, axisID) {
       interpretationInfo = ObjectValueDescription[0]
       errorStatus = ObjectValueDescription[1] //random
     }
-
-    var MappingObject = checkSDOforMapping(Object[0], aux_message, axisID)
-    if (MappingObject) {
-      interpretationInfo = MappingObject[0]
-      errorStatus = MappingObject[1] //Blue or error
+    if (sdoType == 'R_SDO') {
+      var MappingObject = checkSDOforMapping(Object[0], aux_message, axisID)
+      if (MappingObject) {
+        interpretationInfo = MappingObject[0]
+        errorStatus = MappingObject[1] //Blue or error
+      }
+    }
+  } else if (errorStatus == 'perfect') {
+    //In case we are reading objects or just recieve a confirmation of writing/reading we will hide the 0 string
+    if (
+      (['40', '43', '4B', '4F'].includes(CS) && sdoType == 'R_SDO') ||
+      (sdoType == 'T_SDO' && CS == '60')
+    ) {
+      aux_message = '-'
     }
   }
 
@@ -360,7 +369,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
         errorStatus = 'warning'
       } else {
         interpretation = `Read object ${ObjectIndex}`
-        errorStatus = 'neutral'
+        errorStatus = 'perfect'
       }
       break
 
@@ -749,7 +758,7 @@ export function helping_DecodePDO(cobID_array, message) {
   console.log('🚀 helping_DecodePDO:')
   // console.log('🚀 :', PDO_mapped)
 
-  if (message == '-') {
+  if (message == '-' || message == 'INVALID') {
     return ['-', '-', '-', '-', 'PDO_Error: invalid message', 'error']
   }
   var MappedObjects = PDO_mapped[cobID_array[2]][cobID_array[1]]

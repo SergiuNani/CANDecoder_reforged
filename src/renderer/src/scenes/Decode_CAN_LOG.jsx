@@ -66,6 +66,7 @@ const Decode_CAN_LOG_Window = () => {
   const [resetMainProgressBar, setResetMainProgressBar] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const { setToggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
 
   var { freeTextVsCanLog } = useContext(DecodeCANlog_topbarOptionsContext)
 
@@ -127,6 +128,8 @@ const Decode_CAN_LOG_Window = () => {
         }
       } else if (event.ctrlKey && event.key === 'Tab') {
         TextAreaText_Ref.current.focus()
+      } else if (event.ctrlKey && event.key === 'f') {
+        setToggleAdvancedSearch((prev) => !prev)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -230,7 +233,7 @@ const Decode_CAN_LOG_Window = () => {
 
 export default Decode_CAN_LOG_Window
 
-export let globalIndex = [0]
+export let globalIndex = [0] //used when there is a PDO detected and no mapping is done - then we cancel the function and will recall it with this index
 
 const DecodedTableOptions = ({
   fileInnerText,
@@ -242,7 +245,7 @@ const DecodedTableOptions = ({
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(true)
+  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
@@ -349,6 +352,7 @@ const DecodedTableOptions = ({
       </div>
     )
   }, [isAdvancedSearchOpen])
+
   return (
     <section>
       {DecodePDOs_Memo}
@@ -934,26 +938,32 @@ const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen
       <div
         style={{
           border: `1px solid ${colors.primary[400]}`,
-          padding: '1rem',
+          padding: '1rem ',
+          overflowX: 'none',
+
           background: `${colors.primary[200]}`
         }}
       >
-        <Typography variant="h4" sx={{ mb: '1rem' }}>
-          Search a message
-        </Typography>
-
+        <p style={{ padding: '0.3rem', marginBottom: '0.1rem' }}>
+          Searches by:{' '}
+          <span style={{ color: `${colors.blue[100]}` }}>
+            msgNr, Object, ObjectName, CobID, AxisID, Interpretation
+          </span>
+        </p>
         <input
           type="text"
           ref={InputRef}
+          placeholder="Search for a message"
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
-            borderRadius: '2rem',
+            borderRadius: '0.9rem',
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
             width: '20rem',
-            fontSize: '1.3rem'
+            fontSize: '1.3rem',
+            marginBottom: '1rem'
           }}
         />
 
