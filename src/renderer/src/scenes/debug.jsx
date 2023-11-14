@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, Fragment } from 'react'
 import { Header } from '../components/SmallComponents'
-import { Box, Dialog, Typography, useTheme } from '@mui/material'
+import { Box, Dialog, Typography, useTheme, Button } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
 import { PDO_mapped, DontBotherWithPDO_flag } from '../functions/CANopenFunctions'
@@ -12,8 +12,31 @@ import {
 } from '../data/VerifyAlgorithmData'
 import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../functions/CANopen'
 import { Button2 } from '../components/SmallComponents'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import { Extract_objects } from '../data/TestingData'
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
+  const [fileInnerText, setFileInnerText] = useState([])
+  const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(true)
+
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  function handleFileUpload(e) {
+    const file = e.target.files[0]
+
+    if (file) {
+      const reader = new FileReader()
+
+      reader.onload = (e) => {
+        const fileContent = e.target.result
+        setFileInnerText(fileContent)
+        setshowCompareExistingVsFileObjects(true)
+      }
+
+      reader.readAsText(file)
+    }
+  }
 
   return (
     <>
@@ -28,10 +51,46 @@ const DebugScene = () => {
           Verify Algorithm
         </Button2>
       </section>
+
+      {/* //UPLOAD A FILE SECTION */}
+      <section
+        style={{
+          margin: '1rem 0'
+        }}
+      >
+        <Typography variant="h4">Check for missing objects or errors </Typography>
+        <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+          Upload file
+          {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
+          <input
+            type="file"
+            style={{
+              clip: 'rect(0 0 0 0)',
+              clipPath: 'inset(50%)',
+              height: 1,
+              overflow: 'hidden',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              whiteSpace: 'nowrap',
+              width: 1
+            }}
+            onChange={handleFileUpload}
+          />
+        </Button>
+      </section>
+
       {verifyCANopenAlgorithm && (
         <DialogVerifyAlgorithmComponent
           verifyCANopenAlgorithm={verifyCANopenAlgorithm}
           setverifyCANopenAlgorithm={setverifyCANopenAlgorithm}
+        />
+      )}
+      {showCompareExistingVsFileObjects && (
+        <DialogVerifyMyObjects
+          showCompareExistingVsFileObjects={showCompareExistingVsFileObjects}
+          setshowCompareExistingVsFileObjects={setshowCompareExistingVsFileObjects}
+          fileInnerText={fileInnerText}
         />
       )}
     </>
@@ -128,7 +187,66 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
     </Dialog>
   )
 }
+const DialogVerifyMyObjects = ({
+  showCompareExistingVsFileObjects,
+  setshowCompareExistingVsFileObjects,
+  fileInnerText
+}) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  let errorStatus = 'neutral'
+  let extractedObjects = []
+  // console.log('//', fileInnerText)
 
+  const fileInnerText_array = Extract_objects.split('\n') // change to fileInnerText
+  console.log('🚀 ~  fileInnerText_array:', fileInnerText_array)
+
+  const fileInnerText_array2 = fileInnerText_array.filter((oneLine) => {
+    var oneLine_array = oneLine.split(' ')
+    oneLine_array = oneLine_array.filter((element) => {
+      return element != '' && element != ' '
+    })
+    if (oneLine_array.length > 0) {
+      var firstElement = oneLine_array[0]
+      var lastElement = oneLine_array[oneLine_array.length - 1]
+      if (firstElement[0] == '{' && lastElement.slice(lastElement.length - 2) == '},') {
+        return oneLine_array
+      }
+    }
+  })
+
+  extractedObjects = fileInnerText_array2.map((oneLine) => {
+    var returnObject = []
+    oneLine = oneLine
+      .split(/,|{|}/g)
+      .map((word) => word.trim())
+      .filter((word) => word !== '')
+
+    oneLine.forEach((element, index) => {
+      returnObject[index] = `${oneLine[0]}_${oneLine[1]}`
+    })
+  })
+
+  console.log('🚀 ~  fileInnerText_array2:', extractedObjects)
+
+  return (
+    <Dialog
+      open={showCompareExistingVsFileObjects}
+      onClose={() => {
+        setshowCompareExistingVsFileObjects(false) //BUG - turn to false
+      }}
+    >
+      <section
+        style={{
+          padding: '1rem 2rem',
+          border: `2px solid`,
+          borderColor: errorStatus == 'error' ? `${colors.red[500]}` : `${colors.green[400]}`,
+          background: `${colors.primary[300]}`
+        }}
+      ></section>
+    </Dialog>
+  )
+}
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
 
