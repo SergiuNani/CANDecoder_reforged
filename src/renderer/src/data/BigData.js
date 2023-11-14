@@ -1986,7 +1986,7 @@ export const Objects_collection = [
     Index: '#x2104',
     Name: 'Auxiliary encoder function',
     Type: 'USINT',
-    BitSize: 16,
+    BitSize: 8,
     Info: {
       DefaultData: 0
     }
@@ -1995,7 +1995,7 @@ export const Objects_collection = [
     Index: '#x2105',
     Name: 'Auxiliary encoder status',
     Type: 'USINT',
-    BitSize: 16,
+    BitSize: 8,
     Info: {
       DefaultData: 0
     }
@@ -2550,7 +2550,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x608F_00',
           Name: 'Number of entries',
           BitSize: 8,
@@ -2559,7 +2558,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x608F_01',
           Name: 'Encoder increments',
           BitSize: 32,
@@ -2568,7 +2566,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x608F_02',
           Name: 'Motor revolutions',
           BitSize: 32,
@@ -2587,7 +2584,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x6091_00',
           Name: 'Number of entries',
           BitSize: 8,
@@ -2596,7 +2592,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6091_01',
           Name: 'Motor shaft revolution',
           BitSize: 32,
@@ -2605,7 +2600,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6091_02',
           Name: 'Driving shaft revolution',
           Info: {
@@ -2624,7 +2618,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x6092_00',
           Name: 'Number of entries',
           BitSize: 8,
@@ -2633,7 +2626,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6092_01',
           Name: 'Feed',
           BitSize: 32,
@@ -2642,7 +2634,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6092_02',
           Name: 'Shaft revolution',
           Info: {
@@ -2661,7 +2652,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x6093_00',
           Name: 'Number of entries',
           BitSize: 8,
@@ -2670,7 +2660,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6093_01',
           Name: 'Poition factor Numerator',
           BitSize: 32,
@@ -2679,11 +2668,10 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
-          Index: '#x6092_02',
+          Index: '#x6093_02',
           Name: 'Position factor Division',
+          BitSize: 32,
           Info: {
-            BitSize: 32,
             DefaultData: 1
           }
         }
@@ -2698,7 +2686,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x6094_00',
           Name: 'Number of entries',
           BitSize: 8,
@@ -2707,7 +2694,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6094_01',
           Name: 'Velocity encider factor Numerator',
           BitSize: 32,
@@ -2716,13 +2702,9 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6094_02',
           Name: 'Velocity encoder factor Divisor',
-          Info: {
-            BitSize: 32,
-            DefaultData: 1
-          }
+          BitSize: 32
         }
       ]
     }
@@ -2735,7 +2717,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x6096_00',
           Name: 'Number of entries',
           BitSize: 8,
@@ -2744,7 +2725,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6096_01',
           Name: 'Velocity factor Numerator',
           BitSize: 32,
@@ -2771,7 +2751,6 @@ export const Objects_collection = [
     Info: {
       SubItem: [
         {
-          '#text': '>',
           Index: '#x6097_00',
           Name: 'Nuumber of entries',
           BitSize: 8,
@@ -2780,7 +2759,6 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6097_01',
           Name: 'Acceleration factor Numerator',
           BitSize: 32,
@@ -2789,13 +2767,9 @@ export const Objects_collection = [
           }
         },
         {
-          '#text': '>',
           Index: '#x6097_02',
           Name: 'Acceleration factor Divisor',
-          Info: {
-            BitSize: 32,
-            DefaultData: 1
-          }
+          BitSize: 32
         }
       ]
     }
@@ -2828,7 +2802,6 @@ export const Objects_collection = [
           Name: 'Jerk facotr Division',
           BitSize: 32,
           Info: {
-            '#text': '>',
             DefaultData: 1
           }
         }

@@ -14,10 +14,11 @@ import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../function
 import { Button2 } from '../components/SmallComponents'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { Extract_objects } from '../data/TestingData'
+import { GetObject } from '../functions/CANopenFunctions'
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
-  const [fileInnerText, setFileInnerText] = useState([])
-  const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(true)
+  const [fileInnerText, setFileInnerText] = useState('')
+  const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(false)
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -196,10 +197,8 @@ const DialogVerifyMyObjects = ({
   const colors = tokens(theme.palette.mode)
   let errorStatus = 'neutral'
   let extractedObjects = []
-  // console.log('//', fileInnerText)
 
-  const fileInnerText_array = Extract_objects.split('\n') // change to fileInnerText
-  console.log('🚀 ~  fileInnerText_array:', fileInnerText_array)
+  const fileInnerText_array = fileInnerText.split('\r\n') // change to fileInnerText
 
   const fileInnerText_array2 = fileInnerText_array.filter((oneLine) => {
     var oneLine_array = oneLine.split(' ')
@@ -215,20 +214,44 @@ const DialogVerifyMyObjects = ({
     }
   })
 
-  extractedObjects = fileInnerText_array2.map((oneLine) => {
+  extractedObjects = fileInnerText_array2.map((oneLine, inx) => {
     var returnObject = []
     oneLine = oneLine
       .split(/,|{|}/g)
       .map((word) => word.trim())
       .filter((word) => word !== '')
 
-    oneLine.forEach((element, index) => {
-      returnObject[index] = `${oneLine[0]}_${oneLine[1]}`
-    })
+    if (!oneLine[1] || !oneLine[3]) {
+      return [fileInnerText_array[inx], null]
+    } else if (oneLine[1].length == 1) {
+      oneLine[1] = `0${oneLine[1]}`
+    }
+    returnObject[0] = `${oneLine[0]}_${oneLine[1]}`
+    returnObject[1] = oneLine[3].replace(/\D/g, '')
+
+    return returnObject
   })
+  console.log('!!!extractedObjects:', extractedObjects)
 
-  console.log('🚀 ~  fileInnerText_array2:', extractedObjects)
+  var ConclusionArray = []
 
+  extractedObjects.forEach((oneIndex, idx) => {
+    if (oneIndex[1] != null) {
+      var temp = GetObject(oneIndex[0])
+
+      if (temp[2] == 0) {
+        ConclusionArray[idx] = `Object ${oneIndex[0]} with size ${oneIndex[1]} can't be found`
+        errorStatus = 'error'
+      } else if (temp[2] != oneIndex[1]) {
+        ConclusionArray[
+          idx
+        ] = `Object ${oneIndex[0]} with size ${oneIndex[1]} dont correspond with hardcoded size ${temp[2]}`
+        errorStatus = 'error'
+      } else {
+        ConclusionArray[idx] = `OK`
+      }
+    }
+  })
   return (
     <Dialog
       open={showCompareExistingVsFileObjects}
@@ -243,7 +266,20 @@ const DialogVerifyMyObjects = ({
           borderColor: errorStatus == 'error' ? `${colors.red[500]}` : `${colors.green[400]}`,
           background: `${colors.primary[300]}`
         }}
-      ></section>
+      >
+        <div style={{ color: `${colors.primary[400]}` }}>
+          Checked {ConclusionArray.length} objects:{' '}
+        </div>
+        {errorStatus == 'error' ? (
+          ConclusionArray.map((oneConclusion, idx) => {
+            if (oneConclusion != 'OK') {
+              return <div key={idx}>{oneConclusion}</div>
+            }
+          })
+        ) : (
+          <div>Everything is OK</div>
+        )}
+      </section>
     </Dialog>
   )
 }

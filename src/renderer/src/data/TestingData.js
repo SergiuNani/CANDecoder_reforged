@@ -1,15 +1,6 @@
 export var Extract_objects = `
 
 {0x605B,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_value16_0				,(BYTE	 *)&shutdown_op_OC,NULL},  
-{0x605B,0, ,(BYTE	 *)&shutdown_op_OC,NULL},  
-   {0x605B,0, ,(BYTE	 *)&shutdown_op_OC,NULL},  
-   {},
-   
-   
-   `
-export var Extract_objects1 = `
-
-{0x605B,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_value16_0				,(BYTE	 *)&shutdown_op_OC,NULL},  
 /*Disable Operation Option Code*/
  {0x605C,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_mot_rev				,(BYTE	 *)&disable_op_OC,NULL},     
 /*Halt Option Code*/
