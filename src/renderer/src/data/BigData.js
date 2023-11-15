@@ -142,6 +142,15 @@ export const Objects_collection = [
     }
   },
   {
+    Index: '#x1015',
+    Name: 'COD-ID Emergency Object',
+    Type: 'USIN',
+    BitSize: 16,
+    Info: {
+      DefaultData: '80h + Node-ID'
+    }
+  },
+  {
     Index: '#x1017',
     Name: 'Producer Heartbeat Time',
     Type: 'USIN',
@@ -943,6 +952,7 @@ export const Objects_collection = [
         {
           Index: '#x1C00_00',
           Name: 'Number of Entries',
+          BitSize: 8,
           Info: {
             DefaultData: 4
           }
@@ -950,6 +960,7 @@ export const Objects_collection = [
         {
           Index: '#x1C00_01',
           Name: 'Comm. type, Sync Manager 0',
+          BitSize: 8,
           Info: {
             DefaultData: 1
           }
@@ -957,6 +968,7 @@ export const Objects_collection = [
         {
           Index: '#x1C00_02',
           Name: 'Comm. type, Sync Manager 1',
+          BitSize: 8,
           Info: {
             DefaultData: 2
           }
@@ -964,6 +976,7 @@ export const Objects_collection = [
         {
           Index: '#x1C00_03',
           Name: 'Comm. type, Sync Manager 2',
+          BitSize: 8,
           Info: {
             DefaultData: 3
           }
@@ -971,6 +984,7 @@ export const Objects_collection = [
         {
           Index: '#x1C00_04',
           Name: 'Comm. type, Sync Manager 3',
+          BitSize: 8,
           Info: {
             DefaultData: 4
           }
@@ -988,6 +1002,7 @@ export const Objects_collection = [
         {
           Index: '#x1C12_00',
           Name: 'Sync Manager 2, Number of mapped RPDOs',
+          BitSize: 8,
           Info: {
             DefaultData: 2
           }
@@ -995,6 +1010,7 @@ export const Objects_collection = [
         {
           Index: '#x1C12_01',
           Name: 'Sync Manager 2, RPDO mapping 0',
+          BitSize: 16,
           Info: {
             DefaultData: 16
           }
@@ -1012,6 +1028,7 @@ export const Objects_collection = [
         {
           Index: '#x1C13_00',
           Name: 'Sync Manager 3, Number of mapped TPDOs',
+          BitSize: 8,
           Info: {
             DefaultData: 3
           }
@@ -1019,6 +1036,7 @@ export const Objects_collection = [
         {
           Index: '#x1C13_01',
           Name: 'Sync Manager 3, TPDO mapping 0',
+          BitSize: 16,
           Info: {
             DefaultData: '001A'
           }
@@ -1026,6 +1044,7 @@ export const Objects_collection = [
         {
           Index: '#x1C13_02',
           Name: 'Sync Manager 3, TPDO mapping 1',
+          BitSize: 16,
           Info: {
             DefaultData: '011A'
           }
@@ -1105,6 +1124,16 @@ export const Objects_collection = [
           }
         },
         {
+          Index: '#x1C32_11',
+
+          Name: 'Event Missed Counter',
+          BitSize: 16,
+
+          Info: {
+            DefaultData: 0
+          }
+        },
+        {
           Index: '#x1C32_12',
 
           Name: 'Cycle Time Too Small',
@@ -1132,93 +1161,56 @@ export const Objects_collection = [
       SubItem: [
         {
           Index: '#x1c33_00',
-
           Name: 'Number of entries',
-          BitSize: 8,
-
-          Info: {
-            DefaultData: 12
-          }
+          BitSize: 8
         },
         {
           Index: '#x1c33_01',
 
           Name: 'Synchronization Type',
-          BitSize: 16,
-
-          Info: {
-            DefaultData: 200
-          }
+          BitSize: 16
         },
         {
           Index: '#x1c33_02',
 
           Name: 'Cycle Time',
-          BitSize: 200,
-
-          Info: {
-            DefaultData: '40420F00'
-          }
+          BitSize: 32
         },
         {
           Index: '#x1c33_04',
 
           Name: 'Synchronization Types supported',
-          BitSize: 16,
-
-          Info: {
-            DefaultData: 300
-          }
+          BitSize: 16
         },
         {
           Index: '#x1c33_05',
 
           Name: 'Minimum Cycle Time',
-          BitSize: 32,
-
-          Info: {
-            DefaultData: 0
-          }
+          BitSize: 32
         },
         {
           Index: '#x1c33_06',
 
           Name: 'Calc and Copy Time',
-          BitSize: 32,
-
-          Info: {
-            DefaultData: 0
-          }
+          BitSize: 32
         },
         {
           Index: '#x1c33_09',
 
           Name: 'Delay Time',
-          BitSize: 32,
-
-          Info: {
-            DefaultData: 0
-          }
+          BitSize: 32
         },
         {
           Index: '#x1c33_11',
 
           Name: 'SM-Event Missed',
-          BitSize: 16,
-
-          Info: {
-            DefaultData: 0
-          }
+          BitSize: 16
         },
         {
           Index: '#x1c33_12',
 
           Name: 'Cycle Time Too Small',
-          BitSize: 16,
-
-          Info: {
-            DefaultData: 0
-          }
+          BitSize: 16
         },
         {
           Index: '#x1c33_32',
@@ -2187,6 +2179,148 @@ export const Objects_collection = [
     }
   },
   {
+    Index: '#2111',
+    Name: 'Auxiliary Settings Register 3 - ASR3',
+    Type: 'INT',
+    BitSize: 16,
+    Info: {
+      DefaultData: '1 for 514x; 0 for 508x/509x'
+    }
+  },
+  {
+    Index: '#2112',
+    Name: 'TML Polarity',
+    Type: 'INT',
+    BitSize: 16,
+    Info: {
+      DefaultData: '1 for 514x; 0 for 508x/509x'
+    }
+  },
+  {
+    Index: '#2113',
+    Name: ' Detailed Fault Reaction Option Code',
+    Type: 'INT',
+    BitSize: 8,
+    Info: {
+      SubItem: [
+        {
+          Index: '#2113_00',
+          Name: 'Number of enteries',
+          BitSize: 8,
+          Info: {
+            DefaultData: 2
+          }
+        },
+        {
+          Index: '#2113_01',
+          Name: 'fault_reaction_option_code_pdpint',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_03',
+          Name: 'fault_reaction_option_code_ctrl_err',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_04',
+          Name: 'fault_reaction_option_code_comm',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_07',
+          Name: 'fault_reaction_option_code_i2t_drv',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_08',
+          Name: 'fault_reaction_option_code_overcrt',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_09',
+          Name: 'fault_reaction_option_code_i2t',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_10',
+          Name: 'fault_reaction_option_motor_temp',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_11',
+          Name: 'fault_reaction_option_drive_temp',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_12',
+          Name: 'fault_reaction_option_overvoltage',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_13',
+          Name: 'fault_reaction_option_undervoltage',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        },
+        {
+          Index: '#2113_15',
+          Name: 'fault_reaction_option_code_ena',
+          BitSize: 16,
+          Info: {
+            DefaultData: 1
+          }
+        }
+      ]
+    }
+  },
+  {
+    Index: '#2114',
+    Name: 'fault_override_option_code',
+    Type: 'INT',
+    BitSize: 16,
+    Info: {
+      DefaultData: '1 for 514x; 0 for 508x/509x'
+    }
+  },
+  {
+    Index: '#2115',
+    Name: 'ASR4',
+    Type: 'INT',
+    BitSize: 32,
+    Info: {
+      DefaultData: '1 for 514x; 0 for 508x/509x'
+    }
+  },
+  {
     Index: '#x6007',
     Name: 'Abort Connection Option Code',
     Type: 'INT',
@@ -2361,7 +2495,7 @@ export const Objects_collection = [
     Index: '#x6075',
     Name: 'Motor rated current',
     Type: 'INT',
-    BitSize: 16
+    BitSize: 32
   },
   {
     Index: '#x6077',
@@ -2602,8 +2736,8 @@ export const Objects_collection = [
         {
           Index: '#x6091_02',
           Name: 'Driving shaft revolution',
+          BitSize: 32,
           Info: {
-            BitSize: 32,
             DefaultData: 1
           }
         }
@@ -2636,8 +2770,8 @@ export const Objects_collection = [
         {
           Index: '#x6092_02',
           Name: 'Shaft revolution',
+          BitSize: 32,
           Info: {
-            BitSize: 32,
             DefaultData: 1
           }
         }

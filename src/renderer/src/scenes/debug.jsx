@@ -202,9 +202,11 @@ const DialogVerifyMyObjects = ({
 
   const fileInnerText_array2 = fileInnerText_array.filter((oneLine) => {
     var oneLine_array = oneLine.split(' ')
-    oneLine_array = oneLine_array.filter((element) => {
-      return element != '' && element != ' '
-    })
+    oneLine_array = oneLine_array
+      .map((word) => word.trim())
+      .filter((element) => {
+        return element != '' && element != ' '
+      })
     if (oneLine_array.length > 0) {
       var firstElement = oneLine_array[0]
       var lastElement = oneLine_array[oneLine_array.length - 1]
@@ -228,7 +230,10 @@ const DialogVerifyMyObjects = ({
     }
     returnObject[0] = `${oneLine[0]}_${oneLine[1]}`
     returnObject[1] = oneLine[3].replace(/\D/g, '')
-
+    if (returnObject[1].toString().length > 2) {
+      //in case the reported length is some bs
+      return [fileInnerText_array[inx], null]
+    }
     return returnObject
   })
   console.log('!!!extractedObjects:', extractedObjects)

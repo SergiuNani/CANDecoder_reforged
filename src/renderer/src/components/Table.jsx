@@ -12,14 +12,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { whatPDOisObject, whatObjectValueMeans } from '../functions/CANopenFunctions'
 import { Input_AutoFormat } from './ForumsComponents'
-import { filterDecimal } from '../functions/NumberConversion'
+import { filterDecimal, addSpacesOfTwo } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
 import { TooltipClickable } from '../components/SmallComponents'
 import { AllCAN_MsgsExtracted_array } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
 import SearchIcon from '@mui/icons-material/Search'
-
 export let groupedFilteredArray = []
 
 export const TableROW = ({ iteration }) => {
@@ -60,7 +59,7 @@ export const TableROW = ({ iteration }) => {
           <td style={{ textAlign: 'center', cursor: 'pointer', width: '12rem' }}>
             <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
               <p>
-                {iteration.CobID} - {iteration.FrameData}
+                {iteration.CobID} - {addSpacesOfTwo(iteration.FrameData)}
               </p>
             </TooltipClickable>
           </td>

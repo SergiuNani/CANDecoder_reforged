@@ -352,7 +352,7 @@ export function CreateDecodedArrayOfObjects(
       msgNr: msgNr || '-',
       OriginalMessage: OriginalMessage || '-',
       CobID: CobID || '-',
-      FrameData: addSpacesOfTwo(FrameData) || '-',
+      FrameData: FrameData || '-',
       type: type || '-',
       AxisID: AxisID ? AxisID : '-',
       CS: CS || '-',

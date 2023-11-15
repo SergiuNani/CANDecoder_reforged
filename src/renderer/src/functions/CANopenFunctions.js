@@ -127,12 +127,16 @@ export function GetObject(index) {
     }
     return [`${index}`, 'Nothing Found', 0]
   }
-  var SearchResult = Objects_collection_LS.filter((object) => object.Index.match(index))
+  var SearchResult = Objects_collection_LS.filter((object) =>
+    object.Index.toUpperCase().match(index)
+  )
 
   if (subIndex || (SearchResult[0] && ![8, 16, 32].includes(SearchResult[0].BitSize))) {
     var aux_Obj = index.concat(subIndex)
     if (SearchResult[0] && SearchResult[0].Info && SearchResult[0].Info.SubItem) {
-      SearchResult = SearchResult[0].Info.SubItem.filter((object) => object.Index.match(aux_Obj))
+      SearchResult = SearchResult[0].Info.SubItem.filter((object) =>
+        object.Index.toUpperCase().match(aux_Obj)
+      )
     } else if (subIndex != '_00') {
       return [`${index.concat(subIndex)}`, 'Nothing Found', 0]
     }
