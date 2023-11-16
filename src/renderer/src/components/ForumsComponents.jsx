@@ -448,6 +448,7 @@ export function Input_AutoFormat({
       setInputValue(forceValueFromParent)
     }
   }, [forceValueFromParent, forceRender])
+  console.log('forceRender:', forceRender)
 
   function handleInputChange(e) {
     var sorted = callback(e.target.value, resolution)

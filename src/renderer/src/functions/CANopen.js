@@ -367,7 +367,11 @@ export function CreateDecodedArrayOfObjects(
   }
 
   for (let index = globalIndex[0]; index < arr.length; index++) {
-    console.log('🚀xXx index: ', index)
+    if (index == 0) {
+      console.log('🚀xXx First index: ', index)
+    } else if (index == arr.length - 1 || index == arr.length - 2) {
+      console.log('🚀xXx SemiLast/Last index: ', index)
+    }
 
     let row = arr[index]
     //Handle Empty Lines

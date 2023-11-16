@@ -321,6 +321,7 @@ const DecodedTableOptions = ({
         shortcutToDecodeMessages={shortcutToDecodeMessages}
         TableOption={TableOption}
         setTableOption={setTableOption}
+        LogLength={MessagesDecoded_ArrayOfObjects.length}
       />
     )
   }, [fileInnerText, isDrawerOpen, shortcutToDecodeMessages, TableOption])
@@ -365,11 +366,12 @@ const DecodedTableOptions = ({
 
 const DrawerComponent_DecodeOptions = ({
   setisTableVisible,
+  setTableOption,
   isDrawerOpen,
   setIsDrawerOpen,
   TableOption,
-  setTableOption,
-  shortcutToDecodeMessages
+  shortcutToDecodeMessages,
+  LogLength
 }) => {
   console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
@@ -380,7 +382,10 @@ const DrawerComponent_DecodeOptions = ({
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
-
+  const [TableLimit, setTableLimit] = useState(100)
+  const [TableInfLimit, setTableInfLimit] = useState(0)
+  const [TableSupLimit, setTableSupLimit] = useState(LogLength)
+  const [toggle, setToggle] = useState(false)
   const isInitialMount = useRef(true)
   //Shortcut to open/close drawer
   useEffect(() => {
@@ -397,7 +402,7 @@ const DrawerComponent_DecodeOptions = ({
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
-    handleDECODE() // BUG - remvoe
+    // handleDECODE() // BUG - remvoe
 
     if (isInitialMount.current) {
       isInitialMount.current = false
@@ -411,14 +416,17 @@ const DrawerComponent_DecodeOptions = ({
     console.log('handleDECODE')
     setProgressBarInsideDrawer(true)
     setisTableVisible(false)
+
     setTimeout(() => {
-      setisTableVisible(true)
-      setIsDrawerOpen(false)
+      //Main magic happens here
+      var filteredMessages = MessagesDecoded_ArrayOfObjects
       CreateGroupedFilteredArray(
-        MessagesDecoded_ArrayOfObjects,
+        filteredMessages,
         GroupingOptionsForMessages,
         setProgressBarInsideDrawer
       )
+      setisTableVisible(true)
+      setIsDrawerOpen(false)
     }, 800)
   }
 
@@ -455,6 +463,185 @@ const DrawerComponent_DecodeOptions = ({
       )
     }
   }, [showMappingWindow])
+
+  function handleCanLimits(e, name) {
+    setToggle((prev) => !prev)
+    if (name == 'lower') {
+      console.log(e)
+      if (TableSupLimit < e) {
+        setTableInfLimit(TableSupLimit - 1)
+      } else {
+        setTableInfLimit(e)
+      }
+    } else {
+      if (e > LogLength) {
+        setTableSupLimit(LogLength)
+      } else if (TableInfLimit > e) {
+        setTableSupLimit(TableInfLimit + 1)
+      } else {
+        setTableSupLimit(e)
+      }
+    }
+  }
+  const DrawerOptionsList = useMemo(() => {
+    return (
+      <Box sx={{ userSelect: 'none' }}>
+        {/* TABLE DISPLAY OPTIONS ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Table display options:{' '}
+          </p>
+          <RadioGroup
+            row
+            onChange={(e) => {
+              setTableOption(e.target.value)
+            }}
+            value={TableOption}
+            sx={{
+              justifyContent: 'center',
+              '& .MuiSvgIcon-root': {
+                // fontSize: '1rem'
+                color: `${colors.green[400]}`
+              }
+            }}
+          >
+            <FormControlLabel value="Default" control={<Radio />} label="Default" />
+            <FormControlLabel value="Simplified" control={<Radio />} label="Simplified" />
+            <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
+          </RadioGroup>
+        </Box>
+        {/* Reading Direction Radio Buttons ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            CAN_LOG reading direction:{' '}
+          </p>
+          <RadioGroup
+            row
+            onChange={(e) => {
+              setOptionReadingDirection(e.target.value)
+            }}
+            value={optionReadingDirection}
+            sx={{
+              justifyContent: 'center',
+              '& .MuiSvgIcon-root': {
+                // fontSize: '1rem'
+                color: `${colors.green[400]}`
+              }
+            }}
+          >
+            <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
+            <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
+          </RadioGroup>
+        </Box>
+
+        {/* GROUPING OPTIONS ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Grouping Options:{' '}
+          </p>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'start',
+              marginLeft: '2rem',
+              gap: '0.5rem'
+            }}
+          >
+            <Checkbox_Component
+              label="Group by Modes of Operation"
+              onChange={handleGroupingOptions}
+              checked={GroupingOptionsForMessages.Modes}
+            />
+            <Checkbox_Component
+              label="Group by Mapping Objects"
+              onChange={handleGroupingOptions}
+              checked={GroupingOptionsForMessages.Mapping}
+            />
+            <Checkbox_Component
+              label="Group by Repetitive Messages (SYNC, Heartbeat, etc)"
+              onChange={handleGroupingOptions}
+              checked={GroupingOptionsForMessages.Repetitive}
+            />
+          </div>
+        </Box>
+        {/* Available Axes  ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Available Axes:{' '}
+          </p>
+          {AvailableAxes_Component_Memo}
+        </Box>
+      </Box>
+    )
+  }, [
+    TableOption,
+    optionReadingDirection,
+    groupingOptionsRender,
+    TableLimit,
+    TableInfLimit,
+    TableSupLimit
+  ])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -489,14 +676,20 @@ const DrawerComponent_DecodeOptions = ({
             </IconButton>
           </Box>
           <Box sx={{ userSelect: 'none' }}>
-            {/* TABLE DISPLAY OPTIONS ----------------- */}
+            {/* A List of options  ----------------- */}
+            {DrawerOptionsList}
+
+            {/* TABLE LENGTH ----------------- */}
             <Box
               sx={{
                 border: `2px solid ${colors.primary[400]}`,
                 borderRadius: '1rem',
                 margin: '1rem 0',
                 background: `${colors.blue[200]}`,
-                padding: '0.4rem'
+                padding: '0.4rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3rem'
               }}
             >
               <p
@@ -507,35 +700,36 @@ const DrawerComponent_DecodeOptions = ({
                   color: `${colors.yellow[500]}`
                 }}
               >
-                Table display options:{' '}
+                Maximum displayed messages:{' '}
               </p>
-              <RadioGroup
-                row
-                onChange={(e) => {
-                  setTableOption(e.target.value)
+
+              <Input_AutoFormat
+                callback={filterDecimal}
+                resolution={'TIME'}
+                // inputType={fourOptionsRadioSelection}
+                tellParentValueChanged={(e) => {
+                  setTableLimit(e)
                 }}
-                value={TableOption}
-                sx={{
-                  justifyContent: 'center',
-                  '& .MuiSvgIcon-root': {
-                    // fontSize: '1rem'
-                    color: `${colors.green[400]}`
-                  }
-                }}
-              >
-                <FormControlLabel value="Default" control={<Radio />} label="Default" />
-                <FormControlLabel value="Simplified" control={<Radio />} label="Simplified" />
-                <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
-              </RadioGroup>
+                forceValueFromParent={TableLimit}
+                background={colors.blue[200]}
+                border={`2px solid ${colors.blue[500]}`}
+                width="5rem"
+                center
+                padding="0.2rem"
+                blockValueReset
+              />
             </Box>
-            {/* Reading Direction Radio Buttons ----------------- */}
+            {/* TABLE LIMITS ----------------- */}
             <Box
               sx={{
                 border: `2px solid ${colors.primary[400]}`,
                 borderRadius: '1rem',
                 margin: '1rem 0',
                 background: `${colors.blue[200]}`,
-                padding: '0.4rem'
+                padding: '0.4rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3rem'
               }}
             >
               <p
@@ -546,94 +740,41 @@ const DrawerComponent_DecodeOptions = ({
                   color: `${colors.yellow[500]}`
                 }}
               >
-                CAN_LOG reading direction:{' '}
+                Log is between:{' '}
               </p>
-              <RadioGroup
-                row
-                onChange={(e) => {
-                  setOptionReadingDirection(e.target.value)
+
+              <Input_AutoFormat
+                callback={filterDecimal}
+                resolution={0}
+                tellParentValueChanged={(e) => {
+                  handleCanLimits(e, 'lower')
                 }}
-                value={optionReadingDirection}
-                sx={{
-                  justifyContent: 'center',
-                  '& .MuiSvgIcon-root': {
-                    // fontSize: '1rem'
-                    color: `${colors.green[400]}`
-                  }
+                forceValueFromParent={TableInfLimit}
+                forceRender={toggle}
+                background={colors.blue[200]}
+                border={`2px solid ${colors.blue[500]}`}
+                width="5rem"
+                center
+                padding="0.2rem"
+                blockValueReset
+              />
+              <Input_AutoFormat
+                callback={filterDecimal}
+                resolution={0}
+                tellParentValueChanged={(e) => {
+                  handleCanLimits(e, 'superior')
                 }}
-              >
-                <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
-                <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
-              </RadioGroup>
+                forceValueFromParent={TableSupLimit}
+                forceRender={toggle}
+                background={colors.blue[200]}
+                border={`2px solid ${colors.blue[500]}`}
+                width="5rem"
+                center
+                padding="0.2rem"
+                blockValueReset
+              />
             </Box>
-            {/* GROUPING OPTIONS ----------------- */}
-            <Box
-              sx={{
-                border: `2px solid ${colors.primary[400]}`,
-                borderRadius: '1rem',
-                margin: '1rem 0',
-                background: `${colors.blue[200]}`,
-                padding: '0.4rem'
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '1rem',
-                  marginBottom: '0.5rem',
-                  marginLeft: '1rem',
-                  color: `${colors.yellow[500]}`
-                }}
-              >
-                Grouping Options:{' '}
-              </p>
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'start',
-                  marginLeft: '2rem',
-                  gap: '0.5rem'
-                }}
-              >
-                <Checkbox_Component
-                  label="Group by Modes of Operation"
-                  onChange={handleGroupingOptions}
-                  checked={GroupingOptionsForMessages.Modes}
-                />
-                <Checkbox_Component
-                  label="Group by Mapping Objects"
-                  onChange={handleGroupingOptions}
-                  checked={GroupingOptionsForMessages.Mapping}
-                />
-                <Checkbox_Component
-                  label="Group by Repetitive Messages (SYNC, Heartbeat, etc)"
-                  onChange={handleGroupingOptions}
-                  checked={GroupingOptionsForMessages.Repetitive}
-                />
-              </div>
-            </Box>
-            {/* Available Axes  ----------------- */}
-            <Box
-              sx={{
-                border: `2px solid ${colors.primary[400]}`,
-                borderRadius: '1rem',
-                margin: '1rem 0',
-                background: `${colors.blue[200]}`,
-                padding: '0.4rem'
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '1rem',
-                  marginBottom: '0.5rem',
-                  marginLeft: '1rem',
-                  color: `${colors.yellow[500]}`
-                }}
-              >
-                Available Axes:{' '}
-              </p>
-              {AvailableAxes_Component_Memo}
-            </Box>
+
             {/* MESSAGES TYPE ----------------- */}
             <Box
               sx={{
