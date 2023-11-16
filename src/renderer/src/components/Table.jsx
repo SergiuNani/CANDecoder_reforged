@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import {
   Box,
   Typography,
@@ -15,10 +15,11 @@ import { Input_AutoFormat } from './ForumsComponents'
 import { filterDecimal, addSpacesOfTwo } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
-import { TooltipClickable } from '../components/SmallComponents'
-import { AllCAN_MsgsExtracted_array } from '../scenes/Decode_CAN_LOG'
+import { TooltipClickable, Button4 } from '../components/SmallComponents'
+import { AllCAN_MsgsExtracted_array, DecodedTableOptionsContext } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
 import SearchIcon from '@mui/icons-material/Search'
+
 export let groupedFilteredArray = []
 
 export const TableROW = ({ iteration }) => {
@@ -419,6 +420,59 @@ export const DefaultTable = () => {
   console.log('TableComponent -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  var {
+    LogRange,
+    setLogRange,
+    LogRange_Inf,
+    setLogRange_Inf,
+    LogRange_Sup,
+    setLogRange_Sup,
+    LogLenght
+  } = useContext(DecodedTableOptionsContext)
+  console.log('🚀 xxLogRange:', LogRange)
+
+  const LoadPrevMessagesButton = () => {
+    function handleLoadPrev() {
+      console.log('LoadPrevMessagesButton')
+    }
+
+    var auxInf = LogRange_Inf - LogRange
+    var auxSup
+    if (auxInf > 0) {
+      //There are still messages to load backwards
+      auxSup = LogRange_Inf - 1
+    }
+    var text = `Load Previous Messages:  ${auxInf} to ${auxSup}`
+
+    return auxInf > 0 ? (
+      <div style={{ textAlign: 'center' }}>
+        <Button4 onClick={handleLoadPrev}>{text}</Button4>
+      </div>
+    ) : null
+  }
+  const LoadNextMessagesButton = () => {
+    function handleLoadNext() {
+      console.log('LoadPrevMessagesButton')
+    }
+    var auxInf
+    var auxSup = LogLenght - LogRange_Sup
+    if (auxSup > 0) {
+      //There are still messages to load
+      if (auxSup > LogRange) {
+        auxInf = LogRange_Sup + 1
+        auxSup = LogRange_Sup + LogRange
+      } else {
+        auxInf = LogRange_Sup + 1
+        auxSup = LogRange_Sup + auxSup
+      }
+    }
+    var text = `Load Next Messages:  ${auxInf} to ${auxSup}`
+    return auxSup > 0 ? (
+      <div style={{ textAlign: 'center' }}>
+        <Button4 onClick={handleLoadNext}>{text}</Button4>
+      </div>
+    ) : null
+  }
   return (
     <Box
       style={{
@@ -427,6 +481,8 @@ export const DefaultTable = () => {
         width: '99.5%'
       }}
     >
+      <LoadPrevMessagesButton />
+
       <table
         style={{
           width: '99.5%',
@@ -502,6 +558,8 @@ export const DefaultTable = () => {
           return <TableROW key={index} iteration={group} />
         }
       })}
+
+      <LoadNextMessagesButton />
     </Box>
   )
 }

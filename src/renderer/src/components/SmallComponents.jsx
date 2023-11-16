@@ -95,6 +95,34 @@ export const Button3 = ({ children, onClick }) => {
     </Button>
   )
 }
+//Big button for loading prev/next CAN log messages
+export const Button4 = ({ children, onClick }) => {
+  //Cancel button
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Button
+      variant="contained"
+      onClick={onClick}
+      sx={{
+        height: '2.7rem',
+        margin: '1rem 2rem',
+        fontSize: '1rem',
+        background: `${colors.primary[300]}`,
+
+        '&:hover': {
+          background: `${colors.primary[200]}`,
+          border: `1px solid ${colors.green[400]}`
+        },
+        textTransform: 'none',
+        width: '70%',
+        borderRadius: '0.5rem'
+      }}
+    >
+      {children}
+    </Button>
+  )
+}
 export const ButtonTransparent = ({ children, onClick, sx }) => {
   //Cancel button
   const theme = useTheme()

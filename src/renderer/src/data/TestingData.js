@@ -159,7 +159,7 @@ export var InsertTextIntoTextArea = `
          155	    	17:09:36	772.303	         76.979		      1793	       701	      	  1	05	  	  	  	  	  	  	  	_       	
          156	    	17:09:36	795.353	         23.050		      1919	       77F	      	  1	05	  	  	  	  	  	  	  	_       	
 
-`
+601 45454545`
 export var Extract_objects = `
 
 {0x605B,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_value16_0				,(BYTE	 *)&shutdown_op_OC,NULL},  

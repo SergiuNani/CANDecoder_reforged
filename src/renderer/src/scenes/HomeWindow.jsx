@@ -608,7 +608,6 @@ function BigFindCobIDComponent() {
           resolution={16}
           tellParentValueChanged={handleValueChanged}
           forceValueFromParent={cobIdInput}
-          // forceRender={forceRender}
           center
         />
         <DoubleArrowIcon sx={{ color: `${colors.primary[400]}`, zoom: '1.8' }} />

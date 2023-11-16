@@ -1,4 +1,13 @@
-import React, { useState, useRef, useEffect, useContext, useMemo, Profiler, memo } from 'react'
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useMemo,
+  Profiler,
+  memo,
+  createContext
+} from 'react'
 import {
   Box,
   IconButton,
@@ -58,18 +67,18 @@ import { GroupingOptionsForMessages } from '../data/SmallData'
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 
+var Decode_CAN_LOG_WindowContext = createContext()
+export var DecodedTableOptionsContext = createContext()
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
-  const [resetMainProgressBar, setResetMainProgressBar] = useState(false)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+
   const { setToggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
-
-  var { freeTextVsCanLog } = useContext(DecodeCANlog_topbarOptionsContext)
-
+  const { freeTextVsCanLog } = useContext(DecodeCANlog_topbarOptionsContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
 
@@ -91,7 +100,6 @@ const Decode_CAN_LOG_Window = () => {
         const fileContent = e.target.result
         setFileInnerText(fileContent)
         sethideTableForceParentToggle((prev) => !prev)
-        setResetMainProgressBar((prev) => !prev)
       }
 
       reader.readAsText(file)
@@ -109,7 +117,6 @@ const Decode_CAN_LOG_Window = () => {
     var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
     sethideTableForceParentToggle((prev) => !prev)
-    setResetMainProgressBar((prev) => !prev)
   }
   //SHORTCUTS ---------------------------
   useEffect(() => {
@@ -146,88 +153,87 @@ const Decode_CAN_LOG_Window = () => {
           fontSize: '1.2rem'
         }}
       >
-        <DecodedTableOptions
-          fileInnerText={fileInnerText}
-          shortcutToDecodeMessages={shortcutToDecodeMessages}
-          resetMainProgressBar={resetMainProgressBar}
-          hideTableForceParentToggle={hideTableForceParentToggle}
-        />
+        <DecodedTableOptions fileInnerText={fileInnerText} />
       </Box>
     )
-  }, [fileInnerText, shortcutToDecodeMessages])
+  }, [fileInnerText])
 
   return (
-    <Box style={{ position: 'relative' }}>
-      <Header title="Decode a CAN LOG "></Header>
-      {/* TOP MENU options --------------------------- */}
+    <Decode_CAN_LOG_WindowContext.Provider
+      value={{ shortcutToDecodeMessages, setShortcutToDecodeMessages, hideTableForceParentToggle }}
+    >
+      <Box style={{ position: 'relative' }}>
+        <Header title="Decode a CAN LOG "></Header>
+        {/* TOP MENU options --------------------------- */}
 
-      {freeTextVsCanLog === 'FreeText' ? (
-        <section
-          //FREE TEXT AREA SECTION
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginBottom: '1rem'
-          }}
-        >
-          <textarea
-            ref={TextAreaText_Ref}
-            cols="100"
+        {freeTextVsCanLog === 'FreeText' ? (
+          <section
+            //FREE TEXT AREA SECTION
             style={{
-              background: `${colors.primary[300]}`,
-              color: `${colors.yellow[600]}`,
-              border: `1px solid ${colors.green[400]}`,
-              height: '30vh',
-              width: '80%'
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: '1rem'
             }}
-          ></textarea>
-
-          <IconButton
-            sx={{
-              zoom: '2'
-            }}
-            onClick={handleClickArrow}
           >
-            <ArrowCircleRightOutlinedIcon />
-          </IconButton>
-        </section>
-      ) : (
-        <section
-          //UPLOAD A FILE SECTION
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            border: `1px solid  ${colors.primary[400]}`,
-            padding: '1rem'
-          }}
-        >
-          <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-            Upload file
-            {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
-            <input
-              type="file"
+            <textarea
+              ref={TextAreaText_Ref}
+              cols="100"
               style={{
-                clip: 'rect(0 0 0 0)',
-                clipPath: 'inset(50%)',
-                height: 1,
-                overflow: 'hidden',
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                whiteSpace: 'nowrap',
-                width: 1
+                background: `${colors.primary[300]}`,
+                color: `${colors.yellow[600]}`,
+                border: `1px solid ${colors.green[400]}`,
+                height: '30vh',
+                width: '80%'
               }}
-              onChange={handleFileUpload}
-            />
-          </Button>
-        </section>
-      )}
+            ></textarea>
 
-      {/* TABLE ----------------------------------------- */}
-      {TableAndDrawerComponent}
-    </Box>
+            <IconButton
+              sx={{
+                zoom: '2'
+              }}
+              onClick={handleClickArrow}
+            >
+              <ArrowCircleRightOutlinedIcon />
+            </IconButton>
+          </section>
+        ) : (
+          <section
+            //UPLOAD A FILE SECTION
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: `1px solid  ${colors.primary[400]}`,
+              padding: '1rem'
+            }}
+          >
+            <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+              Upload file
+              {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
+              <input
+                type="file"
+                style={{
+                  clip: 'rect(0 0 0 0)',
+                  clipPath: 'inset(50%)',
+                  height: 1,
+                  overflow: 'hidden',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  whiteSpace: 'nowrap',
+                  width: 1
+                }}
+                onChange={handleFileUpload}
+              />
+            </Button>
+          </section>
+        )}
+
+        {/* TABLE ----------------------------------------- */}
+        {TableAndDrawerComponent}
+      </Box>
+    </Decode_CAN_LOG_WindowContext.Provider>
   )
 }
 
@@ -235,12 +241,7 @@ export default Decode_CAN_LOG_Window
 
 export let globalIndex = [0] //used when there is a PDO detected and no mapping is done - then we cancel the function and will recall it with this index
 
-const DecodedTableOptions = ({
-  fileInnerText,
-  hideTableForceParentToggle,
-  shortcutToDecodeMessages,
-  resetMainProgressBar
-}) => {
+const DecodedTableOptions = ({ fileInnerText }) => {
   console.log('---2---. DecodedTableOptions')
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
@@ -250,10 +251,15 @@ const DecodedTableOptions = ({
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
 
-  const { toggleFilterWindow } = useContext(DecodeCANlog_topbarOptionsContext)
-  const { toggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
+  const { toggleFilterWindow, toggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
   const initialRender = useRef(true)
+  const { hideTableForceParentToggle } = useContext(Decode_CAN_LOG_WindowContext)
+  //Load PREV/NEXT buttons
+  const [LogRange, setLogRange] = useState(100)
+  const [LogRange_Inf, setLogRange_Inf] = useState(0)
+  const [LogRange_Sup, setLogRange_Sup] = useState(100)
 
+  const LogLenght = MessagesDecoded_ArrayOfObjects.length
   // SHORTCUTS==========================
   useEffect(() => {
     if (initialRender.current) {
@@ -309,7 +315,7 @@ const DecodedTableOptions = ({
         )}
       </div>
     )
-  }, [fileInnerText, resetMainProgressBar, openPDOModal])
+  }, [fileInnerText, openPDOModal])
 
   const Drawer_Memo = useMemo(() => {
     // return null
@@ -318,13 +324,12 @@ const DecodedTableOptions = ({
         setisTableVisible={setisTableVisible}
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
-        shortcutToDecodeMessages={shortcutToDecodeMessages}
         TableOption={TableOption}
         setTableOption={setTableOption}
         LogLength={MessagesDecoded_ArrayOfObjects.length}
       />
     )
-  }, [fileInnerText, isDrawerOpen, shortcutToDecodeMessages, TableOption])
+  }, [fileInnerText, isDrawerOpen, TableOption])
 
   const Table_Memo = useMemo(() => {
     return (
@@ -339,7 +344,7 @@ const DecodedTableOptions = ({
           ))}
       </Box>
     )
-  }, [fileInnerText, isTableVisible])
+  }, [isTableVisible])
 
   const AdvancedSearch_Memo = useMemo(() => {
     return (
@@ -354,13 +359,24 @@ const DecodedTableOptions = ({
     )
   }, [isAdvancedSearchOpen])
 
+  console.log('🚀  LogRange:', LogRange)
   return (
-    <section>
+    <DecodedTableOptionsContext.Provider
+      value={{
+        LogRange,
+        setLogRange,
+        LogRange_Inf,
+        setLogRange_Inf,
+        LogRange_Sup,
+        setLogRange_Sup,
+        LogLenght
+      }}
+    >
       {DecodePDOs_Memo}
       {Drawer_Memo}
       {Table_Memo}
       {AdvancedSearch_Memo}
-    </section>
+    </DecodedTableOptionsContext.Provider>
   )
 }
 
@@ -370,7 +386,6 @@ const DrawerComponent_DecodeOptions = ({
   isDrawerOpen,
   setIsDrawerOpen,
   TableOption,
-  shortcutToDecodeMessages,
   LogLength
 }) => {
   console.log('---3---. DrawerComponent_DecodeOptions')
@@ -383,11 +398,13 @@ const DrawerComponent_DecodeOptions = ({
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [TableLimit, setTableLimit] = useState(100)
-  const [TableInfLimit, setTableInfLimit] = useState(0)
+  const [TableInfLimit, setTableInfLimit] = useState(1)
   const [TableSupLimit, setTableSupLimit] = useState(LogLength)
   const [toggle, setToggle] = useState(false)
   const isInitialMount = useRef(true)
   //Shortcut to open/close drawer
+
+  const { shortcutToDecodeMessages } = useContext(Decode_CAN_LOG_WindowContext)
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === '`') {
@@ -408,18 +425,19 @@ const DrawerComponent_DecodeOptions = ({
       isInitialMount.current = false
       return // Skip the first render on mount
     } else if (isDrawerOpen) {
-      // handleDECODE() // BUG - this is not working with StrictMode
+      handleDECODE() // BUG - this is not working with StrictMode
     }
   }, [shortcutToDecodeMessages])
+
   //Groups the messages and shows the table
   function handleDECODE() {
     console.log('handleDECODE')
     setProgressBarInsideDrawer(true)
-    setisTableVisible(false)
+    setisTableVisible(false) // Needed to reset the table
 
     setTimeout(() => {
       //Main magic happens here
-      var filteredMessages = MessagesDecoded_ArrayOfObjects
+      var filteredMessages = MessagesDecoded_ArrayOfObjects.slice(TableInfLimit - 1, TableSupLimit)
       CreateGroupedFilteredArray(
         filteredMessages,
         GroupingOptionsForMessages,
@@ -470,6 +488,8 @@ const DrawerComponent_DecodeOptions = ({
       console.log(e)
       if (TableSupLimit < e) {
         setTableInfLimit(TableSupLimit - 1)
+      } else if (e < 0) {
+        setTableInfLimit(1)
       } else {
         setTableInfLimit(e)
       }
@@ -610,6 +630,103 @@ const DrawerComponent_DecodeOptions = ({
             />
           </div>
         </Box>
+
+        {/* TABLE LENGTH ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Maximum displayed messages:{' '}
+          </p>
+
+          <Input_AutoFormat
+            callback={filterDecimal}
+            resolution={'TIME'}
+            // inputType={fourOptionsRadioSelection}
+            tellParentValueChanged={(e) => {
+              setTableLimit(e)
+            }}
+            forceValueFromParent={TableLimit}
+            background={colors.blue[200]}
+            border={`2px solid ${colors.blue[500]}`}
+            width="5rem"
+            center
+            padding="0.2rem"
+            blockValueReset
+          />
+        </Box>
+        {/* TABLE LIMITS ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Log is between:{' '}
+          </p>
+
+          <Input_AutoFormat
+            callback={filterDecimal}
+            resolution={0}
+            tellParentValueChanged={(e) => {
+              handleCanLimits(e, 'lower')
+            }}
+            forceValueFromParent={TableInfLimit}
+            forceRender={toggle}
+            background={colors.blue[200]}
+            border={`2px solid ${colors.blue[500]}`}
+            width="5rem"
+            center
+            padding="0.2rem"
+            blockValueReset
+          />
+          <Input_AutoFormat
+            callback={filterDecimal}
+            resolution={0}
+            tellParentValueChanged={(e) => {
+              handleCanLimits(e, 'superior')
+            }}
+            forceValueFromParent={TableSupLimit}
+            forceRender={toggle}
+            background={colors.blue[200]}
+            border={`2px solid ${colors.blue[500]}`}
+            width="5rem"
+            center
+            padding="0.2rem"
+            blockValueReset
+          />
+        </Box>
+
         {/* Available Axes  ----------------- */}
         <Box
           sx={{
@@ -640,7 +757,8 @@ const DrawerComponent_DecodeOptions = ({
     groupingOptionsRender,
     TableLimit,
     TableInfLimit,
-    TableSupLimit
+    TableSupLimit,
+    toggle
   ])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
@@ -678,102 +796,6 @@ const DrawerComponent_DecodeOptions = ({
           <Box sx={{ userSelect: 'none' }}>
             {/* A List of options  ----------------- */}
             {DrawerOptionsList}
-
-            {/* TABLE LENGTH ----------------- */}
-            <Box
-              sx={{
-                border: `2px solid ${colors.primary[400]}`,
-                borderRadius: '1rem',
-                margin: '1rem 0',
-                background: `${colors.blue[200]}`,
-                padding: '0.4rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '3rem'
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '1rem',
-                  marginBottom: '0.5rem',
-                  marginLeft: '1rem',
-                  color: `${colors.yellow[500]}`
-                }}
-              >
-                Maximum displayed messages:{' '}
-              </p>
-
-              <Input_AutoFormat
-                callback={filterDecimal}
-                resolution={'TIME'}
-                // inputType={fourOptionsRadioSelection}
-                tellParentValueChanged={(e) => {
-                  setTableLimit(e)
-                }}
-                forceValueFromParent={TableLimit}
-                background={colors.blue[200]}
-                border={`2px solid ${colors.blue[500]}`}
-                width="5rem"
-                center
-                padding="0.2rem"
-                blockValueReset
-              />
-            </Box>
-            {/* TABLE LIMITS ----------------- */}
-            <Box
-              sx={{
-                border: `2px solid ${colors.primary[400]}`,
-                borderRadius: '1rem',
-                margin: '1rem 0',
-                background: `${colors.blue[200]}`,
-                padding: '0.4rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '3rem'
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '1rem',
-                  marginBottom: '0.5rem',
-                  marginLeft: '1rem',
-                  color: `${colors.yellow[500]}`
-                }}
-              >
-                Log is between:{' '}
-              </p>
-
-              <Input_AutoFormat
-                callback={filterDecimal}
-                resolution={0}
-                tellParentValueChanged={(e) => {
-                  handleCanLimits(e, 'lower')
-                }}
-                forceValueFromParent={TableInfLimit}
-                forceRender={toggle}
-                background={colors.blue[200]}
-                border={`2px solid ${colors.blue[500]}`}
-                width="5rem"
-                center
-                padding="0.2rem"
-                blockValueReset
-              />
-              <Input_AutoFormat
-                callback={filterDecimal}
-                resolution={0}
-                tellParentValueChanged={(e) => {
-                  handleCanLimits(e, 'superior')
-                }}
-                forceValueFromParent={TableSupLimit}
-                forceRender={toggle}
-                background={colors.blue[200]}
-                border={`2px solid ${colors.blue[500]}`}
-                width="5rem"
-                center
-                padding="0.2rem"
-                blockValueReset
-              />
-            </Box>
 
             {/* MESSAGES TYPE ----------------- */}
             <Box
