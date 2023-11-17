@@ -255,11 +255,12 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const initialRender = useRef(true)
   const { hideTableForceParentToggle } = useContext(Decode_CAN_LOG_WindowContext)
   //Load PREV/NEXT buttons
-  const [LogRange, setLogRange] = useState(100)
-  const [LogRange_Inf, setLogRange_Inf] = useState(0)
-  const [LogRange_Sup, setLogRange_Sup] = useState(100)
+  const LogDisplayRange = useRef(100)
+  const LogDisplayRange_Inf = useRef(0)
+  const LogDisplayRange_Sup = useRef(100)
 
-  const LogLenght = MessagesDecoded_ArrayOfObjects.length
+  const FilteredLogLenght = useRef(0)
+  const FullLogLength = useRef(MessagesDecoded_ArrayOfObjects.length)
   // SHORTCUTS==========================
   useEffect(() => {
     if (initialRender.current) {
@@ -326,7 +327,6 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         setIsDrawerOpen={setIsDrawerOpen}
         TableOption={TableOption}
         setTableOption={setTableOption}
-        LogLength={MessagesDecoded_ArrayOfObjects.length}
       />
     )
   }, [fileInnerText, isDrawerOpen, TableOption])
@@ -359,17 +359,15 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     )
   }, [isAdvancedSearchOpen])
 
-  console.log('🚀  LogRange:', LogRange)
   return (
     <DecodedTableOptionsContext.Provider
       value={{
-        LogRange,
-        setLogRange,
-        LogRange_Inf,
-        setLogRange_Inf,
-        LogRange_Sup,
-        setLogRange_Sup,
-        LogLenght
+        FullLogLength,
+        LogDisplayRange,
+        LogDisplayRange_Inf,
+        LogDisplayRange_Sup,
+        FilteredLogLenght,
+        FullLogLength
       }}
     >
       {DecodePDOs_Memo}
@@ -385,8 +383,7 @@ const DrawerComponent_DecodeOptions = ({
   setTableOption,
   isDrawerOpen,
   setIsDrawerOpen,
-  TableOption,
-  LogLength
+  TableOption
 }) => {
   console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
@@ -397,14 +394,22 @@ const DrawerComponent_DecodeOptions = ({
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
-  const [TableLimit, setTableLimit] = useState(100)
-  const [TableInfLimit, setTableInfLimit] = useState(1)
-  const [TableSupLimit, setTableSupLimit] = useState(LogLength)
   const [toggle, setToggle] = useState(false)
-  const isInitialMount = useRef(true)
   //Shortcut to open/close drawer
-
   const { shortcutToDecodeMessages } = useContext(Decode_CAN_LOG_WindowContext)
+  const isInitialMount = useRef(true)
+
+  var {
+    LogDisplayRange,
+    LogDisplayRange_Inf,
+    LogDisplayRange_Sup,
+    FilteredLogLenght,
+    FullLogLength
+  } = useContext(DecodedTableOptionsContext)
+
+  const CutTable_Inf = useRef(1)
+  const CutTable_Sup = useRef(FullLogLength.current)
+
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === '`') {
@@ -436,8 +441,17 @@ const DrawerComponent_DecodeOptions = ({
     setisTableVisible(false) // Needed to reset the table
 
     setTimeout(() => {
-      //Main magic happens here
-      var filteredMessages = MessagesDecoded_ArrayOfObjects.slice(TableInfLimit - 1, TableSupLimit)
+      //We cut the array of messages
+      var filteredMessages = MessagesDecoded_ArrayOfObjects.slice(
+        CutTable_Inf.current - 1,
+        CutTable_Sup.current
+      )
+      FilteredLogLenght.current = filteredMessages.length
+      //We showing only the TableRange selected by the user
+      filteredMessages = filteredMessages.slice(
+        LogDisplayRange_Inf.current,
+        LogDisplayRange_Sup.current
+      )
       CreateGroupedFilteredArray(
         filteredMessages,
         GroupingOptionsForMessages,
@@ -482,24 +496,24 @@ const DrawerComponent_DecodeOptions = ({
     }
   }, [showMappingWindow])
 
-  function handleCanLimits(e, name) {
+  function handleLogCUTLimits(e, name) {
     setToggle((prev) => !prev)
     if (name == 'lower') {
-      console.log(e)
-      if (TableSupLimit < e) {
-        setTableInfLimit(TableSupLimit - 1)
+      if (CutTable_Sup.current < e) {
+        //Inf is bigger than Sup
+        CutTable_Inf.current = CutTable_Sup.current - 1
       } else if (e < 0) {
-        setTableInfLimit(1)
+        CutTable_Inf.current = 1
       } else {
-        setTableInfLimit(e)
+        CutTable_Inf.current = e
       }
     } else {
-      if (e > LogLength) {
-        setTableSupLimit(LogLength)
-      } else if (TableInfLimit > e) {
-        setTableSupLimit(TableInfLimit + 1)
+      if (e > FullLogLength.current) {
+        CutTable_Sup.current = FullLogLength.current
+      } else if (CutTable_Inf.current > e) {
+        CutTable_Sup.current = CutTable_Inf.current + 1
       } else {
-        setTableSupLimit(e)
+        CutTable_Sup.current = e
       }
     }
   }
@@ -631,7 +645,7 @@ const DrawerComponent_DecodeOptions = ({
           </div>
         </Box>
 
-        {/* TABLE LENGTH ----------------- */}
+        {/* Maximum displayed messages ----------------- */}
         <Box
           sx={{
             border: `2px solid ${colors.primary[400]}`,
@@ -658,20 +672,26 @@ const DrawerComponent_DecodeOptions = ({
           <Input_AutoFormat
             callback={filterDecimal}
             resolution={'TIME'}
-            // inputType={fourOptionsRadioSelection}
             tellParentValueChanged={(e) => {
-              setTableLimit(e)
+              setToggle((prev) => !prev)
+              if (parseInt(e) > 3000) {
+                e = 3000
+              }
+              LogDisplayRange.current = parseInt(e)
+              LogDisplayRange_Inf.current = 0
+              LogDisplayRange_Sup.current = LogDisplayRange.current
             }}
-            forceValueFromParent={TableLimit}
+            forceValueFromParent={LogDisplayRange.current}
             background={colors.blue[200]}
             border={`2px solid ${colors.blue[500]}`}
             width="5rem"
             center
             padding="0.2rem"
             blockValueReset
+            forceRender={toggle}
           />
         </Box>
-        {/* TABLE LIMITS ----------------- */}
+        {/* CUT the LOG between ----------------- */}
         <Box
           sx={{
             border: `2px solid ${colors.primary[400]}`,
@@ -692,39 +712,47 @@ const DrawerComponent_DecodeOptions = ({
               color: `${colors.yellow[500]}`
             }}
           >
-            Log is between:{' '}
+            Cut the Log between:{' '}
           </p>
-
-          <Input_AutoFormat
-            callback={filterDecimal}
-            resolution={0}
-            tellParentValueChanged={(e) => {
-              handleCanLimits(e, 'lower')
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '0.4rem'
             }}
-            forceValueFromParent={TableInfLimit}
-            forceRender={toggle}
-            background={colors.blue[200]}
-            border={`2px solid ${colors.blue[500]}`}
-            width="5rem"
-            center
-            padding="0.2rem"
-            blockValueReset
-          />
-          <Input_AutoFormat
-            callback={filterDecimal}
-            resolution={0}
-            tellParentValueChanged={(e) => {
-              handleCanLimits(e, 'superior')
-            }}
-            forceValueFromParent={TableSupLimit}
-            forceRender={toggle}
-            background={colors.blue[200]}
-            border={`2px solid ${colors.blue[500]}`}
-            width="5rem"
-            center
-            padding="0.2rem"
-            blockValueReset
-          />
+          >
+            <Input_AutoFormat
+              callback={filterDecimal}
+              resolution={0}
+              tellParentValueChanged={(e) => {
+                handleLogCUTLimits(e, 'lower')
+              }}
+              forceValueFromParent={CutTable_Inf.current}
+              forceRender={toggle}
+              background={colors.blue[200]}
+              border={`2px solid ${colors.blue[500]}`}
+              width="5rem"
+              center
+              padding="0.2rem"
+              blockValueReset
+            />
+            <Input_AutoFormat
+              callback={filterDecimal}
+              resolution={0}
+              tellParentValueChanged={(e) => {
+                handleLogCUTLimits(e, 'superior')
+              }}
+              forceValueFromParent={CutTable_Sup.current}
+              forceRender={toggle}
+              background={colors.blue[200]}
+              border={`2px solid ${colors.blue[500]}`}
+              width="5rem"
+              center
+              padding="0.2rem"
+              blockValueReset
+            />
+          </div>
         </Box>
 
         {/* Available Axes  ----------------- */}
@@ -755,9 +783,8 @@ const DrawerComponent_DecodeOptions = ({
     TableOption,
     optionReadingDirection,
     groupingOptionsRender,
-    TableLimit,
-    TableInfLimit,
-    TableSupLimit,
+    CutTable_Inf,
+    CutTable_Sup,
     toggle
   ])
   return (

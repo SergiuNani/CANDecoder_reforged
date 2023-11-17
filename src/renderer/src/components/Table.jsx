@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from 'react'
+import React, { useState, useRef, useEffect, useContext, memo, useMemo } from 'react'
 import {
   Box,
   Typography,
@@ -420,27 +420,20 @@ export const DefaultTable = () => {
   console.log('TableComponent -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var {
-    LogRange,
-    setLogRange,
-    LogRange_Inf,
-    setLogRange_Inf,
-    LogRange_Sup,
-    setLogRange_Sup,
-    LogLenght
-  } = useContext(DecodedTableOptionsContext)
-  console.log('🚀 xxLogRange:', LogRange)
+  var { LogDisplayRange, LogDisplayRange_Inf, LogDisplayRange_Sup, FilteredLogLenght } = useContext(
+    DecodedTableOptionsContext
+  )
 
   const LoadPrevMessagesButton = () => {
     function handleLoadPrev() {
       console.log('LoadPrevMessagesButton')
     }
 
-    var auxInf = LogRange_Inf - LogRange
+    var auxInf = LogDisplayRange_Inf - LogDisplayRange
     var auxSup
     if (auxInf > 0) {
       //There are still messages to load backwards
-      auxSup = LogRange_Inf - 1
+      auxSup = LogDisplayRange_Inf - 1
     }
     var text = `Load Previous Messages:  ${auxInf} to ${auxSup}`
 
@@ -455,15 +448,15 @@ export const DefaultTable = () => {
       console.log('LoadPrevMessagesButton')
     }
     var auxInf
-    var auxSup = LogLenght - LogRange_Sup
+    var auxSup = FilteredLogLenght - LogDisplayRange_Sup
     if (auxSup > 0) {
       //There are still messages to load
-      if (auxSup > LogRange) {
-        auxInf = LogRange_Sup + 1
-        auxSup = LogRange_Sup + LogRange
+      if (auxSup > LogDisplayRange) {
+        auxInf = LogDisplayRange_Sup + 1
+        auxSup = LogDisplayRange_Sup + LogDisplayRange
       } else {
-        auxInf = LogRange_Sup + 1
-        auxSup = LogRange_Sup + auxSup
+        auxInf = LogDisplayRange_Sup + 1
+        auxSup = LogDisplayRange_Sup + auxSup
       }
     }
     var text = `Load Next Messages:  ${auxInf} to ${auxSup}`
@@ -473,95 +466,100 @@ export const DefaultTable = () => {
       </div>
     ) : null
   }
-  return (
-    <Box
-      style={{
-        position: 'relative',
-        marginBottom: '20rem',
-        width: '99.5%'
-      }}
-    >
-      <LoadPrevMessagesButton />
 
-      <table
+  const Table_Memo = useMemo(() => {
+    console.log('Table_Memo --RAHAAAAT')
+    return (
+      <Box
         style={{
-          width: '99.5%',
-          fontWeight: '700',
-          position: 'sticky',
-          top: '3rem',
-          background: `${colors.primary[300]}`,
-          zIndex: 1,
-          marginLeft: '0.5rem',
-          fontSize: '1rem'
+          position: 'relative',
+          marginBottom: '20rem',
+          width: '99.5%'
         }}
       >
-        <thead>
-          {/* Table ROW FOR THEAD---------------------------- */}
-          <tr>
-            <th
-              style={{
-                padding: '0.5rem',
-                width: '2.5rem'
-              }}
-            >
-              NR
-            </th>
-            <th style={{ width: '13rem' }}>Original Message</th>
-            <th style={{ width: '4.5rem' }}>Type</th>
-            <th style={{ width: '2rem' }}>AxisID</th>
-            <th style={{ width: '2rem' }}>CS</th>
-            <th style={{ width: '8rem' }}>Object</th>
-            <th style={{ width: '13rem' }}>Object Name</th>
-            <th style={{ width: '7rem' }}>Data</th>
-            <th style={{ width: '28rem' }}>Interpretation</th>
-          </tr>
-        </thead>
-      </table>
+        <LoadPrevMessagesButton />
 
-      {groupedFilteredArray.map((group, index) => {
-        //-------------------Main Grouping Process-------------------
-        var groupisArray = Array.isArray(group)
-        if (groupisArray) {
-          let title = ''
-          let subtitle = ''
-          let errorStatus = ''
-          if (group[0].GroupType == 'Mapping') {
-            var temp = verifyValidityOfMappingGroup(group)
-            title = group[0].GroupIndicator.concat(` - ${temp[1]}`)
-            subtitle = temp[0].concat(' - ' + `${group.length - 1}` + 'msg(s)')
-            errorStatus = temp[2]
-          } else if (group[0].GroupType == 'Modes') {
-            title = whatObjectValueMeans(
-              '6060',
-              group[0].GroupIndicator,
-              8,
-              'ignoreType',
-              'ignoreAxis'
-            )[0]
-            subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
-              group.length - 1
-            }msg(s)`
+        <table
+          style={{
+            width: '99.5%',
+            fontWeight: '700',
+            position: 'sticky',
+            top: '3rem',
+            background: `${colors.primary[300]}`,
+            zIndex: 1,
+            marginLeft: '0.5rem',
+            fontSize: '1rem'
+          }}
+        >
+          <thead>
+            {/* Table ROW FOR THEAD---------------------------- */}
+            <tr>
+              <th
+                style={{
+                  padding: '0.5rem',
+                  width: '2.5rem'
+                }}
+              >
+                NR
+              </th>
+              <th style={{ width: '13rem' }}>Original Message</th>
+              <th style={{ width: '4.5rem' }}>Type</th>
+              <th style={{ width: '2rem' }}>AxisID</th>
+              <th style={{ width: '2rem' }}>CS</th>
+              <th style={{ width: '8rem' }}>Object</th>
+              <th style={{ width: '13rem' }}>Object Name</th>
+              <th style={{ width: '7rem' }}>Data</th>
+              <th style={{ width: '28rem' }}>Interpretation</th>
+            </tr>
+          </thead>
+        </table>
+
+        {groupedFilteredArray.map((group, index) => {
+          //-------------------Main Grouping Process-------------------
+          var groupisArray = Array.isArray(group)
+          if (groupisArray) {
+            let title = ''
+            let subtitle = ''
+            let errorStatus = ''
+            if (group[0].GroupType == 'Mapping') {
+              var temp = verifyValidityOfMappingGroup(group)
+              title = group[0].GroupIndicator.concat(` - ${temp[1]}`)
+              subtitle = temp[0].concat(' - ' + `${group.length - 1}` + 'msg(s)')
+              errorStatus = temp[2]
+            } else if (group[0].GroupType == 'Modes') {
+              title = whatObjectValueMeans(
+                '6060',
+                group[0].GroupIndicator,
+                8,
+                'ignoreType',
+                'ignoreAxis'
+              )[0]
+              subtitle = `AxisID: ${group[0].AxisID},  0x6060h = 0x${group[0].GroupIndicator}, ${
+                group.length - 1
+              }msg(s)`
+            } else {
+              //Repetitiveq
+              title = 'Repetitive'
+              subtitle = verifyRepetitiveGroup(group)
+            }
+            return (
+              <TableRowGroup
+                key={index}
+                groupTitle={title}
+                groupSubTitle={subtitle}
+                groupData={group}
+              />
+            )
           } else {
-            //Repetitiveq
-            title = 'Repetitive'
-            subtitle = verifyRepetitiveGroup(group)
+            return <TableROW key={index} iteration={group} />
           }
-          return (
-            <TableRowGroup
-              key={index}
-              groupTitle={title}
-              groupSubTitle={subtitle}
-              groupData={group}
-            />
-          )
-        } else {
-          return <TableROW key={index} iteration={group} />
-        }
-      })}
+        })}
 
-      <LoadNextMessagesButton />
-    </Box>
-  )
+        <LoadNextMessagesButton />
+      </Box>
+    )
+  }, [])
+  return <section>{Table_Memo}</section>
 }
 export const SimplifiedTable = () => {
   console.log('SimplifiedTable -- only Once')

@@ -606,7 +606,6 @@ export function checkSDOforMapping(object, data, axisID) {
               PDO_mapped[typePDO][axisID] = []
             }
             PDO_mapped[typePDO][axisID][subindexNr - 1] = object[0]
-            console.log(`We mapped ${object[0]} on ${typePDO} for axis ${axisID}`)
           }
 
           break
@@ -684,7 +683,6 @@ export function checkSDOforMapping(object, data, axisID) {
               PDO_mapped[typePDO][axisID] = []
             }
             PDO_mapped[typePDO][axisID][subindexNr - 1] = object[0]
-            console.log(`We mapped ${object[0]} on ${typePDO} for axis ${axisID}`)
           }
 
           break
