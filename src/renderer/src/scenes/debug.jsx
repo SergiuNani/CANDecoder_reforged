@@ -10,7 +10,11 @@ import {
   VerifyCANopenValidityArray_RAW,
   Hardcoded_VerifyCANopenValidityArray
 } from '../data/VerifyAlgorithmData'
-import { Extract_MSGs_from_text, CreateDecodedArrayOfObjects } from '../functions/CANopen'
+import {
+  Extract_MSGs_from_text,
+  CreateDecodedArrayOfObjects,
+  CanLogStatistics
+} from '../functions/CANopen'
 import { Button2 } from '../components/SmallComponents'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { Extract_objects } from '../data/TestingData'
@@ -294,6 +298,7 @@ export function handleDebugButton() {
   console.log(MessagesDecoded_ArrayOfObjects)
   console.log(groupedFilteredArray)
   console.log(PDO_mapped)
+  console.log(CanLogStatistics)
 }
 
 //------DONT NEED-------------------------------------------

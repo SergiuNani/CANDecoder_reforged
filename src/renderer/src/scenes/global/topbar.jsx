@@ -33,7 +33,7 @@ import {
   FG_units_acc_lin,
   FG_units_time
 } from '../../data/SmallData'
-
+import { Decode_CAN_LOG_WindowContext } from '../Decode_CAN_LOG'
 export let FG_OptionsObject_1 = {
   FG_Display_POS: 'IU',
   FG_Display_SPD: 'IU',
@@ -422,10 +422,10 @@ const FactorGroupInsertPart = () => {
 // ========Decode CANlog Options================
 
 const DecodeCANlogOptionsInsertPart = () => {
-  var { setFreeTextVsCanLog, setToggleFilterWindow, setToggleAdvancedSearch } = useContext(
+  var { sidebarSelectedItem } = useContext(SidebarContext)
+  var { setFreeTextVsCanLog, setToggleFilterWindow_app, setToggleSearchWindow_app } = useContext(
     DecodeCANlog_topbarOptionsContext
   )
-  var { sidebarSelectedItem } = useContext(SidebarContext)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
@@ -448,7 +448,7 @@ const DecodeCANlogOptionsInsertPart = () => {
           <IconButton
             sx={{ zoom: '1.1' }}
             onClick={() => {
-              setToggleFilterWindow((prev) => !prev)
+              setToggleFilterWindow_app((prev) => !prev)
             }}
           >
             <FilterAltIcon />
@@ -456,7 +456,7 @@ const DecodeCANlogOptionsInsertPart = () => {
           <IconButton
             sx={{ zoom: '1.1' }}
             onClick={() => {
-              setToggleAdvancedSearch((prev) => !prev)
+              setToggleSearchWindow_app((prev) => !prev)
             }}
           >
             <SearchIcon />

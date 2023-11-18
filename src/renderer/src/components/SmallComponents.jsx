@@ -132,7 +132,8 @@ export const ButtonTransparent = ({ children, onClick, sx }) => {
     '&:hover': {
       background: 'transparent'
     },
-    textTransform: 'none'
+    textTransform: 'none',
+    outline: 'none'
   }
   return (
     <Button variant="contained" onClick={onClick} sx={{ ...defaultSx, ...sx }}>

@@ -42,7 +42,8 @@ import { InsertTextIntoTextArea } from '../data/TestingData'
 import {
   Extract_MSGs_from_text,
   CreateDecodedArrayOfObjects,
-  CanLogStatistics
+  CanLogStatistics,
+  filterMessagesByAxesAndCobID
 } from '../functions/CANopen'
 import { Input_AutoFormat } from '../components/ForumsComponents'
 import { filterDecimal, filterHex } from '../functions/NumberConversion'
@@ -66,19 +67,22 @@ import { GroupingOptionsForMessages } from '../data/SmallData'
 
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
+export let filteredMessages_auxGlobal = []
 
-var Decode_CAN_LOG_WindowContext = createContext()
+export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
+  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
+
+  const shortcutToDecodeMessages_whoCalled = useRef('none')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const { setToggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
-  const { freeTextVsCanLog } = useContext(DecodeCANlog_topbarOptionsContext)
+  const { freeTextVsCanLog, toggleSearchWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
 
@@ -118,33 +122,37 @@ const Decode_CAN_LOG_Window = () => {
     setFileInnerText(lines)
     sethideTableForceParentToggle((prev) => !prev)
   }
-  //SHORTCUTS ---------------------------
+  //====================== SHORTCUTS ======================
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === 'Enter') {
-        if (
-          !Decode_CAN_LOG_ref.current
-            .querySelector('#DrawerComponent')
-            .classList.contains('DrawerOpened')
-        ) {
-          //Open Drawer, hide table
-          handleClickArrow()
-        } else {
-          console.log('IT IS BAD ---------')
-          setShortcutToDecodeMessages((prev) => !prev)
+        if (!isAdvancedSearchOpen) {
+          if (
+            !Decode_CAN_LOG_ref.current
+              .querySelector('#DrawerComponent')
+              .classList.contains('DrawerOpened')
+          ) {
+            //Open Drawer, hide table
+            handleClickArrow()
+          } else {
+            shortcutToDecodeMessages_whoCalled.current = 'KeyboardShortcut'
+            setShortcutToDecodeMessages((prev) => !prev)
+          }
         }
       } else if (event.ctrlKey && event.key === 'Tab') {
         TextAreaText_Ref.current.focus()
       } else if (event.ctrlKey && event.key === 'f') {
-        setToggleAdvancedSearch((prev) => !prev)
+        setIsAdvancedSearchOpen((prev) => !prev)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
-
+  }, [isAdvancedSearchOpen])
+  useEffect(() => {
+    setIsAdvancedSearchOpen((prev) => !prev)
+  }, [toggleSearchWindow_app])
   const TableAndDrawerComponent = useMemo(() => {
     return (
       <Box
@@ -160,7 +168,14 @@ const Decode_CAN_LOG_Window = () => {
 
   return (
     <Decode_CAN_LOG_WindowContext.Provider
-      value={{ shortcutToDecodeMessages, setShortcutToDecodeMessages, hideTableForceParentToggle }}
+      value={{
+        shortcutToDecodeMessages,
+        setShortcutToDecodeMessages,
+        hideTableForceParentToggle,
+        shortcutToDecodeMessages_whoCalled,
+        isAdvancedSearchOpen,
+        setIsAdvancedSearchOpen
+      }}
     >
       <Box style={{ position: 'relative' }}>
         <Header title="Decode a CAN LOG "></Header>
@@ -246,21 +261,50 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const [TableOption, setTableOption] = useState('Default')
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
 
-  const { toggleFilterWindow, toggleAdvancedSearch } = useContext(DecodeCANlog_topbarOptionsContext)
+  const { toggleFilterWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
+  const { hideTableForceParentToggle, isAdvancedSearchOpen } = useContext(
+    Decode_CAN_LOG_WindowContext
+  )
   const initialRender = useRef(true)
-  const { hideTableForceParentToggle } = useContext(Decode_CAN_LOG_WindowContext)
   //Load PREV/NEXT buttons
-  const LogDisplayRange = useRef(100)
+  const LogDisplayRange = useRef(100) //BUG Change to 3000
   const LogDisplayRange_Inf = useRef(0)
-  const LogDisplayRange_Sup = useRef(100)
+  const LogDisplayRange_Sup = useRef(100) //BUG Change to 3000
 
-  const FilteredLogLenght = useRef(0)
-  const FullLogLength = useRef(MessagesDecoded_ArrayOfObjects.length)
+  const FilteredLogLenght = useRef(0) // will be set in HandleDecode
+  const FullLogLength = useRef(0)
+
+  const CutTable_Inf = useRef(0)
+  const CutTable_Sup = useRef(0)
+
+  const auxTable = useRef([
+    LogDisplayRange.current,
+    LogDisplayRange_Inf.current,
+    LogDisplayRange_Sup.current,
+    CutTable_Inf.current,
+    CutTable_Sup.current
+  ])
+
+  useEffect(() => {
+    //Updating the cutting metrics when a new LOG is uploaded
+    FullLogLength.current = AllCAN_MsgsExtracted_array.length
+    LogDisplayRange_Inf.current = 0
+    LogDisplayRange_Sup.current = LogDisplayRange.current
+    CutTable_Inf.current = 1
+    CutTable_Sup.current = FullLogLength.length
+
+    auxTable.current = [
+      LogDisplayRange.current,
+      LogDisplayRange_Inf.current,
+      LogDisplayRange_Sup.current,
+      CutTable_Inf.current,
+      CutTable_Sup.current
+    ]
+  }, [AllCAN_MsgsExtracted_array])
   // SHORTCUTS==========================
   useEffect(() => {
     if (initialRender.current) {
@@ -270,17 +314,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         setIsDrawerOpen((prev) => !prev)
       }
     }
-  }, [toggleFilterWindow])
-
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false
-    } else {
-      if (isTableVisible) {
-        setIsAdvancedSearchOpen((prev) => !prev)
-      }
-    }
-  }, [toggleAdvancedSearch])
+  }, [toggleFilterWindow_app])
 
   useEffect(() => {
     setisTableVisible(false)
@@ -294,6 +328,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
 
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
     console.log('-2.2- - MessagesDecoded_ArrayOfObjects')
+    FullLogLength.current = AllCAN_MsgsExtracted_array.length
     return CreateDecodedArrayOfObjects(
       AllCAN_MsgsExtracted_array,
       setIsDrawerOpen,
@@ -347,27 +382,20 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   }, [isTableVisible])
 
   const AdvancedSearch_Memo = useMemo(() => {
-    return (
-      <div>
-        {isAdvancedSearchOpen && (
-          <AdvancedSearchComponent
-            isAdvancedSearchOpen={isAdvancedSearchOpen}
-            setIsAdvancedSearchOpen={setIsAdvancedSearchOpen}
-          />
-        )}
-      </div>
-    )
+    return <div>{isAdvancedSearchOpen && <AdvancedSearchComponent />}</div>
   }, [isAdvancedSearchOpen])
 
   return (
     <DecodedTableOptionsContext.Provider
       value={{
-        FullLogLength,
         LogDisplayRange,
         LogDisplayRange_Inf,
         LogDisplayRange_Sup,
         FilteredLogLenght,
-        FullLogLength
+        FullLogLength,
+        CutTable_Inf,
+        CutTable_Sup,
+        auxTable
       }}
     >
       {DecodePDOs_Memo}
@@ -396,7 +424,9 @@ const DrawerComponent_DecodeOptions = ({
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [toggle, setToggle] = useState(false)
   //Shortcut to open/close drawer
-  const { shortcutToDecodeMessages } = useContext(Decode_CAN_LOG_WindowContext)
+  const { shortcutToDecodeMessages, shortcutToDecodeMessages_whoCalled } = useContext(
+    Decode_CAN_LOG_WindowContext
+  )
   const isInitialMount = useRef(true)
 
   var {
@@ -404,11 +434,11 @@ const DrawerComponent_DecodeOptions = ({
     LogDisplayRange_Inf,
     LogDisplayRange_Sup,
     FilteredLogLenght,
-    FullLogLength
+    FullLogLength,
+    CutTable_Inf,
+    CutTable_Sup,
+    auxTable
   } = useContext(DecodedTableOptionsContext)
-
-  const CutTable_Inf = useRef(1)
-  const CutTable_Sup = useRef(FullLogLength.current)
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -425,41 +455,67 @@ const DrawerComponent_DecodeOptions = ({
   //On CTRL+ENTER start decoding
   useEffect(() => {
     // handleDECODE() // BUG - remvoe
-
     if (isInitialMount.current) {
       isInitialMount.current = false
       return // Skip the first render on mount
     } else if (isDrawerOpen) {
-      handleDECODE() // BUG - this is not working with StrictMode
     }
+    handleDECODE() // BUG - this is not working with StrictMode
   }, [shortcutToDecodeMessages])
 
-  //Groups the messages and shows the table
+  //* ============================================= *//
+  //*===================== HANDLE DECODE ===================== Groups the messages and shows the table
+  //*=============================================
+
   function handleDECODE() {
     console.log('handleDECODE')
-    setProgressBarInsideDrawer(true)
+
     setisTableVisible(false) // Needed to reset the table
 
-    setTimeout(() => {
-      //We cut the array of messages
-      var filteredMessages = MessagesDecoded_ArrayOfObjects.slice(
-        CutTable_Inf.current - 1,
-        CutTable_Sup.current
-      )
-      FilteredLogLenght.current = filteredMessages.length
-      //We showing only the TableRange selected by the user
-      filteredMessages = filteredMessages.slice(
-        LogDisplayRange_Inf.current,
-        LogDisplayRange_Sup.current
-      )
-      CreateGroupedFilteredArray(
-        filteredMessages,
-        GroupingOptionsForMessages,
-        setProgressBarInsideDrawer
-      )
-      setisTableVisible(true)
-      setIsDrawerOpen(false)
-    }, 800)
+    if (shortcutToDecodeMessages_whoCalled.current == 'DecodeButton') {
+      // Because of the animation of the button
+      setProgressBarInsideDrawer(true)
+    }
+
+    // We cut the array of messages
+    if (shortcutToDecodeMessages_whoCalled.current != 'NextPrevMsgsButtons') {
+      LogDisplayRange.current = auxTable.current[0]
+      LogDisplayRange_Inf.current = auxTable.current[1]
+      LogDisplayRange_Sup.current = auxTable.current[2]
+      CutTable_Inf.current = auxTable.current[3]
+      CutTable_Sup.current = auxTable.current[4]
+    }
+
+    setTimeout(
+      () => {
+        var filteredMessages = MessagesDecoded_ArrayOfObjects.slice(
+          CutTable_Inf.current - 1,
+          CutTable_Sup.current
+        )
+
+        filteredMessages = filterMessagesByAxesAndCobID(filteredMessages)
+
+        // return
+        FilteredLogLenght.current = filteredMessages.length
+        filteredMessages_auxGlobal = filteredMessages
+
+        // We're showing only the TableRange selected by the user
+        filteredMessages = filteredMessages.slice(
+          LogDisplayRange_Inf.current,
+          LogDisplayRange_Sup.current
+        )
+
+        CreateGroupedFilteredArray(
+          filteredMessages,
+          GroupingOptionsForMessages,
+          setProgressBarInsideDrawer
+        )
+
+        setisTableVisible(true)
+        setIsDrawerOpen(false)
+      },
+      shortcutToDecodeMessages_whoCalled.current == 'DecodeButton' ? 10 : 10
+    )
   }
 
   function handleClose() {
@@ -498,22 +554,24 @@ const DrawerComponent_DecodeOptions = ({
 
   function handleLogCUTLimits(e, name) {
     setToggle((prev) => !prev)
+    e = parseInt(e)
     if (name == 'lower') {
-      if (CutTable_Sup.current < e) {
+      if (auxTable.current[4] < e) {
+        //if CutTablle_Sup
         //Inf is bigger than Sup
-        CutTable_Inf.current = CutTable_Sup.current - 1
-      } else if (e < 0) {
-        CutTable_Inf.current = 1
+        auxTable.current[3] = auxTable.current[4] - 1
+      } else if (e <= 0) {
+        auxTable.current[3] = 1
       } else {
-        CutTable_Inf.current = e
+        auxTable.current[3] = e
       }
     } else {
       if (e > FullLogLength.current) {
-        CutTable_Sup.current = FullLogLength.current
-      } else if (CutTable_Inf.current > e) {
-        CutTable_Sup.current = CutTable_Inf.current + 1
+        auxTable.current[4] = FullLogLength.current
+      } else if (auxTable.current[3] > e) {
+        auxTable.current[4] = auxTable.current[3] + 1
       } else {
-        CutTable_Sup.current = e
+        auxTable.current[4] = e
       }
     }
   }
@@ -675,13 +733,13 @@ const DrawerComponent_DecodeOptions = ({
             tellParentValueChanged={(e) => {
               setToggle((prev) => !prev)
               if (parseInt(e) > 3000) {
-                e = 3000
+                e = 4000 // Hardcoded limit for messages
               }
-              LogDisplayRange.current = parseInt(e)
-              LogDisplayRange_Inf.current = 0
-              LogDisplayRange_Sup.current = LogDisplayRange.current
+              auxTable.current[0] = parseInt(e) //range
+              auxTable.current[1] = 0 //inf range
+              auxTable.current[2] = auxTable.current[0] //sup range
             }}
-            forceValueFromParent={LogDisplayRange.current}
+            forceValueFromParent={auxTable.current[0]}
             background={colors.blue[200]}
             border={`2px solid ${colors.blue[500]}`}
             width="5rem"
@@ -728,7 +786,7 @@ const DrawerComponent_DecodeOptions = ({
               tellParentValueChanged={(e) => {
                 handleLogCUTLimits(e, 'lower')
               }}
-              forceValueFromParent={CutTable_Inf.current}
+              forceValueFromParent={auxTable.current[3]}
               forceRender={toggle}
               background={colors.blue[200]}
               border={`2px solid ${colors.blue[500]}`}
@@ -743,7 +801,7 @@ const DrawerComponent_DecodeOptions = ({
               tellParentValueChanged={(e) => {
                 handleLogCUTLimits(e, 'superior')
               }}
-              forceValueFromParent={CutTable_Sup.current}
+              forceValueFromParent={auxTable.current[4]}
               forceRender={toggle}
               background={colors.blue[200]}
               border={`2px solid ${colors.blue[500]}`}
@@ -779,14 +837,7 @@ const DrawerComponent_DecodeOptions = ({
         </Box>
       </Box>
     )
-  }, [
-    TableOption,
-    optionReadingDirection,
-    groupingOptionsRender,
-    CutTable_Inf,
-    CutTable_Sup,
-    toggle
-  ])
+  }, [TableOption, optionReadingDirection, groupingOptionsRender, toggle])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -875,7 +926,14 @@ const DrawerComponent_DecodeOptions = ({
                 alignItems: 'center'
               }}
             >
-              <Button3 onClick={handleDECODE}>DECODE</Button3>
+              <Button3
+                onClick={() => {
+                  shortcutToDecodeMessages_whoCalled.current = 'DecodeButton'
+                  handleDECODE()
+                }}
+              >
+                DECODE
+              </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
               <Button1
                 onClick={() => {
@@ -893,7 +951,7 @@ const DrawerComponent_DecodeOptions = ({
   )
 }
 const AvailableAxes_Component = () => {
-  console.log('---4---. AvailableAxes_Component ---- only once')
+  console.log('---4---. AvailableAxes_Component ')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [renderToggle, setRenderToggle] = useState(true)
@@ -1080,12 +1138,13 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
   )
 }
 
-const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen }) => {
-  console.log('---6---. AdvancedSearchComponent -- only once')
+const AdvancedSearchComponent = () => {
+  console.log('---6---. AdvancedSearchComponent ')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [FilteredArray, setFilteredArray] = useState([])
-  const InputRef = useRef()
+  const inputRef = useRef(null)
+  const { isAdvancedSearchOpen, setIsAdvancedSearchOpen } = useContext(Decode_CAN_LOG_WindowContext)
 
   function handleUserInput(e) {
     const searchValue = e.toLowerCase()
@@ -1100,12 +1159,16 @@ const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen
   }
 
   //SHORTCUTS ---------------------------
+
   useEffect(() => {
+    setTimeout(() => {
+      inputRef.current.focus()
+    }, 1)
     const handleKeyPress = (event) => {
-      console.log('not good')
       if (event.key === 'Enter') {
-        handleUserInput(InputRef.current.value)
-      }
+        console.log('We are in the advanced search and actively looking')
+        handleUserInput(inputRef.current.value)
+      } else if (event.ctrlKey && event.key === 'Tab') inputRef.current.focus()
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
@@ -1141,8 +1204,8 @@ const AdvancedSearchComponent = ({ isAdvancedSearchOpen, setIsAdvancedSearchOpen
           </span>
         </p>
         <input
+          ref={inputRef}
           type="text"
-          ref={InputRef}
           placeholder="Search for a message"
           style={{
             backgroundColor: `${colors.primary[300]}`,

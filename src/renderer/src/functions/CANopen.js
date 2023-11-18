@@ -378,8 +378,8 @@ export function CreateDecodedArrayOfObjects(
     if (row[1] == '') {
       row[2] = 'Empty'
       row[3] = 'Line'
-      UpdateStatisticsBasedOnMessage('All', 'emptyLines')
-      createObject(row[0], row[1], row[2], row[3])
+      UpdateStatisticsBasedOnMessage('All', '-')
+      createObject(row[0], row[1], row[2], row[3], false, 'All')
       continue
     }
     var aux_CobID = CobID_who_dis(row[2])
@@ -402,8 +402,8 @@ export function CreateDecodedArrayOfObjects(
           aux_CobID[1] = axisID
         }
       }
-      //Declaring Object as nothing
-      DecodedMessage[1] = '-'
+
+      DecodedMessage[1] = '-' //Declaring Object as nothing
     } else if (aux_CobID[2] == 'NMT_Monitoring') {
       if (row[3] == 'empty') {
         row[3] = '-'
@@ -593,4 +593,26 @@ export function verifyRepetitiveGroup(group) {
     returnText = returnText.concat('Total: ', sum)
   }
   return returnText
+}
+
+export function filterMessagesByAxesAndCobID(filteredMessages) {
+  const allFiltersOnTrue = CanLogStatistics.every((oneAxis) => {
+    var ObjectProps = Object.keys(oneAxis)
+    return ObjectProps.every((prop) => oneAxis[prop][1] == true)
+  })
+
+  if (!allFiltersOnTrue) {
+    filteredMessages = filteredMessages.filter((oneMessage) => {
+      var AxisStatus = CanLogStatistics.filter((oneAxis) => {
+        return oneAxis.Axis[0] == oneMessage.AxisID && oneAxis.Axis[1] == true
+      })
+      if (AxisStatus.length == 0) {
+        //Axis set to false
+        return false
+      } else {
+        return AxisStatus[0][oneMessage.type][1]
+      }
+    })
+  }
+  return filteredMessages
 }

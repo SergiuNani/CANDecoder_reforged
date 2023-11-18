@@ -88,8 +88,8 @@ function MyProviders({ children }) {
 
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
-  const [toggleFilterWindow, setToggleFilterWindow] = useState(false)
-  const [toggleAdvancedSearch, setToggleAdvancedSearch] = useState(false)
+  const [toggleFilterWindow_app, setToggleFilterWindow_app] = useState(false)
+  const [toggleSearchWindow_app, setToggleSearchWindow_app] = useState(false)
 
   // FG OPTIONS
   const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('Display')
@@ -104,10 +104,10 @@ function MyProviders({ children }) {
             value={{
               freeTextVsCanLog,
               setFreeTextVsCanLog,
-              toggleFilterWindow,
-              setToggleFilterWindow,
-              toggleAdvancedSearch,
-              setToggleAdvancedSearch
+              toggleFilterWindow_app,
+              setToggleFilterWindow_app,
+              toggleSearchWindow_app,
+              setToggleSearchWindow_app
             }}
           >
             <MotorSpecificationsContext.Provider

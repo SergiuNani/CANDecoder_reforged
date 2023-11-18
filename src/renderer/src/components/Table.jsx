@@ -16,7 +16,12 @@ import { filterDecimal, addSpacesOfTwo } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
 import { TooltipClickable, Button4 } from '../components/SmallComponents'
-import { AllCAN_MsgsExtracted_array, DecodedTableOptionsContext } from '../scenes/Decode_CAN_LOG'
+import {
+  AllCAN_MsgsExtracted_array,
+  filteredMessages_auxGlobal,
+  DecodedTableOptionsContext,
+  Decode_CAN_LOG_WindowContext
+} from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
 import SearchIcon from '@mui/icons-material/Search'
 
@@ -296,6 +301,7 @@ export function CreateGroupedFilteredArray(
   groupedFilteredArray = []
 
   allMessages.forEach((oneMessage, index) => {
+    //GROUPING-------------------------------------------------
     var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
     var isLastElementArray = Array.isArray(lastElementFromSortedArray)
 
@@ -420,24 +426,53 @@ export const DefaultTable = () => {
   console.log('TableComponent -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var { LogDisplayRange, LogDisplayRange_Inf, LogDisplayRange_Sup, FilteredLogLenght } = useContext(
-    DecodedTableOptionsContext
+  var {
+    LogDisplayRange,
+    LogDisplayRange_Inf,
+    LogDisplayRange_Sup,
+    FilteredLogLenght,
+    FullLogLength,
+    CutTable_Inf,
+    CutTable_Sup,
+    auxTable
+  } = useContext(DecodedTableOptionsContext)
+  var { setShortcutToDecodeMessages, shortcutToDecodeMessages_whoCalled } = useContext(
+    Decode_CAN_LOG_WindowContext
   )
-
-  const LoadPrevMessagesButton = () => {
+  function LoadPrevMessagesButton() {
     function handleLoadPrev() {
       console.log('LoadPrevMessagesButton')
+      LogDisplayRange_Inf.current = aux_inf
+      LogDisplayRange_Sup.current = aux_sup
+      shortcutToDecodeMessages_whoCalled.current = 'NextPrevMsgsButtons'
+      setShortcutToDecodeMessages((prev) => !prev)
     }
-
-    var auxInf = LogDisplayRange_Inf - LogDisplayRange
-    var auxSup
-    if (auxInf > 0) {
+    var aux_sup = null
+    var aux_inf = null
+    var text = ''
+    if (LogDisplayRange_Inf.current > 0) {
       //There are still messages to load backwards
-      auxSup = LogDisplayRange_Inf - 1
-    }
-    var text = `Load Previous Messages:  ${auxInf} to ${auxSup}`
 
-    return auxInf > 0 ? (
+      if (LogDisplayRange_Sup.current - LogDisplayRange_Inf.current < LogDisplayRange.current) {
+        aux_inf = LogDisplayRange_Inf.current - LogDisplayRange.current
+        aux_sup = LogDisplayRange_Inf.current
+      } else {
+        aux_inf = LogDisplayRange_Inf.current - LogDisplayRange.current
+        aux_sup = LogDisplayRange_Sup.current - LogDisplayRange.current
+      }
+    }
+    if (
+      aux_sup &&
+      aux_inf != null &&
+      filteredMessages_auxGlobal[aux_inf] &&
+      filteredMessages_auxGlobal[aux_sup]
+    ) {
+      text = `Load previous ${LogDisplayRange.current} frames:  [Range: ${
+        filteredMessages_auxGlobal[aux_inf].msgNr
+      } to ${filteredMessages_auxGlobal[aux_sup - 1].msgNr}] [Total: ${FilteredLogLenght.current}]`
+    }
+
+    return aux_sup ? (
       <div style={{ textAlign: 'center' }}>
         <Button4 onClick={handleLoadPrev}>{text}</Button4>
       </div>
@@ -446,21 +481,41 @@ export const DefaultTable = () => {
   const LoadNextMessagesButton = () => {
     function handleLoadNext() {
       console.log('LoadPrevMessagesButton')
+      LogDisplayRange_Inf.current = aux_inf - 1
+      LogDisplayRange_Sup.current = aux_sup
+      shortcutToDecodeMessages_whoCalled.current = 'NextPrevMsgsButtons'
+      setShortcutToDecodeMessages((prev) => !prev)
     }
-    var auxInf
-    var auxSup = FilteredLogLenght - LogDisplayRange_Sup
-    if (auxSup > 0) {
-      //There are still messages to load
-      if (auxSup > LogDisplayRange) {
-        auxInf = LogDisplayRange_Sup + 1
-        auxSup = LogDisplayRange_Sup + LogDisplayRange
-      } else {
-        auxInf = LogDisplayRange_Sup + 1
-        auxSup = LogDisplayRange_Sup + auxSup
+    var aux_sup = null
+    var aux_inf = null
+    var text
+    if (FilteredLogLenght.current - LogDisplayRange_Sup.current > 0) {
+      //There are still messages to display next
+      if (FilteredLogLenght.current - LogDisplayRange_Sup.current - LogDisplayRange.current > 0) {
+        //we can display an enitre range of messages
+        aux_inf = LogDisplayRange_Sup.current + 1
+        aux_sup = LogDisplayRange_Sup.current + LogDisplayRange.current
+      } else if (
+        FilteredLogLenght.current - LogDisplayRange_Sup.current - LogDisplayRange.current <=
+        0
+      ) {
+        //we can display only a part of the range
+        aux_inf = LogDisplayRange_Sup.current + 1
+        aux_sup = FilteredLogLenght.current
       }
     }
-    var text = `Load Next Messages:  ${auxInf} to ${auxSup}`
-    return auxSup > 0 ? (
+    if (
+      aux_sup &&
+      aux_inf &&
+      filteredMessages_auxGlobal[aux_inf - 1] &&
+      filteredMessages_auxGlobal[aux_sup - 1]
+    ) {
+      text = `Load next ${LogDisplayRange.current} frames: [Range: ${
+        filteredMessages_auxGlobal[aux_inf - 1].msgNr
+      } to ${filteredMessages_auxGlobal[aux_sup - 1].msgNr}] [Total: ${FilteredLogLenght.current}]`
+    }
+
+    return aux_inf ? (
       <div style={{ textAlign: 'center' }}>
         <Button4 onClick={handleLoadNext}>{text}</Button4>
       </div>
@@ -468,7 +523,7 @@ export const DefaultTable = () => {
   }
 
   const Table_Memo = useMemo(() => {
-    console.log('Table_Memo --RAHAAAAT')
+    console.log('Table_Memo')
     return (
       <Box
         style={{
