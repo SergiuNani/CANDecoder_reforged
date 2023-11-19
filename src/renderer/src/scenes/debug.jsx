@@ -3,7 +3,7 @@ import { Header } from '../components/SmallComponents'
 import { Box, Dialog, Typography, useTheme, Button } from '@mui/material'
 import { tokens } from '../theme'
 import { useMemo } from 'react'
-import { PDO_mapped, DontBotherWithPDO_flag } from '../functions/CANopenFunctions'
+import { PDO_mapped, DontBotherWithPDO_flag, PDO_mapped_aux } from '../functions/CANopenFunctions'
 import { MessagesDecoded_ArrayOfObjects } from './Decode_CAN_LOG'
 import { groupedFilteredArray } from '../components/Table'
 import {
@@ -299,6 +299,7 @@ export function handleDebugButton() {
   console.log(groupedFilteredArray)
   console.log(PDO_mapped)
   console.log(CanLogStatistics)
+  console.log('PDO_mapped_aux:', PDO_mapped_aux)
 }
 
 //------DONT NEED-------------------------------------------

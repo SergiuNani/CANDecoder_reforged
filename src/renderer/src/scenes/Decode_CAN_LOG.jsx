@@ -54,7 +54,8 @@ import {
   PDO_mapped,
   SortMappingByAxis,
   DontBotherWithPDO_flag,
-  SetAllPDOsEMPTY
+  SetAllPDOsEMPTY,
+  PDO_mapped_aux
 } from '../functions/CANopenFunctions'
 import {
   DefaultTable,
@@ -85,7 +86,7 @@ const Decode_CAN_LOG_Window = () => {
   const { freeTextVsCanLog, toggleSearchWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
-
+  const initalMount_Deocde_CAN_LOG_ref = useRef(true)
   function handleFileUpload(e) {
     const file = e.target.files[0]
 
@@ -150,9 +151,16 @@ const Decode_CAN_LOG_Window = () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
   }, [isAdvancedSearchOpen])
+
   useEffect(() => {
-    setIsAdvancedSearchOpen((prev) => !prev)
+    if (initalMount_Deocde_CAN_LOG_ref.current) {
+      initalMount_Deocde_CAN_LOG_ref.current = false
+      return
+    } else {
+      setIsAdvancedSearchOpen((prev) => !prev)
+    }
   }, [toggleSearchWindow_app])
+
   const TableAndDrawerComponent = useMemo(() => {
     return (
       <Box
@@ -264,22 +272,21 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
-
+  const [renderDrawer, setRenderDrawer] = useState(false)
   const { toggleFilterWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   const { hideTableForceParentToggle, isAdvancedSearchOpen } = useContext(
     Decode_CAN_LOG_WindowContext
   )
   const initialRender = useRef(true)
-  //Load PREV/NEXT buttons
-  const LogDisplayRange = useRef(100) //BUG Change to 3000
+
+  const LogDisplayRange = useRef(3000) //BUG Change to 3000
   const LogDisplayRange_Inf = useRef(0)
-  const LogDisplayRange_Sup = useRef(100) //BUG Change to 3000
+  const LogDisplayRange_Sup = useRef(3000) //BUG Change to 3000
 
   const FilteredLogLenght = useRef(0) // will be set in HandleDecode
   const FullLogLength = useRef(0)
-
-  const CutTable_Inf = useRef(0)
-  const CutTable_Sup = useRef(0)
+  const CutTable_Inf = useRef(1)
+  const CutTable_Sup = useRef(FullLogLength.current)
 
   const auxTable = useRef([
     LogDisplayRange.current,
@@ -289,22 +296,6 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     CutTable_Sup.current
   ])
 
-  useEffect(() => {
-    //Updating the cutting metrics when a new LOG is uploaded
-    FullLogLength.current = AllCAN_MsgsExtracted_array.length
-    LogDisplayRange_Inf.current = 0
-    LogDisplayRange_Sup.current = LogDisplayRange.current
-    CutTable_Inf.current = 1
-    CutTable_Sup.current = FullLogLength.length
-
-    auxTable.current = [
-      LogDisplayRange.current,
-      LogDisplayRange_Inf.current,
-      LogDisplayRange_Sup.current,
-      CutTable_Inf.current,
-      CutTable_Sup.current
-    ]
-  }, [AllCAN_MsgsExtracted_array])
   // SHORTCUTS==========================
   useEffect(() => {
     if (initialRender.current) {
@@ -329,6 +320,9 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
     console.log('-2.2- - MessagesDecoded_ArrayOfObjects')
     FullLogLength.current = AllCAN_MsgsExtracted_array.length
+    CutTable_Sup.current = FullLogLength.current
+    auxTable.current[3] = 1
+    auxTable.current[4] = FullLogLength.current
     return CreateDecodedArrayOfObjects(
       AllCAN_MsgsExtracted_array,
       setIsDrawerOpen,
@@ -336,6 +330,8 @@ const DecodedTableOptions = ({ fileInnerText }) => {
       setObjectIterationPDO
     )
   }, [fileInnerText, restartDecoding])
+
+  //Load PREV/NEXT buttons
 
   const DecodePDOs_Memo = useMemo(() => {
     return (
@@ -362,9 +358,10 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         setIsDrawerOpen={setIsDrawerOpen}
         TableOption={TableOption}
         setTableOption={setTableOption}
+        renderDrawer={renderDrawer}
       />
     )
-  }, [fileInnerText, isDrawerOpen, TableOption])
+  }, [fileInnerText, isDrawerOpen, TableOption, renderDrawer])
 
   const Table_Memo = useMemo(() => {
     return (
@@ -395,7 +392,9 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         FullLogLength,
         CutTable_Inf,
         CutTable_Sup,
-        auxTable
+        auxTable,
+        AllCAN_MsgsExtracted_array,
+        renderDrawer
       }}
     >
       {DecodePDOs_Memo}
@@ -411,7 +410,8 @@ const DrawerComponent_DecodeOptions = ({
   setTableOption,
   isDrawerOpen,
   setIsDrawerOpen,
-  TableOption
+  TableOption,
+  renderDrawer
 }) => {
   console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
@@ -441,6 +441,27 @@ const DrawerComponent_DecodeOptions = ({
   } = useContext(DecodedTableOptionsContext)
 
   useEffect(() => {
+    //When a new log is introduced
+    console.log('WEEEEEEEEEEEEEEEEEEEEEEE')
+    LogDisplayRange_Inf.current = 0
+    LogDisplayRange_Sup.current = LogDisplayRange.current
+    FullLogLength.current = AllCAN_MsgsExtracted_array.length
+    CutTable_Inf.current = 1
+    CutTable_Sup.current = FullLogLength.current
+
+    auxTable.current = [
+      LogDisplayRange.current,
+      LogDisplayRange_Inf.current,
+      LogDisplayRange_Sup.current,
+      CutTable_Inf.current,
+      CutTable_Sup.current
+    ]
+
+    setToggle((prev) => !prev)
+  }, [AllCAN_MsgsExtracted_array])
+
+  //On CTRL + ` open/close drawer
+  useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === '`') {
         setIsDrawerOpen((prev) => !prev)
@@ -456,11 +477,15 @@ const DrawerComponent_DecodeOptions = ({
   useEffect(() => {
     // handleDECODE() // BUG - remvoe
     if (isInitialMount.current) {
+      console.log('Initial Mount of DrawerComponent_DecodeOptions was ignored')
       isInitialMount.current = false
       return // Skip the first render on mount
-    } else if (isDrawerOpen) {
+    } else if (
+      isDrawerOpen ||
+      shortcutToDecodeMessages_whoCalled.current == 'NextPrevMsgsButtons'
+    ) {
+      handleDECODE() // BUG - this is not working with StrictMode
     }
-    handleDECODE() // BUG - this is not working with StrictMode
   }, [shortcutToDecodeMessages])
 
   //* ============================================= *//
@@ -469,14 +494,11 @@ const DrawerComponent_DecodeOptions = ({
 
   function handleDECODE() {
     console.log('handleDECODE')
-
     setisTableVisible(false) // Needed to reset the table
-
     if (shortcutToDecodeMessages_whoCalled.current == 'DecodeButton') {
       // Because of the animation of the button
       setProgressBarInsideDrawer(true)
     }
-
     // We cut the array of messages
     if (shortcutToDecodeMessages_whoCalled.current != 'NextPrevMsgsButtons') {
       LogDisplayRange.current = auxTable.current[0]
@@ -514,7 +536,7 @@ const DrawerComponent_DecodeOptions = ({
         setisTableVisible(true)
         setIsDrawerOpen(false)
       },
-      shortcutToDecodeMessages_whoCalled.current == 'DecodeButton' ? 10 : 10
+      shortcutToDecodeMessages_whoCalled.current == 'DecodeButton' ? 200 : 10
     )
   }
 
@@ -539,20 +561,18 @@ const DrawerComponent_DecodeOptions = ({
   }, [])
 
   const MappingWindowforDrawer_Memo = useMemo(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false
-      return null
-    } else {
-      return (
+    return (
+      showMappingWindow && (
         <MappingWindowforDrawer
           showMappingWindow={showMappingWindow}
           setShowMappingWindow={setShowMappingWindow}
         />
       )
-    }
+    )
   }, [showMappingWindow])
 
   function handleLogCUTLimits(e, name) {
+    console.log('🚀 ~  handleLogCUTLimits:')
     setToggle((prev) => !prev)
     e = parseInt(e)
     if (name == 'lower') {
@@ -576,6 +596,13 @@ const DrawerComponent_DecodeOptions = ({
     }
   }
   const DrawerOptionsList = useMemo(() => {
+    console.log('DrawerOptionsList Rendering')
+    console.log(auxTable.current[0])
+    console.log(auxTable.current[3])
+    console.log(auxTable.current[4])
+    if (auxTable.current[4] == undefined) {
+      // auxTable.current[4] = 999
+    }
     return (
       <Box sx={{ userSelect: 'none' }}>
         {/* TABLE DISPLAY OPTIONS ----------------- */}
@@ -837,7 +864,7 @@ const DrawerComponent_DecodeOptions = ({
         </Box>
       </Box>
     )
-  }, [TableOption, optionReadingDirection, groupingOptionsRender, toggle])
+  }, [TableOption, optionReadingDirection, groupingOptionsRender, renderDrawer, toggle])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -1072,6 +1099,10 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var SortedMapping = SortMappingByAxis(PDO_mapped)
+  console.log(
+    '🚀 ~ file: Decode_CAN_LOG.jsx:1102 ~ MappingWindowforDrawer ~ SortedMapping:',
+    SortedMapping
+  )
   return (
     <Dialog open={showMappingWindow} onClose={() => setShowMappingWindow(false)}>
       <div
@@ -1115,6 +1146,12 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
                       </Typography>
                       {/* List of mapped objects */}
                       <Box>
+                        {Content[0][4] != '' && (
+                          <p style={{ color: `${colors.yellow[300]}`, fontSize: '0.7rem' }}>
+                            {' '}
+                            {Content[0][4]}
+                          </p>
+                        )}
                         {Content.map((object, indx) => (
                           <div key={indx} style={{ display: 'flex', gap: '0.5rem' }}>
                             <p style={{ color: `${colors.yellow[500]}`, fontWeight: '500' }}>

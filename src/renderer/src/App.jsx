@@ -137,6 +137,6 @@ function MyProviders({ children }) {
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
-  console.log(actualTime)
+  // console.log(actualTime)
   // console.log(diffTime)
 }

@@ -529,6 +529,15 @@ export function checkSDOforMapping(object, data, axisID) {
       var temp = SwitchForTPDO(aux_secondByte, cobID)
       interpretationInfo = temp[0]
       cobID = temp[1]
+      var typePDO = temp[2]
+      //Array for Inhibit time and Event timer
+      if (PDO_mapped_aux[typePDO][axisID] == undefined) {
+        PDO_mapped_aux[typePDO][axisID] = {
+          TransmissionType: '',
+          InhibitTime: '',
+          EventTimer: ''
+        }
+      }
       switch (aux_thirdByte) {
         case '00':
           interpretationInfo = interpretationInfo.concat(` -Nr of entries : ${data}`)
@@ -548,24 +557,43 @@ export function checkSDOforMapping(object, data, axisID) {
           break
         case '02':
           var temp
+          var temp2
           data = hexToDec(data, 16)
           if (data == 0) {
             temp = ` - Transmission - Reserved`
+            temp2 = `${data} - Reserved`
           } else if (data > 0 && data <= 240) {
             temp = ` - synchronous( cyclic every ${data} SYNC)`
+            temp2 = `Cyclic every ${data} SYNC`
           } else if (data > 240 && data <= 251) {
             temp = ` - Transmission - Reserved`
+            temp2 = `${data}`
           } else if (data == 252) {
             temp = ` - RTR-Only (synchronous): The data are copied upon arrival of each SYNC message but are sent only upon request with an RTR message.`
+            temp2 = `${data} - RTR-Only (synchronous)`
           } else if (data == 253) {
             temp = ` - RTR-Only (event-driven): The data are copied to the TX-PDO message upon receipt of an RTR message and sent immediately thereafter`
+            temp2 = `${data} - RTR-Only (event-driven)`
           } else if (data == 254 || data == 255) {
             temp = ` - Event-driven (asynchronous)`
+            temp2 = `Async`
           }
           interpretationInfo = interpretationInfo.concat(temp)
+          PDO_mapped_aux[typePDO][axisID].TransmissionType = temp2
+
+          break
+        case '03':
+          var aux = hexToDec(data, 16)
+          interpretationInfo = interpretationInfo.concat(` - Inhibit time : ${aux}ms`)
+          PDO_mapped_aux[typePDO][axisID].InhibitTime = aux
           break
         case '04':
           interpretationInfo = interpretationInfo.concat(` - Subindex Reserved`)
+          break
+        case '05':
+          var aux = hexToDec(data, 16)
+          interpretationInfo = interpretationInfo.concat(` - Eventtimer : ${aux}ms`)
+          PDO_mapped_aux[typePDO][axisID].EventTimer = aux
           break
       }
     } else if (aux_firstByte == '1A') {
@@ -614,7 +642,13 @@ export function checkSDOforMapping(object, data, axisID) {
       var temp = SwitchForRPDO(aux_secondByte, cobID)
       interpretationInfo = temp[0]
       cobID = temp[1]
-
+      var typePDO = temp[2]
+      //Array for Inhibit time and Event timer
+      if (PDO_mapped_aux[typePDO][axisID] == undefined) {
+        PDO_mapped_aux[typePDO][axisID] = {
+          TransmissionType: ''
+        }
+      }
       switch (aux_thirdByte) {
         case '00':
           interpretationInfo = interpretationInfo.concat(` -Nr of entries : ${data}`)
@@ -634,15 +668,21 @@ export function checkSDOforMapping(object, data, axisID) {
           break
         case '02':
           var temp
+          var temp2
           data = hexToDec(data, 16)
           if (data >= 0 && data <= 240) {
             temp = ` - synchronous( cyclic every ${data} SYNC)`
+            temp2 = `cyclic every ${data} SYNC`
           } else if (data > 240 && data <= 253) {
             temp = ` - Transmission - Reserved`
+            temp2 = `${data} reserved`
           } else if (data == 254 || data == 255) {
             temp = ` - Asynchronous: the PDO will be sent every time anything changes in its data field`
+            temp2 = `Async`
           }
           interpretationInfo = interpretationInfo.concat(temp)
+          PDO_mapped_aux[typePDO][axisID].TransmissionType = temp2
+
           break
       }
     } else if (aux_firstByte == '16') {
@@ -712,7 +752,18 @@ export let PDO_mapped = {
   TPDO3: [],
   TPDO4: []
 }
-
+export let PDO_mapped_aux = {
+  //Pos 0 will not be used, only 1 to 127
+  //Here we will have Transmission type/ Inhibit time/ Event timer
+  RPDO1: [],
+  RPDO2: [],
+  RPDO3: [],
+  RPDO4: [],
+  TPDO1: [],
+  TPDO2: [],
+  TPDO3: [],
+  TPDO4: []
+}
 export let DontBotherWithPDO_flag = [1] // BUG change to zero
 export let SetAllPDOsEMPTY = [0]
 
@@ -1055,11 +1106,27 @@ function helping_ProvideMappingInfo(PDO_type, AxisID, oneMapping) {
   }
   oneMapping.forEach((oneObject, index) => {
     var objectFound = GetObject(oneObject)
+    var moreDetails = PDO_mapped_aux[PDO_type][AxisID]
+    var String = ''
+    if (moreDetails) {
+      if (moreDetails.TransmissionType && moreDetails.TransmissionType != '') {
+        String = String.concat(` ${moreDetails.TransmissionType} /`)
+      }
+      if (moreDetails.InhibitTime && moreDetails.InhibitTime != '') {
+        String = String.concat(` InhibitTime: ${moreDetails.InhibitTime} /`)
+      }
+      if (moreDetails.EventTimer && moreDetails.EventTimer != '') {
+        String = String.concat(` EventTimer: ${moreDetails.EventTimer} /`)
+      }
+      String = String.slice(0, -1)
+    }
+    console.log('🚀 moreDetails:', String)
     arrayOfObjectsInfo[index] = [
       `${aux_CobID}h [${index + 1}] `,
       objectFound[0],
       objectFound[1],
-      objectFound[2]
+      objectFound[2],
+      String
     ]
   })
 

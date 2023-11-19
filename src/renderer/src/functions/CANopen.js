@@ -436,7 +436,7 @@ export function CreateDecodedArrayOfObjects(
       DecodedMessage[5] //Error
     )
     if (DecodedMessage[0] == 'MissingPDO') {
-      console.log('BAD')
+      console.log('MissingPDO we reseted the proccess')
       PDOMessageToDecode = ResultingArray[index]
       prematureEnd = true
       globalIndex[0] = index

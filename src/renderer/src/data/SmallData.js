@@ -2,9 +2,9 @@
 //PDO_mapped
 //CanLogStatistics
 export let GroupingOptionsForMessages = {
-  Mapping: false,
-  Modes: false,
-  Repetitive: false
+  Mapping: true,
+  Modes: true,
+  Repetitive: true
 }
 
 export const ObjectDescriptions = {
@@ -138,23 +138,7 @@ export const FG_Objects_Array = {
   POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C', '6067'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
   ACC: ['6083', '6085', '609A'],
-  TIME: [
-    '6066',
-    '6068',
-    '2023',
-    '2005',
-    '2051',
-    '1006',
-    '1017',
-    '1800_03',
-    '1801_03',
-    '1802_03',
-    '1803_03',
-    '1800_05',
-    '1801_05',
-    '1802_05',
-    '1803_05'
-  ]
+  TIME: ['6066', '6068', '2023', '2005', '2051', '1006', '1017']
 }
 
 export const FG_units_pos_rot = ['IU', 'rad', 'deg', 'rot']
