@@ -1189,6 +1189,8 @@ const AdvancedSearchComponent = () => {
   const [objectName, setObjectName] = useState(true)
   const [CobID, setCobID] = useState(false)
   const [interpretation, setInterpretation] = useState(false)
+  const [TextReturn, setTextReturn] = useState('Ready to go')
+
   var searchProperties = [
     { key: 'msgNr', enabled: msgNr },
     { key: 'Object', enabled: object },
@@ -1212,6 +1214,7 @@ const AdvancedSearchComponent = () => {
       )
     })
     setFilteredArray(FilterResult)
+    setTextReturn('Nothing found')
   }
 
   //SHORTCUTS ---------------------------
@@ -1222,8 +1225,10 @@ const AdvancedSearchComponent = () => {
     }, 1)
     const handleKeyPress = (event) => {
       if (event.key === 'Enter') {
-        console.log('We are in the advanced search and actively looking')
-        handleUserInput(inputRef.current.value)
+        setTextReturn('Searching...')
+        setTimeout(() => {
+          handleUserInput(inputRef.current.value)
+        }, 100)
       } else if (event.ctrlKey && event.key === 'Tab') inputRef.current.focus()
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -1360,7 +1365,7 @@ const AdvancedSearchComponent = () => {
             return <TableROW_simple key={iteration.msgNr} obj={iteration} />
           })
         ) : (
-          <div style={{ color: `${colors.red[400]}` }}>Nothing found</div>
+          <div style={{ color: `${colors.red[400]}` }}>{TextReturn}</div>
         )}
       </div>
     </Dialog>
