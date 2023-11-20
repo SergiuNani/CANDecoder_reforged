@@ -5,7 +5,9 @@ import {
   hex_to_ascii,
   hex2Fixed,
   UnitsConvertor,
-  decToHex
+  decToHex,
+  hex2bin,
+  bin2hex
 } from './NumberConversion'
 import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
@@ -38,6 +40,12 @@ export function whatFG_isObject(obj) {
   }
 
   return false
+}
+
+var ObjectValuesSaved_global = {
+  '208E': '',
+  '60C0': '',
+  '60C1_01': ''
 }
 
 export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
@@ -78,34 +86,107 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
       }
     }
   }
-  //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
-  for (const type in ObjectDescriptions) {
-    if (ObjectDescriptions[type] && type == obj) {
-      var decValue = hexToDec(value, objectSize)
 
-      for (const description in ObjectDescriptions[type]) {
-        if (parseInt(description) == parseInt(decValue)) {
-          return [ObjectDescriptions[type][description], 'blue', 'whatValueMeansInObj']
+  var TextReturn = false
+  var msgType = 'random'
+  var whatModifications = 'SomethingFound'
+
+  switch (obj) {
+    case '1018_04':
+      //Serial Number
+      if (type == 'T_SDO') {
+        var temp = value.slice(0, 4)
+        TextReturn = `${hex_to_ascii(temp)}${value.slice(4, 8)}`
+      }
+      break
+    case '1018_02':
+      //ProductID
+      if (type == 'T_SDO') {
+        var temp = hexToDec(value, 32).toString()
+        TextReturn = `P0${temp.slice(0, 2)}.${temp.slice(2, 5)}.${temp.slice(5)}`
+      }
+      break
+    case '1018_03':
+      //ProductID
+      if (type == 'T_SDO') {
+        TextReturn = hex_to_ascii(value).toString()
+      }
+      break
+    case '6077':
+      //Torque(Current) actual value
+      if (type == 'T_SDO' || type.slice(0, 4) == 'TPDO') {
+        var temp = hexToDec(value, 16).toString()
+        TextReturn = `${temp} IU or ${temp / 10}%`
+      }
+      break
+    case '208E':
+      ObjectValuesSaved_global['208E'] = value
+      break
+    case '2073':
+      TextReturn = `Buffer length: ${hexToDec(value, 16)}`
+
+      break
+    case '60C0':
+      var temp = parseInt(hexToDec(value, objectSize))
+      ObjectValuesSaved_global['60C0'] = temp
+      if (temp == 0) {
+        TextReturn = 'Linear Interpolation or PT (Position –Time) '
+      } else if (temp == -1) {
+        TextReturn = 'PVT (Position – Velocity – Time) cubic interpolation'
+      } else {
+      }
+      msgType = 'blue'
+      whatModifications = 'whatValueMeansInObj'
+      break
+
+    case '60C1_01':
+      var bit8_208E = hex2bin(ObjectValuesSaved_global['208E'], 16).slice(7, 8)
+      if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == 0) {
+        //We have PT interpolation
+        TextReturn = `Pos: ${hexToDec(value, objectSize)} IU`
+      } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == -1) {
+        //PVT
+        let pos = value.slice(0, 2) + value.slice(4)
+        let spd_fractional = value.slice(2, 4)
+        TextReturn = `Pos: ${hexToDec(pos, 32)} IU`
+        ObjectValuesSaved_global['60C1_01'] = spd_fractional
+      }
+      break
+    case '60C1_02':
+      var bit8_208E = hex2bin(ObjectValuesSaved_global['208E'], 16).slice(7, 8)
+      if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == 0) {
+        //We have PT interpolation
+        var time = hexToDec(value.slice(4, 8), 16)
+        var counter = bin2hex(hex2bin(value.slice(0, 4), 8).slice(0, 7))
+        TextReturn = `Time: ${time}, Counter: ${counter}`
+      } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == -1) {
+        //PVT
+        let counter = 2
+        let time = 3
+        let IC = 5
+      }
+      break
+    default:
+      //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
+      for (const type in ObjectDescriptions) {
+        if (ObjectDescriptions[type] && type == obj) {
+          var decValue = hexToDec(value, objectSize)
+
+          for (const description in ObjectDescriptions[type]) {
+            if (parseInt(description) == parseInt(decValue)) {
+              return [ObjectDescriptions[type][description], 'blue', 'whatValueMeansInObj']
+            }
+          }
         }
       }
-    }
+      TextReturn = false
+      msgType = false
+      whatModifications = false
+
+      break
   }
 
-  if (['1018_04', '1018_02', '1018_03'].includes(obj) && type == 'T_SDO') {
-    var TextReturn = ''
-    if (obj == '1018_04') {
-      //Serial Number
-      var temp = value.slice(0, 4)
-      TextReturn = `${hex_to_ascii(temp)}${value.slice(4, 8)}`
-    } else if (obj == '1018_02') {
-      //ProductID
-      var temp = hexToDec(value, 32).toString()
-      TextReturn = `P0${temp.slice(0, 2)}.${temp.slice(2, 5)}.${temp.slice(5)}`
-    } else {
-      TextReturn = `${hex_to_ascii(value)}`
-    }
-    return [TextReturn, 'random', 'valueIsASCII']
-  }
+  return [TextReturn, msgType, whatModifications]
 
   //[ObjectDescription or GlobalMoO, errorStatus, type between ObjDesc or 604X value]
   return [false, false, false]
@@ -227,7 +308,7 @@ export function DecodeSDO(sdoType, message, axisID) {
     } else if (ObjectValueDescription[2] == 'adjust_StatusWord_or_ControlWord') {
       Object[0] = Object[0].concat(ObjectValueDescription[0])
       errorStatus = ObjectValueDescription[1] //neutral
-    } else if (ObjectValueDescription[2] == 'valueIsASCII') {
+    } else if (ObjectValueDescription[2] == 'SomethingFound') {
       interpretationInfo = ObjectValueDescription[0]
       errorStatus = ObjectValueDescription[1] //random
     }
@@ -604,7 +685,7 @@ export function checkSDOforMapping(object, data, axisID) {
 
       switch (aux_thirdByte) {
         case '00':
-          interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
+          interpretationInfo = interpretationInfo.concat(` - Nr of mapped objects : ${data}`)
           break
         case '01':
         case '02':
@@ -693,7 +774,7 @@ export function checkSDOforMapping(object, data, axisID) {
 
       switch (aux_thirdByte) {
         case '00':
-          interpretationInfo = interpretationInfo.concat(` -Nr of mapped objects : ${data}`)
+          interpretationInfo = interpretationInfo.concat(` - Nr of mapped objects : ${data}`)
           break
         case '01':
         case '02':
@@ -863,6 +944,9 @@ export function helping_DecodePDO(cobID_array, message) {
         aux_objects = aux_objects.concat(aux[0])
         tempError = aux[1]
         tempInterpretation = '-'
+      } else if (aux[2] == 'SomethingFound') {
+        tempInterpretation = aux[0]
+        tempError = aux[1]
       } else {
         //Nothing found or done
         tempInterpretation = '-'

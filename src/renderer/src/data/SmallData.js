@@ -125,17 +125,13 @@ export const ObjectDescriptions = {
     1: 'Reserved',
     2: 'Reserved',
     3: 'Jerk-limited ramp (S-curve)'
-  },
-  '60C0': {
-    '-1': 'PVT (Position – Velocity – Time) cubic interpolation',
-    0: 'Linear Interpolation or PT (Position –Time) '
   }
 }
 
 /*------------------------------Factor Group Units------------------------------ */
 
 export const FG_Objects_Array = {
-  POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C', '6067'],
+  POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C', '6067', '2079'],
   SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
   ACC: ['6083', '6085', '609A'],
   TIME: ['6066', '6068', '2023', '2005', '2051', '1006', '1017']

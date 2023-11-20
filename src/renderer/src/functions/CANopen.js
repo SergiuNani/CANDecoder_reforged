@@ -236,7 +236,7 @@ function extractDATAfromROW(row, index, original) {
             //Msg length bigger than the evaluated length
             if (!/^0+$/.test(aux_data.slice(parseInt(potentialLength) * 2))) {
               //If the remaining message is not zero
-              if (aux_data.length < 14) {
+              if (aux_data.length <= 14) {
                 aux_data = potentialLength.concat(aux_data)
               }
             } else {
@@ -517,7 +517,7 @@ export function verifyValidityOfMappingGroup(group) {
     var InterpretationInfo = oneMessage.Interpretation.split(' ')
     if (['Disable', 'Enable'].includes(InterpretationInfo[0])) {
       enableCobID[enableCobID.length] = InterpretationInfo[0]
-    } else if (InterpretationInfo.slice(1, -1).join(' ') == '-Nr of mapped objects :') {
+    } else if (InterpretationInfo.slice(1, -1).join(' ') == '- Nr of mapped objects :') {
       enableMapping[enableMapping.length] = InterpretationInfo[InterpretationInfo.length - 1]
     } else if (
       InterpretationInfo[0][0] == '[' &&
