@@ -1181,15 +1181,34 @@ const AdvancedSearchComponent = () => {
   const colors = tokens(theme.palette.mode)
   const [FilteredArray, setFilteredArray] = useState([])
   const inputRef = useRef(null)
+  const axisID_ref = useRef(null)
   const { isAdvancedSearchOpen, setIsAdvancedSearchOpen } = useContext(Decode_CAN_LOG_WindowContext)
-
+  const [checkboxAxisID, setCheckboxAxisID] = useState(false)
+  const [msgNr, setMsgNr] = useState(false)
+  const [object, setObject] = useState(true)
+  const [objectName, setObjectName] = useState(true)
+  const [CobID, setCobID] = useState(false)
+  const [interpretation, setInterpretation] = useState(false)
+  var searchProperties = [
+    { key: 'msgNr', enabled: msgNr },
+    { key: 'Object', enabled: object },
+    { key: 'ObjectName', enabled: objectName },
+    { key: 'CobID', enabled: CobID },
+    { key: 'AxisID', enabled: checkboxAxisID },
+    { key: 'Interpretation', enabled: interpretation }
+  ]
   function handleUserInput(e) {
     const searchValue = e.toLowerCase()
     if (searchValue == '') return setFilteredArray([])
-    const searchProperties = ['msgNr', 'Object', 'ObjectName', 'CobID', 'AxisID', 'Interpretation']
+
     var FilterResult = MessagesDecoded_ArrayOfObjects.filter((iteration) => {
-      return searchProperties.some((property) =>
-        iteration[property].toString().toLowerCase().includes(searchValue)
+      var axisID
+      if (checkboxAxisID) {
+        axisID = iteration.AxisID == axisID_ref.current
+      } else axisID = true
+      return searchProperties.some(
+        ({ key, enabled }) =>
+          enabled && axisID && iteration[key]?.toString().toLowerCase().includes(searchValue)
       )
     })
     setFilteredArray(FilterResult)
@@ -1211,7 +1230,7 @@ const AdvancedSearchComponent = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [object, objectName, msgNr, checkboxAxisID, CobID, interpretation])
 
   return (
     <Dialog
@@ -1228,40 +1247,121 @@ const AdvancedSearchComponent = () => {
       <div
         style={{
           border: `1px solid ${colors.primary[400]}`,
-          padding: '1rem ',
+          padding: '1.5rem ',
           overflowX: 'none',
-
           background: `${colors.primary[200]}`
         }}
       >
-        <p style={{ padding: '0.3rem', marginBottom: '0.1rem' }}>
-          Searches by:{' '}
-          <span style={{ color: `${colors.blue[100]}` }}>
-            msgNr, Object, ObjectName, CobID, AxisID, Interpretation
-          </span>
-        </p>
-        <input
-          ref={inputRef}
-          type="text"
-          placeholder="Search for a message"
+        <section
           style={{
-            backgroundColor: `${colors.primary[300]}`,
-            padding: '0.5rem 1rem',
-            borderRadius: '0.9rem',
-            color: `${colors.red[200]}`,
-            outline: 'none',
-            margin: '0.2rem 0 0 1rem',
-            width: '20rem',
-            fontSize: '1.3rem',
-            marginBottom: '1rem'
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '4rem',
+            userSelect: 'none'
           }}
-        />
+        >
+          <input
+            ref={inputRef}
+            type="text"
+            placeholder="Search for a message"
+            style={{
+              backgroundColor: `${colors.primary[300]}`,
+              padding: '0.5rem 1rem',
+              borderRadius: '0.9rem',
+              color: `${colors.red[200]}`,
+              outline: 'none',
+              margin: '0.2rem 0 0 1rem',
+              width: '20rem',
+              fontSize: '1.3rem',
+              marginBottom: '1rem'
+            }}
+          />
+          <section>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between'
+                // whiteSpace: 'nowrap',
+                // flexDirection: 'column'
+                // overflow: 'hidden'
+              }}
+            >
+              <div>
+                <Checkbox_Component
+                  label={'Object'}
+                  checked={object}
+                  onChange={() => {
+                    setObject((prev) => !prev)
+                  }}
+                />
 
-        {FilteredArray.length > 0
-          ? FilteredArray.map((iteration) => {
-              return <TableROW_simple key={iteration.msgNr} obj={iteration} />
-            })
-          : null}
+                <Checkbox_Component
+                  label={'ObjectName'}
+                  checked={objectName}
+                  onChange={() => {
+                    setObjectName((prev) => !prev)
+                  }}
+                />
+                <Checkbox_Component
+                  label={'msgNr'}
+                  checked={msgNr}
+                  onChange={() => {
+                    setMsgNr((prev) => !prev)
+                  }}
+                />
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Checkbox_Component
+                    label={'AxisID'}
+                    checked={checkboxAxisID}
+                    onChange={() => {
+                      setCheckboxAxisID((prev) => !prev)
+                    }}
+                  />
+                  <Input_AutoFormat
+                    callback={filterDecimal}
+                    resolution={8}
+                    tellParentValueChanged={(e) => {
+                      axisID_ref.current = e
+                    }}
+                    forceValueFromParent={1}
+                    background={colors.primary[300]}
+                    // border={`1px solid ${colors.blue[500]}`}
+                    width="4rem"
+                    center
+                    padding="0.1rem"
+                    blockValueReset
+                    disabled={!checkboxAxisID}
+                  />
+                </div>
+                <Checkbox_Component
+                  label={'CobID'}
+                  checked={CobID}
+                  onChange={() => {
+                    setCobID((prev) => !prev)
+                  }}
+                />
+                <Checkbox_Component
+                  label={'Interpretation'}
+                  checked={interpretation}
+                  onChange={() => {
+                    setInterpretation((prev) => !prev)
+                  }}
+                />
+              </div>
+            </div>
+          </section>
+        </section>
+        {FilteredArray.length > 0 ? (
+          FilteredArray.map((iteration) => {
+            return <TableROW_simple key={iteration.msgNr} obj={iteration} />
+          })
+        ) : (
+          <div style={{ color: `${colors.red[400]}` }}>Nothing found</div>
+        )}
       </div>
     </Dialog>
   )

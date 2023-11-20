@@ -146,7 +146,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
         TextReturn = `Pos: ${hexToDec(value, objectSize)} IU`
       } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == -1) {
         //PVT
-        let pos = value.slice(0, 2) + value.slice(4)
+        let pos = value.slice(0, 2) + value.slice(4) // Bug : TPOS needs to be 32 bits, something is missing
         let spd_fractional = value.slice(2, 4)
         TextReturn = `Pos: ${hexToDec(pos, 32)} IU`
         ObjectValuesSaved_global['60C1_01'] = spd_fractional
@@ -157,13 +157,14 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
       if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == 0) {
         //We have PT interpolation
         var time = hexToDec(value.slice(4, 8), 16)
-        var counter = bin2hex(hex2bin(value.slice(0, 4), 8).slice(0, 7))
+        var counter = hexToDec(bin2hex(hex2bin(value.slice(0, 4), 16).slice(0, 7)), 16)
         TextReturn = `Time: ${time}, Counter: ${counter}`
       } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == -1) {
         //PVT
-        let counter = 2
-        let time = 3
-        let IC = 5
+        let counter = hexToDec(bin2hex(hex2bin(value.slice(0, 4), 16).slice(0, 7)), 16)
+        let time = hexToDec(bin2hex(hex2bin(value.slice(0, 4), 16).slice(7)), 16)
+        let spd = hex2Fixed(value.slice(4, 8).concat(ObjectValuesSaved_global['60C1_01'], '00'))
+        TextReturn = `Speed: ${spd} IU, Time: ${time} IU, Counter: ${counter}`
       }
       break
     default:
