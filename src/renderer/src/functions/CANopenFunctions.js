@@ -20,7 +20,6 @@ import {
   ObjectDescriptions
 } from '../data/SmallData'
 import { Registers_CANopen_LS } from '../App'
-import { globalModesOfOperation } from './CANopen'
 
 export function whatFG_isObject(obj) {
   obj = obj.toUpperCase()
@@ -42,13 +41,14 @@ export function whatFG_isObject(obj) {
   return false
 }
 
-var ObjectValuesSaved_global = {
-  '208E': '',
-  '60C0': '',
-  '60C1_01': ''
+export var ObjectValuesSaved_global = {
+  '208E': [],
+  '60C0': [],
+  '60C1_01': [],
+  6060: []
 }
 
-export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
+export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
   obj = obj.toUpperCase()
   if (obj.slice(0, 2) == '#X' || obj.slice(0, 2) == '0X') {
     obj = obj.slice(2, obj.length)
@@ -57,32 +57,30 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
   if (obj.length > 4 && obj.slice(4, 7) === '_00') {
     obj = obj.slice(0, 4)
   }
-
-  //Updating the globalModesOfOperation
-  if ((type == 'R_SDO' || type.slice(0, 4) == 'RPDO') && obj == '6060') {
-    if (value.length == 2 && value[0] == '0') {
-      // Change value 01 into 1
-      value = value.slice(1)
-    }
-    if (globalModesOfOperation[axisID] == undefined) {
-      globalModesOfOperation[axisID] = value
-    } else {
-      globalModesOfOperation[axisID] = value
-    }
+  var type_Transmit_Receive
+  if (type == 'R_SDO' || type.slice(0, 4) == 'RPDO') {
+    type_Transmit_Receive = 'R'
+  } else {
+    type_Transmit_Receive = 'T'
   }
+
   //Modify 6040 -> 60401 to have the correct register when displaying in the table
   if (obj == '6040' || obj == '6041') {
-    if (globalModesOfOperation[axisID]) {
+    if (ObjectValuesSaved_global['6060'][axisID]) {
       //We change somthing only if there is a global value for this axis ModesOfOperation
 
-      var aux_value = obj.concat(globalModesOfOperation[axisID])
+      var aux_value = obj.concat(ObjectValuesSaved_global['6060'][axisID])
       const filterOptions = Registers_CANopen_LS.filter(
         (oneRegister) => oneRegister.Index == aux_value
       )
 
       if (filterOptions.length > 0) {
         //Register Exists
-        return [globalModesOfOperation[axisID], 'neutral', 'adjust_StatusWord_or_ControlWord']
+        return [
+          ObjectValuesSaved_global['6060'][axisID],
+          'neutral',
+          'adjust_StatusWord_or_ControlWord'
+        ]
       }
     }
   }
@@ -92,6 +90,30 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
   var whatModifications = 'SomethingFound'
 
   switch (obj) {
+    case '6060':
+      //Modes of Operation
+      if (type_Transmit_Receive == 'R') {
+        if (value.length == 2 && value[0] == '0') {
+          // Change value 01 into 1
+          value = value.slice(1)
+        }
+
+        ObjectValuesSaved_global['6060'][axisID] = value
+      }
+      if (CS != '40') {
+        var decValue = hexToDec(value, 8)
+
+        TextReturn = ObjectDescriptions['6060'][decValue]
+        msgType = 'blue'
+        whatModifications = 'whatValueMeansInObj'
+      }
+      break
+    case '1000':
+      //Device Type
+      if (type_Transmit_Receive == 'T') {
+        if (value == '00060192') TextReturn = `60192h for iPOS family`
+      }
+      break
     case '1018_04':
       //Serial Number
       if (type == 'T_SDO') {
@@ -120,7 +142,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
       }
       break
     case '208E':
-      ObjectValuesSaved_global['208E'] = value
+      ObjectValuesSaved_global['208E'][axisID] = value
       break
     case '2073':
       TextReturn = `Buffer length: ${hexToDec(value, 16)}`
@@ -128,7 +150,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
       break
     case '60C0':
       var temp = parseInt(hexToDec(value, objectSize))
-      ObjectValuesSaved_global['60C0'] = temp
+      ObjectValuesSaved_global['60C0'][axisID] = temp
       if (temp == 0) {
         TextReturn = 'Linear Interpolation or PT (Position –Time) '
       } else if (temp == -1) {
@@ -140,30 +162,37 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID) {
       break
 
     case '60C1_01':
-      var bit8_208E = hex2bin(ObjectValuesSaved_global['208E'], 16).slice(7, 8)
-      if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == 0) {
+      var bit8_208E = hex2bin(ObjectValuesSaved_global['208E'][axisID], 16).slice(7, 8)
+      if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'][axisID] == 0) {
         //We have PT interpolation
         TextReturn = `Pos: ${hexToDec(value, objectSize)} IU`
-      } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == -1) {
+      } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'][axisID] == -1) {
         //PVT
         let pos = value.slice(0, 2) + value.slice(4) // Bug : TPOS needs to be 32 bits, something is missing
+        let temp = hexToDec(pos, 32)
+        if (temp > 8388607) {
+          //temp bigger than 7F FFFF
+          pos = 'FF'.concat(pos)
+        }
         let spd_fractional = value.slice(2, 4)
         TextReturn = `Pos: ${hexToDec(pos, 32)} IU`
-        ObjectValuesSaved_global['60C1_01'] = spd_fractional
+        ObjectValuesSaved_global['60C1_01'][axisID] = spd_fractional
       }
       break
     case '60C1_02':
-      var bit8_208E = hex2bin(ObjectValuesSaved_global['208E'], 16).slice(7, 8)
-      if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == 0) {
+      var bit8_208E = hex2bin(ObjectValuesSaved_global['208E'][axisID], 16).slice(7, 8)
+      if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'][axisID] == 0) {
         //We have PT interpolation
         var time = hexToDec(value.slice(4, 8), 16)
         var counter = hexToDec(bin2hex(hex2bin(value.slice(0, 4), 16).slice(0, 7)), 16)
         TextReturn = `Time: ${time}, Counter: ${counter}`
-      } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'] == -1) {
+      } else if (bit8_208E == 0 && ObjectValuesSaved_global['60C0'][axisID] == -1) {
         //PVT
         let counter = hexToDec(bin2hex(hex2bin(value.slice(0, 4), 16).slice(0, 7)), 16)
         let time = hexToDec(bin2hex(hex2bin(value.slice(0, 4), 16).slice(7)), 16)
-        let spd = hex2Fixed(value.slice(4, 8).concat(ObjectValuesSaved_global['60C1_01'], '00'))
+        let spd = hex2Fixed(
+          value.slice(4, 8).concat(ObjectValuesSaved_global['60C1_01'][axisID], '00')
+        )
         TextReturn = `Speed: ${spd} IU, Time: ${time} IU, Counter: ${counter}`
       }
       break
@@ -301,7 +330,8 @@ export function DecodeSDO(sdoType, message, axisID) {
       aux_message,
       Object[2],
       sdoType,
-      axisID
+      axisID,
+      CS
     )
     if (ObjectValueDescription[0] && ObjectValueDescription[2] == 'whatValueMeansInObj') {
       interpretationInfo = ObjectValueDescription[0]
@@ -935,7 +965,8 @@ export function helping_DecodePDO(cobID_array, message) {
         obj_msg,
         objectSize,
         cobID_array[2],
-        cobID_array[1]
+        cobID_array[1],
+        CS
       )
       if (aux[2] == 'whatValueMeansInObj') {
         tempInterpretation = aux[0]

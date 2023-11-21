@@ -33,7 +33,6 @@ import {
   FG_units_acc_lin,
   FG_units_time
 } from '../../data/SmallData'
-import { Decode_CAN_LOG_WindowContext } from '../Decode_CAN_LOG'
 export let FG_OptionsObject_1 = {
   FG_Display_POS: 'IU',
   FG_Display_SPD: 'IU',

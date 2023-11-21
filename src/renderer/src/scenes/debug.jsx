@@ -107,7 +107,7 @@ export default DebugScene
 const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANopenAlgorithm }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var ReturnText = `All Good`
+  var ReturnText = []
   var errorStatus = 'neutral'
   var ReturnText2 = '---- We also have problems at line(s): '
   DontBotherWithPDO_flag[0] = 1
@@ -126,44 +126,37 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
 
   if (MessagesDecoded.length != Hardcoded_VerifyCANopenValidityArray.length) {
     ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${Hardcoded_VerifyCANopenValidityArray.length} length`
-    errorStatus = 'error'
+    errorStatus = 'errorLength'
   } else {
     MessagesDecoded.forEach((oneObjectMessage, index) => {
       for (const key in oneObjectMessage) {
         if (key != 'msgNr') {
           if (oneObjectMessage[key] != Hardcoded_VerifyCANopenValidityArray[index][key]) {
-            if (errorStatus != 'error') {
-              ReturnText = (
-                <div>
-                  Message:
-                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
-                    {' '}
-                    //{oneObjectMessage.OriginalMessage}//{' '}
-                  </span>
-                  at line
-                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
-                    {' '}
-                    "{oneObjectMessage.msgNr}"{' '}
-                  </span>
-                  has the key :
-                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
-                    {' '}
-                    {key}{' '}
-                  </span>
-                  <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
-                    - {`${oneObjectMessage[key]}`} -{' '}
-                  </span>
-                  which is not equal to the hardcoded
-                  <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
-                    {' '}
-                    - {`${Hardcoded_VerifyCANopenValidityArray[index][key]}`} -
-                  </span>
-                </div>
-              )
-              return (errorStatus = 'error')
-            } else {
-              return (ReturnText2 = ReturnText2.concat(` ${oneObjectMessage.msgNr} - `))
-            }
+            ReturnText.push(
+              <div>
+                Message:
+                <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                  {' '}
+                  //{oneObjectMessage.OriginalMessage}//{' '}
+                </span>
+                at line
+                <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                  {' '}
+                  "{oneObjectMessage.msgNr}"{' '}
+                </span>
+                has the key :
+                <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}> {key} </span>
+                <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
+                  - {`${oneObjectMessage[key]}`} -{' '}
+                </span>
+                which is not equal to the hardcoded
+                <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
+                  {' '}
+                  - {`${Hardcoded_VerifyCANopenValidityArray[index][key]}`} -
+                </span>
+              </div>
+            )
+            return (errorStatus = 'error')
           }
         }
       }
@@ -180,14 +173,23 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
         style={{
           padding: '1rem 2rem',
           border: `2px solid`,
-          borderColor: errorStatus == 'error' ? `${colors.red[500]}` : `${colors.green[400]}`,
+          borderColor: ['error', 'errorLength'].includes(errorStatus)
+            ? `${colors.red[500]}`
+            : `${colors.green[400]}`,
           background: `${colors.primary[300]}`
         }}
       >
-        <div>{ReturnText}</div>
-        {errorStatus == 'error' && ReturnText2 != '---- We also have problems at line(s): ' && (
-          <div>{ReturnText2}</div>
-        )}
+        <div>
+          {errorStatus == 'errorLength' ? (
+            ReturnText
+          ) : ReturnText.length > 0 ? (
+            ReturnText.map((item, index) => {
+              return <div key={index}>{item}</div>
+            })
+          ) : (
+            <div>All good</div>
+          )}
+        </div>
       </section>
     </Dialog>
   )

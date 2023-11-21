@@ -55,7 +55,8 @@ import {
   SortMappingByAxis,
   DontBotherWithPDO_flag,
   SetAllPDOsEMPTY,
-  PDO_mapped_aux
+  PDO_mapped_aux,
+  ObjectValuesSaved_global
 } from '../functions/CANopenFunctions'
 import {
   DefaultTable,
@@ -102,6 +103,12 @@ const Decode_CAN_LOG_Window = () => {
             PDO_mapped[prop] = []
           }
         }
+        for (const prop in ObjectValuesSaved_global) {
+          //We reseting all the prev objects data
+          if (ObjectValuesSaved_global.hasOwnProperty(prop)) {
+            ObjectValuesSaved_global[prop] = []
+          }
+        }
         const fileContent = e.target.result
         setFileInnerText(fileContent)
         sethideTableForceParentToggle((prev) => !prev)
@@ -117,6 +124,12 @@ const Decode_CAN_LOG_Window = () => {
       //We reseting all the mapping which was done up to now
       if (PDO_mapped.hasOwnProperty(prop)) {
         PDO_mapped[prop] = []
+      }
+    }
+    for (const prop in ObjectValuesSaved_global) {
+      //We reseting all the prev objects data
+      if (ObjectValuesSaved_global.hasOwnProperty(prop)) {
+        ObjectValuesSaved_global[prop] = []
       }
     }
     var lines = TextAreaText_Ref.current.value
@@ -266,7 +279,7 @@ export let globalIndex = [0] //used when there is a PDO detected and no mapping 
 
 const DecodedTableOptions = ({ fileInnerText }) => {
   console.log('---2---. DecodedTableOptions')
-  const [TableOption, setTableOption] = useState('Default')
+  const [TableOption, setTableOption] = useState('Default') //Default vs Simplified vs Debug
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [openPDOModal, setOpenPDOModal] = useState(false)

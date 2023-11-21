@@ -4,7 +4,8 @@ import {
   DecodeEMCY,
   DecodeNMT,
   DecodeNMT_Monitoring,
-  DecodeSYNC
+  DecodeSYNC,
+  ObjectValuesSaved_global
 } from './CANopenFunctions'
 import { DecodeTCANglobal } from './TechnoCAN'
 import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
@@ -12,7 +13,6 @@ import { DecodeOnePDOmsg, PDO_mapped } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
 
 export let CanLogStatistics = [] // array of all the axes
-export let globalModesOfOperation = [] // array of all the axes
 
 export function CobID_who_dis(cob_id) {
   cob_id = cob_id.toUpperCase()
@@ -322,7 +322,7 @@ export function CreateDecodedArrayOfObjects(
     // We reset only if we have a new log file
     CanLogStatistics = []
     ResultingArray = []
-    globalModesOfOperation = []
+    ObjectValuesSaved_global['6060'] = []
 
     for (const prop in PDO_mapped) {
       //We reseting all the mapping which was done up to now - this is for dear old Strict mode
