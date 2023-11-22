@@ -42,7 +42,7 @@ export const TableROW = ({ iteration }) => {
         color: `${colors.grey[100]}`,
         background: `${colors.blue[300]}`,
         fontFamily: 'Calibri',
-        fontSize: '1rem'
+        fontSize: '0.9rem'
       }}
     >
       <thead>
@@ -50,13 +50,13 @@ export const TableROW = ({ iteration }) => {
           style={{
             borderBottom: `1px solid ${colors.grey[300]}`,
             background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
-            borderLeft: isRecieveTypeMessage ? `0.5rem solid ${colors.primary[400]}` : 'inherit'
+            borderLeft: isRecieveTypeMessage ? `0.3rem solid ${colors.primary[400]}` : 'inherit'
           }}
         >
           <td
             style={{
               textAlign: 'center',
-              padding: '0.7rem 0',
+              padding: '0.3rem 0',
               width: '2.5rem'
             }}
           >
