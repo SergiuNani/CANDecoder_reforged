@@ -241,7 +241,8 @@ function extractDATAfromROW(row, index, original) {
               }
             } else {
               //Exceeded length but its all zeros
-              if (potentialLength == '00') {
+              var type = CobID_who_dis(row[index])
+              if (type[0] != 'SDO' || potentialLength == '00') {
                 aux_data = potentialLength.concat(aux_data)
               }
             }
@@ -602,6 +603,7 @@ export function filterMessagesByAxesAndCobID(filteredMessages) {
   })
 
   if (!allFiltersOnTrue) {
+    //There are some filters set to false
     filteredMessages = filteredMessages.filter((oneMessage) => {
       var AxisStatus = CanLogStatistics.filter((oneAxis) => {
         return oneAxis.Axis[0] == oneMessage.AxisID && oneAxis.Axis[1] == true

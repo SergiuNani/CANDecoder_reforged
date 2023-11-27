@@ -17,7 +17,6 @@ import {
 } from '../functions/CANopen'
 import { Button2 } from '../components/SmallComponents'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { Extract_objects } from '../data/TestingData'
 import { GetObject } from '../functions/CANopenFunctions'
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)

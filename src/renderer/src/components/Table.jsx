@@ -6,7 +6,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  IconButton
+  IconButton,
+  Dialog
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
@@ -439,6 +440,8 @@ export const DefaultTable = () => {
   var { setShortcutToDecodeMessages, shortcutToDecodeMessages_whoCalled } = useContext(
     Decode_CAN_LOG_WindowContext
   )
+
+  const [gotoLineStatus, setGotoLineStatus] = useState(true)
   function LoadPrevMessagesButton() {
     function handleLoadPrev() {
       console.log('LoadPrevMessagesButton')
@@ -614,6 +617,7 @@ export const DefaultTable = () => {
       </Box>
     )
   }, [])
+
   return <section>{Table_Memo}</section>
 }
 export const SimplifiedTable = () => {

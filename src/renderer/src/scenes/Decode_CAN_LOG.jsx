@@ -88,6 +88,7 @@ const Decode_CAN_LOG_Window = () => {
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
   const initalMount_Deocde_CAN_LOG_ref = useRef(true)
+  const SearchVsGotoLineRef = useRef('')
   function handleFileUpload(e) {
     const file = e.target.files[0]
 
@@ -156,7 +157,25 @@ const Decode_CAN_LOG_Window = () => {
       } else if (event.ctrlKey && event.key === 'Tab') {
         TextAreaText_Ref.current.focus()
       } else if (event.ctrlKey && event.key === 'f') {
-        setIsAdvancedSearchOpen((prev) => !prev)
+        if (SearchVsGotoLineRef.current == 'Search') {
+          setIsAdvancedSearchOpen((prev) => !prev)
+        } else {
+          setIsAdvancedSearchOpen(false)
+          setTimeout(() => {
+            setIsAdvancedSearchOpen(true)
+          }, 10)
+        }
+        SearchVsGotoLineRef.current = 'Search'
+      } else if (event.ctrlKey && event.key === 'g') {
+        if (SearchVsGotoLineRef.current == 'gotoLine') {
+          setIsAdvancedSearchOpen((prev) => !prev)
+        } else {
+          setIsAdvancedSearchOpen(false)
+          setTimeout(() => {
+            setIsAdvancedSearchOpen(true)
+          }, 10)
+        }
+        SearchVsGotoLineRef.current = 'gotoLine'
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -195,7 +214,8 @@ const Decode_CAN_LOG_Window = () => {
         hideTableForceParentToggle,
         shortcutToDecodeMessages_whoCalled,
         isAdvancedSearchOpen,
-        setIsAdvancedSearchOpen
+        setIsAdvancedSearchOpen,
+        SearchVsGotoLineRef
       }}
     >
       <Box style={{ position: 'relative' }}>
@@ -308,6 +328,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     CutTable_Inf.current,
     CutTable_Sup.current
   ])
+  const TableRefForScroll = useRef(null)
 
   // SHORTCUTS==========================
   useEffect(() => {
@@ -378,7 +399,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
 
   const Table_Memo = useMemo(() => {
     return (
-      <Box>
+      <Box ref={TableRefForScroll}>
         {isTableVisible &&
           (TableOption == 'Default' ? (
             <DefaultTable />
@@ -407,7 +428,8 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         CutTable_Sup,
         auxTable,
         AllCAN_MsgsExtracted_array,
-        renderDrawer
+        renderDrawer,
+        TableRefForScroll
       }}
     >
       {DecodePDOs_Memo}
@@ -530,10 +552,9 @@ const DrawerComponent_DecodeOptions = ({
 
         filteredMessages = filterMessagesByAxesAndCobID(filteredMessages)
 
-        // return
         FilteredLogLenght.current = filteredMessages.length
         filteredMessages_auxGlobal = filteredMessages
-
+        //filteredMessages_auxGlobal -  contains all the filters applied
         // We're showing only the TableRange selected by the user
         filteredMessages = filteredMessages.slice(
           LogDisplayRange_Inf.current,
@@ -1195,13 +1216,21 @@ const AdvancedSearchComponent = () => {
   const [FilteredArray, setFilteredArray] = useState([])
   const inputRef = useRef(null)
   const axisID_ref = useRef(null)
-  const { isAdvancedSearchOpen, setIsAdvancedSearchOpen } = useContext(Decode_CAN_LOG_WindowContext)
+  const { isAdvancedSearchOpen, setIsAdvancedSearchOpen, SearchVsGotoLineRef } = useContext(
+    Decode_CAN_LOG_WindowContext
+  )
+  const { TableRefForScroll, LogDisplayRange_Sup, LogDisplayRange_Inf } = useContext(
+    DecodedTableOptionsContext
+  )
   const [checkboxAxisID, setCheckboxAxisID] = useState(false)
   const [msgNr, setMsgNr] = useState(false)
   const [object, setObject] = useState(true)
   const [objectName, setObjectName] = useState(true)
   const [CobID, setCobID] = useState(false)
   const [interpretation, setInterpretation] = useState(false)
+  const [useFilteredArray, setUseFilteredArray] = useState(true)
+  const [gotoLineStatus, setGotoLineStatus] = useState(false)
+  const [dataFilter, setDataFilter] = useState(false)
   const [TextReturn, setTextReturn] = useState('Ready to go')
 
   var searchProperties = [
@@ -1210,24 +1239,68 @@ const AdvancedSearchComponent = () => {
     { key: 'ObjectName', enabled: objectName },
     { key: 'CobID', enabled: CobID },
     { key: 'AxisID', enabled: checkboxAxisID },
-    { key: 'Interpretation', enabled: interpretation }
+    { key: 'Interpretation', enabled: interpretation },
+    { key: 'Data', enabled: dataFilter }
   ]
-  function handleUserInput(e) {
-    const searchValue = e.toLowerCase()
-    if (searchValue == '') return setFilteredArray([])
 
-    var FilterResult = MessagesDecoded_ArrayOfObjects.filter((iteration) => {
-      var axisID
-      if (checkboxAxisID) {
-        axisID = iteration.AxisID == axisID_ref.current
-      } else axisID = true
-      return searchProperties.some(
-        ({ key, enabled }) =>
-          enabled && axisID && iteration[key]?.toString().toLowerCase().includes(searchValue)
-      )
-    })
-    setFilteredArray(FilterResult)
-    setTextReturn('Nothing found')
+  useEffect(() => {
+    if (SearchVsGotoLineRef.current == 'gotoLine') {
+      setObject(false)
+      setObjectName(false)
+      setUseFilteredArray(false)
+      setGotoLineStatus(true)
+    }
+  }, [SearchVsGotoLineRef.current])
+
+  function handleUserInput(e) {
+    if (gotoLineStatus) {
+      //Goto line
+      let lineToScroll = e.toLowerCase()
+      let index = filteredMessages_auxGlobal.findIndex((obj) => {
+        return obj.msgNr == lineToScroll
+      })
+      if (index == -1) {
+        setFilteredArray([])
+        setTextReturn('Cannot go to this line')
+        return
+      } else if (LogDisplayRange_Sup.current < index || LogDisplayRange_Inf.current > index) {
+        setFilteredArray([])
+        setTextReturn(
+          `The line is not included in this range [${LogDisplayRange_Inf.current} - ${LogDisplayRange_Sup.current}]`
+        )
+        return
+      }
+      const componentHeight = TableRefForScroll.current.clientHeight
+      const container = document.documentElement || document.body
+      container.scrollTop = (componentHeight / filteredMessages_auxGlobal.length) * index + 290
+
+      setFilteredArray([])
+      setIsAdvancedSearchOpen(false)
+      setTextReturn('GOTO LINE')
+    } else {
+      //Searching
+      const searchValue = e.toLowerCase()
+      if (searchValue == '') return setFilteredArray([])
+
+      var array = []
+      if (useFilteredArray) {
+        array = filteredMessages_auxGlobal
+      } else {
+        array = MessagesDecoded_ArrayOfObjects
+      }
+      var FilterResult = array.filter((iteration) => {
+        var axisID
+        if (checkboxAxisID) {
+          axisID = iteration.AxisID == axisID_ref.current
+        } else axisID = true
+        return searchProperties.some(
+          ({ key, enabled }) =>
+            enabled && axisID && iteration[key]?.toString().toLowerCase().includes(searchValue)
+        )
+      })
+      setFilteredArray(FilterResult)
+      setTextReturn('Nothing found')
+    }
   }
 
   //SHORTCUTS ---------------------------
@@ -1248,7 +1321,17 @@ const AdvancedSearchComponent = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [object, objectName, msgNr, checkboxAxisID, CobID, interpretation])
+  }, [
+    object,
+    objectName,
+    msgNr,
+    checkboxAxisID,
+    CobID,
+    interpretation,
+    dataFilter,
+    useFilteredArray,
+    gotoLineStatus
+  ])
 
   return (
     <Dialog
@@ -1307,6 +1390,13 @@ const AdvancedSearchComponent = () => {
             >
               <div>
                 <Checkbox_Component
+                  label={'msgNr'}
+                  checked={msgNr}
+                  onChange={() => {
+                    setMsgNr((prev) => !prev)
+                  }}
+                />
+                <Checkbox_Component
                   label={'Object'}
                   checked={object}
                   onChange={() => {
@@ -1321,15 +1411,33 @@ const AdvancedSearchComponent = () => {
                     setObjectName((prev) => !prev)
                   }}
                 />
+              </div>
+              {/* Second Column */}
+              <div>
                 <Checkbox_Component
-                  label={'msgNr'}
-                  checked={msgNr}
+                  label={'CobID'}
+                  checked={CobID}
                   onChange={() => {
-                    setMsgNr((prev) => !prev)
+                    setCobID((prev) => !prev)
+                  }}
+                />
+                <Checkbox_Component
+                  label={'Data'}
+                  checked={dataFilter}
+                  onChange={() => {
+                    setDataFilter((prev) => !prev)
+                  }}
+                />
+                <Checkbox_Component
+                  label={'Interpretation'}
+                  checked={interpretation}
+                  onChange={() => {
+                    setInterpretation((prev) => !prev)
                   }}
                 />
               </div>
 
+              {/* //Third Column */}
               <div>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <Checkbox_Component
@@ -1356,17 +1464,17 @@ const AdvancedSearchComponent = () => {
                   />
                 </div>
                 <Checkbox_Component
-                  label={'CobID'}
-                  checked={CobID}
+                  label={'Filtered msgs'}
+                  checked={useFilteredArray}
                   onChange={() => {
-                    setCobID((prev) => !prev)
+                    setUseFilteredArray((prev) => !prev)
                   }}
                 />
                 <Checkbox_Component
-                  label={'Interpretation'}
-                  checked={interpretation}
+                  label={'Goto Line'}
+                  checked={gotoLineStatus}
                   onChange={() => {
-                    setInterpretation((prev) => !prev)
+                    setGotoLineStatus((prev) => !prev)
                   }}
                 />
               </div>
