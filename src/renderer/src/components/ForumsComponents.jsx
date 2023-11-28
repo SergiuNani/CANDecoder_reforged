@@ -2,12 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useTheme, Typography } from '@mui/material'
 import { tokens } from '../theme'
 import { Objects_collection_LS } from '../App'
-import {
-  filterHex,
-  filterDecimal,
-  filterDecimalWithComma,
-  hexToDec
-} from '../functions/NumberConversion'
+import { hexToDec } from '../functions/NumberConversion'
 import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
 
 export function AutocompleteInput_AllObjects({

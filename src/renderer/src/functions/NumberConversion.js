@@ -151,6 +151,7 @@ export function filterHex(hexString, resolution) {
 
 export function hex2bin(hex, resolution) {
   var exit = ''
+  if (hex == undefined) hex = '0'
   if (resolution == 16) {
     if (hex.length > 4) hex = hex.slice(0, 4)
     exit = parseInt(hex, 16).toString(2).padStart(16, '0')

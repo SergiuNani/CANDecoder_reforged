@@ -142,7 +142,10 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       }
       break
     case '208E':
-      ObjectValuesSaved_global['208E'][axisID] = value
+      if (type_Transmit_Receive == 'R') {
+        ObjectValuesSaved_global['208E'][axisID] = value
+        TextReturn = `Write #208E <- ${value}`
+      }
       break
     case '2073':
       TextReturn = `Buffer length: ${hexToDec(value, 16)}`

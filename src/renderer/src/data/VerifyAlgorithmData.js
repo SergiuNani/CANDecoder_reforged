@@ -3048,7 +3048,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x208E',
     ObjectName: 'Auxiliary settings register',
     Data: '0000',
-    Interpretation: '-',
+    Interpretation: 'Write #208E <- 0000',
     errorStatus: 'random'
   },
   {
@@ -3370,7 +3370,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x208E',
     ObjectName: 'Auxiliary settings register',
     Data: '0000',
-    Interpretation: '-',
+    Interpretation: 'Write #208E <- 0000',
     errorStatus: 'random'
   },
   {
@@ -3650,7 +3650,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x208E',
     ObjectName: 'Auxiliary settings register',
     Data: '0000',
-    Interpretation: '-',
+    Interpretation: 'Write #208E <- 0000',
     errorStatus: 'random'
   },
   {

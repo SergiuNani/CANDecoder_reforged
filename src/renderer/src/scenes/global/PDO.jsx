@@ -1,30 +1,19 @@
-import React, { useState, useRef, useEffect, useContext, useMemo } from 'react'
-import { Box, IconButton, Button, Typography, Dialog } from '@mui/material'
-import {
-  Header,
-  SwitchComponent,
-  Button1,
-  Checkbox_Component,
-  CircularProgressWithLabel
-} from '../../components/SmallComponents'
+import React, { useState, useEffect } from 'react'
+import { Box, Typography, Dialog } from '@mui/material'
+import { Button1, Checkbox_Component } from '../../components/SmallComponents'
 import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'
-
 import { Input_AutoFormat } from '../../components/ForumsComponents'
-import { filterDecimal, filterHex } from '../../functions/NumberConversion'
-
-import { RegisterTooltip } from '../../components/Register'
+import { filterHex } from '../../functions/NumberConversion'
 import {
   PDO_mapped,
   GetObject,
-  helping_DecodePDO,
   DontBotherWithPDO_flag,
   SetAllPDOsEMPTY
 } from '../../functions/CANopenFunctions'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping } from '../../data/SmallData'
-import { MessagesDecoded_ArrayOfObjects } from '../Decode_CAN_LOG'
 
 export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDecoding }) {
   console.log('!!! PDOdetectedModal:')
@@ -457,52 +446,4 @@ function InputRow({ label, resolution, object, setObject, objectSub, setObjectSu
       />
     </div>
   )
-}
-
-//--------------------------------------------------------
-export function DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
-  console.log('Inside DecodeOnePDOmsg++')
-  const CompatibleMapping_NoSpace1 = {
-    8: ['6060'],
-    16: ['6040'],
-    24: ['6040', '100D'],
-    32: ['6041', '208E'],
-    40: ['6081', '6060'],
-    48: ['607A', '2023'],
-    56: ['607A', '6041', '6061'],
-    64: ['607A', '6081']
-  }
-  if (DontBotherWithPDO_flag[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
-    // We write some dummy data just to get rid of PDO filling requirements
-    var frameData = objectIteration.FrameData
-    if (frameData.length % 2 != 0) {
-      frameData =
-        frameData.slice(0, frameData.length - 1) +
-        '0' +
-        frameData.slice(frameData.length - 1, frameData.length)
-    }
-
-    frameData = frameData.length * 4
-
-    PDO_mapped[objectIteration.type][objectIteration.AxisID] = CompatibleMapping_NoSpace1[frameData]
-  } else if (SetAllPDOsEMPTY[0] && !PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
-    //WE dont know anything about this PDO so we leave it empty
-    PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['-']
-  }
-
-  if (!PDO_mapped[objectIteration.type][objectIteration.AxisID]) {
-    //We don't have any data for this PDO
-    setOpenPDOdectectedModal(true)
-    return DelayTimeForPDO(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
-  }
-
-  // Putting in the correct information for PDO
-  MessagesDecoded_ArrayOfObjects[objectIteration.msgNr - 1] = helping_DecodePDO(objectIteration)
-  setCurrentObjectIndex((prev) => prev + 1)
-}
-
-function DelayTimeForPDO(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal) {
-  setTimeout(() => {
-    DecodeOnePDOmsg(objectIteration, setCurrentObjectIndex, setOpenPDOdectectedModal)
-  }, 400)
 }

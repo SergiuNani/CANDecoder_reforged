@@ -1,19 +1,3 @@
-{0x1C33,0, THIRTYTWO_SUBIDX | ATTR_RO		  ,UNSIGNED8 ,1,(BYTE  const  *)&d_size32			,NULL,NULL}, 
- {0x605D,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_mot_rev			,(BYTE	 *)&halt_op_OC,NULL},	
- {0x605C,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_mot_rev				,(BYTE	 *)&disable_op_OC,NULL},     
-{0x605B,0, ATTR_RW,INTEGER16,2,(BYTE const *)&d_value16_0				,(BYTE	 *)&shutdown_op_OC,NULL},  
- {0x605E,0, ATTR_RW,INTEGER16,2,(BYTE  const  *)&d_pos_enc_dim			,(BYTE   *)&fault_reaction_option_code,NULL}, 
- {0x6060,0, ATTR_RW|PDO_MAP,INTEGER8  ,1,NULL						,(BYTE   *)&modes_of_operation,Callback_6060_modes_of_operation},
- {0x6061,0, ATTR_RO|PDO_MAP,INTEGER8  ,1,NULL						,(BYTE   *)&modes_of_operation_display,NULL},
- {0x6062,0, ATTR_RO|PDO_MAP,INTEGER32 ,4,NULL						,(BYTE   *)&real_t_pos,Callback_6062_Compute_TPOS},
- {0x6063,0, ATTR_RO|PDO_MAP,INTEGER32 ,4,NULL						,(BYTE   *)&pos,NULL}, 
- {0x6064,0, ATTR_RO|PDO_MAP,INTEGER32 ,4,NULL						,(BYTE   *)&real_pos,Callback_6064_Compute_APOS},
- {0x6065,0, ATTR_RW|PDO_MAP,UNSIGNED32,4,NULL						,(BYTE   *)&real_ErrProt,Callback_6065_compute_PosErrWindow},
- {0x6066,0, ATTR_RW|PDO_MAP,UNSIGNED16,2,NULL						,(BYTE   *)&real_TonErr,Callback_6066_Compute_TonErr},
- {0x6067,0, ATTR_RW|PDO_MAP,UNSIGNED32,4,NULL						,(BYTE   *)&real_ErrMin,Callback_6067_compute_PosErrMinWindow},
- {0x6068,0, ATTR_RW|PDO_MAP,UNSIGNED16,2,NULL						,(BYTE   *)&real_TonErrMin,Callback_6068_Compute_TonErrMin},
- {0x6069,0, ATTR_RO|PDO_MAP,INTEGER32 ,4,NULL						,(BYTE   *)&spd,NULL}, 
- {0x606B,0, ATTR_RO|PDO_MAP,INTEGER32   ,4,NULL						,(BYTE   *)&real_t_si,Callback_606B_Compute_TSPD},
- {0x606C,0, ATTR_RO|PDO_MAP,INTEGER32   ,4,NULL						,(BYTE   *)&real_spd,Callback_606C_Compute_ASPD},
- {0x606F,0, ATTR_RW|PDO_MAP,UNSIGNED16,2,NULL						,(BYTE   *)&velocity_treshold,Callback_606F_compute_velocity_treshold},
- {0x6071,0, ATTR_RW|PDO_MAP,INTEGER16 ,2,NULL						,(BYTE   *)&target_torque,Callback_6071_target_torque},
+201 4585
+181 55669966
+601 454545

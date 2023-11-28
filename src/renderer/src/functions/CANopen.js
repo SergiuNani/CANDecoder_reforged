@@ -11,6 +11,7 @@ import { DecodeTCANglobal } from './TechnoCAN'
 import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
 import { DecodeOnePDOmsg, PDO_mapped } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
+import { Mapping_objects_array } from '../data/SmallData'
 
 export let CanLogStatistics = [] // array of all the axes
 
@@ -324,13 +325,6 @@ export function CreateDecodedArrayOfObjects(
     CanLogStatistics = []
     ResultingArray = []
     ObjectValuesSaved_global['6060'] = []
-
-    for (const prop in PDO_mapped) {
-      //We reseting all the mapping which was done up to now - this is for dear old Strict mode
-      if (PDO_mapped.hasOwnProperty(prop)) {
-        PDO_mapped[prop] = []
-      }
-    }
   } else {
     ResultingArray = ResultingArray.slice(0, globalIndex[0])
   }
@@ -548,13 +542,13 @@ export function verifyValidityOfMappingGroup(group) {
         orderMapping.length != parseInt(enableMapping[enableMapping.length - 1])
       ) {
         returnText = returnText.concat('Warning: Either missing or wrong number of mapped objects')
-        errorStatus = 'error'
+        errorStatus = 'warning'
       } else {
         returnText = returnText.concat(currentMapping.join(' / '))
       }
     } else {
-      returnText = returnText.concat('Warning: missing Disable/Enable frames of the COBID ')
-      errorStatus = 'error'
+      returnText = returnText.concat('Warning: missing Disable/Enable frames  ')
+      errorStatus = 'warning'
     }
   }
 
@@ -596,12 +590,13 @@ export function verifyRepetitiveGroup(group) {
   return returnText
 }
 
-export function filterMessagesByAxesAndCobID(filteredMessages) {
+export function filterMessagesByAxesAndCobID(filteredMessages, messageTypeSorting) {
+  console.log('🚀 ~  messageTypeSorting:', messageTypeSorting)
   const allFiltersOnTrue = CanLogStatistics.every((oneAxis) => {
     var ObjectProps = Object.keys(oneAxis)
     return ObjectProps.every((prop) => oneAxis[prop][1] == true)
   })
-
+  //Available Axes filters
   if (!allFiltersOnTrue) {
     //There are some filters set to false
     filteredMessages = filteredMessages.filter((oneMessage) => {
@@ -614,6 +609,25 @@ export function filterMessagesByAxesAndCobID(filteredMessages) {
       } else {
         return AxisStatus[0][oneMessage.type][1]
       }
+    })
+  }
+
+  ///Filtering based on the message type
+  if (messageTypeSorting == 'Master') {
+    filteredMessages = filteredMessages.filter((oneMessage) => {
+      return ['R_SDO', 'RPDO1', 'RPDO2', 'RPDO3', 'RPDO4', 'NMT'].includes(oneMessage.type)
+    })
+  } else if (messageTypeSorting == 'Mapping') {
+    filteredMessages = filteredMessages.filter((oneMessage) => {
+      var object = oneMessage.Object.toUpperCase()
+      if (object.slice(0, 2) == '0X' || object.slice(0, 2) == '#X') {
+        object = object.slice(2)
+      }
+      return Mapping_objects_array.includes(object)
+    })
+  } else if (messageTypeSorting == 'Errors') {
+    filteredMessages = filteredMessages.filter((oneMessage) => {
+      return oneMessage.errorStatus == 'error'
     })
   }
   return filteredMessages

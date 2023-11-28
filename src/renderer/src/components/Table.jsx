@@ -1,16 +1,6 @@
 import React, { useState, useRef, useEffect, useContext, memo, useMemo } from 'react'
-import {
-  Box,
-  Typography,
-  useTheme,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  IconButton,
-  Dialog
-} from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import { whatPDOisObject, whatObjectValueMeans } from '../functions/CANopenFunctions'
 import { Input_AutoFormat } from './ForumsComponents'
 import { filterDecimal, addSpacesOfTwo } from '../functions/NumberConversion'
@@ -24,7 +14,7 @@ import {
   Decode_CAN_LOG_WindowContext
 } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
-import SearchIcon from '@mui/icons-material/Search'
+import { green } from '@mui/material/colors'
 
 export let groupedFilteredArray = []
 
@@ -60,6 +50,7 @@ export const TableROW = ({ iteration }) => {
               padding: '0.3rem 0',
               width: '2.5rem'
             }}
+            className="msgNrClass"
           >
             {iteration.msgNr}
           </td>
@@ -73,7 +64,7 @@ export const TableROW = ({ iteration }) => {
           <td
             style={{
               textAlign: 'center',
-              color: `${colors.blue[100]}`,
+              color: `${colors.blue[500]}`,
               fontWeight: '600',
               width: '4rem'
             }}
@@ -206,7 +197,8 @@ export const TableROW_simple = ({ obj }) => {
     </section>
   )
 }
-const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHeader }) => {
+const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus }) => {
+  console.log('🚀 ~ file: Table.jsx:200 ~ TableRowGroup ~ errorStatus:', errorStatus)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const groupType = groupData[0].GroupType
@@ -264,9 +256,14 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, border, widthHead
         </p>
         <p
           style={{
-            color: `${colors.grey[200]}`,
             marginLeft: '1rem',
-            fontSize: '0.9rem'
+            fontSize: '0.9rem',
+            color:
+              errorStatus == 'error'
+                ? colors.red[500]
+                : errorStatus == 'warning'
+                ? colors.grey[200]
+                : colors.green[500]
           }}
         >
           - {groupSubTitle}
@@ -441,7 +438,6 @@ export const DefaultTable = () => {
     Decode_CAN_LOG_WindowContext
   )
 
-  const [gotoLineStatus, setGotoLineStatus] = useState(true)
   function LoadPrevMessagesButton() {
     function handleLoadPrev() {
       console.log('LoadPrevMessagesButton')
@@ -596,7 +592,7 @@ export const DefaultTable = () => {
                 group.length - 1
               }msg(s)`
             } else {
-              //Repetitiveq
+              //Repetitive
               title = 'Repetitive'
               subtitle = verifyRepetitiveGroup(group)
             }
@@ -606,6 +602,7 @@ export const DefaultTable = () => {
                 groupTitle={title}
                 groupSubTitle={subtitle}
                 groupData={group}
+                errorStatus={errorStatus}
               />
             )
           } else {
@@ -619,91 +616,6 @@ export const DefaultTable = () => {
   }, [])
 
   return <section>{Table_Memo}</section>
-}
-export const SimplifiedTable = () => {
-  console.log('SimplifiedTable -- only Once')
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-
-  function handleClick(event) {
-    console.log('clicked')
-    if (event.target.parentElement.querySelector('.Group').style.display == 'none') {
-      event.target.parentElement.querySelector('.Group').style.display = 'block'
-    } else event.target.parentElement.querySelector('.Group').style.display = 'none'
-  }
-  return (
-    <Box style={{ border: '3px solid grey' }}>
-      <div>SIMPLIFIED: </div>
-      <Box>
-        {groupedFilteredArray.map((group, index) => {
-          const groupisArray = Array.isArray(group)
-
-          if (groupisArray) {
-            return (
-              <Box
-                key={index}
-                sx={{
-                  border: `2px solid ${colors.green[300]}`,
-                  margin: '1rem 0 2rem 1rem',
-                  borderRadius: '1rem',
-                  padding: '0.5rem'
-                }}
-              >
-                <div
-                  style={{
-                    color: colors.primary[400],
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                    userSelect: 'none'
-                  }}
-                  onClick={handleClick}
-                >
-                  {`[${group[0].GroupType} -- AxisID: ${group[0].AxisID} -- ${group[0].GroupIndicator}] - `}
-                </div>
-
-                <div className="Group" style={{ display: 'none' }}>
-                  {group.slice(1).map((obj, idx) => {
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          marginBottom: '0.5rem',
-                          borderBottom: '1px solid grey',
-                          padding: '0.4rem',
-                          fontSize: '1rem',
-                          display: 'flex',
-                          fontWeight: '540'
-                        }}
-                      >
-                        <TableROW_simple obj={obj} />
-                      </div>
-                    )
-                  })}
-                </div>
-              </Box>
-            )
-          } else {
-            return (
-              <Box
-                key={index}
-                style={{
-                  marginBottom: '0.5rem',
-                  borderBottom: '1px solid grey',
-                  padding: '0.4rem',
-                  fontSize: '1rem',
-                  fontWeight: '540'
-                }}
-              >
-                <div style={{ display: 'flex' }}>
-                  <TableROW_simple obj={group} />
-                </div>
-              </Box>
-            )
-          }
-        })}
-      </Box>
-    </Box>
-  )
 }
 export const DebugTable = () => {
   console.log('DebugTable -- only Once')

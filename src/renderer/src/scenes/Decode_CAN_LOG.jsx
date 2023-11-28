@@ -1,13 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-  useMemo,
-  Profiler,
-  memo,
-  createContext
-} from 'react'
+import React, { useState, useRef, useEffect, useContext, useMemo, memo, createContext } from 'react'
 import {
   Box,
   IconButton,
@@ -22,22 +13,15 @@ import {
 } from '@mui/material'
 import {
   Header,
-  SwitchComponent,
   Button3,
   Button1,
-  Button2,
-  TooltipClickable,
   Checkbox_Component,
-  ButtonTransparent,
-  CircularProgressWithLabel,
-  ProgressComponent
+  ButtonTransparent
 } from '../components/SmallComponents'
 import { tokens } from '../theme'
-import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined'
-import { styled } from '@mui/material/styles'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { UserVsDebugModeContext, DecodeCANlog_topbarOptionsContext } from '../App'
+import { DecodeCANlog_topbarOptionsContext } from '../App'
 import { InsertTextIntoTextArea } from '../data/TestingData'
 import {
   Extract_MSGs_from_text,
@@ -46,22 +30,20 @@ import {
   filterMessagesByAxesAndCobID
 } from '../functions/CANopen'
 import { Input_AutoFormat } from '../components/ForumsComponents'
-import { filterDecimal, filterHex } from '../functions/NumberConversion'
+import { filterDecimal } from '../functions/NumberConversion'
 import CloseIcon from '@mui/icons-material/Close'
-import { RegisterTooltip } from '../components/Register'
 import { PDOdetectedModal } from './global/PDO'
 import {
   PDO_mapped,
   SortMappingByAxis,
   DontBotherWithPDO_flag,
   SetAllPDOsEMPTY,
-  PDO_mapped_aux,
-  ObjectValuesSaved_global
+  ObjectValuesSaved_global,
+  PDO_mapped_aux
 } from '../functions/CANopenFunctions'
 import {
   DefaultTable,
   CreateGroupedFilteredArray,
-  SimplifiedTable,
   DebugTable,
   TableROW_simple
 } from '../components/Table'
@@ -70,6 +52,7 @@ import { GroupingOptionsForMessages } from '../data/SmallData'
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = []
+export let filteredMessages_g = []
 
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
@@ -89,6 +72,33 @@ const Decode_CAN_LOG_Window = () => {
   const Decode_CAN_LOG_ref = useRef()
   const initalMount_Deocde_CAN_LOG_ref = useRef(true)
   const SearchVsGotoLineRef = useRef('')
+
+  function newLog_resetSystem() {
+    DontBotherWithPDO_flag[0] = 0 //BUG -  Reset the convinience not to specify the PDOs
+    SetAllPDOsEMPTY[0] = 0
+    globalIndex = [0]
+    for (const prop in PDO_mapped) {
+      //We reseting all the mapping which was done up to now
+      if (PDO_mapped.hasOwnProperty(prop)) {
+        PDO_mapped[prop] = []
+      }
+    }
+    for (const prop in PDO_mapped_aux) {
+      //We reseting all the mapping which was done up to now
+      if (PDO_mapped_aux.hasOwnProperty(prop)) {
+        PDO_mapped_aux[prop] = []
+      }
+    }
+
+    for (const prop in ObjectValuesSaved_global) {
+      //We reseting all the prev objects data
+      if (ObjectValuesSaved_global.hasOwnProperty(prop)) {
+        ObjectValuesSaved_global[prop] = []
+      }
+    }
+    filteredMessages_auxGlobal = []
+    filteredMessages_g = []
+  }
   function handleFileUpload(e) {
     const file = e.target.files[0]
 
@@ -96,20 +106,7 @@ const Decode_CAN_LOG_Window = () => {
       const reader = new FileReader()
 
       reader.onload = (e) => {
-        DontBotherWithPDO_flag[0] = 0 //BUG -  Reset the convinience not to specify the PDOs
-        SetAllPDOsEMPTY[0] = 0
-        for (const prop in PDO_mapped) {
-          //We reseting all the mapping which was done up to now
-          if (PDO_mapped.hasOwnProperty(prop)) {
-            PDO_mapped[prop] = []
-          }
-        }
-        for (const prop in ObjectValuesSaved_global) {
-          //We reseting all the prev objects data
-          if (ObjectValuesSaved_global.hasOwnProperty(prop)) {
-            ObjectValuesSaved_global[prop] = []
-          }
-        }
+        newLog_resetSystem()
         const fileContent = e.target.result
         setFileInnerText(fileContent)
         sethideTableForceParentToggle((prev) => !prev)
@@ -119,20 +116,7 @@ const Decode_CAN_LOG_Window = () => {
     }
   }
   function handleClickArrow() {
-    DontBotherWithPDO_flag[0] = 0 // Reset the convinience not to specify the PDOs
-    SetAllPDOsEMPTY[0] = 0
-    for (const prop in PDO_mapped) {
-      //We reseting all the mapping which was done up to now
-      if (PDO_mapped.hasOwnProperty(prop)) {
-        PDO_mapped[prop] = []
-      }
-    }
-    for (const prop in ObjectValuesSaved_global) {
-      //We reseting all the prev objects data
-      if (ObjectValuesSaved_global.hasOwnProperty(prop)) {
-        ObjectValuesSaved_global[prop] = []
-      }
-    }
+    newLog_resetSystem()
     var lines = TextAreaText_Ref.current.value
     setFileInnerText(lines)
     sethideTableForceParentToggle((prev) => !prev)
@@ -299,7 +283,7 @@ export let globalIndex = [0] //used when there is a PDO detected and no mapping 
 
 const DecodedTableOptions = ({ fileInnerText }) => {
   console.log('---2---. DecodedTableOptions')
-  const [TableOption, setTableOption] = useState('Default') //Default vs Simplified vs Debug
+  const [TableOption, setTableOption] = useState('Default') //Default vs Debug
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [openPDOModal, setOpenPDOModal] = useState(false)
@@ -400,14 +384,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const Table_Memo = useMemo(() => {
     return (
       <Box ref={TableRefForScroll}>
-        {isTableVisible &&
-          (TableOption == 'Default' ? (
-            <DefaultTable />
-          ) : TableOption == 'Simplified' ? (
-            <SimplifiedTable />
-          ) : (
-            <DebugTable />
-          ))}
+        {isTableVisible && (TableOption == 'Default' ? <DefaultTable /> : <DebugTable />)}
       </Box>
     )
   }, [isTableVisible])
@@ -452,8 +429,7 @@ const DrawerComponent_DecodeOptions = ({
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const [optionReadingDirection, setOptionReadingDirection] = useState('UB')
-  const [messageTypeSorting, setMessageTypeSorting] = useState('all')
+  const [messageTypeSorting, setMessageTypeSorting] = useState('All')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
@@ -477,7 +453,6 @@ const DrawerComponent_DecodeOptions = ({
 
   useEffect(() => {
     //When a new log is introduced
-    console.log('WEEEEEEEEEEEEEEEEEEEEEEE')
     LogDisplayRange_Inf.current = 0
     LogDisplayRange_Sup.current = LogDisplayRange.current
     FullLogLength.current = AllCAN_MsgsExtracted_array.length
@@ -545,24 +520,24 @@ const DrawerComponent_DecodeOptions = ({
 
     setTimeout(
       () => {
-        var filteredMessages = MessagesDecoded_ArrayOfObjects.slice(
+        filteredMessages_g = MessagesDecoded_ArrayOfObjects.slice(
           CutTable_Inf.current - 1,
           CutTable_Sup.current
         )
 
-        filteredMessages = filterMessagesByAxesAndCobID(filteredMessages)
+        filteredMessages_g = filterMessagesByAxesAndCobID(filteredMessages_g, messageTypeSorting)
 
-        FilteredLogLenght.current = filteredMessages.length
-        filteredMessages_auxGlobal = filteredMessages
+        FilteredLogLenght.current = filteredMessages_g.length
+        filteredMessages_auxGlobal = filteredMessages_g
         //filteredMessages_auxGlobal -  contains all the filters applied
         // We're showing only the TableRange selected by the user
-        filteredMessages = filteredMessages.slice(
+        filteredMessages_g = filteredMessages_g.slice(
           LogDisplayRange_Inf.current,
           LogDisplayRange_Sup.current
         )
 
         CreateGroupedFilteredArray(
-          filteredMessages,
+          filteredMessages_g,
           GroupingOptionsForMessages,
           setProgressBarInsideDrawer
         )
@@ -631,9 +606,7 @@ const DrawerComponent_DecodeOptions = ({
   }
   const DrawerOptionsList = useMemo(() => {
     console.log('DrawerOptionsList Rendering')
-    console.log(auxTable.current[0])
-    console.log(auxTable.current[3])
-    console.log(auxTable.current[4])
+
     if (auxTable.current[4] == undefined) {
       // auxTable.current[4] = 999
     }
@@ -674,46 +647,7 @@ const DrawerComponent_DecodeOptions = ({
             }}
           >
             <FormControlLabel value="Default" control={<Radio />} label="Default" />
-            <FormControlLabel value="Simplified" control={<Radio />} label="Simplified" />
             <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
-          </RadioGroup>
-        </Box>
-        {/* Reading Direction Radio Buttons ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            CAN_LOG reading direction:{' '}
-          </p>
-          <RadioGroup
-            row
-            onChange={(e) => {
-              setOptionReadingDirection(e.target.value)
-            }}
-            value={optionReadingDirection}
-            sx={{
-              justifyContent: 'center',
-              '& .MuiSvgIcon-root': {
-                // fontSize: '1rem'
-                color: `${colors.green[400]}`
-              }
-            }}
-          >
-            <FormControlLabel value="UB" control={<Radio />} label="Up-Bottom" />
-            <FormControlLabel value="BU" control={<Radio />} label="Bottom-Up" />
           </RadioGroup>
         </Box>
 
@@ -896,9 +830,53 @@ const DrawerComponent_DecodeOptions = ({
           </p>
           {AvailableAxes_Component_Memo}
         </Box>
+
+        {/* SORT BY ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Sort By:{' '}
+          </p>
+
+          <RadioGroup
+            row
+            onChange={(e) => {
+              setMessageTypeSorting(e.target.value)
+            }}
+            value={messageTypeSorting}
+            sx={{
+              justifyContent: 'center',
+              '& .MuiSvgIcon-root': {
+                // fontSize: '1rem'
+                color: `${colors.green[400]}`,
+                display: 'flex',
+                gap: '2rem'
+              }
+            }}
+          >
+            <FormControlLabel value="All" control={<Radio />} label="All" />
+            <FormControlLabel value="Master" control={<Radio />} label="Master" />
+            <FormControlLabel value="Mapping" control={<Radio />} label="Mapping" />
+            <FormControlLabel value="Errors" control={<Radio />} label="Errors" />
+          </RadioGroup>
+        </Box>
       </Box>
     )
-  }, [TableOption, optionReadingDirection, groupingOptionsRender, renderDrawer, toggle])
+  }, [TableOption, groupingOptionsRender, renderDrawer, toggle, messageTypeSorting])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -933,52 +911,9 @@ const DrawerComponent_DecodeOptions = ({
             </IconButton>
           </Box>
           <Box sx={{ userSelect: 'none' }}>
-            {/* A List of options  ----------------- */}
+            {/* ****  A List of options  ----------------- */}
             {DrawerOptionsList}
 
-            {/* MESSAGES TYPE ----------------- */}
-            <Box
-              sx={{
-                border: `2px solid ${colors.primary[400]}`,
-                borderRadius: '1rem',
-                margin: '1rem 0',
-                background: `${colors.blue[200]}`,
-                padding: '0.4rem'
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '1rem',
-                  marginBottom: '0.5rem',
-                  marginLeft: '1rem',
-                  color: `${colors.yellow[500]}`
-                }}
-              >
-                Sort By:{' '}
-              </p>
-
-              <RadioGroup
-                row
-                onChange={(e) => {
-                  setMessageTypeSorting(e.target.value)
-                }}
-                value={messageTypeSorting}
-                sx={{
-                  justifyContent: 'center',
-                  '& .MuiSvgIcon-root': {
-                    // fontSize: '1rem'
-                    color: `${colors.green[400]}`,
-                    display: 'flex',
-                    gap: '2rem'
-                  }
-                }}
-              >
-                <FormControlLabel value="all" control={<Radio />} label="All" />
-                <FormControlLabel value="master" control={<Radio />} label="Master" />
-                <FormControlLabel value="mapping" control={<Radio />} label="Mapping" />
-                <FormControlLabel value="errors" control={<Radio />} label="Errors" />
-              </RadioGroup>
-            </Box>
             {/* DISPLAY MESSAGES BUTTON + PROGRESS BAR----------------- */}
             <Box
               sx={{
@@ -1256,23 +1191,31 @@ const AdvancedSearchComponent = () => {
     if (gotoLineStatus) {
       //Goto line
       let lineToScroll = e.toLowerCase()
-      let index = filteredMessages_auxGlobal.findIndex((obj) => {
-        return obj.msgNr == lineToScroll
+      var Table_NRs = TableRefForScroll.current.querySelectorAll('.msgNrClass')
+      var index = Array.from(Table_NRs).findIndex((element) => {
+        return element.textContent == lineToScroll
       })
       if (index == -1) {
         setFilteredArray([])
         setTextReturn('Cannot go to this line')
         return
-      } else if (LogDisplayRange_Sup.current < index || LogDisplayRange_Inf.current > index) {
-        setFilteredArray([])
-        setTextReturn(
-          `The line is not included in this range [${LogDisplayRange_Inf.current} - ${LogDisplayRange_Sup.current}]`
-        )
-        return
       }
-      const componentHeight = TableRefForScroll.current.clientHeight
-      const container = document.documentElement || document.body
-      container.scrollTop = (componentHeight / filteredMessages_auxGlobal.length) * index + 290
+      var potentialGroup = Table_NRs[index].closest('table').parentElement.parentElement
+      if (
+        potentialGroup.classList.contains('GroupBody') &&
+        potentialGroup.style.display == 'none'
+      ) {
+        potentialGroup.parentElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        })
+      } else {
+        Table_NRs[index].scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        })
+      }
+      window.scrollBy(0, -90)
 
       setFilteredArray([])
       setIsAdvancedSearchOpen(false)
@@ -1334,161 +1277,167 @@ const AdvancedSearchComponent = () => {
   ])
 
   return (
-    <Dialog
-      open={isAdvancedSearchOpen}
-      onClose={() => setIsAdvancedSearchOpen(false)}
-      sx={{
-        maxWidth: 'none',
+    <section>
+      {isAdvancedSearchOpen && (
+        <Dialog
+          open={isAdvancedSearchOpen}
+          onClose={() => setIsAdvancedSearchOpen(false)}
+          sx={{
+            maxWidth: 'none',
 
-        '& .MuiDialog-paper': {
-          maxWidth: 'none'
-        }
-      }}
-    >
-      <div
-        style={{
-          border: `1px solid ${colors.primary[400]}`,
-          padding: '1.5rem ',
-          overflowX: 'none',
-          background: `${colors.primary[200]}`
-        }}
-      >
-        <section
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '4rem',
-            userSelect: 'none'
+            '& .MuiDialog-paper': {
+              maxWidth: 'none'
+            }
           }}
         >
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Search for a message"
+          <div
             style={{
-              backgroundColor: `${colors.primary[300]}`,
-              padding: '0.5rem 1rem',
-              borderRadius: '0.9rem',
-              color: `${colors.red[200]}`,
-              outline: 'none',
-              margin: '0.2rem 0 0 1rem',
-              width: '20rem',
-              fontSize: '1.3rem',
-              marginBottom: '1rem'
+              border: `1px solid ${colors.primary[400]}`,
+              padding: '1.5rem ',
+              overflowX: 'none',
+              background: `${colors.primary[200]}`
             }}
-          />
-          <section>
-            <div
+          >
+            <section
               style={{
                 display: 'flex',
-                justifyContent: 'space-between'
-                // whiteSpace: 'nowrap',
-                // flexDirection: 'column'
-                // overflow: 'hidden'
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '4rem',
+                userSelect: 'none'
               }}
             >
-              <div>
-                <Checkbox_Component
-                  label={'msgNr'}
-                  checked={msgNr}
-                  onChange={() => {
-                    setMsgNr((prev) => !prev)
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Search for a message"
+                style={{
+                  backgroundColor: `${colors.primary[300]}`,
+                  padding: '0.5rem 1rem',
+                  borderRadius: '0.9rem',
+                  color: `${colors.red[200]}`,
+                  outline: 'none',
+                  margin: '0.2rem 0 0 1rem',
+                  width: '20rem',
+                  fontSize: '1.3rem',
+                  marginBottom: '1rem'
+                }}
+              />
+              <section>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between'
+                    // whiteSpace: 'nowrap',
+                    // flexDirection: 'column'
+                    // overflow: 'hidden'
                   }}
-                />
-                <Checkbox_Component
-                  label={'Object'}
-                  checked={object}
-                  onChange={() => {
-                    setObject((prev) => !prev)
-                  }}
-                />
+                >
+                  <div>
+                    <Checkbox_Component
+                      label={'msgNr'}
+                      checked={msgNr}
+                      onChange={() => {
+                        setMsgNr((prev) => !prev)
+                      }}
+                    />
+                    <Checkbox_Component
+                      label={'Object'}
+                      checked={object}
+                      onChange={() => {
+                        setObject((prev) => !prev)
+                      }}
+                    />
 
-                <Checkbox_Component
-                  label={'ObjectName'}
-                  checked={objectName}
-                  onChange={() => {
-                    setObjectName((prev) => !prev)
-                  }}
-                />
-              </div>
-              {/* Second Column */}
-              <div>
-                <Checkbox_Component
-                  label={'CobID'}
-                  checked={CobID}
-                  onChange={() => {
-                    setCobID((prev) => !prev)
-                  }}
-                />
-                <Checkbox_Component
-                  label={'Data'}
-                  checked={dataFilter}
-                  onChange={() => {
-                    setDataFilter((prev) => !prev)
-                  }}
-                />
-                <Checkbox_Component
-                  label={'Interpretation'}
-                  checked={interpretation}
-                  onChange={() => {
-                    setInterpretation((prev) => !prev)
-                  }}
-                />
-              </div>
+                    <Checkbox_Component
+                      label={'ObjectName'}
+                      checked={objectName}
+                      onChange={() => {
+                        setObjectName((prev) => !prev)
+                      }}
+                    />
+                  </div>
+                  {/* Second Column */}
+                  <div>
+                    <Checkbox_Component
+                      label={'CobID'}
+                      checked={CobID}
+                      onChange={() => {
+                        setCobID((prev) => !prev)
+                      }}
+                    />
+                    <Checkbox_Component
+                      label={'Data'}
+                      checked={dataFilter}
+                      onChange={() => {
+                        setDataFilter((prev) => !prev)
+                      }}
+                    />
+                    <Checkbox_Component
+                      label={'Interpretation'}
+                      checked={interpretation}
+                      onChange={() => {
+                        setInterpretation((prev) => !prev)
+                      }}
+                    />
+                  </div>
 
-              {/* //Third Column */}
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <Checkbox_Component
-                    label={'AxisID'}
-                    checked={checkboxAxisID}
-                    onChange={() => {
-                      setCheckboxAxisID((prev) => !prev)
-                    }}
-                  />
-                  <Input_AutoFormat
-                    callback={filterDecimal}
-                    resolution={8}
-                    tellParentValueChanged={(e) => {
-                      axisID_ref.current = e
-                    }}
-                    forceValueFromParent={1}
-                    background={colors.primary[300]}
-                    // border={`1px solid ${colors.blue[500]}`}
-                    width="4rem"
-                    center
-                    padding="0.1rem"
-                    blockValueReset
-                    disabled={!checkboxAxisID}
-                  />
+                  {/* //Third Column */}
+                  <div>
+                    <div
+                      style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      <Checkbox_Component
+                        label={'AxisID'}
+                        checked={checkboxAxisID}
+                        onChange={() => {
+                          setCheckboxAxisID((prev) => !prev)
+                        }}
+                      />
+                      <Input_AutoFormat
+                        callback={filterDecimal}
+                        resolution={8}
+                        tellParentValueChanged={(e) => {
+                          axisID_ref.current = e
+                        }}
+                        forceValueFromParent={1}
+                        background={colors.primary[300]}
+                        // border={`1px solid ${colors.blue[500]}`}
+                        width="4rem"
+                        center
+                        padding="0.1rem"
+                        blockValueReset
+                        disabled={!checkboxAxisID}
+                      />
+                    </div>
+                    <Checkbox_Component
+                      label={'Filtered msgs'}
+                      checked={useFilteredArray}
+                      onChange={() => {
+                        setUseFilteredArray((prev) => !prev)
+                      }}
+                    />
+                    <Checkbox_Component
+                      label={'Goto Line'}
+                      checked={gotoLineStatus}
+                      onChange={() => {
+                        setGotoLineStatus((prev) => !prev)
+                      }}
+                    />
+                  </div>
                 </div>
-                <Checkbox_Component
-                  label={'Filtered msgs'}
-                  checked={useFilteredArray}
-                  onChange={() => {
-                    setUseFilteredArray((prev) => !prev)
-                  }}
-                />
-                <Checkbox_Component
-                  label={'Goto Line'}
-                  checked={gotoLineStatus}
-                  onChange={() => {
-                    setGotoLineStatus((prev) => !prev)
-                  }}
-                />
-              </div>
-            </div>
-          </section>
-        </section>
-        {FilteredArray.length > 0 ? (
-          FilteredArray.map((iteration) => {
-            return <TableROW_simple key={iteration.msgNr} obj={iteration} />
-          })
-        ) : (
-          <div style={{ color: `${colors.red[400]}` }}>{TextReturn}</div>
-        )}
-      </div>
-    </Dialog>
+              </section>
+            </section>
+            {FilteredArray.length > 0 ? (
+              FilteredArray.map((iteration) => {
+                return <TableROW_simple key={iteration.msgNr} obj={iteration} />
+              })
+            ) : (
+              <div style={{ color: `${colors.red[400]}` }}>{TextReturn}</div>
+            )}
+          </div>
+        </Dialog>
+      )}
+    </section>
   )
 }
