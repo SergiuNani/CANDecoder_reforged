@@ -14,7 +14,6 @@ import {
   Decode_CAN_LOG_WindowContext
 } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
-import { green } from '@mui/material/colors'
 
 export let groupedFilteredArray = []
 
@@ -198,7 +197,6 @@ export const TableROW_simple = ({ obj }) => {
   )
 }
 const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus }) => {
-  console.log('🚀 ~ file: Table.jsx:200 ~ TableRowGroup ~ errorStatus:', errorStatus)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const groupType = groupData[0].GroupType
@@ -246,10 +244,10 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus }) =>
             justifySelf: 'center',
             color:
               groupType == 'Repetitive'
-                ? colors.blue[500]
+                ? colors.personal[100]
                 : groupType == 'Mapping'
                 ? colors.yellow[500]
-                : colors.green[500]
+                : colors.blue[500]
           }}
         >
           {groupTitle}

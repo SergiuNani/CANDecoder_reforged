@@ -282,7 +282,7 @@ export function DecodeSDO(sdoType, message, axisID) {
   var aux_message = message.slice(8, 16)
 
   if (['2F', '2B'].includes(CS) && sdoType == 'R_SDO') {
-    //Shortening the data because anyway the drive doesn`t care if you send more bytes then necessary
+    //Shortening the data because anyway the drive doesn`t care if you send more bytes than necessary
     switch (CS) {
       case '2F':
         aux_message = aux_message.slice(0, 2)
@@ -295,7 +295,7 @@ export function DecodeSDO(sdoType, message, axisID) {
 
   var aux_message = LittleEndian(aux_message)
 
-  if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS) && sdoType == 'R_SDO') {
+  if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS)) {
     return [
       CS,
       Object[0],

@@ -1115,7 +1115,7 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
                       </Typography>
                       {/* List of mapped objects */}
                       <Box>
-                        {Content[0][4] != '' && (
+                        {Content[0] && Content[0][4] != '' && (
                           <p style={{ color: `${colors.yellow[300]}`, fontSize: '0.7rem' }}>
                             {' '}
                             {Content[0][4]}
