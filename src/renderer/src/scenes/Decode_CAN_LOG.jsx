@@ -53,12 +53,12 @@ export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = []
 export let filteredMessages_g = []
-
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
-  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea)
+  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
+  // const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)

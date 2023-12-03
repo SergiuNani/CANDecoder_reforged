@@ -441,7 +441,10 @@ export function CreateDecodedArrayOfObjects(
   }
 
   if (!prematureEnd) {
-    setIsDrawerOpen(true)
+    if (!(AllCAN_MsgsExtracted_array.length == 1 && AllCAN_MsgsExtracted_array[0][2] == 'Empty')) {
+      //Because the first time the page is loaded it thinks the first empty line is a message and tries to decode it
+      setIsDrawerOpen(true)
+    }
   } else {
     console.log('-------------------PREMATURE EXIT')
     setOpenPDOModal(true)

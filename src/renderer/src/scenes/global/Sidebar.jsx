@@ -11,12 +11,14 @@ import HelpIcon from '@mui/icons-material/Help'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
+import DvrIcon from '@mui/icons-material/Dvr'
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOutlined'
 import { useNavigate } from 'react-router-dom'
 import { SidebarContext } from '../../App'
+import TextSnippetIcon from '@mui/icons-material/TextSnippet'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import { handleDebugButton } from '../debug'
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -162,7 +164,7 @@ const Sidebar = () => {
             <Item
               title="Decode CAN-Log"
               to="/Decode_CAN_LOG"
-              icon={<ChromeReaderModeOutlinedIcon />}
+              icon={<DvrIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

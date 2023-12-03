@@ -295,7 +295,8 @@ export function DecodeSDO(sdoType, message, axisID) {
 
   var aux_message = LittleEndian(aux_message)
 
-  if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS)) {
+  if (Object[1] == 'Nothing Found' && !['60', '70'].includes(CS) && sdoType == 'R_SDO') {
+    //We check if the SDO is R_SDO because of the segmented reading
     return [
       CS,
       Object[0],

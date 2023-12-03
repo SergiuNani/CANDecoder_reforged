@@ -569,8 +569,6 @@ export function HelpEditDataWindow() {
   }
 
   // Function to recursively display object properties
-  // Function to recursively display object properties
-  // Function to recursively display object properties
   function displayObject(obj, isRoot = true) {
     return (
       <div>
