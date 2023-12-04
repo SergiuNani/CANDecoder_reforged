@@ -40,3 +40,22 @@ If the "Set compatible objects for all" or leave empty for all is selected ,its 
 
 
 //BUG1: For the PDO detected window add another option which the user can select when he has no idea what the object is part of and because if there are random shit it only hinders the canlog reading.
+
+
+
+
+
+
+
+
+
+
+
+TIPS:
+   '& .MuiDialog-paper': {
+          backgroundColor: `${colors.primary[100]}`
+          // borderRadius: '1rem',
+          // boxShadow: 'none !important',
+          // backgroundImage: `none`
+        }
+        ----- doar o clasa si make sure ca exista spatiul intre & si .

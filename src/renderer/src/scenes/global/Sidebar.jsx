@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 import 'react-pro-sidebar/dist/css/styles.css'
 import { tokens } from '../../theme'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
-import CalculateIcon from '@mui/icons-material/Calculate'
-import AttachFileIcon from '@mui/icons-material/AttachFile'
+import CreateIcon from '@mui/icons-material/Create'
+
 import HelpIcon from '@mui/icons-material/Help'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
@@ -151,9 +151,9 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
             <Item
-              title="Calculator"
-              to="/contacts"
-              icon={<CalculateIcon />}
+              title="Edit Data"
+              to="/EditDataWindow"
+              icon={<CreateIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

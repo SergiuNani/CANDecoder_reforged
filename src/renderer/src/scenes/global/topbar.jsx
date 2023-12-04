@@ -1,4 +1,4 @@
-import { useContext, useState, createContext, useEffect } from 'react'
+import { useContext, useState, createContext, useEffect, useRef } from 'react'
 import { Box, IconButton, useTheme, Typography } from '@mui/material'
 import { ColorModeContext, tokens } from '../../theme'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
@@ -8,10 +8,13 @@ import CreateIcon from '@mui/icons-material/Create'
 import { useNavigate } from 'react-router-dom'
 import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
+import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded'
+
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
+import { VerifyCANopenValidityArray_RAW } from '../../data/VerifyAlgorithmData'
 import {
   MotorSpecificationsContext,
   UserVsDebugModeContext,
@@ -21,8 +24,15 @@ import {
   SidebarContext
 } from '../../App'
 import { Input_AutoFormat, Input_ChooseOption } from '../../components/ForumsComponents'
-import { filterDecimal, filterDecimalWithComma } from '../../functions/NumberConversion'
-import { SwitchComponent } from '../../components/SmallComponents'
+import {
+  filterDecimal,
+  filterDecimalWithComma,
+  hex2bin,
+  bin2hex,
+  decToHex,
+  hexToDec
+} from '../../functions/NumberConversion'
+import { SwitchComponent, ButtonTransparent } from '../../components/SmallComponents'
 import SearchIcon from '@mui/icons-material/Search'
 import {
   FG_units_pos_rot,
@@ -43,7 +53,6 @@ export let FG_OptionsObject_1 = {
   FG_Applied_ACC: 'IU',
   FG_Applied_TIME: 'IU'
 }
-
 export var fullRot_IU_1 = 2000
 export var slowLoop_1 = 1
 export var FG_DisplayVSApplied_1 = 'Display'
@@ -54,7 +63,19 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext)
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
-  const navigate = useNavigate()
+  const [CalculatorStatus, setCalculatorStatus] = useState(true)
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.ctrlKey && event.key === 'c') {
+        setCalculatorStatus((prev) => !prev)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
 
   return (
     <Box
@@ -68,13 +89,16 @@ const Topbar = () => {
         padding: '0.2rem'
       }}
     >
-      {/* SEARCH BAR */}
       <Box>
         <DecodeCANlogOptionsInsertPart />
       </Box>
       <SettingsDialog
         settingsDialogOpen={settingsDialogOpen}
         setSettingsDialogOpen={setSettingsDialogOpen}
+      />
+      <CalculatorDialog
+        CalculatorStatus={CalculatorStatus}
+        setCalculatorStatus={setCalculatorStatus}
       />
       {/* ICONS */}
       <Box display="flex">
@@ -86,10 +110,10 @@ const Topbar = () => {
         </IconButton>
         <IconButton
           onClick={() => {
-            navigate('/EditDataWindow')
+            setCalculatorStatus(true)
           }}
         >
-          <CreateIcon />
+          <CalculateRoundedIcon />
         </IconButton>
       </Box>
     </Box>
@@ -435,7 +459,8 @@ const DecodeCANlogOptionsInsertPart = () => {
           <div
             style={{
               borderRight: `1px solid ${colors.green[400]}`,
-              paddingRight: '0.5rem'
+              paddingRight: '0.5rem',
+              marginRight: '0.5rem'
             }}
           >
             <SwitchComponent
@@ -444,6 +469,17 @@ const DecodeCANlogOptionsInsertPart = () => {
               tellParentValueChanged={setFreeTextVsCanLog}
             />
           </div>
+          <ButtonTransparent
+            sx={{
+              border: `1px solid ${colors.primary[400]}`
+            }}
+            onClick={() => {
+              document.querySelector('#TextAreaText_ID_global').value =
+                VerifyCANopenValidityArray_RAW
+            }}
+          >
+            Load Demo
+          </ButtonTransparent>
           <IconButton
             sx={{ zoom: '1.1' }}
             onClick={() => {
@@ -463,5 +499,209 @@ const DecodeCANlogOptionsInsertPart = () => {
         </section>
       ) : null}
     </section>
+  )
+}
+const CalculatorDialog = ({ CalculatorStatus, setCalculatorStatus }) => {
+  console.log('CalculatorDialog')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  const [mode, setMode] = useState('DWORD') //DWORD, WORD, BYTE
+  const [rez, setRez] = useState(32) //32, 16, 8
+  const [hex, setHex] = useState(0)
+  const [dec, setDec] = useState(0)
+  const [binar, setBinar] = useState(0)
+  const [array, setArray] = useState(hex2bin(0, 32).split(''))
+
+  function handleModeChange() {
+    var temp = 0
+    if (mode == 'DWORD') {
+      setMode('WORD')
+      setRez(16)
+      temp = 16
+    } else if (mode == 'WORD') {
+      setMode('BYTE')
+      setRez(8)
+      temp = 8
+    } else {
+      setMode('DWORD')
+      setRez(32)
+      temp = 32
+    }
+
+    setHex(0)
+    setDec(0)
+    setBinar(hex2bin(0, temp))
+    setArray(hex2bin(0, 32).split(''))
+  }
+  function handleHexChange(e) {
+    if (e == '') {
+      e = 0
+    }
+    setHex(e)
+    setDec(hexToDec(e, rez))
+    setBinar(hex2bin(e, rez))
+    setArray(hex2bin(e, 32).split(''))
+  }
+  function handleDecChange(e) {
+    if (e == '') {
+      e = 0
+    }
+    setDec(e)
+    setHex(decToHex(e, rez))
+    setArray(hex2bin(decToHex(e, rez), 32).split(''))
+  }
+
+  const OneBitComponent = ({ el, index }) => {
+    return (
+      <div
+        key={index}
+        style={{
+          // border: `1px solid yellow`,
+          padding: '0.2rem',
+          marginRight: (31 - index) % 4 == 0 ? '0.5rem' : '0rem'
+        }}
+      >
+        <p
+          style={{
+            color: el == '1' ? `${colors.red[400]}` : `${colors.grey[100]}`,
+            fontWeight: '550',
+            fontSize: '1.1rem'
+          }}
+        >
+          {el}
+        </p>
+        <span
+          style={{
+            color: `${(31 - index) % 4 == 0 ? colors.grey[100] : 'transparent'}`,
+
+            fontSize: '0.4rem'
+          }}
+        >
+          {31 - index}
+        </span>
+      </div>
+    )
+  }
+  return (
+    <Dialog
+      open={CalculatorStatus}
+      onClose={() => setCalculatorStatus(false)}
+      sx={{
+        // borderRadius: '10rem !important',
+        boxShadow: 'none !important',
+        zoom: '1.4',
+        '& .MuiDialog-paper': {
+          backgroundColor: `${colors.primary[100]}`,
+          // positition: 'absolute',
+          top: '-20%'
+          // borderRadius: '1rem',
+          // boxShadow: 'none !important',
+          // backgroundImage: `none`
+        }
+      }}
+    >
+      <section
+        style={{
+          padding: '1rem 6rem 1rem  1rem'
+        }}
+      >
+        <Typography variant="h5" sx={{ mb: '1rem' }}>
+          Calculator Programmer
+        </Typography>
+        <section
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.1rem',
+            flexDirection: 'column',
+            marginLeft: '1rem'
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '1rem'
+            }}
+          >
+            <p>HEX: </p>
+            <Input_AutoFormat
+              callback={'filterHex'}
+              resolution={rez}
+              forceValueFromParent={hex}
+              tellParentValueChanged={handleHexChange}
+              background={colors.primary[200]}
+              border={`1px solid ${colors.green[400]}`}
+              width={'8rem'}
+              height={'1.5rem'}
+            />{' '}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '1rem'
+            }}
+          >
+            <p>DEC: </p>
+            <Input_AutoFormat
+              callback={'filterDecimal'}
+              resolution={rez}
+              forceValueFromParent={dec}
+              tellParentValueChanged={handleDecChange}
+              background={colors.primary[200]}
+              border={`1px solid ${colors.green[400]}`}
+              width={'8rem'}
+              height={'1.5rem'}
+            />{' '}
+          </div>
+          <ButtonTransparent
+            sx={{
+              position: 'absolute',
+              top: '6.5rem',
+              right: '1.5rem',
+              zoom: '0.8',
+              border: `1px solid ${colors.primary[100]}`,
+              marginLeft: '5rem'
+            }}
+            onClick={handleModeChange}
+          >
+            {mode}
+          </ButtonTransparent>
+        </section>
+      </section>
+      {/* Binary representaion */}
+      <section>
+        <div
+          style={{
+            display: 'flex',
+            margin: '0 1.5rem',
+            alignContent: 'center'
+          }}
+        >
+          {array.slice(0, 16).map((el, index) => (
+            <OneBitComponent key={index} el={el} index={index} />
+          ))}
+        </div>
+        {/* Second ROW */}
+        <div
+          style={{
+            display: 'flex',
+            margin: '0 1.5rem',
+            alignContent: 'center',
+            alignItems: 'center',
+            alignText: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {array.slice(16).map((el, index) => (
+            <OneBitComponent key={index} el={el} index={index + 16} />
+          ))}
+        </div>
+      </section>
+    </Dialog>
   )
 }

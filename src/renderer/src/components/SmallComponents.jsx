@@ -141,6 +141,7 @@ export const ButtonTransparent = ({ children, onClick, sx }) => {
     </Button>
   )
 }
+
 export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)

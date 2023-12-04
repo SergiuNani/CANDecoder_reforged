@@ -218,6 +218,7 @@ const Decode_CAN_LOG_Window = () => {
           >
             <textarea
               ref={TextAreaText_Ref}
+              id="TextAreaText_ID_global"
               cols="100"
               style={{
                 background: `${colors.primary[300]}`,

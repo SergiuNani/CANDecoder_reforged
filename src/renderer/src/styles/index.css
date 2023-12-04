@@ -96,3 +96,7 @@
 .buttonRow p:first-child {
   text-align: center;
 }
+.CalculatorDialog {
+  zoom: '2';
+  border: '3px solid reds';
+}

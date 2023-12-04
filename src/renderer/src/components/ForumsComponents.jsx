@@ -4,6 +4,7 @@ import { tokens } from '../theme'
 import { Objects_collection_LS } from '../App'
 import { hexToDec } from '../functions/NumberConversion'
 import { Registers_CANopen_LS, Registers_THS_LS } from '../App'
+import { filterDecimalWithComma, filterDecimal, filterHex } from '../functions/NumberConversion'
 
 export function AutocompleteInput_AllObjects({
   title,
@@ -421,7 +422,8 @@ export function Input_AutoFormat({
   color,
   background,
   padding,
-  border
+  border,
+  height
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -445,7 +447,16 @@ export function Input_AutoFormat({
   }, [forceValueFromParent, forceRender])
 
   function handleInputChange(e) {
-    var sorted = callback(e.target.value, resolution)
+    var sorted
+    if (callback == 'filterDecimalWithComma') {
+      sorted = filterDecimalWithComma(e.target.value, resolution)
+    } else if (callback == 'filterDecimal') {
+      sorted = filterDecimal(e.target.value, resolution)
+    } else if (callback == 'filterHex') {
+      sorted = filterHex(e.target.value, resolution)
+    } else {
+      sorted = callback(e.target.value, resolution)
+    }
     setInputValue(sorted)
     tellParentValueChanged(sorted, e.target.localName)
   }
@@ -491,7 +502,8 @@ export function Input_AutoFormat({
             fontSize: '1rem',
             width: longer ? '10rem' : width ? width : iteration == '1' ? '5rem' : '7rem',
             textAlign: iteration == '1' || center ? 'center' : 'inherit',
-            border: border ? border : null
+            border: border ? border : null,
+            height: height ? height : null
           }}
         />
       </label>
