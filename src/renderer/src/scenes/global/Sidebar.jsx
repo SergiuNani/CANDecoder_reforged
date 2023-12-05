@@ -6,20 +6,22 @@ import 'react-pro-sidebar/dist/css/styles.css'
 import { tokens } from '../../theme'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import CreateIcon from '@mui/icons-material/Create'
-
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import HelpIcon from '@mui/icons-material/Help'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
 import DvrIcon from '@mui/icons-material/Dvr'
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
-import ListAltIcon from '@mui/icons-material/ListAlt'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
-import ChromeReaderModeOutlinedIcon from '@mui/icons-material/ChromeReaderModeOutlined'
 import { useNavigate } from 'react-router-dom'
 import { SidebarContext } from '../../App'
-import TextSnippetIcon from '@mui/icons-material/TextSnippet'
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
+import TableChartIcon from '@mui/icons-material/TableChart'
+import ArticleIcon from '@mui/icons-material/Article'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
+import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
+import ListAltIcon from '@mui/icons-material/ListAlt'
 import { handleDebugButton } from '../debug'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
@@ -146,7 +148,7 @@ const Sidebar = () => {
             <Item
               title="Registers"
               to="/Registers"
-              icon={<ListAltIcon />}
+              icon={<LibraryBooksIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />
@@ -164,7 +166,7 @@ const Sidebar = () => {
             <Item
               title="Decode CAN-Log"
               to="/Decode_CAN_LOG"
-              icon={<DvrIcon />}
+              icon={<TableChartIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

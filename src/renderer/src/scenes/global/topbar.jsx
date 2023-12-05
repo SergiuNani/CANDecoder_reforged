@@ -4,17 +4,17 @@ import { ColorModeContext, tokens } from '../../theme'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import CreateIcon from '@mui/icons-material/Create'
-import { useNavigate } from 'react-router-dom'
 import Dialog from '@mui/material/Dialog'
 import Accordion from '@mui/material/Accordion'
 import CalculateRoundedIcon from '@mui/icons-material/CalculateRounded'
-
+import TableViewIcon from '@mui/icons-material/TableView'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import { VerifyCANopenValidityArray_RAW } from '../../data/VerifyAlgorithmData'
+import { RegisterSelectionComponent } from './RegisterWindow'
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import {
   MotorSpecificationsContext,
   UserVsDebugModeContext,
@@ -63,19 +63,30 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext)
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
-  const [CalculatorStatus, setCalculatorStatus] = useState(true)
+  const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(true)
+  const [CalcVsRegister, setCalcVsRegister] = useState('Register')
 
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === 'c') {
-        setCalculatorStatus((prev) => !prev)
+        console.log('ev')
+        // setCalcVsRegDialogStatus(false)
+
+        // setTimeout(() => {
+        setCalcVsRegDialogStatus(true)
+        if (CalcVsRegister == 'Calculator') {
+          setCalcVsRegister('Register')
+        } else {
+          setCalcVsRegister('Calculator')
+        }
+        // }, 10)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [CalcVsRegister])
 
   return (
     <Box
@@ -97,8 +108,10 @@ const Topbar = () => {
         setSettingsDialogOpen={setSettingsDialogOpen}
       />
       <CalculatorDialog
-        CalculatorStatus={CalculatorStatus}
-        setCalculatorStatus={setCalculatorStatus}
+        CalcVsRegDialogStatus={CalcVsRegDialogStatus}
+        setCalcVsRegDialogStatus={setCalcVsRegDialogStatus}
+        CalcVsRegister={CalcVsRegister}
+        setCalcVsRegister={setCalcVsRegister}
       />
       {/* ICONS */}
       <Box display="flex">
@@ -110,10 +123,10 @@ const Topbar = () => {
         </IconButton>
         <IconButton
           onClick={() => {
-            setCalculatorStatus(true)
+            setCalcVsRegDialogStatus(true)
           }}
         >
-          <CalculateRoundedIcon />
+          <TableViewIcon />
         </IconButton>
       </Box>
     </Box>
@@ -501,7 +514,12 @@ const DecodeCANlogOptionsInsertPart = () => {
     </section>
   )
 }
-const CalculatorDialog = ({ CalculatorStatus, setCalculatorStatus }) => {
+const CalculatorDialog = ({
+  CalcVsRegDialogStatus,
+  setCalcVsRegDialogStatus,
+  CalcVsRegister,
+  setCalcVsRegister
+}) => {
   console.log('CalculatorDialog')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -510,9 +528,12 @@ const CalculatorDialog = ({ CalculatorStatus, setCalculatorStatus }) => {
   const [rez, setRez] = useState(32) //32, 16, 8
   const [hex, setHex] = useState(0)
   const [dec, setDec] = useState(0)
-  const [binar, setBinar] = useState(0)
   const [array, setArray] = useState(hex2bin(0, 32).split(''))
-
+  function closeWindow() {
+    //X button from the Register component
+    setCalcVsRegDialogStatus(false)
+  }
+  const bitsDisplayRef = useRef(null)
   function handleModeChange() {
     var temp = 0
     if (mode == 'DWORD') {
@@ -531,7 +552,6 @@ const CalculatorDialog = ({ CalculatorStatus, setCalculatorStatus }) => {
 
     setHex(0)
     setDec(0)
-    setBinar(hex2bin(0, temp))
     setArray(hex2bin(0, 32).split(''))
   }
   function handleHexChange(e) {
@@ -540,7 +560,6 @@ const CalculatorDialog = ({ CalculatorStatus, setCalculatorStatus }) => {
     }
     setHex(e)
     setDec(hexToDec(e, rez))
-    setBinar(hex2bin(e, rez))
     setArray(hex2bin(e, 32).split(''))
   }
   function handleDecChange(e) {
@@ -552,156 +571,240 @@ const CalculatorDialog = ({ CalculatorStatus, setCalculatorStatus }) => {
     setArray(hex2bin(decToHex(e, rez), 32).split(''))
   }
 
+  function handleBitClick(e) {
+    console.log(e.target.innerText)
+    var temp = e.target.innerText
+    if (temp == '1') {
+      e.target.innerText = '0'
+    } else {
+      e.target.innerText = '1'
+    }
+    var bits = bitsDisplayRef.current.querySelectorAll('.bitClassExtract')
+    var tempArray = []
+    bits.forEach((el, index) => {
+      tempArray[index] = el.innerText
+    })
+    var e = bin2hex(tempArray.join(''))
+    setHex(e)
+    setDec(hexToDec(e, rez))
+    setArray(hex2bin(e, 32).split(''))
+  }
+
   const OneBitComponent = ({ el, index }) => {
     return (
       <div
         key={index}
         style={{
-          // border: `1px solid yellow`,
           padding: '0.2rem',
-          marginRight: (31 - index) % 4 == 0 ? '0.5rem' : '0rem'
+          marginRight: (31 - index) % 4 == 0 ? '0.5rem' : '0rem',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: '0.4rem'
         }}
       >
         <p
           style={{
-            color: el == '1' ? `${colors.red[400]}` : `${colors.grey[100]}`,
+            color:
+              rez - (31 - index) <= 0
+                ? `${colors.primary[200]}`
+                : el == '1'
+                ? `${colors.red[400]}`
+                : `${colors.grey[100]}`,
             fontWeight: '550',
-            fontSize: '1.1rem'
+            fontSize: '1.1rem',
+            cursor: rez - (31 - index) > 0 ? 'pointer' : null
           }}
+          className="bitClassExtract"
+          onClick={rez - (31 - index) > 0 ? handleBitClick : null}
         >
           {el}
         </p>
-        <span
+        <p
           style={{
-            color: `${(31 - index) % 4 == 0 ? colors.grey[100] : 'transparent'}`,
-
-            fontSize: '0.4rem'
+            color: `${(31 - index) % 4 == 0 ? colors.green[400] : 'transparent'}`,
+            justifyContent: 'center',
+            fontSize: '0.5rem'
           }}
         >
           {31 - index}
-        </span>
+        </p>
       </div>
     )
   }
   return (
     <Dialog
-      open={CalculatorStatus}
-      onClose={() => setCalculatorStatus(false)}
+      open={CalcVsRegDialogStatus}
+      onClose={() => setCalcVsRegDialogStatus(false)}
       sx={{
         // borderRadius: '10rem !important',
         boxShadow: 'none !important',
         zoom: '1.4',
         '& .MuiDialog-paper': {
-          backgroundColor: `${colors.primary[100]}`,
+          backgroundColor: CalcVsRegister == 'Register' ? 'transparent' : `${colors.primary[100]}`,
           // positition: 'absolute',
-          top: '-20%'
+          top: CalcVsRegister == 'Register' ? `0` : '-10%',
+          userSelect: 'none',
           // borderRadius: '1rem',
-          // boxShadow: 'none !important',
-          // backgroundImage: `none`
+          boxShadow: 'none',
+          backgroundImage: CalcVsRegister == 'Register' ? `none` : null,
+          overflow: 'hidden'
         }
       }}
     >
-      <section
-        style={{
-          padding: '1rem 6rem 1rem  1rem'
-        }}
-      >
-        <Typography variant="h5" sx={{ mb: '1rem' }}>
-          Calculator Programmer
-        </Typography>
+      {CalcVsRegister == 'Calculator' ? (
+        <section>
+          {/* //Calculator Programmer */}
+          <section
+            style={{
+              padding: '1rem 6rem 1rem  1rem'
+            }}
+          >
+            <Typography variant="h5" sx={{ mb: '1rem', color: `${colors.grey[100]}` }}>
+              Calculator Programmer
+            </Typography>
+            <section
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.1rem',
+                flexDirection: 'column',
+                marginLeft: '1rem'
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '1rem'
+                }}
+              >
+                <p>HEX: </p>
+                <Input_AutoFormat
+                  callback={'filterHex'}
+                  resolution={rez}
+                  forceValueFromParent={hex}
+                  tellParentValueChanged={handleHexChange}
+                  background={colors.primary[200]}
+                  border={`1px solid ${colors.green[400]}`}
+                  width={'8rem'}
+                  height={'1.5rem'}
+                />{' '}
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '1rem'
+                }}
+              >
+                <p>DEC: </p>
+                <Input_AutoFormat
+                  callback={'filterDecimal'}
+                  resolution={rez}
+                  forceValueFromParent={dec}
+                  tellParentValueChanged={handleDecChange}
+                  background={colors.primary[200]}
+                  border={`1px solid ${colors.green[400]}`}
+                  width={'8rem'}
+                  height={'1.5rem'}
+                />{' '}
+              </div>
+              <IconButton
+                sx={{
+                  position: 'absolute',
+                  top: '2rem',
+                  right: '1.5rem',
+                  zoom: '0.8',
+                  border: `1px solid ${colors.primary[100]}`,
+                  marginLeft: '5rem'
+                }}
+                onClick={() => {
+                  setCalcVsRegister('Register')
+                }}
+              >
+                <LibraryBooksIcon />
+              </IconButton>
+              <ButtonTransparent
+                sx={{
+                  position: 'absolute',
+                  top: '6.5rem',
+                  right: '1.5rem',
+                  zoom: '0.8',
+                  border: `1px solid ${colors.primary[100]}`,
+                  marginLeft: '5rem'
+                }}
+                onClick={handleModeChange}
+              >
+                {mode}
+              </ButtonTransparent>
+            </section>
+          </section>
+          {/* Binary representaion */}
+          <section ref={bitsDisplayRef}>
+            <div
+              style={{
+                display: 'flex',
+                margin: '0 1.5rem',
+                alignContent: 'center',
+                marginTop: '1rem'
+              }}
+            >
+              {array.slice(0, 16).map((el, index) => (
+                <OneBitComponent key={index} el={el} index={index} />
+              ))}
+            </div>
+            {/* Second ROW */}
+            <div
+              style={{
+                display: 'flex',
+                margin: '0 1.5rem',
+                alignContent: 'center',
+                alignItems: 'center',
+                alignText: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {array.slice(16).map((el, index) => (
+                <OneBitComponent key={index} el={el} index={index + 16} />
+              ))}
+            </div>
+          </section>
+        </section>
+      ) : (
         <section
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.1rem',
-            flexDirection: 'column',
-            marginLeft: '1rem'
+            zoom: '0.7',
+            height: '100%',
+            padding: '1rem',
+            marginBottom: '55vh',
+            display: 'flex'
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '1rem'
-            }}
-          >
-            <p>HEX: </p>
-            <Input_AutoFormat
-              callback={'filterHex'}
-              resolution={rez}
-              forceValueFromParent={hex}
-              tellParentValueChanged={handleHexChange}
-              background={colors.primary[200]}
-              border={`1px solid ${colors.green[400]}`}
-              width={'8rem'}
-              height={'1.5rem'}
-            />{' '}
+          <RegisterSelectionComponent DecrementWindows={closeWindow} />
+          <div>
+            <p
+              style={{
+                zoom: '1.8',
+                margin: ' 1rem 0 0 0.5rem',
+                cursor: 'pointer',
+                color: `${colors.green[400]}`,
+                border: `1px solid ${colors.green[400]}`,
+                borderRadius: '50%',
+                padding: '0.1rem',
+                background: `${colors.primary[200]}`
+              }}
+              onClick={() => {
+                setCalcVsRegister('Calculator')
+              }}
+            >
+              <CalculateRoundedIcon />
+            </p>
           </div>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '1rem'
-            }}
-          >
-            <p>DEC: </p>
-            <Input_AutoFormat
-              callback={'filterDecimal'}
-              resolution={rez}
-              forceValueFromParent={dec}
-              tellParentValueChanged={handleDecChange}
-              background={colors.primary[200]}
-              border={`1px solid ${colors.green[400]}`}
-              width={'8rem'}
-              height={'1.5rem'}
-            />{' '}
-          </div>
-          <ButtonTransparent
-            sx={{
-              position: 'absolute',
-              top: '6.5rem',
-              right: '1.5rem',
-              zoom: '0.8',
-              border: `1px solid ${colors.primary[100]}`,
-              marginLeft: '5rem'
-            }}
-            onClick={handleModeChange}
-          >
-            {mode}
-          </ButtonTransparent>
         </section>
-      </section>
-      {/* Binary representaion */}
-      <section>
-        <div
-          style={{
-            display: 'flex',
-            margin: '0 1.5rem',
-            alignContent: 'center'
-          }}
-        >
-          {array.slice(0, 16).map((el, index) => (
-            <OneBitComponent key={index} el={el} index={index} />
-          ))}
-        </div>
-        {/* Second ROW */}
-        <div
-          style={{
-            display: 'flex',
-            margin: '0 1.5rem',
-            alignContent: 'center',
-            alignItems: 'center',
-            alignText: 'center',
-            justifyContent: 'center'
-          }}
-        >
-          {array.slice(16).map((el, index) => (
-            <OneBitComponent key={index} el={el} index={index + 16} />
-          ))}
-        </div>
-      </section>
+      )}
     </Dialog>
   )
 }

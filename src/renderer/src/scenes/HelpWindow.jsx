@@ -20,7 +20,7 @@ import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
 
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
-import ListAltIcon from '@mui/icons-material/ListAlt'
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import {} from './Decode_CAN_LOG'
 import CreateIcon from '@mui/icons-material/Create'
@@ -59,7 +59,7 @@ function ControlledAccordions() {
           expanded={expanded}
           panelNR="1"
           handleChange={handleChange}
-          icon={<ListAltIcon sx={{ zoom: 1.2 }} />}
+          icon={<LibraryBooksIcon sx={{ zoom: 1.2 }} />}
           title="Register"
           subtitle=" This component allows you to search any Register and visualize it"
           body={<HelpRegister />}

@@ -128,7 +128,7 @@ export const RegisterWindow = () => {
   )
 }
 
-const RegisterSelectionComponent = ({
+export const RegisterSelectionComponent = ({
   IncrementWindows,
   DecrementWindows,
   ComponentHeight,
