@@ -49,6 +49,7 @@ export var ObjectValuesSaved_global = {
 }
 
 export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
+  //SDO with read CS='40' dont come here
   obj = obj.toUpperCase()
   if (obj.slice(0, 2) == '#X' || obj.slice(0, 2) == '0X') {
     obj = obj.slice(2, obj.length)
@@ -134,12 +135,24 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         TextReturn = hex_to_ascii(value).toString()
       }
       break
+    case '2060':
+      //ProductID
+      if (type == 'T_SDO') {
+        TextReturn = hex_to_ascii(LittleEndian(value)).toString()
+      }
+      break
     case '6077':
       //Torque(Current) actual value
       if (type == 'T_SDO' || type.slice(0, 4) == 'TPDO') {
         var temp = hexToDec(value, 16).toString()
         TextReturn = `${temp} IU or ${temp / 10}%`
       }
+      break
+    case '207B':
+    case '6071':
+    case '207E':
+      var temp = hexToDec(value, 16).toString()
+      TextReturn = `${temp} IU or ${temp / 10}%`
       break
     case '208E':
       if (type_Transmit_Receive == 'R') {
@@ -199,6 +212,121 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         TextReturn = `Speed: ${spd} IU, Time: ${time} IU, Counter: ${counter}`
       }
       break
+    case '1003':
+      TextReturn = `You can read ${parseInt(value)} errors`
+      break
+    case '1003_01':
+    case '1003_02':
+    case '1003_03':
+    case '1003_04':
+    case '1003_05':
+      TextReturn = DecodeEMCY(LittleEndian(value))[4]
+      break
+
+    case '1010_01':
+      if (value == '65766173') {
+        TextReturn = 'SAVE certain parameters to EEPROM'
+      } else {
+        TextReturn = 'Wrong value, it needs to be 65766173 to save to eeprom'
+      }
+      break
+    case '1011_01':
+      if (value == '64616F6C') {
+        TextReturn = 'LOAD certain parameters from EEPROM'
+      } else {
+        TextReturn = 'Wrong value, it needs to be 64616F6C to LOAD from eeprom'
+      }
+      break
+    case '1006':
+      TextReturn = `${parseInt(hexToDec(value, 32)) / 1000}ms`
+      break
+    case '1005':
+      if (hex2bin(value, 32).slice(1, 2) == '1') {
+        TextReturn = ` SYNC producer activated`
+      }
+      break
+
+    case '2089':
+      if (hex2bin(value, 16).slice(14, 15) == '1') {
+        TextReturn = `View SYNC0 on Error/OUT2`
+      } else if (hex2bin(value, 16).slice(13, 14) == '1') {
+        TextReturn = `Trigger Control Loop (slow loop) on Ready/OUT3`
+      }
+      break
+    case '2001':
+      TextReturn = `MER mask, choose which of the errors will be sent as EMCY`
+      break
+    case '2102':
+      TextReturn = `Brake status, 0 or 1`
+      break
+    case '2046':
+    case '2047':
+    case '2055':
+    case '2058':
+    case '2053':
+    case '2054':
+    case '207F':
+    case '2083':
+    case '2084':
+    case '2027':
+    case '2103':
+    case '2092_1':
+    case '2092_2':
+    case '2092_3':
+    case '2092_4':
+    case '6091_01':
+    case '6091_02':
+    case '6092_01':
+    case '6092_02':
+    case '208D':
+    case '6075':
+    case '6087':
+    case '606D':
+    case '2013_02':
+    case '201B':
+      TextReturn = hexToDec(value, 32)
+      break
+    case '2108_01':
+    case '2108_02':
+    case '2052':
+    case '2025':
+    case '2026':
+    case '208B':
+    case '208C':
+    case '2100':
+    case '2101':
+    case '60C2_01':
+    case '2013_01':
+      TextReturn = hexToDec(value, 16)
+      break
+    case '60C2_02':
+      TextReturn = hexToDec(value, 8)
+      break
+    case '201A':
+      TextReturn = `Address : ${value}`
+      break
+    case '2108_01':
+      TextReturn = `Address of the variable which will be filtered: ${value}`
+      break
+    case '2086':
+      TextReturn = `Any value besides 0 will limit the speed in CSP`
+      break
+    case '206B':
+    case '206C':
+      TextReturn = hex2Fixed(value)
+      break
+    case '2006':
+      var temp = hexToDec(value, 16)
+      if (temp > 0 && temp < 10) {
+        TextReturn = `Call TML ${temp} function`
+      } else {
+        TextReturn = `invalid value`
+      }
+      break
+    case '2077':
+      TextReturn = 'Execute TML code'
+      break
+
     default:
       //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
       for (const type in ObjectDescriptions) {
@@ -427,7 +555,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
           interpretation = 'Invalid CS for this object '
           errorStatus = 'error'
         } else if (data.length != 8) {
-          interpretation = 'The data should be 16bits '
+          interpretation = 'The data should be 32bits '
           errorStatus = 'warning'
         } else {
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
@@ -482,11 +610,8 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
       break
     case '40':
       if (sdoType == 'T_SDO') {
-        interpretation = '40 is a Command Specifier only for T_SDO'
+        interpretation = '40 is a Command Specifier only for R_SDO'
         errorStatus = 'error'
-      } else if (parseInt(data) != 0) {
-        interpretation = 'The data length should be "00 00 00 00"'
-        errorStatus = 'warning'
       } else {
         interpretation = `Read object ${ObjectIndex}`
         errorStatus = 'perfect'

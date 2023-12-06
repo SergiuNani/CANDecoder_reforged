@@ -1,6 +1,3 @@
-import { useContext } from 'react'
-import { MotorSpecificationsContext } from '../App'
-import { whatFG_isObject } from './CANopenFunctions'
 import { fullRot_IU_1, slowLoop_1 } from '../scenes/global/topbar'
 /*******************************************************************************/
 /*---------------------Number transformation functions------------------------ */

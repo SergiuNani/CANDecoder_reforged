@@ -2504,6 +2504,12 @@ export const Objects_collection = [
     BitSize: 16
   },
   {
+    Index: '#x207E',
+    Name: 'Current actual value',
+    Type: 'INT',
+    BitSize: 16
+  },
+  {
     Index: '#x607A',
     Name: 'Target position',
     Type: 'DINT',
@@ -4263,7 +4269,7 @@ export const Registers_CANopen = [
   },
   {
     Index: '6041A',
-    Title: 'Statusword in external reference speed mode',
+    Title: 'Statusword in cyclic synchronous torque mode CST',
     BitInfo: [
       {
         bit: '15',

@@ -125,16 +125,81 @@ export const ObjectDescriptions = {
     1: 'Reserved',
     2: 'Reserved',
     3: 'Jerk-limited ramp (S-curve)'
+  },
+  '201D': {
+    0: 'Reserved',
+    1: `On-line.
+    In case of External Reference Position / Speed / Torque Modes, select this option in 
+    order to read the reference from the object 201C, External Online Reference
+    In case of Electronic Gearing and Camming Position Modes, select this option in 
+    order to read the master position received from a master drive via communication
+    (object 201Eh).`,
+    2: `Analogue.
+    In case of External Reference Position / Speed / Torque Modes, select this option in 
+    order to read the reference from the dedicated analogue input`,
+    3: `Digital.
+    In case of External Reference Position Modes, select this option in order to read the 
+    reference from the dedicated digital inputs as set in the setup made using 
+    EasySetUp / EasyMotion Studio (either 2nd encoder or pulse & direction).
+    In case of Electronic Gearing and Camming Position Modes, select this option in 
+    order to read master position from the dedicated digital inputs as set in the setup 
+    made using EasySetUp / EasyMotion Studio (either 2nd encoder or pulse & 
+    direction).
+    `
   }
 }
 
 /*------------------------------Factor Group Units------------------------------ */
 
 export const FG_Objects_Array = {
-  POS: ['6064', '6062', '607A', '6068', '60F4', '6063', '607B', '607C', '6067', '2079'],
-  SPD: ['606C', '606B', '606F', '60FF', '60F8', '6081', '6099_01', '6099_02'],
+  POS: [
+    '6064',
+    '6062',
+    '607A',
+    '60F4',
+    '6063',
+    '607B_01',
+    '607B_02',
+    '607C',
+    '6067',
+    '2079',
+    '2075_01',
+    '2075_02',
+    '2075_03',
+    '2075_04',
+    '20A0_02',
+    '608F',
+    '6065',
+    '2081',
+    '2088',
+    '201E',
+    '2012',
+    '2017',
+    '60BA',
+    '60BB',
+    '60BC',
+    '60BD',
+    '2106',
+    '2107'
+  ],
+  SPD: [
+    '606C',
+    '606B',
+    '606F',
+    '60FF',
+    '60F8',
+    '6081',
+    '6099_01',
+    '6099_02',
+    '20A0_03',
+    '6069',
+    '606F',
+    '2087',
+    '2018',
+    '201C'
+  ],
   ACC: ['6083', '6085', '609A'],
-  TIME: ['6066', '6068', '2023', '2005', '2051', '1006', '1017']
+  TIME: ['6066', '6068', '2023', '2005', '2051', '1017', ' 100C', '1013', '207C', '207A', '606E']
 }
 
 export const FG_units_pos_rot = ['IU', 'rad', 'deg', 'rot']
