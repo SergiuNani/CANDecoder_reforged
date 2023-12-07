@@ -381,6 +381,51 @@ SB-to-CAN V2 compact  CAN-1,54,00:06.3,      ,702,1,5,.
 0	接收	13:44:51.684			701	数据帧	标准帧	0x01	7F 	
 3	接收	13:44:53.972			0x00000000	数据帧	标准帧	0x02	80 00 	
 13	接收	13:44:57.382			0x00000601	数据帧	标准帧	0x08	2F 00 18 02 01 00 47 95 
+/****** Read Write DAta validation **********/
+1	    	20:28:20	424.527	>> 2147483.647		      1537	       601	      	  8	23	64	20	00	88	00	00	40	#d__ˆ__@	
+2	    	20:28:20	424.934	          0.407		      1409	       581	      	  8	60	64	20	00	00	00	00	00	d______	
+3	    	20:28:21	406.268	        981.334		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+4	    	20:28:21	409.739	          3.471		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+5	    	20:28:22	144.714	        734.975		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+6	    	20:28:22	148.130	          3.416		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+7	    	20:28:22	304.564	        156.434		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+8	    	20:28:22	308.040	          3.476		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+9	    	20:28:22	482.672	        174.632		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+10	    	20:28:22	486.121	          3.449		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+11	    	20:29:24	604.978	      62118.857		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+12	    	20:29:24	605.338	          0.360	                           <NTCAN Event>	         0	       000	E     	  6	00	00	00	00	00	00	  	  	CONTROLLER(ok)	
+13	    	20:29:24	605.355	          0.017		      1409	       581	      	  8	43	66	20	00	76	54	00	00	Cf__vT__	
+14	    	20:29:25	932.547	       1327.192		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+15	    	20:29:25	932.935	          0.388		      1409	       581	      	  8	43	66	20	00	76	54	00	00	Cf__vT__	
+16	    	20:29:26	860.131	        927.196		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+17	    	20:29:26	860.535	          0.404		      1409	       581	      	  8	43	66	20	00	76	54	00	00	Cf__vT__	
+18	    	20:29:27	367.721	        507.186		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+19	    	20:29:27	368.113	          0.392		      1409	       581	      	  8	43	66	20	00	76	54	00	00	Cf__vT__	
+1	    	20:34:19	530.597	     292162.484		      1537	       601	      	  8	23	64	20	00	08	00	00	40	#d_____@	
+20:34:19	530.983	          0.386		      1409	       581	      	  8	60	64	20	00	00	00	00	00	d______	
+3	    	20:34:20	549.751	       1018.768		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+4	    	20:34:20	553.256	          3.505		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+5	    	20:34:20	891.829	        338.573		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+6	    	20:34:20	895.334	          3.505		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+7	    	20:34:21	182.452	        287.118		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+8	    	20:34:21	185.938	          3.486		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+9	    	20:34:21	484.320	        298.382		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+10	    	20:34:21	487.772	          3.452		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+11	    	20:34:21	945.868	        458.096		      1537	       601	      	  8	23	65	20	00	76	54	34	12	#e__vT4_	
+12	    	20:34:21	949.344	          3.476		      1409	       581	      	  8	60	65	20	00	00	00	00	00	e______	
+13	    	20:34:23	390.722	       1441.378		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+14	    	20:34:23	391.096	          0.374		      1409	       581	      	  8	43	66	20	00	C0	74	00	00	Cf__Àt__	
+15	    	20:34:23	792.730	        401.634		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+16	    	20:34:23	793.075	          0.345		      1409	       581	      	  8	43	66	20	00	C0	09	00	00	Cf__À___	
+17	    	20:34:24	086.702	        293.627		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+18	    	20:34:24	087.071	          0.369		      1409	       581	      	  8	43	66	20	00	09	40	00	00	Cf___@__	
+19	    	20:34:24	360.329	        273.258		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+20	    	20:34:24	360.679	          0.350		      1409	       581	      	  8	43	66	20	00	04	04	00	00	Cf______	
+21	    	20:34:24	694.605	        333.926		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+22	    	20:34:24	694.985	          0.380		      1409	       581	      	  8	43	66	20	00	57	5A	00	00	Cf__WZ__	
+23	    	20:34:25	087.729	        392.744		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
+24	    	20:34:25	088.071	          0.342		      1409	       581	      	  8	43	66	20	00	FF	FF	00	00	Cf__ÿÿ__
+
 `
 export const Hardcoded_VerifyCANopenValidityArray = [
   {
@@ -5340,8 +5385,8 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1005',
     ObjectName: 'COD-ID of the SYNC Message',
     Data: '80000080',
-    Interpretation: 'Write: #x1005 <- 80000080h',
-    errorStatus: 'neutral'
+    Interpretation: '-',
+    errorStatus: 'random'
   },
   {
     msgNr: 348,
@@ -5850,6 +5895,679 @@ export const Hardcoded_VerifyCANopenValidityArray = [
   },
   {
     msgNr: 384,
+    OriginalMessage: '/****** Read Write DAta validation **********/',
+    CobID: 'invalid',
+    FrameData: 'invalid',
+    type: 'invalid',
+    AxisID: 'invalid',
+    CS: '-',
+    Object: '-',
+    ObjectName: 'Can`t extract data from this row',
+    Data: '-',
+    Interpretation: 'Invalid Message ',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 385,
+    OriginalMessage:
+      '1\t    \t20:28:20\t424.527\t>> 2147483.647\t\t      1537\t       601\t      \t  8\t23\t64\t20\t00\t88\t00\t00\t40\t#d__ˆ__@\t',
+    CobID: '601',
+    FrameData: '2364200088000040',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2064',
+    ObjectName: 'Read/Write configuration register',
+    Data: '40000088',
+    Interpretation: 'StartAddress: 4000, 16bits data, EEPROM memory, AutoIncrement: 0',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 386,
+    OriginalMessage:
+      '2\t    \t20:28:20\t424.934\t          0.407\t\t      1409\t       581\t      \t  8\t60\t64\t20\t00\t00\t00\t00\t00\td______\t',
+    CobID: '581',
+    FrameData: '6064200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2064',
+    ObjectName: 'Read/Write configuration register',
+    Data: '-',
+    Interpretation: 'Writing in #x2064 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 387,
+    OriginalMessage:
+      '3\t    \t20:28:21\t406.268\t        981.334\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4000h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 388,
+    OriginalMessage:
+      '4\t    \t20:28:21\t409.739\t          3.471\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 389,
+    OriginalMessage:
+      '5\t    \t20:28:22\t144.714\t        734.975\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4000h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 390,
+    OriginalMessage:
+      '6\t    \t20:28:22\t148.130\t          3.416\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 391,
+    OriginalMessage:
+      '7\t    \t20:28:22\t304.564\t        156.434\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4000h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 392,
+    OriginalMessage:
+      '8\t    \t20:28:22\t308.040\t          3.476\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 393,
+    OriginalMessage:
+      '9\t    \t20:28:22\t482.672\t        174.632\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4000h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 394,
+    OriginalMessage:
+      '10\t    \t20:28:22\t486.121\t          3.449\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 395,
+    OriginalMessage:
+      '11\t    \t20:29:24\t604.978\t      62118.857\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 396,
+    OriginalMessage:
+      '12\t    \t20:29:24\t605.338\t          0.360\t                           <NTCAN Event>\t         0\t       000\tE     \t  6\t00\t00\t00\t00\t00\t00\t  \t  \tCONTROLLER(ok)\t',
+    CobID: '000',
+    FrameData: 'E6000000000000',
+    type: 'NMT',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'DATA too big for this type of message',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 397,
+    OriginalMessage:
+      '13\t    \t20:29:24\t605.355\t          0.017\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t76\t54\t00\t00\tCf__vT__\t',
+    CobID: '581',
+    FrameData: '4366200076540000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00005476',
+    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 398,
+    OriginalMessage:
+      '14\t    \t20:29:25\t932.547\t       1327.192\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 399,
+    OriginalMessage:
+      '15\t    \t20:29:25\t932.935\t          0.388\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t76\t54\t00\t00\tCf__vT__\t',
+    CobID: '581',
+    FrameData: '4366200076540000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00005476',
+    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 400,
+    OriginalMessage:
+      '16\t    \t20:29:26\t860.131\t        927.196\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 401,
+    OriginalMessage:
+      '17\t    \t20:29:26\t860.535\t          0.404\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t76\t54\t00\t00\tCf__vT__\t',
+    CobID: '581',
+    FrameData: '4366200076540000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00005476',
+    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 402,
+    OriginalMessage:
+      '18\t    \t20:29:27\t367.721\t        507.186\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 403,
+    OriginalMessage:
+      '19\t    \t20:29:27\t368.113\t          0.392\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t76\t54\t00\t00\tCf__vT__\t',
+    CobID: '581',
+    FrameData: '4366200076540000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00005476',
+    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 404,
+    OriginalMessage:
+      '1\t    \t20:34:19\t530.597\t     292162.484\t\t      1537\t       601\t      \t  8\t23\t64\t20\t00\t08\t00\t00\t40\t#d_____@\t',
+    CobID: '601',
+    FrameData: '2364200008000040',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2064',
+    ObjectName: 'Read/Write configuration register',
+    Data: '40000008',
+    Interpretation: 'StartAddress: 4000, 16bits data, EEPROM memory, AutoIncrement: 1',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 405,
+    OriginalMessage:
+      '20:34:19\t530.983\t          0.386\t\t      1409\t       581\t      \t  8\t60\t64\t20\t00\t00\t00\t00\t00\td______\t',
+    CobID: '581',
+    FrameData: '6064200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2064',
+    ObjectName: 'Read/Write configuration register',
+    Data: '-',
+    Interpretation: 'Writing in #x2064 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 406,
+    OriginalMessage:
+      '3\t    \t20:34:20\t549.751\t       1018.768\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4000h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 407,
+    OriginalMessage:
+      '4\t    \t20:34:20\t553.256\t          3.505\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 408,
+    OriginalMessage:
+      '5\t    \t20:34:20\t891.829\t        338.573\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4001h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 409,
+    OriginalMessage:
+      '6\t    \t20:34:20\t895.334\t          3.505\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 410,
+    OriginalMessage:
+      '7\t    \t20:34:21\t182.452\t        287.118\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4002h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 411,
+    OriginalMessage:
+      '8\t    \t20:34:21\t185.938\t          3.486\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 412,
+    OriginalMessage:
+      '9\t    \t20:34:21\t484.320\t        298.382\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4003h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 413,
+    OriginalMessage:
+      '10\t    \t20:34:21\t487.772\t          3.452\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 414,
+    OriginalMessage:
+      '11\t    \t20:34:21\t945.868\t        458.096\t\t      1537\t       601\t      \t  8\t23\t65\t20\t00\t76\t54\t34\t12\t#e__vT4_\t',
+    CobID: '601',
+    FrameData: '2365200076543412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '12345476',
+    Interpretation: 'Write,  0x4004h <- 5476h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 415,
+    OriginalMessage:
+      '12\t    \t20:34:21\t949.344\t          3.476\t\t      1409\t       581\t      \t  8\t60\t65\t20\t00\t00\t00\t00\t00\te______\t',
+    CobID: '581',
+    FrameData: '6065200000000000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '60',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Writing in #x2065 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 416,
+    OriginalMessage:
+      '13\t    \t20:34:23\t390.722\t       1441.378\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 417,
+    OriginalMessage:
+      '14\t    \t20:34:23\t391.096\t          0.374\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\tC0\t74\t00\t00\tCf__Àt__\t',
+    CobID: '581',
+    FrameData: '43662000C0740000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '000074C0',
+    Interpretation: 'Read, 0x4005h -> 74C0, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 418,
+    OriginalMessage:
+      '15\t    \t20:34:23\t792.730\t        401.634\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 419,
+    OriginalMessage:
+      '16\t    \t20:34:23\t793.075\t          0.345\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\tC0\t09\t00\t00\tCf__À___\t',
+    CobID: '581',
+    FrameData: '43662000C0090000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '000009C0',
+    Interpretation: 'Read, 0x4006h -> 09C0, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 420,
+    OriginalMessage:
+      '17\t    \t20:34:24\t086.702\t        293.627\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 421,
+    OriginalMessage:
+      '18\t    \t20:34:24\t087.071\t          0.369\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t09\t40\t00\t00\tCf___@__\t',
+    CobID: '581',
+    FrameData: '4366200009400000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00004009',
+    Interpretation: 'Read, 0x4007h -> 4009, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 422,
+    OriginalMessage:
+      '19\t    \t20:34:24\t360.329\t        273.258\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 423,
+    OriginalMessage:
+      '20\t    \t20:34:24\t360.679\t          0.350\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t04\t04\t00\t00\tCf______\t',
+    CobID: '581',
+    FrameData: '4366200004040000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00000404',
+    Interpretation: 'Read, 0x4008h -> 0404, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 424,
+    OriginalMessage:
+      '21\t    \t20:34:24\t694.605\t        333.926\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 425,
+    OriginalMessage:
+      '22\t    \t20:34:24\t694.985\t          0.380\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\t57\t5A\t00\t00\tCf__WZ__\t',
+    CobID: '581',
+    FrameData: '43662000575A0000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '00005A57',
+    Interpretation: 'Read, 0x4009h -> 5A57, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 426,
+    OriginalMessage:
+      '23\t    \t20:34:25\t087.729\t        392.744\t\t      1537\t       601\t      \t  8\t40\t66\t20\t00\t00\t00\t34\t12\t@f____4_\t',
+    CobID: '601',
+    FrameData: '4066200000003412',
+    type: 'R_SDO',
+    AxisID: 1,
+    CS: '40',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '-',
+    Interpretation: 'Read object #x2066',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 427,
+    OriginalMessage:
+      '24\t    \t20:34:25\t088.071\t          0.342\t\t      1409\t       581\t      \t  8\t43\t66\t20\t00\tFF\tFF\t00\t00\tCf__ÿÿ__',
+    CobID: '581',
+    FrameData: '43662000FFFF0000',
+    type: 'T_SDO',
+    AxisID: 1,
+    CS: '43',
+    Object: '#x2066',
+    ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
+    Data: '0000FFFF',
+    Interpretation: 'Read, 0x400Ah -> FFFF, EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 428,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: 'All',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 429,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

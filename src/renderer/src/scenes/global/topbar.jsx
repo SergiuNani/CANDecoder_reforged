@@ -63,7 +63,7 @@ const Topbar = () => {
   const colorMode = useContext(ColorModeContext)
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
-  const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(true)
+  const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
 
   useEffect(() => {

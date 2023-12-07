@@ -45,7 +45,11 @@ export var ObjectValuesSaved_global = {
   '208E': [],
   '60C0': [],
   '60C1_01': [],
-  6060: []
+  6060: [],
+  '2064_address': [], //deciml
+  '2064_memoryType': [],
+  '2064_addrInc': [],
+  '2064_addrSize': []
 }
 
 export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
@@ -327,6 +331,68 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       TextReturn = 'Execute TML code'
       break
 
+    case '2064':
+      var startAddress = value.slice(0, 4)
+      var bits = hex2bin(value.slice(4, 8), 16)
+      var bit0_16_32bitsData = bits.slice(15)
+      var bits_3_2_MemoryType = bits.slice(12, 14)
+      var bits_7_AutoIncrement = bits.slice(8, 9)
+      if (bits_3_2_MemoryType == '10') {
+        bits_3_2_MemoryType = 'EEPROM memory'
+      } else if (bits_3_2_MemoryType == '01') {
+        bits_3_2_MemoryType = 'Data memory'
+      } else if (bits_3_2_MemoryType == '00') {
+        bits_3_2_MemoryType = 'Program memory'
+      } else {
+        bits_3_2_MemoryType = 'Invalid memory'
+      }
+      if (bits_7_AutoIncrement == '1') {
+        bits_7_AutoIncrement = 0
+      } else {
+        bits_7_AutoIncrement = 1
+      }
+
+      if (bit0_16_32bitsData == '0') {
+        bit0_16_32bitsData = '16bits data'
+      } else {
+        bit0_16_32bitsData = '32bits data'
+      }
+      ObjectValuesSaved_global['2064_address'][axisID] = hexToDec(startAddress, 16)
+      ObjectValuesSaved_global['2064_memoryType'][axisID] = bits_3_2_MemoryType
+      ObjectValuesSaved_global['2064_addrInc'][axisID] = bits_7_AutoIncrement
+      ObjectValuesSaved_global['2064_addrSize'][axisID] = bit0_16_32bitsData
+      TextReturn = `StartAddress: ${startAddress}, ${bit0_16_32bitsData}, ${bits_3_2_MemoryType}, AutoIncrement: ${bits_7_AutoIncrement}`
+      break
+    case '2065':
+      var valueToWrite
+      if (ObjectValuesSaved_global['2064_addrSize'][axisID] == '16bits data') {
+        valueToWrite = value.slice(4, 8)
+      } else {
+        valueToWrite = value
+      }
+      TextReturn = `Write,  0x${decToHex(
+        ObjectValuesSaved_global['2064_address'][axisID],
+        16
+      )}h <- ${valueToWrite}h , ${ObjectValuesSaved_global['2064_memoryType'][axisID]} `
+
+      ObjectValuesSaved_global['2064_address'][axisID] +=
+        ObjectValuesSaved_global['2064_addrInc'][axisID]
+      break
+    case '2066':
+      var valueToRead
+      if (ObjectValuesSaved_global['2064_addrSize'][axisID] == '16bits data') {
+        valueToRead = value.slice(4, 8)
+      } else {
+        valueToRead = value
+      }
+      TextReturn = `Read, 0x${decToHex(
+        ObjectValuesSaved_global['2064_address'][axisID],
+        16
+      )}h -> ${valueToRead}, ${ObjectValuesSaved_global['2064_memoryType'][axisID]} `
+
+      ObjectValuesSaved_global['2064_address'][axisID] +=
+        ObjectValuesSaved_global['2064_addrInc'][axisID]
+      break
     default:
       //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
       for (const type in ObjectDescriptions) {

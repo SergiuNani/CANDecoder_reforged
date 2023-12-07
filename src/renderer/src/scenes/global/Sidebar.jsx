@@ -20,6 +20,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import TableChartIcon from '@mui/icons-material/TableChart'
 import ArticleIcon from '@mui/icons-material/Article'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
+import MoreIcon from '@mui/icons-material/More'
 import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
 import ListAltIcon from '@mui/icons-material/ListAlt'
 import { handleDebugButton } from '../debug'
@@ -171,9 +172,9 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
             <Item
-              title="Decode Messages"
-              to="/form"
-              icon={<ReceiptLongIcon />}
+              title="More Options"
+              to="/MoreOptionsWindow"
+              icon={<MoreIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

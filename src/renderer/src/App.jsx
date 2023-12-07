@@ -18,6 +18,7 @@ export var Objects_collection_LS = []
 export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
 import HomeWindow from './scenes/HomeWindow'
+import MoreOptionsWindow from './scenes/MoreOptionsWindow.jsx'
 
 function App() {
   if (
@@ -46,6 +47,7 @@ function App() {
               <Route path="/" element={<HomeWindow />} />
               <Route path="/Home" element={<HomeWindow />} />
               <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
+              <Route path="/MoreOptionsWindow" element={<MoreOptionsWindow />} />
               <Route path="/Registers" element={<RegisterWindow />} />
               <Route path="/React_Logic" element={<React_Logic />} />
               <Route path="/React_Logic2" element={<React_Logic2 />} />

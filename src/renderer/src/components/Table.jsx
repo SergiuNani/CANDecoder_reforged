@@ -139,7 +139,7 @@ export const TableROW = ({ iteration }) => {
                   : iteration.errorStatus == 'warning'
                   ? `${colors.yellow[500]}`
                   : iteration.errorStatus == 'random'
-                  ? `${colors.primary[400]}`
+                  ? `${colors.green[100]}`
                   : iteration.errorStatus == 'blue'
                   ? `${colors.personal[300]}`
                   : 'inherit'
