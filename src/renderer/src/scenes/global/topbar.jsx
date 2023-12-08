@@ -68,7 +68,7 @@ const Topbar = () => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.ctrlKey && event.key === 'c') {
+      if (event.altKey && event.key === 'c') {
         console.log('ev')
         // setCalcVsRegDialogStatus(false)
 

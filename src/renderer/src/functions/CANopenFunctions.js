@@ -349,7 +349,12 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       if (bits_7_AutoIncrement == '1') {
         bits_7_AutoIncrement = 0
       } else {
-        bits_7_AutoIncrement = 1
+        if (bit0_16_32bitsData == '0') {
+          bits_7_AutoIncrement = 1
+        } else {
+          //read/write in two cells
+          bits_7_AutoIncrement = 2
+        }
       }
 
       if (bit0_16_32bitsData == '0') {
@@ -365,33 +370,51 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       break
     case '2065':
       var valueToWrite
-      if (ObjectValuesSaved_global['2064_addrSize'][axisID] == '16bits data') {
-        valueToWrite = value.slice(4, 8)
-      } else {
-        valueToWrite = value
-      }
-      TextReturn = `Write,  0x${decToHex(
-        ObjectValuesSaved_global['2064_address'][axisID],
-        16
-      )}h <- ${valueToWrite}h , ${ObjectValuesSaved_global['2064_memoryType'][axisID]} `
+      var addrSize = ObjectValuesSaved_global['2064_addrSize'][axisID]
+      if (addrSize) {
+        var address = ObjectValuesSaved_global['2064_address'][axisID]
+        var memType = ObjectValuesSaved_global['2064_memoryType'][axisID]
 
-      ObjectValuesSaved_global['2064_address'][axisID] +=
-        ObjectValuesSaved_global['2064_addrInc'][axisID]
+        if (addrSize == '16bits data') {
+          valueToWrite = value.slice(4, 8)
+          TextReturn = `Write,  0x${decToHex(address, 16)}h <- ${valueToWrite}h , ${memType} `
+        } else {
+          valueToWrite = value
+          TextReturn = `Write,  0x${decToHex(address, 16)}h <- ${valueToWrite.slice(
+            4,
+            8
+          )}h , 0x${decToHex(address + 1, 16)}h <- ${valueToWrite.slice(0, 4)}h , ${memType} `
+        }
+
+        ObjectValuesSaved_global['2064_address'][axisID] +=
+          ObjectValuesSaved_global['2064_addrInc'][axisID]
+      } else {
+        TextReturn = `There is no recorded instance of object 0x2064h`
+      }
       break
     case '2066':
-      var valueToRead
-      if (ObjectValuesSaved_global['2064_addrSize'][axisID] == '16bits data') {
-        valueToRead = value.slice(4, 8)
-      } else {
-        valueToRead = value
-      }
-      TextReturn = `Read, 0x${decToHex(
-        ObjectValuesSaved_global['2064_address'][axisID],
-        16
-      )}h -> ${valueToRead}, ${ObjectValuesSaved_global['2064_memoryType'][axisID]} `
+      var valueToWrite
+      var addrSize = ObjectValuesSaved_global['2064_addrSize'][axisID]
+      if (addrSize) {
+        var address = ObjectValuesSaved_global['2064_address'][axisID]
+        var memType = ObjectValuesSaved_global['2064_memoryType'][axisID]
 
-      ObjectValuesSaved_global['2064_address'][axisID] +=
-        ObjectValuesSaved_global['2064_addrInc'][axisID]
+        if (addrSize == '16bits data') {
+          valueToWrite = value.slice(4, 8)
+          TextReturn = `Read,  0x${decToHex(address, 16)}h -> ${valueToWrite}h , ${memType} `
+        } else {
+          valueToWrite = value
+          TextReturn = `Read,  0x${decToHex(address, 16)}h -> ${valueToWrite.slice(
+            4,
+            8
+          )}h , 0x${decToHex(address + 1, 16)}h -> ${valueToWrite.slice(0, 4)}h , ${memType} `
+        }
+
+        ObjectValuesSaved_global['2064_address'][axisID] +=
+          ObjectValuesSaved_global['2064_addrInc'][axisID]
+      } else {
+        TextReturn = `There is no recorded instance of object 0x2064h`
+      }
       break
     default:
       //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile

@@ -427,7 +427,12 @@ export function Input_AutoFormat({
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
+  //   <Input_AutoFormat  ********MINUMUM REQUIRED PROPS********
+  //   callback="filterHex"
+  //   resolution={16}
+  //   tellParentValueChanged={() => {}}
+  //   forceValueFromParent={'4000'}
+  // />
   const [inputValue, setInputValue] = useState('')
   if (inputValue == 'NaN') setInputValue('')
   useEffect(() => {
