@@ -108,17 +108,20 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
   const colors = tokens(theme.palette.mode)
   var ReturnText = []
   var errorStatus = 'neutral'
-  var ReturnText2 = '---- We also have problems at line(s): '
   DontBotherWithPDO_flag[0] = 1
   function DoNothing() {}
 
-  var MsgsExtracted_array = Extract_MSGs_from_text(VerifyCANopenValidityArray_RAW.split('\n'))
+  var MsgsExtracted_array = Extract_MSGs_from_text(
+    VerifyCANopenValidityArray_RAW.split('\n'),
+    'CANOPEN'
+  )
 
   var MessagesDecoded = CreateDecodedArrayOfObjects(
     MsgsExtracted_array,
     DoNothing,
     DoNothing,
-    DoNothing
+    DoNothing,
+    'CANOPEN'
   )
   console.log('🚀 MessagesDecoded_ArrayOfObjects:', MessagesDecoded)
   console.log('🚀 Hardcoded_VerifyCANopenValidityArray:', Hardcoded_VerifyCANopenValidityArray)

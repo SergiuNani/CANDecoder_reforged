@@ -1,4 +1,4 @@
-import { filterHex, hexToDec, addSpacesOfTwo } from './NumberConversion'
+import { filterHex, hexToDec } from './NumberConversion'
 import {
   DecodeSDO,
   DecodeEMCY,
@@ -9,7 +9,7 @@ import {
 } from './CANopenFunctions'
 import { DecodeTCANglobal } from './TechnoCAN'
 import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
-import { DecodeOnePDOmsg, PDO_mapped } from './CANopenFunctions'
+import { DecodeOnePDOmsg } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
 import { Mapping_objects_array } from '../data/SmallData'
 
@@ -144,36 +144,40 @@ export function CobID_who_dis(cob_id) {
   return ['invalid', 'invalid', 'invalid']
 }
 
-export function Extract_MSGs_from_text(text) {
-  //Text should be array of strings
-  var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
-  const hexPattern = /^(0x)?[0-9a-f]+$/gi
+export function Extract_MSGs_from_text(text, ProtocolGlobal) {
+  if (ProtocolGlobal == 'CANOPEN') {
+    //Text should be array of strings
+    var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
+    const hexPattern = /^(0x)?[0-9a-f]+$/gi
 
-  text = text.map((row, index) => {
-    var filteredRow = row.split(FirstPatternEntireRowSplitter)
-    filteredRow = filteredRow.filter((element) => !element == '')
-    filteredRow = filteredRow.filter((element) => element.match(hexPattern))
-    var original = filteredRow
-    filteredRow = filteredRow.map((element) => {
-      //Remove all the annoying 0x element indicating a hex number
-      if (element.slice(0, 2).toUpperCase() == '0X') {
-        element = element.slice(2)
+    text = text.map((row, index) => {
+      var filteredRow = row.split(FirstPatternEntireRowSplitter)
+      filteredRow = filteredRow.filter((element) => !element == '')
+      filteredRow = filteredRow.filter((element) => element.match(hexPattern))
+      var original = filteredRow
+      filteredRow = filteredRow.map((element) => {
+        //Remove all the annoying 0x element indicating a hex number
+        if (element.slice(0, 2).toUpperCase() == '0X') {
+          element = element.slice(2)
+        }
+        return element
+      })
+      var CobID = Check4PotentialCobID(filteredRow)
+
+      var aux_data
+      if (CobID[0] != 'invalid') {
+        aux_data = extractDATAfromROW(filteredRow, CobID[1], original)
+      } else {
+        aux_data = 'invalid'
       }
-      return element
+
+      return [index + 1, row, CobID[0], aux_data, filteredRow]
     })
-    var CobID = Check4PotentialCobID(filteredRow)
 
-    var aux_data
-    if (CobID[0] != 'invalid') {
-      aux_data = extractDATAfromROW(filteredRow, CobID[1], original)
-    } else {
-      aux_data = 'invalid'
-    }
-
-    return [index + 1, row, CobID[0], aux_data, filteredRow]
-  })
-
-  return text
+    return text
+  } else if (ProtocolGlobal == 'RS232') {
+    return ['pu;a', 'eeee']
+  }
 }
 
 export function Check4PotentialCobID(row) {
@@ -313,144 +317,151 @@ export function CreateDecodedArrayOfObjects(
   AllCAN_MsgsExtracted_array,
   setIsDrawerOpen,
   setOpenPDOModal,
-  setObjectIterationPDO
+  setObjectIterationPDO,
+  ProtocolGlobal
 ) {
   console.log(`DANGER -- CreateDecodedArrayOfObjects`)
-  var arr = AllCAN_MsgsExtracted_array
-  var PDOMessageToDecode
-  var ResultingArray = MessagesDecoded_ArrayOfObjects
-  var prematureEnd = false
-  if (globalIndex[0] == 0) {
-    // We reset only if we have a new log file
-    CanLogStatistics = []
-    ResultingArray = []
-    ObjectValuesSaved_global['6060'] = []
-  } else {
-    ResultingArray = ResultingArray.slice(0, globalIndex[0])
-  }
-
-  function createObject(
-    msgNr,
-    OriginalMessage,
-    CobID,
-    FrameData,
-    type,
-    AxisID,
-    CS,
-    Object,
-    ObjectName,
-    Data,
-    Interpretation,
-    errorStatus
-  ) {
-    var newObj = {
-      msgNr: msgNr || '-',
-      OriginalMessage: OriginalMessage || '-',
-      CobID: CobID || '-',
-      FrameData: FrameData || '-',
-      type: type || '-',
-      AxisID: AxisID ? AxisID : '-',
-      CS: CS || '-',
-      Object: Object || '-',
-      ObjectName: ObjectName || '-',
-      Data: Data || '-',
-      Interpretation: Interpretation || '-',
-      errorStatus: errorStatus || '-'
+  if (ProtocolGlobal == 'CANOPEN') {
+    var arr = AllCAN_MsgsExtracted_array
+    var PDOMessageToDecode
+    var ResultingArray = MessagesDecoded_ArrayOfObjects
+    var prematureEnd = false
+    if (globalIndex[0] == 0) {
+      // We reset only if we have a new log file
+      CanLogStatistics = []
+      ResultingArray = []
+      ObjectValuesSaved_global['6060'] = []
+    } else {
+      ResultingArray = ResultingArray.slice(0, globalIndex[0])
     }
 
-    ResultingArray.push(newObj)
-  }
+    function createObject(
+      msgNr,
+      OriginalMessage,
+      CobID,
+      FrameData,
+      type,
+      AxisID,
+      CS,
+      Object,
+      ObjectName,
+      Data,
+      Interpretation,
+      errorStatus
+    ) {
+      var newObj = {
+        msgNr: msgNr || '-',
+        OriginalMessage: OriginalMessage || '-',
+        CobID: CobID || '-',
+        FrameData: FrameData || '-',
+        type: type || '-',
+        AxisID: AxisID ? AxisID : '-',
+        CS: CS || '-',
+        Object: Object || '-',
+        ObjectName: ObjectName || '-',
+        Data: Data || '-',
+        Interpretation: Interpretation || '-',
+        errorStatus: errorStatus || '-'
+      }
 
-  for (let index = globalIndex[0]; index < arr.length; index++) {
-    if (index == 0) {
-      console.log('🚀xXx First index: ', index)
-    } else if (index == arr.length - 1 || index == arr.length - 2) {
-      console.log('🚀xXx SemiLast/Last index: ', index)
+      ResultingArray.push(newObj)
     }
 
-    let row = arr[index]
-    //Handle Empty Lines
-    if (row[1] == '') {
-      row[2] = 'Empty'
-      row[3] = 'Line'
-      UpdateStatisticsBasedOnMessage('All', '-')
-      createObject(row[0], row[1], row[2], row[3], false, 'All')
-      continue
-    }
-    var aux_CobID = CobID_who_dis(row[2])
-    var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
+    for (let index = globalIndex[0]; index < arr.length; index++) {
+      if (index == 0) {
+        console.log('🚀xXx First index: ', index)
+      } else if (index == arr.length - 1 || index == arr.length - 2) {
+        console.log('🚀xXx SemiLast/Last index: ', index)
+      }
 
-    if (aux_CobID[2] == 'NMT') {
-      //Special case for NMT axisID
+      let row = arr[index]
+      //Handle Empty Lines
+      if (row[1] == '') {
+        row[2] = 'Empty'
+        row[3] = 'Line'
+        UpdateStatisticsBasedOnMessage('All', '-')
+        createObject(row[0], row[1], row[2], row[3], false, 'All')
+        continue
+      }
+      var aux_CobID = CobID_who_dis(row[2])
+      var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
 
-      if (DecodedMessage[5] != 'error') {
-        aux_CobID[1] = 'NMT'
-        var axisID = hexToDec(DecodedMessage[1], 16)
-        if (axisID > 127) {
-          DecodedMessage[4] = 'Axis ID must be between 0 and 127'
-          DecodedMessage[5] = 'error'
-          aux_CobID[1] = '-'
-        } else if (axisID == 0) {
-          aux_CobID[1] = 'All'
-          DecodedMessage[4] = 'All Axes - '.concat(DecodedMessage[4])
-        } else {
-          aux_CobID[1] = axisID
+      if (aux_CobID[2] == 'NMT') {
+        //Special case for NMT axisID
+
+        if (DecodedMessage[5] != 'error') {
+          aux_CobID[1] = 'NMT'
+          var axisID = hexToDec(DecodedMessage[1], 16)
+          if (axisID > 127) {
+            DecodedMessage[4] = 'Axis ID must be between 0 and 127'
+            DecodedMessage[5] = 'error'
+            aux_CobID[1] = '-'
+          } else if (axisID == 0) {
+            aux_CobID[1] = 'All'
+            DecodedMessage[4] = 'All Axes - '.concat(DecodedMessage[4])
+          } else {
+            aux_CobID[1] = axisID
+          }
         }
-      }
 
-      DecodedMessage[1] = '-' //Declaring Object as nothing
-    } else if (aux_CobID[2] == 'NMT_Monitoring') {
-      if (row[3] == 'empty') {
-        row[3] = '-'
-        DecodedMessage[4] = 'RTR request from master'
-        DecodedMessage[5] = 'neutral'
+        DecodedMessage[1] = '-' //Declaring Object as nothing
+      } else if (aux_CobID[2] == 'NMT_Monitoring') {
+        if (row[3] == 'empty') {
+          row[3] = '-'
+          DecodedMessage[4] = 'RTR request from master'
+          DecodedMessage[5] = 'neutral'
+        }
+        aux_CobID[2] = 'NMT_M'
+      } else if (aux_CobID[2] == 'SYNC') {
+        if (row[3] == 'empty') {
+          row[3] = '-'
+          DecodedMessage[4] = 'SYNC'
+          DecodedMessage[5] = 'neutral'
+        }
+        aux_CobID[2] = 'SYNC'
       }
-      aux_CobID[2] = 'NMT_M'
-    } else if (aux_CobID[2] == 'SYNC') {
-      if (row[3] == 'empty') {
-        row[3] = '-'
-        DecodedMessage[4] = 'SYNC'
-        DecodedMessage[5] = 'neutral'
-      }
-      aux_CobID[2] = 'SYNC'
-    }
-    UpdateStatisticsBasedOnMessage(aux_CobID[1], aux_CobID[2])
+      UpdateStatisticsBasedOnMessage(aux_CobID[1], aux_CobID[2])
 
-    createObject(
-      row[0], //Message NR
-      row[1], //OriginalMsg
-      row[2], //CobID
-      row[3], //Message
-      aux_CobID[2], //type
-      aux_CobID[1], //AxisID
-      DecodedMessage[0], //CS
-      DecodedMessage[1], //Object
-      DecodedMessage[2], //ObjName
-      DecodedMessage[3], //Data
-      DecodedMessage[4], //Interpretation
-      DecodedMessage[5] //Error
-    )
-    if (DecodedMessage[0] == 'MissingPDO') {
-      console.log('MissingPDO we reseted the proccess')
-      PDOMessageToDecode = ResultingArray[index]
-      prematureEnd = true
-      globalIndex[0] = index
-      index = arr.length
-      continue
+      createObject(
+        row[0], //Message NR
+        row[1], //OriginalMsg
+        row[2], //CobID
+        row[3], //Message
+        aux_CobID[2], //type
+        aux_CobID[1], //AxisID
+        DecodedMessage[0], //CS
+        DecodedMessage[1], //Object
+        DecodedMessage[2], //ObjName
+        DecodedMessage[3], //Data
+        DecodedMessage[4], //Interpretation
+        DecodedMessage[5] //Error
+      )
+      if (DecodedMessage[0] == 'MissingPDO') {
+        console.log('MissingPDO we reseted the proccess')
+        PDOMessageToDecode = ResultingArray[index]
+        prematureEnd = true
+        globalIndex[0] = index
+        index = arr.length
+        continue
+      }
     }
+
+    if (!prematureEnd) {
+      if (
+        !(AllCAN_MsgsExtracted_array.length == 1 && AllCAN_MsgsExtracted_array[0][2] == 'Empty')
+      ) {
+        //Because the first time the page is loaded it thinks the first empty line is a message and tries to decode it
+        setIsDrawerOpen(true)
+      }
+    } else {
+      console.log('-------------------PREMATURE EXIT')
+      setOpenPDOModal(true)
+      setObjectIterationPDO(PDOMessageToDecode)
+    }
+    return ResultingArray
+  } else if (ProtocolGlobal == 'RS232') {
+    return AllCAN_MsgsExtracted_array
   }
-
-  if (!prematureEnd) {
-    if (!(AllCAN_MsgsExtracted_array.length == 1 && AllCAN_MsgsExtracted_array[0][2] == 'Empty')) {
-      //Because the first time the page is loaded it thinks the first empty line is a message and tries to decode it
-      setIsDrawerOpen(true)
-    }
-  } else {
-    console.log('-------------------PREMATURE EXIT')
-    setOpenPDOModal(true)
-    setObjectIterationPDO(PDOMessageToDecode)
-  }
-  return ResultingArray
 }
 
 function DecodeOneCAN_msgFct(cobID_array, message) {

@@ -5,10 +5,8 @@ import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'
 import CloseIcon from '@mui/icons-material/Close'
 import {
-  filterDecimalWithComma,
   filterDecimal,
   filterHex,
-  hexToDec,
   decToHex,
   getMaxNumberFromStringRange
 } from '../../functions/NumberConversion'

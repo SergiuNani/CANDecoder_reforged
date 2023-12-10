@@ -210,7 +210,7 @@ export const ColorModeContext = createContext({
 })
 
 export const useMode = () => {
-  const [mode, setMode] = useState('light') //bug fix to dark
+  const [mode, setMode] = useState('dark')
   const [selected, setSelected] = useState('HOME')
 
   const colorMode = useMemo(

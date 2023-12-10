@@ -17,9 +17,8 @@ import { RegisterSelectionComponent } from './RegisterWindow'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import {
   MotorSpecificationsContext,
-  UserVsDebugModeContext,
+  ProtocolGlobalContext,
   FG_Context,
-  FG_OptionsStarter,
   DecodeCANlog_topbarOptionsContext,
   SidebarContext
 } from '../../App'
@@ -70,16 +69,13 @@ const Topbar = () => {
     const handleKeyPress = (event) => {
       if (event.altKey && event.key === 'c') {
         console.log('ev')
-        // setCalcVsRegDialogStatus(false)
 
-        // setTimeout(() => {
         setCalcVsRegDialogStatus(true)
         if (CalcVsRegister == 'Calculator') {
           setCalcVsRegister('Register')
         } else {
           setCalcVsRegister('Calculator')
         }
-        // }, 10)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -97,7 +93,8 @@ const Topbar = () => {
         zIndex: 1,
         display: 'flex',
         justifyContent: 'space-between',
-        padding: '0.2rem'
+        padding: '0.2rem',
+        userSelect: 'none'
       }}
     >
       <Box>
@@ -138,7 +135,6 @@ export default Topbar
 export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  // const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
   function handleClose() {
     setSettingsDialogOpen(false)
   }
@@ -147,7 +143,7 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
       <div
         style={{
           border: `1px solid ${colors.primary[400]}`,
-          padding: '2rem',
+          padding: '1rem',
           background: `${colors.primary[200]}`
         }}
       >
@@ -155,7 +151,11 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
           Application Settings
         </Typography>
 
-        <AccordionComponent title="Working Mode" children={<WorkingModeInsertPart />} />
+        <AccordionComponent
+          title="Communication Protocol"
+          children={<WorkingModeInsertPart />}
+          defaultExpanded
+        />
         <AccordionComponent title="General Settings" children={<GeneralSettingsInsertPart />} />
         <AccordionComponent title="Factor Group" children={<FactorGroupInsertPart />} />
       </div>
@@ -163,17 +163,19 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
   )
 }
 
-const AccordionComponent = ({ title, children }) => {
+const AccordionComponent = ({ title, children, defaultExpanded }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
-    <Accordion defaultExpanded sx={{ background: `${colors.primary[300]}` }}>
+    <Accordion
+      defaultExpanded={defaultExpanded}
+      sx={{ background: `${colors.primary[300]}`, userSelect: 'none' }}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
           color: colors.yellow[500],
           fontSize: '1.2rem',
-          // mb: '1rem',
           borderBottom: `1px solid ${colors.primary[400]}`,
           '&.Mui-expanded': {
             minHeight: '3rem !important'
@@ -193,26 +195,25 @@ const AccordionComponent = ({ title, children }) => {
 const WorkingModeInsertPart = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const { userVsDebugMode, setUserVsDebugMode } = useContext(UserVsDebugModeContext)
+  const { ProtocolGlobal, setProtocolGlobal } = useContext(ProtocolGlobalContext)
   return (
     <section style={{ padding: '1rem' }}>
-      <li>Display Mode : </li>
       <RadioGroup
-        row
         onChange={(e) => {
-          setUserVsDebugMode(e.target.value)
+          setProtocolGlobal(e.target.value)
         }}
-        value={userVsDebugMode}
+        value={ProtocolGlobal}
         sx={{
           justifyContent: 'center',
+          ml: '1rem',
           '& .MuiSvgIcon-root': {
-            // fontSize: '1rem'
             color: `${colors.green[400]}`
           }
         }}
       >
-        <FormControlLabel value="USER" control={<Radio />} label="USER" />
-        <FormControlLabel value="DEBUG" control={<Radio />} label="DEBUG" />
+        <FormControlLabel value="CANOPEN" control={<Radio />} label="CANOpen/TehnoCan" />
+        <FormControlLabel value="RS232" control={<Radio />} label="RS232" />
+        {/* <FormControlLabel value="TMLCAN" control={<Radio />} label="TMLCAN" /> */}
       </RadioGroup>
     </section>
   )

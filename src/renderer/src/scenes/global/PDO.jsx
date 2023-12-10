@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Typography, Dialog } from '@mui/material'
-import { Button1, Checkbox_Component } from '../../components/SmallComponents'
+import { ButtonTransparent, Checkbox_Component } from '../../components/SmallComponents'
 import { useTheme } from '@mui/material'
 import { tokens } from '../../theme'
 import { Input_AutoFormat } from '../../components/ForumsComponents'
@@ -412,7 +412,22 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
               right: '-1.1rem'
             }}
           >
-            <Button1 onClick={handleApply}>Apply</Button1>
+            <ButtonTransparent
+              onClick={handleApply}
+              sx={{
+                height: '2.7rem',
+                fontSize: '1rem',
+                margin: '1rem 2rem',
+                background: `${colors.primary[300]}`,
+                '&:hover': {
+                  background: `${colors.primary[200]}`,
+                  color: `${colors.red[200]}`
+                },
+                textTransform: 'none'
+              }}
+            >
+              Apply
+            </ButtonTransparent>
           </div>
         </section>
       </Box>

@@ -9,20 +9,12 @@ import CreateIcon from '@mui/icons-material/Create'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import HelpIcon from '@mui/icons-material/Help'
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
-import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
-import DvrIcon from '@mui/icons-material/Dvr'
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { useNavigate } from 'react-router-dom'
 import { SidebarContext } from '../../App'
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import TableChartIcon from '@mui/icons-material/TableChart'
-import ArticleIcon from '@mui/icons-material/Article'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
-import MoreIcon from '@mui/icons-material/More'
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay'
-import ListAltIcon from '@mui/icons-material/ListAlt'
 import { handleDebugButton } from '../debug'
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme()
@@ -179,16 +171,6 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
 
-            <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
-              Encrypt
-            </Typography>
-            <Item
-              title="Bar Chart"
-              to="/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
             <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               More
             </Typography>

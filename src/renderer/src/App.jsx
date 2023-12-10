@@ -1,23 +1,31 @@
-import { useState, createContext, Profiler, useContext } from 'react'
+import { useState, createContext, Profiler, useContext, lazy, Suspense } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
-import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG'
-import { RegisterWindow } from './scenes/global/RegisterWindow'
-import DebugScene from './scenes/debug'
-import HelpWindow from './scenes/HelpWindow.jsx'
 import { DrawerComponent } from './components/FloatingComponents'
 import { ColorsComponent } from './scenes/debug'
-import EditDataWindow from './scenes/EditDataWindow'
 import { Objects_collection, Registers_CANopen, Registers_THS, ESM_info } from './data/BigData'
 export var Objects_collection_LS = []
 export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
 export var ESM_info_LS = []
-import HomeWindow from './scenes/HomeWindow'
-import MoreOptionsWindow from './scenes/MoreOptionsWindow.jsx'
+
+import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG' //because of some useContext problems
+const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
+const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
+const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
+const DebugScene = LazyImport('./scenes/debug')
+const EditDataWindow = LazyImport('./scenes/EditDataWindow')
+const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
+
+// import HomeWindow from './scenes/HomeWindow'
+// import MoreOptionsWindow from './scenes/MoreOptionsWindow'
+// import { RegisterWindow } from './scenes/global/RegisterWindow'
+// import DebugScene from './scenes/debug'
+// import EditDataWindow from './scenes/EditDataWindow'
+// import HelpWindow from './scenes/HelpWindow.jsx'
 
 function App() {
   if (
@@ -46,16 +54,18 @@ function App() {
           <main style={{ flexGrow: 1, position: 'relative', height: '100%' }}>
             <Topbar />
             <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
-            <Routes>
-              <Route path="/" element={<HomeWindow />} />
-              <Route path="/Home" element={<HomeWindow />} />
-              <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
-              <Route path="/MoreOptionsWindow" element={<MoreOptionsWindow />} />
-              <Route path="/Registers" element={<RegisterWindow />} />
-              <Route path="/DebugScene" element={<DebugScene />} />
-              <Route path="/EditDataWindow" element={<EditDataWindow />} />
-              <Route path="/Help" element={<HelpWindow />} />
-            </Routes>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Routes>
+                <Route path="/" element={<HomeWindow />} />
+                <Route path="/Home" element={<HomeWindow />} />
+                <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
+                <Route path="/MoreOptionsWindow" element={<MoreOptionsWindow />} />
+                <Route path="/Registers" element={<RegisterWindow />} />
+                <Route path="/DebugScene" element={<DebugScene />} />
+                <Route path="/EditDataWindow" element={<EditDataWindow />} />
+                <Route path="/Help" element={<HelpWindow />} />
+              </Routes>
+            </Suspense>
           </main>
         </div>
       </HashRouter>
@@ -67,7 +77,7 @@ export default App
 
 export const SidebarContext = createContext(null)
 export const MotorSpecificationsContext = createContext()
-export const UserVsDebugModeContext = createContext()
+export const ProtocolGlobalContext = createContext()
 export const FG_Context = createContext()
 export const DecodeCANlog_topbarOptionsContext = createContext()
 
@@ -87,7 +97,7 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [userVsDebugMode, setUserVsDebugMode] = useState('USER') //USER --DEBUG
+  const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') //CANOPEN --RS232 -- TMLCAN
 
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
@@ -117,7 +127,7 @@ function MyProviders({ children }) {
               value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
             >
               <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-                <UserVsDebugModeContext.Provider value={{ userVsDebugMode, setUserVsDebugMode }}>
+                <ProtocolGlobalContext.Provider value={{ ProtocolGlobal, setProtocolGlobal }}>
                   <FG_Context.Provider
                     value={{
                       FG_DisplayVSApplied,
@@ -128,7 +138,7 @@ function MyProviders({ children }) {
                   >
                     {children}
                   </FG_Context.Provider>
-                </UserVsDebugModeContext.Provider>
+                </ProtocolGlobalContext.Provider>
               </SidebarContext.Provider>
             </MotorSpecificationsContext.Provider>
           </DecodeCANlog_topbarOptionsContext.Provider>
@@ -154,9 +164,22 @@ function Text2JSON_ESM_info() {
   })
   return text
 }
+
+function LazyImport(path, namedExport) {
+  return lazy(() => {
+    const promise = import(path)
+    if (namedExport == null) {
+      return promise
+    } else {
+      return promise.then((module) => {
+        return { default: module[namedExport] }
+      })
+    }
+  })
+}
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
   console.log(actualTime)
-  // console.log(diffTime)
+  console.log(diffTime)
 }

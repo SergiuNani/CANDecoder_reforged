@@ -9,7 +9,6 @@ import {
   hex2bin,
   bin2hex
 } from './NumberConversion'
-import { useContext } from 'react'
 import { FG_DisplayVSApplied_1, FG_OptionsObject_1 } from '../scenes/global/topbar'
 import {
   Mapping_objects_array,
@@ -49,7 +48,8 @@ export var ObjectValuesSaved_global = {
   '2064_address': [], //deciml
   '2064_memoryType': [],
   '2064_addrInc': [],
-  '2064_addrSize': []
+  '2064_addrSize': [],
+  2069: []
 }
 
 export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
@@ -429,6 +429,23 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       } else {
         TextReturn = `There is no recorded instance of object 0x2064h`
       }
+    case '2069':
+      value = LittleEndian(value)
+      var startAddy = LittleEndian(value.slice(0, 4))
+      var endAddy = LittleEndian(value.slice(4, 8))
+
+      TextReturn = `Checksum, start: 0x${startAddy}h, end: 0x${endAddy}h`
+      ObjectValuesSaved_global['2064_memoryType'][
+        axisID
+      ] = `Memory range : 0x${startAddy}h - 0x${endAddy}h`
+      break
+    case '206A':
+      var range = ObjectValuesSaved_global['2064_memoryType'][axisID]
+      if (range) {
+        TextReturn = `${range}, checksum = ${value}`
+      }
+      break
+
     default:
       //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
       for (const type in ObjectDescriptions) {

@@ -422,16 +422,9 @@ export const DefaultTable = () => {
   console.log('TableComponent -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var {
-    LogDisplayRange,
-    LogDisplayRange_Inf,
-    LogDisplayRange_Sup,
-    FilteredLogLenght,
-    FullLogLength,
-    CutTable_Inf,
-    CutTable_Sup,
-    auxTable
-  } = useContext(DecodedTableOptionsContext)
+  var { LogDisplayRange, LogDisplayRange_Inf, LogDisplayRange_Sup, FilteredLogLenght } = useContext(
+    DecodedTableOptionsContext
+  )
   var { setShortcutToDecodeMessages, shortcutToDecodeMessages_whoCalled } = useContext(
     Decode_CAN_LOG_WindowContext
   )

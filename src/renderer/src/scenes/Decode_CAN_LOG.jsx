@@ -21,7 +21,7 @@ import {
 import { tokens } from '../theme'
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { DecodeCANlog_topbarOptionsContext } from '../App'
+import { DecodeCANlog_topbarOptionsContext, ProtocolGlobalContext } from '../App'
 import { InsertTextIntoTextArea } from '../data/TestingData'
 import {
   Extract_MSGs_from_text,
@@ -48,13 +48,13 @@ import {
   TableROW_simple
 } from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
-
+export var Decode_CAN_LOG_WindowContext = createContext()
+export var DecodedTableOptionsContext = createContext()
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = []
 export let filteredMessages_g = []
-export var Decode_CAN_LOG_WindowContext = createContext()
-export var DecodedTableOptionsContext = createContext()
+
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
@@ -290,7 +290,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
-  const [renderDrawer, setRenderDrawer] = useState(false)
+  const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
   const { toggleFilterWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   const { hideTableForceParentToggle, isAdvancedSearchOpen } = useContext(
     Decode_CAN_LOG_WindowContext
@@ -333,20 +333,23 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   AllCAN_MsgsExtracted_array = useMemo(() => {
     console.log('-2.1- - AllCAN_MsgsExtracted_array -  only once')
     globalIndex = [0]
-    return Extract_MSGs_from_text(fileInnerText.split('\n'))
+    return Extract_MSGs_from_text(fileInnerText.split('\n'), ProtocolGlobal)
   }, [fileInnerText])
 
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
     console.log('-2.2- - MessagesDecoded_ArrayOfObjects')
-    FullLogLength.current = AllCAN_MsgsExtracted_array.length
-    CutTable_Sup.current = FullLogLength.current
+    if (AllCAN_MsgsExtracted_array) {
+      FullLogLength.current = AllCAN_MsgsExtracted_array.length
+      CutTable_Sup.current = FullLogLength.current
+    }
     auxTable.current[3] = 1
     auxTable.current[4] = FullLogLength.current
     return CreateDecodedArrayOfObjects(
       AllCAN_MsgsExtracted_array,
       setIsDrawerOpen,
       setOpenPDOModal,
-      setObjectIterationPDO
+      setObjectIterationPDO,
+      ProtocolGlobal
     )
   }, [fileInnerText, restartDecoding])
 
@@ -377,10 +380,9 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         setIsDrawerOpen={setIsDrawerOpen}
         TableOption={TableOption}
         setTableOption={setTableOption}
-        renderDrawer={renderDrawer}
       />
     )
-  }, [fileInnerText, isDrawerOpen, TableOption, renderDrawer])
+  }, [fileInnerText, isDrawerOpen, TableOption])
 
   const Table_Memo = useMemo(() => {
     return (
@@ -406,14 +408,29 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         CutTable_Sup,
         auxTable,
         AllCAN_MsgsExtracted_array,
-        renderDrawer,
         TableRefForScroll
       }}
     >
-      {DecodePDOs_Memo}
-      {Drawer_Memo}
-      {Table_Memo}
-      {AdvancedSearch_Memo}
+      {ProtocolGlobal == 'CANOPEN' ? (
+        <Box>
+          {DecodePDOs_Memo}
+          {Drawer_Memo}
+          {Table_Memo}
+          {AdvancedSearch_Memo}
+        </Box>
+      ) : ProtocolGlobal == 'RS232' ? (
+        <Box>
+          <div>RS232---------------------------------------------</div>
+          {AllCAN_MsgsExtracted_array.map((element, index) => {
+            return <div key={index}>{element}</div>
+          })}
+          {/* {MessagesDecoded_ArrayOfObjects.map((element, index) => {
+            return <div key={index}>{element}</div>
+          })} */}
+        </Box>
+      ) : (
+        <Box>TMLCAN</Box>
+      )}
     </DecodedTableOptionsContext.Provider>
   )
 }
@@ -423,8 +440,7 @@ const DrawerComponent_DecodeOptions = ({
   setTableOption,
   isDrawerOpen,
   setIsDrawerOpen,
-  TableOption,
-  renderDrawer
+  TableOption
 }) => {
   console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
@@ -877,7 +893,7 @@ const DrawerComponent_DecodeOptions = ({
         </Box>
       </Box>
     )
-  }, [TableOption, groupingOptionsRender, renderDrawer, toggle, messageTypeSorting])
+  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
