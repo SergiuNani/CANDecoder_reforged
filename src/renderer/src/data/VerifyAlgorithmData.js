@@ -425,6 +425,10 @@ SB-to-CAN V2 compact  CAN-1,54,00:06.3,      ,702,1,5,.
 22	    	20:34:24	694.985	          0.380		      1409	       581	      	  8	43	66	20	00	57	5A	00	00	Cf__WZ__	
 23	    	20:34:25	087.729	        392.744		      1537	       601	      	  8	40	66	20	00	00	00	34	12	@f____4_	
 24	    	20:34:25	088.071	          0.342		      1409	       581	      	  8	43	66	20	00	FF	FF	00	00	Cf__ÿÿ__
+606 23 67 20 00 34 12 6A 03
+605 23 64 20 00 08 00 38 56
+605 23 65 20 00 00 C4 00 00
+605 23 65 20 00 00 00 00 00	
 
 `
 export const Hardcoded_VerifyCANopenValidityArray = [
@@ -6099,7 +6103,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00005476',
-    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    Interpretation: 'Read,  0x4000h -> 5476h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6129,7 +6133,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00005476',
-    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    Interpretation: 'Read,  0x4000h -> 5476h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6159,7 +6163,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00005476',
-    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    Interpretation: 'Read,  0x4000h -> 5476h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6189,7 +6193,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00005476',
-    Interpretation: 'Read, 0x4000h -> 5476, EEPROM memory ',
+    Interpretation: 'Read,  0x4000h -> 5476h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6399,7 +6403,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '000074C0',
-    Interpretation: 'Read, 0x4005h -> 74C0, EEPROM memory ',
+    Interpretation: 'Read,  0x4005h -> 74C0h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6429,7 +6433,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '000009C0',
-    Interpretation: 'Read, 0x4006h -> 09C0, EEPROM memory ',
+    Interpretation: 'Read,  0x4006h -> 09C0h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6459,7 +6463,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00004009',
-    Interpretation: 'Read, 0x4007h -> 4009, EEPROM memory ',
+    Interpretation: 'Read,  0x4007h -> 4009h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6489,7 +6493,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00000404',
-    Interpretation: 'Read, 0x4008h -> 0404, EEPROM memory ',
+    Interpretation: 'Read,  0x4008h -> 0404h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6519,7 +6523,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '00005A57',
-    Interpretation: 'Read, 0x4009h -> 5A57, EEPROM memory ',
+    Interpretation: 'Read,  0x4009h -> 5A57h , EEPROM memory ',
     errorStatus: 'random'
   },
   {
@@ -6549,11 +6553,67 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2066',
     ObjectName: 'Read data from address set in 2064h\n                            (16/32 bits)',
     Data: '0000FFFF',
-    Interpretation: 'Read, 0x400Ah -> FFFF, EEPROM memory ',
+    Interpretation: 'Read,  0x400Ah -> FFFFh , EEPROM memory ',
     errorStatus: 'random'
   },
   {
     msgNr: 428,
+    OriginalMessage: '606 23 67 20 00 34 12 6A 03',
+    CobID: '606',
+    FrameData: '2367200034126A03',
+    type: 'R_SDO',
+    AxisID: 6,
+    CS: '23',
+    Object: '#x2067',
+    ObjectName: 'Write data at specified address',
+    Data: '036A1234',
+    Interpretation: 'Write: #x2067 <- 036A1234h',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 429,
+    OriginalMessage: '605 23 64 20 00 08 00 38 56',
+    CobID: '605',
+    FrameData: '2364200008003856',
+    type: 'R_SDO',
+    AxisID: 5,
+    CS: '23',
+    Object: '#x2064',
+    ObjectName: 'Read/Write configuration register',
+    Data: '56380008',
+    Interpretation: 'StartAddress: 5638, 16bits data, EEPROM memory, AutoIncrement: 1',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 430,
+    OriginalMessage: '605 23 65 20 00 00 C4 00 00',
+    CobID: '605',
+    FrameData: '2365200000C40000',
+    type: 'R_SDO',
+    AxisID: 5,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '0000C400',
+    Interpretation: 'Write,  0x5638h <- C400h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 431,
+    OriginalMessage: '605 23 65 20 00 00 00 00 00\t',
+    CobID: '605',
+    FrameData: '2365200000000000',
+    type: 'R_SDO',
+    AxisID: 5,
+    CS: '23',
+    Object: '#x2065',
+    ObjectName: 'Write data at address set in 2064h\n                            (16/32 bits)',
+    Data: '00000000',
+    Interpretation: 'Write,  0x5639h <- 0000h , EEPROM memory ',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 432,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',
@@ -6567,7 +6627,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     errorStatus: '-'
   },
   {
-    msgNr: 429,
+    msgNr: 433,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

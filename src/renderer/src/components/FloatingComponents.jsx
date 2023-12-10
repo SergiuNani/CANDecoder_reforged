@@ -112,21 +112,16 @@ export function ConfirmationModal({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant="h2"
-            component="h2"
-            sx={{ color: `${colors.yellow[600]}` }}
-          >
-            Warning !
+          <Typography id="modal-modal-title" variant="h2" sx={{ color: `${colors.yellow[600]}` }}>
+            Warning!
           </Typography>
           <Typography
             id="modal-modal-description"
-            sx={{ mt: '1rem', color: `${colors.grey[100]}` }}
+            sx={{ mt: '1rem', color: `${colors.grey[100]}`, fontSize: '0.9rem' }}
           >
             {message}
           </Typography>
-          <Box sx={{ mt: '0.2rem' }}>
+          <Box sx={{ mt: '1rem', display: 'flex', gap: '2rem' }}>
             <Button1
               onClick={() => {
                 handleClose()

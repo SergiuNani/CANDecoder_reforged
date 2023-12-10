@@ -416,6 +416,19 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         TextReturn = `There is no recorded instance of object 0x2064h`
       }
       break
+
+    case '2067':
+      var memType = ObjectValuesSaved_global['2064_memoryType'][axisID]
+      if (memType) {
+        value = LittleEndian(value)
+        var value2write = LittleEndian(value.slice(0, 4))
+        var addy = LittleEndian(value.slice(4, 8))
+
+        TextReturn = `Write,  0x${addy}h <- ${value2write}h , ${memType} `
+        break
+      } else {
+        TextReturn = `There is no recorded instance of object 0x2064h`
+      }
     default:
       //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile
       for (const type in ObjectDescriptions) {

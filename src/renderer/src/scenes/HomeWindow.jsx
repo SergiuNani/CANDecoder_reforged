@@ -189,8 +189,7 @@ function BigObjectSearchInputComponent({
     right: '0.3rem',
     transform: `translateY(-50%) rotate(${isFocused ? '180deg' : '0deg'})`,
     transition: 'transform 0.2s ease',
-    color: `${colors.green[200]}`,
-    fontSize: '1.1rem'
+    color: `${colors.green[200]}`
   }
   return (
     <div
@@ -204,9 +203,12 @@ function BigObjectSearchInputComponent({
       <label
         style={{
           position: 'relative',
-          padding: '1.1rem',
           backgroundColor: `${colors.primary[300]}`,
-          borderRadius: '1rem'
+          borderRadius: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          width: '90%',
+          padding: '0.1rem'
         }}
       >
         <SearchIcon sx={{ zoom: '1.5' }} />
@@ -221,13 +223,14 @@ function BigObjectSearchInputComponent({
           placeholder={placeholder}
           style={{
             backgroundColor: `${colors.primary[300]}`,
-            padding: '0.5rem 1rem',
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
             outline: 'none',
-            margin: '0.2rem 0 0 1rem',
-            width: '20rem',
-            fontSize: '1.3rem'
+            position: 'relative',
+            top: '0.1rem',
+            width: '25rem',
+            fontSize: '1.5rem',
+            padding: '0.4rem'
           }}
         />
         <span style={arrowIconStyles}>▼</span>
@@ -257,7 +260,7 @@ function BigObjectSearchInputComponent({
                     : `${colors.primary[300]}`,
 
                 borderRadius: '0.8rem',
-                padding: '1rem',
+                padding: '0.5rem',
                 cursor: 'pointer',
                 // width: '80%',
                 marginBottom: '0.5rem'
@@ -440,9 +443,8 @@ function NumberTransformationComponent() {
   return (
     <Box
       sx={{
-        border: `1px solid yellow`,
         backgroundColor: `${colors.primary[200]}`,
-        border: `1px solid ${colors.primary[400]}`,
+        border: `2px solid ${colors.primary[400]}`,
         borderRadius: '1rem',
         p: '1rem'
       }}
@@ -453,19 +455,18 @@ function NumberTransformationComponent() {
       <div style={{ display: 'flex' }}>
         {/* RADIO GROUP: POS/SPD/ACC/TIME------------------------------------------------------- */}
         <RadioGroup
-          // column={true}
-          aria-labelledby="demo-row-radio-buttons-group-label"
           onChange={handle4OptionChanged}
-          name="row-radio-buttons-group"
           value={fourOptionsRadioSelection}
           sx={{
             '& .MuiSvgIcon-root': {
-              // fontSize: '1rem'
               color: `${colors.green[400]}`
             },
             '& .MuiFormControlLabel-root': {
-              margin: '0', // Remove margin
-              padding: '0' // Remove padding
+              margin: '0',
+              padding: '0'
+            },
+            '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+              padding: '0.3rem'
             }
           }}
         >
@@ -482,7 +483,6 @@ function NumberTransformationComponent() {
             alignItems: 'center',
             gap: '1.2rem',
             width: '100%'
-            // border: `1px solid yellow`
           }}
         >
           {/* "Initial Value" component------------------------------------------------------- */}
@@ -581,9 +581,8 @@ function BigFindCobIDComponent() {
   return (
     <Box
       sx={{
-        border: `1px solid yellow`,
         backgroundColor: `${colors.primary[200]}`,
-        border: `1px solid ${colors.primary[400]}`,
+        border: `2px solid ${colors.primary[400]}`,
         borderRadius: '1rem',
         p: '1rem',
         mt: '2rem'

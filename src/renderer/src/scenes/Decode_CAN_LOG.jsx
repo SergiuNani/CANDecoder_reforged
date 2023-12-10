@@ -887,7 +887,7 @@ const DrawerComponent_DecodeOptions = ({
             top: '3rem',
             width: '30rem',
             backgroundColor: '#333',
-            color: 'white',
+            color: `${colors.grey[100]}`,
             borderRadius: '1rem',
             height: '95vh',
             padding: '20px',
@@ -920,7 +920,8 @@ const DrawerComponent_DecodeOptions = ({
               sx={{
                 display: 'flex',
                 justifyContent: 'start',
-                alignItems: 'center'
+                alignItems: 'center',
+                gap: '1rem'
               }}
             >
               <Button3
@@ -1018,7 +1019,8 @@ const AvailableAxes_Component = () => {
                 sx={{
                   fontSize: '1.1rem',
                   color: `${colors.red[500]}`,
-                  fontWeight: '700'
+                  fontWeight: '700',
+                  boxShadow: 'none'
                 }}
                 onClick={handleAxisClick}
               >

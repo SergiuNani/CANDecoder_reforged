@@ -174,7 +174,7 @@ const Sidebar = () => {
             <Item
               title="More Options"
               to="/MoreOptionsWindow"
-              icon={<MoreIcon />}
+              icon={<DragIndicatorIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />
@@ -196,20 +196,6 @@ const Sidebar = () => {
               title="Help"
               to="/Help"
               icon={<HelpIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
-            <Item
-              title="React_Logic"
-              to="/React_Logic"
-              icon={<DragIndicatorIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
-            <Item
-              title="React_Logic2"
-              to="/React_Logic2"
-              icon={<DragIndicatorIcon />}
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />

@@ -33,7 +33,6 @@ export const Button1 = ({ children, onClick }) => {
       onClick={onClick}
       sx={{
         height: '2.7rem',
-        margin: '1rem 2rem',
         fontSize: '1rem',
         background: `${colors.primary[300]}`,
         '&:hover': {
@@ -82,7 +81,6 @@ export const Button3 = ({ children, onClick }) => {
       onClick={onClick}
       sx={{
         height: '2.7rem',
-        margin: '1rem 2rem',
         fontSize: '1rem',
         background: `${colors.red[400]}`,
         '&:hover': {

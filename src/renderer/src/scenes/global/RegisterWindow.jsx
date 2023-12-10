@@ -88,7 +88,6 @@ export const RegisterWindow = () => {
           display: 'flex',
           justifyContent: 'center',
           gap: '3rem'
-          // border: '1px solid yellow'
         }}
       >
         {windowsNumber > 0 && (
@@ -192,7 +191,7 @@ export const RegisterSelectionComponent = ({
     <div
       style={{
         // display: 'flex',
-        border: `1px solid  ${colors.red[200]}`,
+        border: `2px solid  ${colors.grey[200]}`,
         padding: '0 0.3rem 0.4rem 0.3rem ',
         borderRadius: '1rem',
         width: ComponentWidth ? ComponentWidth : '27.5rem',
@@ -293,7 +292,6 @@ export const RegisterSelectionComponent = ({
         <Button
           onClick={handleChangeListType}
           sx={{
-            // border: '1px solid yellow',
             color: `${colors.grey[100]}`,
             fontSize: '0.9rem',
             marginLeft: '0.5rem '

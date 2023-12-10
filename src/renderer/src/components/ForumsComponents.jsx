@@ -11,7 +11,8 @@ export function AutocompleteInput_AllObjects({
   placeholder,
   tellParentObjectChanged,
   resetValueofInputFromParent,
-  focus
+  focus,
+  width
 }) {
   var options = Objects_collection_LS
   const theme = useTheme()
@@ -120,7 +121,7 @@ export function AutocompleteInput_AllObjects({
       ref={inputRef}
       style={{
         // overflow: 'auto',
-        width: '20rem',
+        // width: '20rem',
         position: 'relative'
       }}
     >
@@ -149,11 +150,11 @@ export function AutocompleteInput_AllObjects({
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
-            borderRadius: '2rem',
+            borderRadius: '0.7rem',
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: '0.2rem 0 0 1rem',
-            width: '7rem',
+            width: width ? width : '7rem',
             fontSize: '1rem'
           }}
         />
@@ -163,16 +164,14 @@ export function AutocompleteInput_AllObjects({
         <ul
           ref={ulRef}
           style={{
-            zIndex: '2',
             position: 'absolute',
             top: '100%',
-            width: '100%',
-            maxHeight: '75vh',
-            // backgroundColor: `${colors.primary[500]}`,
+            width: '110%',
+            maxHeight: '50vh',
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            // border: '1px solid yellow',
-            overflow: 'auto'
+            overflowX: 'hidden',
+            zIndex: '2'
           }}
         >
           {filteredOptions.map((option, index) => (
@@ -208,7 +207,8 @@ export function AutocompleteInput_RegisterList({
   tellParentRegisterChanged,
   extendStyle = false,
   resetValueofInputFromParent,
-  focus
+  focus,
+  width
 }) {
   var options = []
   if (type == '1') {
@@ -319,11 +319,7 @@ export function AutocompleteInput_RegisterList({
     <div
       ref={divParentRef}
       style={{
-        // overflow: 'auto',
-        width: extendStyle ? '20rem' : '5rem',
         position: 'relative'
-        // marginLeft: '1rem'
-        // border: '1px solid yellow'
       }}
     >
       <Typography
@@ -356,7 +352,7 @@ export function AutocompleteInput_RegisterList({
             color: `${colors.red[200]}`,
             outline: 'none',
             margin: extendStyle ? '0.2rem 0 0 1rem' : '0',
-            width: extendStyle ? '6.6rem' : '5.6rem',
+            width: width ? width : '5.6rem',
             fontSize: '1rem'
           }}
         />
@@ -370,12 +366,9 @@ export function AutocompleteInput_RegisterList({
             top: '100%',
             width: extendStyle ? '90%' : '450%',
             maxHeight: '50vh',
-            // backgroundColor: `${colors.primary[100]}`,
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            // border: '1px solid yellow',
             overflow: 'auto'
-            // width: '450%'
           }}
         >
           {filteredOptions.map((option, index) => (
@@ -389,8 +382,6 @@ export function AutocompleteInput_RegisterList({
                     : `${colors.primary[300]}`,
 
                 padding: '0.5rem 1rem',
-                // border: `1px solid ${colors.red[500]}`,
-                // borderRadius: '4rem',
                 cursor: 'pointer'
               }}
               className="hover"
@@ -459,6 +450,8 @@ export function Input_AutoFormat({
       sorted = filterDecimal(e.target.value, resolution)
     } else if (callback == 'filterHex') {
       sorted = filterHex(e.target.value, resolution)
+    } else if (callback == 'none') {
+      sorted = e.target.value
     } else {
       sorted = callback(e.target.value, resolution)
     }
@@ -676,7 +669,6 @@ export function Input_ChooseOption({
           placeholder={placeholder}
           style={{
             backgroundColor: variant ? `${colors.primary[200]}` : ` ${colors.primary[300]}`,
-            // border: `1px solid ${colors.primary[500]}`,
             padding: '0.5rem 1rem',
             borderRadius: '2rem',
             color: `${colors.red[200]}`,
@@ -696,12 +688,9 @@ export function Input_ChooseOption({
             top: '100%',
             width: '100%',
             maxHeight: '50vh',
-            // backgroundColor: `${colors.primary[500]}`,
             borderRadius: '0.5rem',
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            // border: '1px solid yellow',
             marginTop: '0.5rem',
-
             overflow: 'auto'
           }}
         >
@@ -716,8 +705,6 @@ export function Input_ChooseOption({
                     : `${colors.primary[300]}`,
 
                 padding: '0.5rem 1rem',
-                // border: `1px solid ${colors.red[500]}`,
-                // borderRadius: '4rem',
                 cursor: 'pointer',
                 zIndex: 1
               }}

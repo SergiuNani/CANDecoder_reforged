@@ -6,17 +6,16 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { ColorModeContext, useMode } from './theme'
 import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG'
 import { RegisterWindow } from './scenes/global/RegisterWindow'
-import React_Logic from './scenes/React_logic'
-import React_Logic2 from './scenes/React_Logic2'
 import DebugScene from './scenes/debug'
 import HelpWindow from './scenes/HelpWindow.jsx'
 import { DrawerComponent } from './components/FloatingComponents'
 import { ColorsComponent } from './scenes/debug'
 import EditDataWindow from './scenes/EditDataWindow'
-import { Objects_collection, Registers_CANopen, Registers_THS } from './data/BigData'
+import { Objects_collection, Registers_CANopen, Registers_THS, ESM_info } from './data/BigData'
 export var Objects_collection_LS = []
 export var Registers_CANopen_LS = []
 export var Registers_THS_LS = []
+export var ESM_info_LS = []
 import HomeWindow from './scenes/HomeWindow'
 import MoreOptionsWindow from './scenes/MoreOptionsWindow.jsx'
 
@@ -24,16 +23,20 @@ function App() {
   if (
     !localStorage.getItem('Objects_collection_LS') ||
     !localStorage.getItem('Registers_CANopen_LS') ||
-    !localStorage.getItem('Registers_THS_LS')
+    !localStorage.getItem('Registers_THS_LS') ||
+    !localStorage.getItem('ESM_info_LS')
   ) {
     // First Write in Local Storage if there is nothing there
     localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection))
     localStorage.setItem('Registers_CANopen_LS', JSON.stringify(Registers_CANopen))
     localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS))
+    ESM_info_LS = Text2JSON_ESM_info()
+    localStorage.setItem('ESM_info_LS', JSON.stringify(ESM_info_LS))
   }
   Objects_collection_LS = JSON.parse(localStorage.getItem('Objects_collection_LS'))
   Registers_CANopen_LS = JSON.parse(localStorage.getItem('Registers_CANopen_LS'))
   Registers_THS_LS = JSON.parse(localStorage.getItem('Registers_THS_LS'))
+  ESM_info_LS = JSON.parse(localStorage.getItem('ESM_info_LS'))
 
   return (
     <MyProviders>
@@ -49,8 +52,6 @@ function App() {
               <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
               <Route path="/MoreOptionsWindow" element={<MoreOptionsWindow />} />
               <Route path="/Registers" element={<RegisterWindow />} />
-              <Route path="/React_Logic" element={<React_Logic />} />
-              <Route path="/React_Logic2" element={<React_Logic2 />} />
               <Route path="/DebugScene" element={<DebugScene />} />
               <Route path="/EditDataWindow" element={<EditDataWindow />} />
               <Route path="/Help" element={<HelpWindow />} />
@@ -135,6 +136,23 @@ function MyProviders({ children }) {
       </ColorModeContext.Provider>
     </Profiler>
   )
+}
+
+function Text2JSON_ESM_info() {
+  var text = ESM_info.split('\n').filter((item) => item !== '')
+
+  text = text.map((row, index) => {
+    var row = row.split(/\s+/).filter((item) => item !== '')
+    var partNumber = 'P'.concat(row[1], '.', row[2], '.', row[3])
+    return {
+      id: index,
+      driveName: row[0],
+      partNumber: partNumber,
+      firmware: row[4],
+      HWID: row[5] ? row[5] : '-'
+    }
+  })
+  return text
 }
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {

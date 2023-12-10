@@ -204,7 +204,7 @@ export function decToHex(num, resolution) {
 }
 
 export function hexToDec(hex, resolution) {
-  if (![8, 16, 32].includes(resolution) || typeof hex !== 'string' || hex === '') {
+  if (![8, 16, 32, 64].includes(resolution) || typeof hex !== 'string' || hex === '') {
     return 0
   }
   if (typeof hex === 'number') {
@@ -255,7 +255,17 @@ export function hex_to_ascii(str1) {
   }
   return str
 }
+export function asciiToDec(inputString) {
+  let hexString = ''
 
+  for (let i = 0; i < inputString.length; i++) {
+    const charCode = inputString.charCodeAt(i)
+    const hexValue = charCode.toString(16).toUpperCase() // Convert to hexadecimal
+    hexString += hexValue.padStart(2, '0') // Ensure two digits per character
+  }
+
+  return hexToDec(hexString, 64)
+}
 /*LittleEndian(arr) - Little to Big Endian transformation */
 /*IN: LittleEndian("AB CD E")*/
 /*OUT:  0ECDAB*/

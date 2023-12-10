@@ -1,4 +1,4 @@
-import { Button1, Button2, Header } from '../components/SmallComponents'
+import { Button2, Header, ButtonTransparent } from '../components/SmallComponents'
 import { useRef, useState } from 'react'
 import {
   AutocompleteInput_RegisterList,
@@ -365,7 +365,14 @@ const EditDataWindow = () => {
     setMessageSnackbar('The Object/Register was successfully deleted !')
     setOpenSnackBarSuccess(true)
   }
-
+  const fourButtonStyle = {
+    color: `${colors.yellow[100]}`,
+    padding: '0.4rem 0.6rem',
+    background: `${colors.blue[300]}`,
+    border: `1px solid ${colors.green[400]}`,
+    margin: '0.3rem',
+    fontSize: '0.9rem'
+  }
   return (
     <div>
       <Header title="Edit Menu" subtitle="Edit any Objects or Registers"></Header>
@@ -374,11 +381,10 @@ const EditDataWindow = () => {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
-          // flexDirection: 'column',
           alignItems: 'center',
-          // alignContent: 'center',
           padding: ' 0 2rem',
-          marginBottom: '1rem'
+          position: 'relative',
+          top: '-2rem'
         }}
       >
         <RowRadioButtonsGroup tellParent={tellParentCheckBoxChanged} defaultValue={dataCategory} />
@@ -388,26 +394,22 @@ const EditDataWindow = () => {
             title="Search for an Object"
             tellParentObjectChanged={tellParentAutoCompleteValueChanged}
             resetValueofInputFromParent={resetValueofInput}
-          />
-        ) : dataCategory == 'CANopenRegisters' ? (
-          <AutocompleteInput_RegisterList
-            type="1"
-            placeholder="Search"
-            title="Search for a CANopen Register"
-            tellParentRegisterChanged={tellParentAutoCompleteValueChanged}
-            extendStyle="true"
-            listType={dataCategory}
-            resetValueofInputFromParent={resetValueofInput}
+            width="12rem"
           />
         ) : (
           <AutocompleteInput_RegisterList
-            type="2"
+            type={dataCategory == 'CANopenRegisters' ? '1' : '2'}
             placeholder="Search"
-            title="Search for a Technosoft Register"
+            title={
+              dataCategory == 'CANopenRegisters'
+                ? 'Search for a CANopen Register'
+                : 'Search for a Technosoft Register'
+            }
             tellParentRegisterChanged={tellParentAutoCompleteValueChanged}
             extendStyle="true"
             listType={dataCategory}
             resetValueofInputFromParent={resetValueofInput}
+            width="12rem"
           />
         )}
         <ConfirmationModal
@@ -442,11 +444,21 @@ const EditDataWindow = () => {
             }}
           />
         )}
-        <div>
-          <Button1 onClick={handleDelete}>Delete Obj/Reg </Button1>
-          <Button1 onClick={handleRestoreDefault}>Restore Default </Button1>
-          <Button1 onClick={handleRestoreLastSave}>Restore Last Save</Button1>
-          <Button1 onClick={handleSAVE}>SAVE</Button1>
+        <div
+        // style={{ position: 'relative', top: '-3rem' }}
+        >
+          <ButtonTransparent sx={fourButtonStyle} onClick={handleDelete}>
+            Delete Obj/Reg{' '}
+          </ButtonTransparent>
+          <ButtonTransparent sx={fourButtonStyle} onClick={handleRestoreDefault}>
+            Restore Default{' '}
+          </ButtonTransparent>
+          <ButtonTransparent sx={fourButtonStyle} onClick={handleRestoreLastSave}>
+            Restore Last Save
+          </ButtonTransparent>
+          <ButtonTransparent sx={fourButtonStyle} onClick={handleSAVE}>
+            SAVE
+          </ButtonTransparent>
         </div>
       </div>
       {/* EDITOR AREA----------- */}
@@ -459,8 +471,6 @@ const EditDataWindow = () => {
       >
         <textarea
           ref={TextAreaRef}
-          name=""
-          id=""
           cols="120"
           value={selectedItem4Edit}
           onChange={(e) => {
@@ -470,7 +480,7 @@ const EditDataWindow = () => {
             background: `${colors.primary[300]}`,
             color: `${colors.yellow[600]}`,
             border: `1px solid ${colors.green[400]}`,
-            height: '70vh',
+            height: '65vh',
             width: '80%'
           }}
         ></textarea>
@@ -494,24 +504,24 @@ function RowRadioButtonsGroup({ tellParent, defaultValue, style }) {
   return (
     <FormControl
       sx={{
-        zoom: '1.1',
+        zoom: '1.13',
         userSelect: 'none'
-        // border: '1px solid yellow'
+        // position: 'relative',
+        // top: '-2.5rem'
       }}
       style={style}
     >
-      <Typography variant="h5">Choose the data category you wish to modify. </Typography>
+      <Typography variant="h5">Data category: </Typography>
 
       <RadioGroup
-        row
-        aria-labelledby="demo-row-radio-buttons-group-label"
         onChange={handleOnChange}
-        name="row-radio-buttons-group"
         value={startValue}
         sx={{
           '& .MuiSvgIcon-root': {
-            // fontSize: '1rem'
             color: `${colors.green[400]}`
+          },
+          '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+            padding: '0.3rem'
           }
         }}
       >
