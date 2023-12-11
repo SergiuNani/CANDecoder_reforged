@@ -2,9 +2,9 @@
 //PDO_mapped
 //CanLogStatistics
 export let GroupingOptionsForMessages = {
-  Mapping: true,
-  Modes: true,
-  Repetitive: true
+  Mapping: false,
+  Modes: false,
+  Repetitive: false
 }
 
 export const ObjectDescriptions = {

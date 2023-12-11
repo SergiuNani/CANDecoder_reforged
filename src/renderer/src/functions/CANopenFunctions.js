@@ -445,6 +445,31 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         TextReturn = `${range}, checksum = ${value}`
       }
       break
+    case '60F2':
+      var bitValue = hex2bin(value, 16).slice(8, 10)
+      switch (bitValue) {
+        case '00':
+          TextReturn = `Normal positioning similar to linear axis; If reaching or exceeding the Position range 
+        limits (607Bh) the input value shall wrap automatically to the other end of the range. 
+        Positioning can be relative or absolute.
+        Only with this bit combination, the movement greater than a modulo value is possible.
+        `
+          break
+        case '01':
+          TextReturn = `Positioning only in negative direction; if target position is higher than actual position, 
+            axis moves over the min position limit (607Bh, sub-index 01h) to the target position`
+          break
+        case '10':
+          TextReturn = `Positioning only in positive direction; if target position is lower than actual position, axis 
+                moves over the max position limit (607Bh, sub-index 02h) to the target position.`
+          break
+        case '11':
+          TextReturn = `Positioning with the shortest way to the target position.
+                    NOTE: If the difference between actual value and target position in a 360° system is 
+                    180°, the axis moves in positive direction.`
+          break
+      }
+      break
 
     default:
       //Search for the object in a list and tell what the value correspods to x6060=01 = Position Profile

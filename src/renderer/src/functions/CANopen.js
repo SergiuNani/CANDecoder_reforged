@@ -12,7 +12,7 @@ import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
 import { DecodeOnePDOmsg } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
 import { Mapping_objects_array } from '../data/SmallData'
-
+import { Extract_MSGs_from_text_RS232, CreateDecodedArrayOfObjects_RS232 } from './RS232'
 export let CanLogStatistics = [] // array of all the axes
 
 export function CobID_who_dis(cob_id) {
@@ -176,7 +176,7 @@ export function Extract_MSGs_from_text(text, ProtocolGlobal) {
 
     return text
   } else if (ProtocolGlobal == 'RS232') {
-    return ['pu;a', 'eeee']
+    return Extract_MSGs_from_text_RS232(text)
   }
 }
 
@@ -460,7 +460,8 @@ export function CreateDecodedArrayOfObjects(
     }
     return ResultingArray
   } else if (ProtocolGlobal == 'RS232') {
-    return AllCAN_MsgsExtracted_array
+    CanLogStatistics = []
+    return CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen)
   }
 }
 

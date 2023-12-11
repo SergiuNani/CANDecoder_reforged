@@ -338,10 +338,9 @@ const DecodedTableOptions = ({ fileInnerText }) => {
 
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
     console.log('-2.2- - MessagesDecoded_ArrayOfObjects')
-    if (AllCAN_MsgsExtracted_array) {
-      FullLogLength.current = AllCAN_MsgsExtracted_array.length
-      CutTable_Sup.current = FullLogLength.current
-    }
+    FullLogLength.current = AllCAN_MsgsExtracted_array.length
+    CutTable_Sup.current = FullLogLength.current
+
     auxTable.current[3] = 1
     auxTable.current[4] = FullLogLength.current
     return CreateDecodedArrayOfObjects(
@@ -420,13 +419,9 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         </Box>
       ) : ProtocolGlobal == 'RS232' ? (
         <Box>
-          <div>RS232---------------------------------------------</div>
-          {AllCAN_MsgsExtracted_array.map((element, index) => {
-            return <div key={index}>{element}</div>
-          })}
-          {/* {MessagesDecoded_ArrayOfObjects.map((element, index) => {
-            return <div key={index}>{element}</div>
-          })} */}
+          {Drawer_Memo}
+          {Table_Memo}
+          {/* {AdvancedSearch_Memo} */}
         </Box>
       ) : (
         <Box>TMLCAN</Box>

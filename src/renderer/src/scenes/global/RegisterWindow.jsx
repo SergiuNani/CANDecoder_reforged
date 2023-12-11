@@ -189,7 +189,7 @@ export const RegisterSelectionComponent = ({
     <div
       style={{
         // display: 'flex',
-        border: `2px solid  ${colors.grey[200]}`,
+        border: `3px solid  ${colors.grey[200]}`,
         padding: '0 0.3rem 0.4rem 0.3rem ',
         borderRadius: '1rem',
         width: ComponentWidth ? ComponentWidth : '27.5rem',
