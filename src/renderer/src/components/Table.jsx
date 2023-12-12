@@ -14,10 +14,10 @@ import {
   Decode_CAN_LOG_WindowContext
 } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
-
+import { ProtocolGlobalContext } from '../App'
 export let groupedFilteredArray = []
 
-export const TableROW = ({ iteration }) => {
+export const TableROW = ({ iteration, ProtocolGlobal }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -55,9 +55,13 @@ export const TableROW = ({ iteration }) => {
           </td>
           <td style={{ textAlign: 'center', cursor: 'pointer', width: '12rem' }}>
             <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
-              <p>
-                {iteration.CobID} - {addSpacesOfTwo(iteration.FrameData)}
-              </p>
+              {ProtocolGlobal == 'RS232' ? (
+                <p>{addSpacesOfTwo(iteration.FrameData)}</p>
+              ) : (
+                <p>
+                  {iteration.CobID} - {addSpacesOfTwo(iteration.FrameData)}
+                </p>
+              )}
             </TooltipClickable>
           </td>
           <td
@@ -196,7 +200,7 @@ export const TableROW_simple = ({ obj }) => {
     </section>
   )
 }
-const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus }) => {
+const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus, ProtocolGlobal }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const groupType = groupData[0].GroupType
@@ -281,7 +285,7 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus }) =>
       >
         <div>
           {groupData.slice(1).map((iteration, index) => {
-            return <TableROW key={index} iteration={iteration} />
+            return <TableROW key={index} iteration={iteration} ProtocolGlobal={ProtocolGlobal} />
           })}
         </div>
       </div>
@@ -418,7 +422,7 @@ export function CreateGroupedFilteredArray(
 }
 
 //-------------------ALL TYPES OF TABLE-------------------
-export const DefaultTable = () => {
+export const DefaultTable = ({ ProtocolGlobal }) => {
   console.log('TableComponent -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -594,10 +598,11 @@ export const DefaultTable = () => {
                 groupSubTitle={subtitle}
                 groupData={group}
                 errorStatus={errorStatus}
+                ProtocolGlobal={ProtocolGlobal}
               />
             )
           } else {
-            return <TableROW key={index} iteration={group} />
+            return <TableROW key={index} iteration={group} ProtocolGlobal={ProtocolGlobal} />
           }
         })}
 

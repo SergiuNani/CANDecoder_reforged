@@ -75,7 +75,7 @@ function App() {
 
 export default App
 
-export const SidebarContext = createContext(null)
+export const SidebarContext = createContext()
 export const MotorSpecificationsContext = createContext()
 export const ProtocolGlobalContext = createContext()
 export const FG_Context = createContext()
