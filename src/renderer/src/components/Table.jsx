@@ -32,7 +32,8 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
         color: `${colors.grey[100]}`,
         background: `${colors.blue[300]}`,
         fontFamily: 'Calibri',
-        fontSize: '0.9rem'
+        fontSize: '0.9rem',
+        tableLayout: 'fixed'
       }}
     >
       <thead>
@@ -53,7 +54,13 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
           >
             {iteration.msgNr}
           </td>
-          <td style={{ textAlign: 'center', cursor: 'pointer', width: '12rem' }}>
+          <td
+            style={{
+              textAlign: 'center',
+              cursor: 'pointer',
+              width: '10rem'
+            }}
+          >
             <TooltipClickable title={iteration.OriginalMessage} arrow placement="top">
               {ProtocolGlobal == 'RS232' ? (
                 <p>{addSpacesOfTwo(iteration.FrameData)}</p>
@@ -613,6 +620,7 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
 
   return <section>{Table_Memo}</section>
 }
+
 export const DebugTable = () => {
   console.log('DebugTable -- only Once')
 

@@ -47,6 +47,7 @@ import {
   DebugTable,
   TableROW_simple
 } from '../components/Table'
+import { LazyImport } from '../App'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
@@ -281,7 +282,6 @@ const Decode_CAN_LOG_Window = () => {
 export default Decode_CAN_LOG_Window
 
 export let globalIndex = [0] //used when there is a PDO detected and no mapping is done - then we cancel the function and will recall it with this index
-
 const DecodedTableOptions = ({ fileInnerText }) => {
   console.log('---2---. DecodedTableOptions')
   const [TableOption, setTableOption] = useState('Default') //Default vs Debug
@@ -295,6 +295,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const { hideTableForceParentToggle, isAdvancedSearchOpen } = useContext(
     Decode_CAN_LOG_WindowContext
   )
+
   const initialRender = useRef(true)
 
   const LogDisplayRange = useRef(3000) //BUG Change to 3000
@@ -386,7 +387,12 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const Table_Memo = useMemo(() => {
     return (
       <Box ref={TableRefForScroll}>
-        {isTableVisible && (TableOption == 'Default' ? <DefaultTable /> : <DebugTable />)}
+        {isTableVisible &&
+          (TableOption == 'Default' ? (
+            <DefaultTable ProtocolGlobal={ProtocolGlobal} />
+          ) : (
+            <DebugTable />
+          ))}
       </Box>
     )
   }, [isTableVisible])

@@ -13,6 +13,7 @@ export var Registers_THS_LS = []
 export var ESM_info_LS = []
 
 import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG' //because of some useContext problems
+// const Decode_CAN_LOG_Window = LazyImport('./scenes/Decode_CAN_LOG')
 const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
 const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
 const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
@@ -165,7 +166,7 @@ function Text2JSON_ESM_info() {
   return text
 }
 
-function LazyImport(path, namedExport) {
+export function LazyImport(path, namedExport) {
   return lazy(() => {
     const promise = import(path)
     if (namedExport == null) {
