@@ -94,7 +94,7 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
           <td
             style={{
               textAlign: 'center',
-              width: '2rem'
+              width: ProtocolGlobal == 'RS232' ? '5rem' : '2rem'
             }}
           >
             {iteration.CS}
@@ -112,7 +112,6 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
           <td
             style={{
               textAlign: 'center',
-              // maxWidth: '10rem',
               overflowY: 'auto',
               width: '11rem'
             }}
@@ -136,7 +135,6 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
               textAlign: 'center',
               width: '25rem',
               minWidth: '15rem',
-
               overflowY: 'auto',
               fontWeight:
                 iteration.errorStatus == 'error'
@@ -537,14 +535,14 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
 
         <table
           style={{
-            width: '99.5%',
+            width: '100%',
             fontWeight: '700',
             position: 'sticky',
             top: '3rem',
             background: `${colors.primary[300]}`,
             zIndex: 1,
-            marginLeft: '0.5rem',
-            fontSize: '1rem'
+            fontSize: '1rem',
+            tableLayout: 'fixed'
           }}
         >
           <thead>
@@ -558,14 +556,16 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
               >
                 NR
               </th>
-              <th style={{ width: '13rem' }}>Original Message</th>
-              <th style={{ width: '4.5rem' }}>Type</th>
+              <th style={{ width: '10rem' }}>Original Message</th>
+              <th style={{ width: '4rem' }}>Type</th>
               <th style={{ width: '2rem' }}>AxisID</th>
-              <th style={{ width: '2rem' }}>CS</th>
+              <th style={{ width: ProtocolGlobal == 'RS232' ? '5rem' : '2rem' }}>
+                {ProtocolGlobal == 'RS232' ? 'Op' : 'CS'}
+              </th>
               <th style={{ width: '8rem' }}>Object</th>
-              <th style={{ width: '13rem' }}>Object Name</th>
+              <th style={{ width: '11rem' }}>Object Name</th>
               <th style={{ width: '7rem' }}>Data</th>
-              <th style={{ width: '28rem' }}>Interpretation</th>
+              <th style={{ width: '25rem' }}>Interpretation</th>
             </tr>
           </thead>
         </table>

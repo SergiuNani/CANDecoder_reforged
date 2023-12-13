@@ -1,6 +1,6 @@
 import { UpdateStatisticsBasedOnMessage } from './CANopen'
 import { CanLogStatistics } from './CANopen'
-import { hexToDec, decToHex } from './NumberConversion'
+import { hexToDec, decToHex, hex2bin } from './NumberConversion'
 
 export function Extract_MSGs_from_text_RS232(text) {
   console.log('--AA-- Extract_MSGs_from_text_RS232')
@@ -54,7 +54,7 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       row[2] = 'Empty'
       row[3] = 'Line'
       UpdateStatisticsBasedOnMessage('All', '-')
-      createObject(row[0], row[1], row[2], row[3], false, 'All')
+      createObject(row[0], row[1], row[2], row[3], false, '-')
       continue
     }
     var aux_CobID = ['AxisID', 'type_RS232'] //function here
@@ -68,13 +68,13 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       type, //CobID
       row[3], //Message
       type, //type
-      aux_CobID[1], //AxisID
-      DecodedMessage[0], //CS
-      DecodedMessage[1], //Object
-      DecodedMessage[2], //ObjName
-      DecodedMessage[3], //Data
-      DecodedMessage[4], //Interpretation
-      DecodedMessage[5] //Error
+      DecodedMessage[0], //AxisID
+      DecodedMessage[1], //CS
+      DecodedMessage[2], //Object
+      DecodedMessage[3], //ObjName
+      DecodedMessage[4], //Data
+      DecodedMessage[5], //Interpretation
+      DecodedMessage[6] //Error
     )
   }
 
@@ -120,7 +120,8 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
 }
 
 function DecodeOneRS232_msg(msgNr, type, messageString) {
-  var CS = '-'
+  var AxisID = '-'
+  var OpCode = '-'
   var Object = '-'
   var ObjectName = '-'
   var Data = '-'
@@ -199,8 +200,58 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
         frameString = messageToCheck.join('')
       }
     }
-
-    Data = frameString
+    frameString = frameString.split('')
+    var AxisID_Destination = frameString.splice(0, 4)
+    OpCode = frameString.splice(0, 4)
+    AxisID_Destination = getDestinationAxisID(AxisID_Destination)
+    if (AxisID_Destination == 'error') {
+      Interpretation = 'Invalid AxisID, either the Group or Host info is wrong'
+      errorStatus = 'error'
+    }
+    if (errorStatus != 'error') {
+      //This if is different cause it checked for both message length and checksum errors
+    }
+    AxisID = AxisID_Destination
+    Data = frameString.join('')
   }
-  return [CS, Object, ObjectName, Data, Interpretation, errorStatus]
+  return [AxisID, OpCode, Object, ObjectName, Data, Interpretation, errorStatus]
+}
+
+function getDestinationAxisID(hex) {
+  // IN: 4 nibbles
+  var firstNibble = hex[0]
+  var AxisID = hex.slice(1, 3).join('')
+  var lastNibble = hex[3]
+
+  if (
+    ![0, 1].includes(hexToDec(firstNibble, 8)) ||
+    ![0, 1].includes(hexToDec(lastNibble, 8)) ||
+    (firstNibble == '1' && lastNibble == '1')
+  ) {
+    return 'error'
+  } else {
+    if (firstNibble == '1') {
+      //Group AxisID
+      if (AxisID == '00') {
+        return 'All'
+      } else {
+        var AxisID_bin = hexToDec(AxisID, 8)
+
+        let returnVar = []
+
+        for (let i = 0; i < 8; i++) {
+          // Check if the i-th bit is set
+          if ((AxisID_bin & (1 << i)) !== 0) {
+            returnVar.push(`G${i + 1}`)
+          }
+        }
+        returnVar = returnVar.join(',')
+
+        return returnVar
+      }
+    } else {
+      //Host AxisID or Normal AxisID
+      return `Host ${AxisID}`
+    }
+  }
 }
