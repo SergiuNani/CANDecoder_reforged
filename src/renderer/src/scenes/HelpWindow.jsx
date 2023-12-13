@@ -41,7 +41,7 @@ const HelpWindow = () => {
 function ControlledAccordions() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const [expanded, setExpanded] = useState('3')
+  const [expanded, setExpanded] = useState('4')
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -80,6 +80,15 @@ function ControlledAccordions() {
           title="Decode CANlog Menu"
           subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
           body={<HelpDecodeCanMenu />}
+        />
+        <AccordionComponent
+          expanded={expanded}
+          panelNR="4"
+          handleChange={handleChange}
+          icon={<DvrIcon sx={{ zoom: 1.2 }} />}
+          title="RS232"
+          subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
+          body={<HelpDecodeRS232 />}
         />
       </div>
     </div>
@@ -400,6 +409,22 @@ const HelpDecodeCanMenu = () => {
           or display table if Overview opened
         </p>
       </section>
+    </Box>
+  )
+}
+
+const HelpDecodeRS232 = () => {
+  return (
+    <Box>
+      <ul>
+        <li>- Checks checksum</li>
+        <li>
+          - Checks datalength. It doesn`t matter if length is in the same frame or the previous one.
+          If the first byte isnt the correct length of the frame then the program looks at the
+          previous frame and if even that doesn`t match then the message will report an error
+        </li>
+        <li>Checks if the axisID code is wrong</li>
+      </ul>
     </Box>
   )
 }

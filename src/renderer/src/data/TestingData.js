@@ -1,7 +1,21 @@
 export var InsertTextIntoTextArea = `18:20:18 MSK Info : Channel closed sucessfully
+04 10 11 01 02 27 
+04 00 12 01 02 27 
+04 00 F0 01 02 27 
+04 01 F0 01 02 27 
+04 04 F0 01 02 27 
+04 14 F0 01 02 27 
+04 04 F1 01 02 27 
+04 34 F0 01 02 27 
+04 04 F0 01 02 27 
+04 00 00 01 02 27 
+04 10 00 01 02 27 
+04 00 01 01 02 27 
+04 10 01 01 02 27 
+04 00 00
+ 01 02 27 
 04 10 10 01 02 27 
-04 1F F0 01 02 27 
-04 11 00 01 02 18 
+
 
 
 18:20:20 MSK Info : Set serial timeouts ended successfully

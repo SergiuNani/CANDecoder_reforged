@@ -200,58 +200,58 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
         frameString = messageToCheck.join('')
       }
     }
+    // =====================================================================================================
     frameString = frameString.split('')
     var AxisID_Destination = frameString.splice(0, 4)
+    AxisID_Destination = getAxisID_RS232(AxisID_Destination)
     OpCode = frameString.splice(0, 4)
-    AxisID_Destination = getDestinationAxisID(AxisID_Destination)
+    var opCode_array = getopCode_RS232(OpCode)
     if (AxisID_Destination == 'error') {
       Interpretation = 'Invalid AxisID, either the Group or Host info is wrong'
       errorStatus = 'error'
     }
+
     if (errorStatus != 'error') {
-      //This if is different cause it checked for both message length and checksum errors
+      AxisID = AxisID_Destination
+      Data = frameString.join('')
     }
-    AxisID = AxisID_Destination
-    Data = frameString.join('')
   }
   return [AxisID, OpCode, Object, ObjectName, Data, Interpretation, errorStatus]
 }
 
-function getDestinationAxisID(hex) {
-  // IN: 4 nibbles
-  var firstNibble = hex[0]
-  var AxisID = hex.slice(1, 3).join('')
-  var lastNibble = hex[3]
+function getAxisID_RS232(hex) {
+  let codeDec = hexToDec(hex.join(''), 32)
 
-  if (
-    ![0, 1].includes(hexToDec(firstNibble, 8)) ||
-    ![0, 1].includes(hexToDec(lastNibble, 8)) ||
-    (firstNibble == '1' && lastNibble == '1')
-  ) {
+  if (codeDec & 0xe00e || (codeDec & 0x1001) == 0x1001 || codeDec == 0) {
+    // reserved bits are set
     return 'error'
-  } else {
-    if (firstNibble == '1') {
-      //Group AxisID
-      if (AxisID == '00') {
-        return 'All'
-      } else {
-        var AxisID_bin = hexToDec(AxisID, 8)
-
-        let returnVar = []
-
-        for (let i = 0; i < 8; i++) {
-          // Check if the i-th bit is set
-          if ((AxisID_bin & (1 << i)) !== 0) {
-            returnVar.push(`G${i + 1}`)
-          }
-        }
-        returnVar = returnVar.join(',')
-
-        return returnVar
+  }
+  var axisID = (codeDec >> 4) & 0xff
+  if (axisID == 0 && codeDec != 0x1000) {
+    return 'error'
+  }
+  if (codeDec & 0x1000) {
+    //Group
+    var array = []
+    for (let i = 0; i < 8; i++) {
+      if (axisID & (1 << i)) {
+        array.push(`G${i + 1}`)
       }
+    }
+    if (axisID == 0) {
+      //Broadcast
+      return 'All'
+    }
+    return array.join(',')
+  } else {
+    if (codeDec & 0x0001) {
+      return `H${axisID}`
     } else {
-      //Host AxisID or Normal AxisID
-      return `Host ${AxisID}`
+      return axisID
     }
   }
+}
+
+function getopCode_RS232(opCode) {
+  return [opCode, 'opCodeName']
 }
