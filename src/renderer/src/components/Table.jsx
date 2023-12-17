@@ -86,7 +86,7 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
               textAlign: 'center',
               color: `${colors.personal[100]}`,
               fontWeight: '700',
-              width: '2rem'
+              width: ProtocolGlobal == 'RS232' ? '3rem' : '2rem'
             }}
           >
             {iteration.AxisID}
@@ -104,26 +104,28 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
               textAlign: 'center',
               color: `${colors.yellow[100]}`,
               fontWeight: '600',
-              width: '8rem'
+              width: ProtocolGlobal == 'RS232' ? '3rem' : '8rem'
             }}
           >
             {iteration.Object}
           </td>
-          <td
-            style={{
-              textAlign: 'center',
-              overflowY: 'auto',
-              width: '11rem'
-            }}
-          >
-            {iteration.ObjectName}
-          </td>
+          {ProtocolGlobal == 'RS232' ? null : (
+            <td
+              style={{
+                textAlign: 'center',
+                overflowY: 'auto',
+                width: '11rem'
+              }}
+            >
+              {iteration.ObjectName}
+            </td>
+          )}
           <td
             style={{
               textAlign: 'center',
               color: `${colors.green[100]}`,
               fontWeight: '700',
-              width: '7rem'
+              width: ProtocolGlobal == 'RS232' ? '11rem' : '7rem'
             }}
           >
             <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
@@ -558,13 +560,19 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
               </th>
               <th style={{ width: '10rem' }}>Original Message</th>
               <th style={{ width: '4rem' }}>Type</th>
-              <th style={{ width: '2rem' }}>AxisID</th>
+              <th style={{ width: ProtocolGlobal == 'RS232' ? '3rem' : '2rem' }}>
+                {ProtocolGlobal == 'RS232' ? 'Destination' : 'ID'}
+              </th>
               <th style={{ width: ProtocolGlobal == 'RS232' ? '5rem' : '2rem' }}>
                 {ProtocolGlobal == 'RS232' ? 'Op' : 'CS'}
               </th>
-              <th style={{ width: '8rem' }}>Object</th>
-              <th style={{ width: '11rem' }}>Object Name</th>
-              <th style={{ width: '7rem' }}>Data</th>
+              <th style={{ width: ProtocolGlobal == 'RS232' ? '3rem' : '8rem' }}>
+                {ProtocolGlobal == 'RS232' ? 'Sender' : 'Object'}
+              </th>
+              {ProtocolGlobal == 'RS232' ? null : <th style={{ width: '11rem' }}>Object Name</th>}
+              <th style={{ width: ProtocolGlobal == 'RS232' ? '11rem' : '7rem' }}>
+                {ProtocolGlobal == 'RS232' ? 'TML Command' : 'Data'}
+              </th>
               <th style={{ width: '25rem' }}>Interpretation</th>
             </tr>
           </thead>
