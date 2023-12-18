@@ -311,6 +311,7 @@ function getOpCode_RS232(opCode, data) {
   var mask = ''
   var firstByteDec = hexToDec(firstByte, 16)
   var lastByteDec = hexToDec(lastByte, 16)
+  var opCodeDec = hexToDec(opCode, 32)
   var Interpretation
   var Data
   var rez = '-'
@@ -817,7 +818,63 @@ function getOpCode_RS232(opCode, data) {
       break
 
     default:
-      errorStatus = 'error'
+      if (firstByte.slice(0, 1) == '2') {
+        //Potential short addressing
+        temp = firstByteDec & 0x0c // 0000 1100
+
+        if (firstByteDec & 0x02) temp2 = 0x800
+        else temp2 = 0x200
+
+        temp3 = opCodeDec & 0x01ff
+        secondAddy = data.slice(0, 4)
+        sender = getFirmwareAddress_RS232(secondAddy)[1]
+        if (temp == 0x00) {
+          //2000 2200
+          rez = '[V16D = val16/TML label]'
+        } else if (temp == 0x08) {
+          //2800 2A00
+          rez = '[V16D = V16S]'
+        } else if (temp == 0x0c) {
+          //2C00 2E00
+          rez = '[V32D = V32S]'
+        } else if (temp == 0x04) {
+          rez = '[V32 = val32]'
+        }
+
+        firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
+        destinator = getFirmwareAddress_RS232(firstAddy)[1]
+        Data = `0x${firstAddy} = 0x${secondAddy}`
+        Interpretation = `${destinator}= ${sender} -- ${rez}`
+      } else if (firstByte.slice(0, 1) == '3') {
+        //Potential short addressing
+        temp = firstByteDec & 0x0c // 0000 1100
+
+        if (firstByteDec & 0x02) temp2 = 0x800
+        else temp2 = 0x200
+
+        temp3 = opCodeDec & 0x01ff
+        secondAddy = data.slice(0, 4)
+        sender = getFirmwareAddress_RS232(secondAddy)[1]
+        if (temp == 0x00) {
+          //2000 2200
+          rez = '[V16D = val16/TML label]'
+        } else if (temp == 0x08) {
+          //2800 2A00
+          rez = '[V16D = V16S]'
+        } else if (temp == 0x0c) {
+          //2C00 2E00
+          rez = '[V32D = V32S]'
+        } else if (temp == 0x04) {
+          rez = '[V32 = val32]'
+        }
+
+        firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
+        destinator = getFirmwareAddress_RS232(firstAddy)[1]
+        Data = `0x${firstAddy} = 0x${secondAddy}`
+        Interpretation = `${destinator}= ${sender} -- ${rez}`
+      } else {
+        errorStatus = 'error'
+      }
       break
   }
   return [errorStatus, Data, Interpretation]
