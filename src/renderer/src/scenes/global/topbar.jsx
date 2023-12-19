@@ -15,6 +15,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import { VerifyCANopenValidityArray_RAW } from '../../data/VerifyAlgorithmData'
 import { RegisterSelectionComponent } from './RegisterWindow'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
+import { MessageListRs232ToVerify } from '../../data/verifyRS232'
 import {
   MotorSpecificationsContext,
   ProtocolGlobalContext,
@@ -463,6 +464,7 @@ const DecodeCANlogOptionsInsertPart = () => {
   var { setFreeTextVsCanLog, setToggleFilterWindow_app, setToggleSearchWindow_app } = useContext(
     DecodeCANlog_topbarOptionsContext
   )
+  const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
@@ -488,8 +490,13 @@ const DecodeCANlogOptionsInsertPart = () => {
               border: `1px solid ${colors.primary[400]}`
             }}
             onClick={() => {
-              document.querySelector('#TextAreaText_ID_global').value =
-                VerifyCANopenValidityArray_RAW
+              var text = ''
+              if (ProtocolGlobal == 'RS232') {
+                text = MessageListRs232ToVerify
+              } else if (ProtocolGlobal == 'CANOPEN') {
+                text = VerifyCANopenValidityArray_RAW
+              }
+              document.querySelector('#TextAreaText_ID_global').value = text
             }}
           >
             Load Demo

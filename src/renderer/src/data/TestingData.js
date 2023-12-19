@@ -1,84 +1,15 @@
 export var InsertTextIntoTextArea = `
-06 10 10 2D 68 02 28 E5 //var_lf =apos
-08 10 10 25 68 00 12 00 00 C7 //var_lf =0x12
-08 10 10 26 1E 00 12 00 00 7E //CAPPOS2=0x12
 
-06 10 10 21 66 00 12 BF // var_i1 = 0x12
-06 10 10 21 69 00 12 C2 // var_lf(H) = 0x12
-06 10 10 21 68 00 12 C1 // var_lf(L)=0x12
-
-06 10 10 29 66 03 67 1F // var_i1= var_i2
-06 10 10 29 66 03 69 21 // var_i1 =var_lf(H)
-06 10 10 29 66 03 68 20 // var_i1 = var_lf(L)
-06 10 10 29 69 03 66 21 // var_lf(H) =var_i1
-06 10 10 29 68 03 66 20 // var_lf(L) =var_i1
-
-06 10 10 29 0C 03 66 C4 // AAR= var_i1
-06 10 10 2B 13 03 66 CD // AAR_table= var_i1
-06 10 10 28 FF 03 66 B6 // ACCPL= var_i1
-06 10 10 28 C7 03 66 7E // ACC_LIMIT= var_i1
-06 10 10 2B 12 03 66 CC // ACR= var_i1
-06 10 10 28 3C 03 66 F3 // AD0= var_i1
-06 10 10 28 44 03 66 FB // AD0OFF= var_i1
-06 10 10 28 3D 03 66 F4 // AD1= var_i1
-06 10 10 28 45 03 66 FC // AD1OFF= var_i1
-06 10 10 28 3E 03 66 F5 // AD2= var_i1
-06 10 10 2B DD 03 66 97 // AD2FIL_CFG= var_i1
-06 10 10 2B DC 03 66 96 // AD2FIL_VAL= var_i1
-06 10 10 28 46 03 66 FD // AD2OFF= var_i1
-06 10 10 28 3F 03 66 F6 // AD3= var_i1
-06 10 10 28 47 03 66 FE // AD3OFF= var_i1
-06 10 10 28 40 03 66 F7 // AD4= var_i1
-06 10 10 28 48 03 66 FF // AD4OFF= var_i1
-06 10 10 28 41 03 66 F8 // AD5= var_i1
-06 10 10 28 49 03 66 00 // AD5OFF= var_i1
-06 10 10 28 42 03 66 F9 // AD6= var_i1
-06 10 10 28 4A 03 66 01 // AD6OFF= var_i1
-06 10 10 28 43 03 66 FA // AD7= var_i1
-06 10 10 28 4B 03 66 02 // AD7OFF= var_i1
-06 10 10 2A 0B 03 66 C4 // AD8= var_i1
-06 10 10 2B ED 03 66 A7 // AD9= var_i1
-06 10 10 2A 55 03 66 0E // AEI_CLKDIV= var_i1
-06 10 10 28 FA 03 66 B1 // AEI_CMPTIME= var_i1
-06 10 10 2A 54 03 66 0D // AEI_PER= var_i1
-06 10 10 2A AF 03 66 68 // ANALOGUEREFERENCE= var_i1
-06 10 10 2A 9C 03 66 55 // ANGLE_INC= var_i1
-06 10 10 2B DE 03 66 98 // ASPD_BQ_INI= var_i1
-06 10 10 28 01 03 66 B8 // ASR= var_i1
-06 10 10 28 A7 03 66 5E // ASR2= var_i1
+18:12:48 Bytes Write :  06 00 10 74 01 40 26 F1 //TML>  call loop1 0x4026
+18:12:48 Bytes Read :  4F
+18:13:25 Bytes Write :  08 00 10 74 91 03 66 40 17 DD // TML> call loop, var_i1, LT
+18:13:25 Bytes Read :  4F
+18:13:30 Bytes Write :  08 00 10 74 85 03 66 40 17 D1 //TML> call loop, var_i1, GT
+18:13:30 Bytes Read :  4F
 
 
 
 
 
-
-06 10 10 20 FD 00 21 64 //komega = 0x21
-06 10 10 23 B7 00 21 21 //HOMING_NR = 0x21
-06 10 10 21 9F 00 21 07 //HOME_NR_6098 =0x21
-06 10 10 20 39 00 21 A0 //IA= 0x21
-06 10 10 22 01 00 21 6A //ENCRES = 0x21
-//
-06 10 10 28 FD 03 66 B4 //komega = var_i1
-06 10 10 2B B7 03 66 71 //HOMING_NR = var_i1
-06 10 10 29 9F 03 66 57 //HOME_NR_6098 =var_i1
-06 10 10 28 39 03 66 F0 //IA= var_i1
-06 10 10 2A 01 03 66 BA //ENCRES = var_i1
-
-
-
-
-06 00 10 21 66 40 11 EE //start_p is label with address 0x4011 //var_i1 = start_p
-06 00 10 21 66 56 78 6B //var_i1 = 0x12345678
-
-
-17:04:46 Bytes Write :  06 00 10 29 69 03 66 11 //TML>   var_lf(H) = var_i1
-17:04:50 Bytes Write :  06 00 10 29 68 03 66 10 //TML>   var_lf(L) = var_i1
-06 00 10 28 9F 03 66 46 // cpos(H)=var_i1
-
-06 00 10 28 3F 03 66 E6 //AD3 = var_i1//AD3 @0x023f	
-
-06 00 10 2A 55 03 66 FE //AEI_CLKDIV = var_i1//AEI_CLKDIV					@0x0855
-
-08 00 10 90 14 AF 25 03 66 F9// WHITE_NOISE =var_i1 INT		WHITE_NOISE					@0xAF25
 
 `

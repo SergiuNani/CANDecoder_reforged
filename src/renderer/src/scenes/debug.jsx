@@ -18,8 +18,11 @@ import {
 import { Button2 } from '../components/SmallComponents'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { GetObject } from '../functions/CANopenFunctions'
+import { Hardcoded_VerifyRS232, MessageListRs232ToVerify } from '../data/verifyRS232'
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
+  const [verifyRS232, setVerifyRS232] = useState(false)
+
   const [fileInnerText, setFileInnerText] = useState('')
   const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(false)
 
@@ -44,25 +47,48 @@ const DebugScene = () => {
 
   return (
     <>
-      <Header title="Debug" subtitle="A bunch of references "></Header>
-      <section>
-        <Typography variant="h4">Verify Decoding Algorithm </Typography>
-        <Button2
-          onClick={() => {
-            setverifyCANopenAlgorithm(true)
-          }}
-        >
-          Verify Algorithm
-        </Button2>
-      </section>
-
-      {/* //UPLOAD A FILE SECTION */}
+      <Header title="Debug" subtitle="Validity tests "></Header>
       <section
         style={{
-          margin: '1rem 0'
+          display: 'flex',
+          gap: '2rem',
+          alignItems: 'center',
+          margin: '2rem 0'
         }}
       >
-        <Typography variant="h4">Check for missing objects or errors </Typography>
+        <Typography variant="h4">Verify Decoding Algorithms: </Typography>
+        {/* //Verify Decoding Algorithm ===================================== */}
+        <section>
+          <Button2
+            onClick={() => {
+              setverifyCANopenAlgorithm(true)
+            }}
+          >
+            Verify CANopen
+          </Button2>
+        </section>
+        {/* //Verify RS232 ===================================== */}
+        <section>
+          <Button2
+            onClick={() => {
+              setVerifyRS232(true)
+            }}
+          >
+            Verify RS232
+          </Button2>
+        </section>
+      </section>
+
+      {/* //Check for missing objects or errors ========================*/}
+      <section
+        style={{
+          display: 'flex',
+          gap: '2rem',
+          alignItems: 'center',
+          margin: '2rem 0'
+        }}
+      >
+        <Typography variant="h4">Check for missing objects or errors: </Typography>
         <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
           Upload file
           {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
@@ -86,10 +112,19 @@ const DebugScene = () => {
 
       {verifyCANopenAlgorithm && (
         <DialogVerifyAlgorithmComponent
-          verifyCANopenAlgorithm={verifyCANopenAlgorithm}
-          setverifyCANopenAlgorithm={setverifyCANopenAlgorithm}
+          openState={verifyCANopenAlgorithm}
+          setOpenState={setverifyCANopenAlgorithm}
+          protocol={'CANOPEN'}
         />
       )}
+      {verifyRS232 && (
+        <DialogVerifyAlgorithmComponent
+          openState={verifyRS232}
+          setOpenState={setVerifyRS232}
+          protocol={'RS232'}
+        />
+      )}
+
       {showCompareExistingVsFileObjects && (
         <DialogVerifyMyObjects
           showCompareExistingVsFileObjects={showCompareExistingVsFileObjects}
@@ -103,59 +138,78 @@ const DebugScene = () => {
 
 export default DebugScene
 
-const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANopenAlgorithm }) => {
+const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  var InputTEXT
+  var hardcodedArray = []
+  if (protocol == 'CANOPEN') {
+    InputTEXT = VerifyCANopenValidityArray_RAW
+    hardcodedArray = Hardcoded_VerifyCANopenValidityArray
+  } else if (protocol == 'RS232') {
+    InputTEXT = MessageListRs232ToVerify
+    hardcodedArray = Hardcoded_VerifyRS232
+  }
+
   var ReturnText = []
   var errorStatus = 'neutral'
   DontBotherWithPDO_flag[0] = 1
   function DoNothing() {}
 
-  var MsgsExtracted_array = Extract_MSGs_from_text(
-    VerifyCANopenValidityArray_RAW.split('\n'),
-    'CANOPEN'
-  )
+  var MsgsExtracted_array = Extract_MSGs_from_text(InputTEXT.split('\n'), protocol)
 
   var MessagesDecoded = CreateDecodedArrayOfObjects(
     MsgsExtracted_array,
     DoNothing,
     DoNothing,
     DoNothing,
-    'CANOPEN'
+    protocol
   )
-  console.log('🚀 MessagesDecoded_ArrayOfObjects:', MessagesDecoded)
-  console.log('🚀 Hardcoded_VerifyCANopenValidityArray:', Hardcoded_VerifyCANopenValidityArray)
+  console.log('🚀 ResultFromFunction:', MessagesDecoded)
+  console.log('🚀 hardcodedArray:', hardcodedArray)
 
-  if (MessagesDecoded.length != Hardcoded_VerifyCANopenValidityArray.length) {
-    ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${Hardcoded_VerifyCANopenValidityArray.length} length`
+  if (MessagesDecoded.length != hardcodedArray.length) {
+    ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${hardcodedArray.length} length`
     errorStatus = 'errorLength'
   } else {
     MessagesDecoded.forEach((oneObjectMessage, index) => {
       for (const key in oneObjectMessage) {
         if (key != 'msgNr') {
-          if (oneObjectMessage[key] != Hardcoded_VerifyCANopenValidityArray[index][key]) {
+          if (oneObjectMessage[key] != hardcodedArray[index][key]) {
             ReturnText.push(
-              <div>
-                Message:
+              <div
+                style={{
+                  border: `1px solid ${colors.grey[100]}`,
+                  marginBottom: '0.5rem',
+                  padding: '0.5rem'
+                }}
+              >
+                -- Message:
                 <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
                   {' '}
-                  //{oneObjectMessage.OriginalMessage}//{' '}
+                  //{oneObjectMessage.OriginalMessage}//
                 </span>
-                at line
-                <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
-                  {' '}
-                  "{oneObjectMessage.msgNr}"{' '}
-                </span>
-                has the key :
-                <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}> {key} </span>
-                <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
-                  - {`${oneObjectMessage[key]}`} -{' '}
-                </span>
-                which is not equal to the hardcoded
-                <span style={{ color: `${colors.green[100]}`, fontWeight: '700' }}>
-                  {' '}
-                  - {`${Hardcoded_VerifyCANopenValidityArray[index][key]}`} -
-                </span>
+                <div>
+                  LINE:
+                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                    {' '}
+                    "{oneObjectMessage.msgNr}"
+                  </span>
+                  , KEY :
+                  <span style={{ color: `${colors.green[400]}`, fontWeight: '700' }}> {key} </span>,
+                  Fct/Hardcoded:
+                </div>
+                <div>
+                  <span style={{ color: `${colors.red[500]}`, fontWeight: '700' }}>
+                    {`${oneObjectMessage[key]}`}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ color: `${colors.red[200]}`, fontWeight: '700' }}>
+                    {' '}
+                    {`${hardcodedArray[index][key]}`}
+                  </span>
+                </div>
               </div>
             )
             return (errorStatus = 'error')
@@ -166,9 +220,9 @@ const DialogVerifyAlgorithmComponent = ({ verifyCANopenAlgorithm, setverifyCANop
   }
   return (
     <Dialog
-      open={verifyCANopenAlgorithm}
+      open={openState}
       onClose={() => {
-        setverifyCANopenAlgorithm(false) //BUG - turn to false
+        setOpenState(false) //BUG - turn to false
       }}
     >
       <section
@@ -296,6 +350,7 @@ const DialogVerifyMyObjects = ({
     </Dialog>
   )
 }
+
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
 

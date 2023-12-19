@@ -34,7 +34,7 @@ export function Extract_MSGs_from_text_RS232(text) {
     var message = rowSplitted.join('')
     return [index + 1, row, type, message, rowSplitted]
   })
-  console.log(ExtractedArray) // bug
+  // console.log(ExtractedArray) // bug
   return ExtractedArray
 }
 function getFirmwareAddressesIntoArray_RS232(fw) {
@@ -55,10 +55,6 @@ function getFirmwareAddressesIntoArray_RS232(fw) {
   })
 
   firmwareAddressesDynamicArray = resultingArray
-  console.log(
-    '🚀 ~ file: RS232.js:281 ~ getFirmwareAddressesIntoArray_RS232 ~ resultingArray:',
-    resultingArray
-  )
 }
 
 function getFirmwareAddress_RS232(searchAddy) {
@@ -157,8 +153,8 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
     setIsDrawerOpen(true)
   }
 
-  console.log('🚀 ~  ResultingArray:', ResultingArray)
-  console.log(CanLogStatistics)
+  // console.log('🚀 ~  ResultingArray:', ResultingArray)
+  // console.log(CanLogStatistics)
   return ResultingArray
 }
 
@@ -247,8 +243,8 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
     frameString = frameString.split('')
     var AxisID_Destination = frameString.splice(0, 4)
     AxisID_Destination = getAxisID_RS232(AxisID_Destination)
-    OpCode = frameString.splice(0, 4)
-    var opCode_array = getOpCode_RS232(OpCode.join(''), frameString.join(''))
+    OpCode = frameString.splice(0, 4).join('')
+    var opCode_array = getOpCode_RS232(OpCode, frameString.join(''))
     if (AxisID_Destination == 'error') {
       Interpretation = 'Invalid AxisID, either the Group or Host info is wrong'
       errorStatus = 'error'
@@ -338,7 +334,6 @@ function getOpCode_RS232(opCode, data) {
             sender = data.slice(4)
             if (lastByteDec & 0x1) {
               sender = sender.slice(4, 8) + sender.slice(0, 4)
-
               rez = 32
             } else {
               rez = 16
@@ -347,8 +342,8 @@ function getOpCode_RS232(opCode, data) {
             secondAddy = sender
             sender = '0x' + sender + ` (${hexToDec(sender, rez)})`
           }
-          Data = `${firstAddy}, dm= ${secondAddy}`
-          Interpretation = `${destinator}, dm= ${sender}`
+          Data = `0x${firstAddy},dm= 0x${secondAddy}`
+          Interpretation = `${destinator},dm= ${sender}`
           break
 
         default:
@@ -429,10 +424,10 @@ function getOpCode_RS232(opCode, data) {
         }
         if (lastByteDec & 0x20) {
           Data = `${firstAddy}  <<= ${temp} `
-          Interpretation = `${destinator}<<= ${temp} ,(32D) `
+          Interpretation = `${destinator}<<= ${temp} ,[32D] `
         } else {
           Data = `${firstAddy}  >>= ${temp} `
-          Interpretation = `${destinator}>>= ${temp} ,(32D) `
+          Interpretation = `${destinator}>>= ${temp} ,[32D] `
         }
       }
 
@@ -586,47 +581,62 @@ function getOpCode_RS232(opCode, data) {
         temp2 = data.slice(4, 8)
 
         const modeMappings = {
-          B7C68706: { Data: 'MODE CS', Interpretation: 'Set MODE Cam Slave' },
-          B7C58705: { Data: 'MODE GS', Interpretation: 'Set MODE Gear Slave' },
-          BFC28702: { Data: 'MODE PC', Interpretation: 'MODE Position Contouring' },
-          BFC18701: { Data: 'MODE PP', Interpretation: 'MODE Position Profile' },
-          FFC18707: { Data: 'MODE PSC', Interpretation: 'MODE S-Curve' },
-          FFC0870A: { Data: 'MODE PT', Interpretation: 'MODE Position Time' },
-          FFC18709: { Data: 'MODE PVT', Interpretation: 'MODE Position Velocity Time' },
-          BBC28302: { Data: 'MODE SC', Interpretation: 'MODE Speed Contouring' },
-          B3C08300: { Data: 'MODE SE', Interpretation: 'MODE Speed External' },
-          BBC18301: { Data: 'MODE SP', Interpretation: 'MODE Speed Profile' },
-          B1C38103: { Data: 'MODE TC', Interpretation: 'MODE Torque Contouring' },
-          B1E08120: { Data: 'MODE TEF', Interpretation: 'MODE Torque External Fast loop' },
-          B1C08100: { Data: 'MODE TES', Interpretation: 'MODE Torque External Slow loop' },
-          B1C88108: { Data: 'MODE TT', Interpretation: 'MODE Torque Test' },
-          B0C38003: { Data: 'MODE VC', Interpretation: 'MODE Voltage Contouring' },
-          B0C08000: { Data: 'MODE VES', Interpretation: 'MODE Voltage External Slow loop' },
-          B0C88008: { Data: 'MODE VT', Interpretation: 'MODE Voltage Test' },
-          FFFF2000: { Data: 'CPA', Interpretation: 'Command Position is Absolute' },
-          DFFF0000: { Data: 'CPR', Interpretation: 'Command Position is Relative' },
+          B7C68706: { Data: 'MODE CS', Int: 'Set MODE Cam Slave' },
+          B7C58705: { Data: 'MODE GS', Int: 'Set MODE Gear Slave' },
+          BFC28702: { Data: 'MODE PC', Int: 'MODE Position Contouring' },
+          BFC18701: { Data: 'MODE PP', Int: 'MODE Position Profile' },
+          FFC18707: { Data: 'MODE PSC', Int: 'MODE S-Curve' },
+          FFC0870A: { Data: 'MODE PT', Int: 'MODE Position Time' },
+          FFC18709: { Data: 'MODE PVT', Int: 'MODE Position Velocity Time' },
+          BBC28302: { Data: 'MODE SC', Int: 'MODE Speed Contouring' },
+          B3C08300: { Data: 'MODE SE', Int: 'MODE Speed External' },
+          BBC18301: { Data: 'MODE SP', Int: 'MODE Speed Profile' },
+          B1C38103: { Data: 'MODE TC', Int: 'MODE Torque Contouring' },
+          B1E08120: { Data: 'MODE TEF', Int: 'MODE Torque External Fast loop' },
+          B1C08100: { Data: 'MODE TES', Int: 'MODE Torque External Slow loop' },
+          B1C88108: { Data: 'MODE TT', Int: 'MODE Torque Test' },
+          B0C38003: { Data: 'MODE VC', Int: 'MODE Voltage Contouring' },
+          B0C08000: { Data: 'MODE VES', Int: 'MODE Voltage External Slow loop' },
+          B0C88008: { Data: 'MODE VT', Int: 'MODE Voltage Test' },
+          FFFF2000: { Data: 'CPA', Int: 'Command Position is Absolute' },
+          DFFF0000: { Data: 'CPR', Int: 'Command Position is Relative' },
           FF3F0000: {
             Data: 'EXTREF 0',
-            Interpretation: 'External Reference read from ONLINE EREF'
+            Int: 'External Reference read from ONLINE EREF'
           },
-          FF7F0040: { Data: 'EXTREF 1', Interpretation: 'External Reference read from ANALOGUE' },
-          FFBF0080: { Data: 'EXTREF 2', Interpretation: 'External Reference read from DIGITAL' },
-          EFFF0000: { Data: 'REG_OFF', Interpretation: 'Registration mode disabled ' },
-          FFFF1000: { Data: 'REG_ON', Interpretation: 'Registration mode enabled ' },
-          F7FF0000: { Data: 'RGM', Interpretation: 'Reset axis as Gear/Cam Master' },
-          FFFF0800: { Data: 'SGM', Interpretation: 'Set axis as Gear/Cam Master' },
-          BFFF0000: { Data: 'TUM0', Interpretation: 'Set Target Update Mode 0' },
-          FFFF4000: { Data: 'TUM1', Interpretation: 'Set Target Update Mode 1' }
+          FF7F0040: { Data: 'EXTREF 1', Int: 'External Reference read from ANALOGUE' },
+          FFBF0080: { Data: 'EXTREF 2', Int: 'External Reference read from DIGITAL' },
+          EFFF0000: { Data: 'REG_OFF', Int: 'Registration mode disabled ' },
+          FFFF1000: { Data: 'REG_ON', Int: 'Registration mode enabled ' },
+          F7FF0000: { Data: 'RGM', Int: 'Reset axis as Gear/Cam Master' },
+          FFFF0800: { Data: 'SGM', Int: 'Set axis as Gear/Cam Master' },
+          BFFF0000: { Data: 'TUM0', Int: 'Set Target Update Mode 0' },
+          FFFF4000: { Data: 'TUM1', Int: 'Set Target Update Mode 1' }
         }
         temp = temp + temp2
         if (modeMappings[temp]) {
           Data = modeMappings[temp].Data
-          Interpretation = modeMappings[temp].Interpretation
+          Interpretation = modeMappings[temp].Int
           // temp2 = modeMappings[temp].temp2
         }
       } else {
-        // The opCode needs to be 5909
-        errorStatus = 'error'
+        // The opCode needs to be 5909 but there is a chance this msg is short address of SRB
+        temp = firstByteDec & 0x0c // 0000 1100
+        if (firstByteDec & 0x02) temp2 = 0x800
+        else temp2 = 0x200
+        temp3 = opCodeDec & 0x01ff
+        temp3 = temp3 + temp2
+        if ((temp3 >= 0x200 && temp3 <= 0x3ff) || (temp3 >= 0x800 && temp3 <= 0x9ff)) {
+          firstAddy = decToHex(temp3, 32).padStart(4, '0')
+          destinator = getFirmwareAddress_RS232(firstAddy)[1]
+          Data = `SRB 0x${firstAddy}, 0x${data.slice(0, 4)}, 0x${data.slice(4, 8)}`
+          Interpretation = `SRB 0x${destinator},AND: 0x${data.slice(0, 4)}, OR: 0x${data.slice(
+            4,
+            8
+          )}`
+        } else {
+          errorStatus = 'error'
+        }
       }
 
       break
@@ -817,8 +827,49 @@ function getOpCode_RS232(opCode, data) {
       }
       break
 
+    case '1C':
+      switch (lastByte) {
+        case '02':
+          Data = `ABORT`
+          Interpretation = `Abort function execution `
+          break
+        case '01':
+          temp = data.slice(0, 4)
+          Data = `CALLS Label 0x${temp}`
+          Interpretation = `Cancelable CALL with address set in Label 0x${temp}`
+
+          break
+        case '04':
+          Data = `FAULTR`
+          Interpretation = `Reset drive fault state `
+
+          break
+        case '08':
+          Data = `SAVE`
+          Interpretation = `Save setup table in E2ROM`
+
+          break
+      }
+
+      break
+
+    case '76':
+      firstAddy = data.slice(0, 4)
+      destinator = getFirmwareAddress_RS232(firstAddy)[1]
+
+      if (lastByte == '01') {
+        Data = `CALL V16 0x${firstAddy}`
+        Interpretation = `Uncoditional CALL with address set in ${destinator}`
+      } else if (lastByte == '00') {
+        Data = `GOTO V16 0x${firstAddy}`
+        Interpretation = `Unconditional GOTO with address set in ${destinator}`
+      }
+
+      break
+
     default:
-      if (firstByte.slice(0, 1) == '2') {
+      var nibbleCase = parseInt(firstByte.slice(0, 1))
+      if ([2, 3, 4, 5].includes(nibbleCase)) {
         //Potential short addressing
         temp = firstByteDec & 0x0c // 0000 1100
 
@@ -826,52 +877,75 @@ function getOpCode_RS232(opCode, data) {
         else temp2 = 0x200
 
         temp3 = opCodeDec & 0x01ff
-        secondAddy = data.slice(0, 4)
-        sender = getFirmwareAddress_RS232(secondAddy)[1]
-        if (temp == 0x00) {
-          //2000 2200
-          rez = '[V16D = val16/TML label]'
-        } else if (temp == 0x08) {
-          //2800 2A00
-          rez = '[V16D = V16S]'
-        } else if (temp == 0x0c) {
-          //2C00 2E00
-          rez = '[V32D = V32S]'
-        } else if (temp == 0x04) {
-          rez = '[V32 = val32]'
-        }
 
+        if (data.length == 8) {
+          secondAddy = '0x' + data.slice(4, 8) + data.slice(0, 4)
+          sender = secondAddy
+        } else {
+          secondAddy = data.slice(0, 4)
+          sender = getFirmwareAddress_RS232(secondAddy)[1]
+        }
         firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
         destinator = getFirmwareAddress_RS232(firstAddy)[1]
-        Data = `0x${firstAddy} = 0x${secondAddy}`
-        Interpretation = `${destinator}= ${sender} -- ${rez}`
-      } else if (firstByte.slice(0, 1) == '3') {
-        //Potential short addressing
-        temp = firstByteDec & 0x0c // 0000 1100
 
-        if (firstByteDec & 0x02) temp2 = 0x800
-        else temp2 = 0x200
-
-        temp3 = opCodeDec & 0x01ff
-        secondAddy = data.slice(0, 4)
-        sender = getFirmwareAddress_RS232(secondAddy)[1]
         if (temp == 0x00) {
           //2000 2200
-          rez = '[V16D = val16/TML label]'
+          if (nibbleCase == 2) {
+            rez = '[V16D = val16/TML label]'
+            mask = '='
+          } else if (nibbleCase == 3) {
+            rez = '[V16D = -V16S]'
+            mask = '= -'
+          } else if (nibbleCase == 4) {
+            rez = '[V16D += V16S]'
+            mask = '+='
+          } else if (nibbleCase == 5) {
+            rez = '[V16D -= V16S]'
+            mask = '-='
+          }
+        } else if (temp == 0x04) {
+          if (nibbleCase == 2) {
+            rez = '[V32 = val32]'
+            mask = '='
+          } else if (nibbleCase == 3) {
+            rez = '[V32D = -V32S]'
+            mask = '= -'
+          } else if (nibbleCase == 4) {
+            rez = '[V32D += V32S ]'
+            mask = '+='
+          } else if (nibbleCase == 5) {
+            rez = '[V32D -= V32S ]'
+            mask = '-='
+          }
         } else if (temp == 0x08) {
           //2800 2A00
-          rez = '[V16D = V16S]'
+
+          if (nibbleCase == 2) {
+            rez = '[V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]'
+            mask = '='
+          } else if (nibbleCase == 3) {
+            rez = '[V16 += val16 ]'
+            mask = '+='
+          } else if (nibbleCase == 4) {
+            rez = '[V16 -= val16]'
+            mask = '-='
+          }
         } else if (temp == 0x0c) {
           //2C00 2E00
-          rez = '[V32D = V32S]'
-        } else if (temp == 0x04) {
-          rez = '[V32 = val32]'
+          if (nibbleCase == 2) {
+            rez = '[V32D = V32S]'
+            mask = '='
+          } else if (nibbleCase == 3) {
+            rez = '[V32 += val32 ]'
+            mask = '+='
+          } else if (nibbleCase == 4) {
+            rez = '[V32 -= val32]'
+            mask = '-='
+          }
         }
 
-        firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
-        destinator = getFirmwareAddress_RS232(firstAddy)[1]
-        Data = `0x${firstAddy} = 0x${secondAddy}`
-        Interpretation = `${destinator}= ${sender} -- ${rez}`
+        Data = `0x${firstAddy} ${mask} 0x${secondAddy}`
+        Interpretation = `${destinator} ${mask} ${sender} -- ${rez}`
       } else {
         errorStatus = 'error'
       }

@@ -6567,8 +6567,8 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2067',
     ObjectName: 'Write data at specified address',
     Data: '036A1234',
-    Interpretation: 'Write: #x2067 <- 036A1234h',
-    errorStatus: 'neutral'
+    Interpretation: 'Write,  0x036Ah <- 1234h , Memory range : 0x1234h - 0x036Ah ',
+    errorStatus: 'random'
   },
   {
     msgNr: 429,
