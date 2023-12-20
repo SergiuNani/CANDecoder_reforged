@@ -68,7 +68,9 @@ function getFirmwareAddress_RS232(searchAddy) {
     //result =["UINT","PCR","@0x0303",'maybeUnits']
     return result
   } else {
-    return [false, `0x${searchAddy}`, '-']
+    if (searchAddy == '') {
+      return [false, `${searchAddy}`, '-']
+    } else return [false, `0x${searchAddy}`, '-']
   }
 }
 
@@ -298,9 +300,9 @@ function getAxisID_RS232(hex) {
 function getOpCode_RS232(opCode, data) {
   var firstByte = opCode.slice(0, 2)
   var lastByte = opCode.slice(2)
-  var destinator = '-'
-  var sender = '-'
-  var memoryType = '-'
+  var destinator = ''
+  var sender = ''
+  var memoryType = ''
   var temp = ''
   var temp2 = ''
   var temp3 = ''
@@ -310,10 +312,10 @@ function getOpCode_RS232(opCode, data) {
   var opCodeDec = hexToDec(opCode, 32)
   var Interpretation
   var Data
-  var rez = '-'
-  var errorStatus = '-'
-  var firstAddy = '-'
-  var secondAddy = '-'
+  var rez = ''
+  var errorStatus = ''
+  var firstAddy = ''
+  var secondAddy = ''
   switch (firstByte) {
     case '90':
       //Assignment
@@ -756,6 +758,38 @@ function getOpCode_RS232(opCode, data) {
           }
 
           break
+
+        case 'B9':
+          temp = data.slice(0, 4)
+          temp2 = data.slice(8, 12) + data.slice(4, 8)
+          temp3 = hexToDec(temp2, 32)
+          if (temp == '02C2') {
+            Data = `!RT 0x${temp2}  `
+            Interpretation = `! if Relative Time >= 0x${temp2}  [val32]`
+          }
+          break
+        case '81':
+          temp = data.slice(0, 4)
+          temp2 = data.slice(8, 12) + data.slice(4, 8)
+          temp3 = hexToDec(temp2, 32)
+          if (temp == '02AE') {
+            Data = `!RU/!SRU/!PRU/!TRU 0x${temp2}  `
+            Interpretation = `! if Position Reference Under 0x${temp2} = ${temp3}d  [val32]`
+          }
+          break
+
+        case '96':
+          temp = data.slice(0, 4)
+          temp2 = data.slice(8, 12) + data.slice(4, 8)
+          temp3 = hexToDec(temp2, 32)
+          if (temp == '098A') {
+            Data = `!LSO 0x${temp2}  `
+            Interpretation = `! if Load Speed Over 0x${temp2} = ${temp3}d   [val32]`
+          } else if (temp == '022C') {
+            Data = `!MSO 0x${temp2}  `
+            Interpretation = `! if Motor Speed Over 0x${temp2} = ${temp3}d   [val32]`
+          }
+          break
       }
       break
 
@@ -824,6 +858,41 @@ function getOpCode_RS232(opCode, data) {
             Interpretation = `! if Relative Motor Position Under V32 => !RMPU ${destinator} [&32]`
           }
           break
+        case 'B9':
+          temp = data.slice(0, 4)
+          if (temp == '02C2') {
+            firstAddy = data.slice(4, 8)
+            destinator = getFirmwareAddress_RS232(firstAddy)[1]
+            Data = `!RT ${firstAddy}  `
+            Interpretation = `! if Relative Time >= ${destinator}  [V32]`
+          }
+
+          break
+
+        case '81':
+          temp = data.slice(0, 4)
+          if (temp == '02AE') {
+            firstAddy = data.slice(4, 8)
+            destinator = getFirmwareAddress_RS232(firstAddy)[1]
+            Data = `!RU/!SRU/!PRU/!TRU  ${firstAddy}  `
+            Interpretation = `! if Reference Under ${destinator}  [V32]`
+          }
+
+          break
+
+        case '96':
+          temp = data.slice(0, 4)
+          firstAddy = data.slice(4, 8)
+          destinator = getFirmwareAddress_RS232(firstAddy)[1]
+          if (temp == '098A') {
+            Data = `!LSO  0x${firstAddy}  `
+            Interpretation = `! if Load Speed Over ${destinator}  [V32]`
+          } else if (temp == '022C') {
+            Data = `!MSO  0x${firstAddy}  `
+            Interpretation = `! if Motor Speed Over ${destinator}  [V32]`
+          }
+
+          break
       }
       break
 
@@ -865,6 +934,64 @@ function getOpCode_RS232(opCode, data) {
         Interpretation = `Unconditional GOTO with address set in ${destinator}`
       }
 
+      break
+
+    case '74':
+    case '75':
+      temp = lastByteDec & 0xfe
+      switch (temp) {
+        case 0x90:
+          temp2 = ', LT'
+          break
+        case 0x88:
+          temp2 = ', LEQ'
+          break
+        case 0xc0:
+          temp2 = ', EQ'
+          break
+        case 0xa0:
+          temp2 = ', NEQ'
+          break
+        case 0x84:
+          temp2 = ', GT'
+          break
+        case 0x82:
+          temp2 = ', GEQ'
+          break
+        default:
+          temp2 = ''
+          break
+      }
+      if (temp2 == '') {
+        firstAddy = data.slice(0, 4)
+        destinator = getFirmwareAddress_RS232(firstAddy)[1]
+      } else {
+        //+flag
+        firstAddy = data.slice(4, 8)
+        destinator = getFirmwareAddress_RS232(firstAddy)[1]
+        secondAddy = data.slice(0, 4)
+        sender = ', ' + getFirmwareAddress_RS232(secondAddy)[1] + `${temp2}`
+        secondAddy = ', 0x' + secondAddy + `${temp2}`
+      }
+
+      if (lastByteDec & 0x1) {
+        //CALL
+        Data = `CALL 0x${firstAddy} ${secondAddy}`
+        Interpretation = `Unconditional CALL with address set in ${destinator} ${sender}`
+      } else {
+        //GOTO
+        Data = `GOTO 0x${firstAddy} ${secondAddy}`
+        Interpretation = `Unconditional GOTO to label ${destinator} ${sender}`
+      }
+
+      break
+    case '1E':
+      if (lastByte == '01') {
+        firstAddy = data.slice(0, 4)
+        destinator = getFirmwareAddress_RS232(firstAddy)[1]
+        Data = `CALLS 0x${firstAddy} `
+        Interpretation = `Cancelable CALL with address set in var ${destinator} `
+      }
       break
 
     default:

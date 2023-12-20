@@ -224,6 +224,25 @@ export const MessageListRs232ToVerify = `
 06 00 10 76 01 03 66 F6 //call var_i1
 06 10 10 76 01 03 66 06 /call var_i1
 06 10 10 76 00 03 66 05 /goto var_i1
+
+18:12:48 Bytes Write :  06 00 10 74 01 40 26 F1 //TML>  call loop1 0x4026
+18:12:48 Bytes Read :  4F
+18:13:25 Bytes Write :  08 00 10 74 91 03 66 40 17 DD // TML> call loop, var_i1, LT
+18:13:25 Bytes Read :  4F
+18:13:30 Bytes Write :  08 00 10 74 85 03 66 40 17 D1 //TML> call loop, var_i1, GT
+18:13:30 Bytes Read :  4F
+
+
+06 10 10 74 00 40 12 EC //goto 0x4012;
+08 10 10 74 88 03 66 40 12 DF //goto 0x4012, var_i1, LEQ
+08 10 10 74 A0 03 66 40 12 F7 //goto 0x4012, var_i1, NEQ
+
+08 10 10 75 91 02 28 40 12 AA //call 0x4012, apos, LT
+08 10 10 75 82 02 9E 40 12 11 //goto 0x4012, cpos , geq
+06 10 10 1E 01 03 66 AE  //calls var_i1
+
+08 10 10 71 B9 02 C2 02 28 40  //!RT apos
+0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x12
 `
 
 export const Hardcoded_VerifyRS232 = [
@@ -3304,6 +3323,372 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 220,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 221,
+    OriginalMessage: '06 00 10 1C 01 40 2B 9E // CALLS label , 0x402B',
+    CobID: 'RW=?',
+    FrameData: '0600101C01402B9E',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '1C01',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALLS Label 0x402B',
+    Interpretation: 'Cancelable CALL with address set in Label 0x402B',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 222,
+    OriginalMessage: '04 10 10 1C 04 44 //FAULTR',
+    CobID: 'RW=?',
+    FrameData: '0410101C0444',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '1C04',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'FAULTR',
+    Interpretation: 'Reset drive fault state ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 223,
+    OriginalMessage: '04 10 10 1C 08 48 //SAVE',
+    CobID: 'RW=?',
+    FrameData: '0410101C0848',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '1C08',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SAVE',
+    Interpretation: 'Save setup table in E2ROM',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 224,
+    OriginalMessage: '06 00 10 76 01 03 66 F6 //call var_i1',
+    CobID: 'RW=?',
+    FrameData: '06001076010366F6',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7601',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALL V16 0x0366',
+    Interpretation: 'Uncoditional CALL with address set in VAR_I1',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 225,
+    OriginalMessage: '06 10 10 76 01 03 66 06 /call var_i1',
+    CobID: 'RW=?',
+    FrameData: '0610107601036606',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7601',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALL V16 0x0366',
+    Interpretation: 'Uncoditional CALL with address set in VAR_I1',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 226,
+    OriginalMessage: '06 10 10 76 00 03 66 05 /goto var_i1',
+    CobID: 'RW=?',
+    FrameData: '0610107600036605',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7600',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GOTO V16 0x0366',
+    Interpretation: 'Unconditional GOTO with address set in VAR_I1',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 227,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 228,
+    OriginalMessage: '18:12:48 Bytes Write :  06 00 10 74 01 40 26 F1 //TML>  call loop1 0x4026',
+    CobID: 'Write',
+    FrameData: '06001074014026F1',
+    type: 'Write',
+    AxisID: 1,
+    CS: '7401',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALL 0x4026 ',
+    Interpretation: 'Unconditional CALL with address set in 0x4026 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 229,
+    OriginalMessage: '18:12:48 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: 'Read',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 230,
+    OriginalMessage:
+      '18:13:25 Bytes Write :  08 00 10 74 91 03 66 40 17 DD // TML> call loop, var_i1, LT',
+    CobID: 'Write',
+    FrameData: '080010749103664017DD',
+    type: 'Write',
+    AxisID: 1,
+    CS: '7491',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALL 0x4017 , 0x0366, LT',
+    Interpretation: 'Unconditional CALL with address set in 0x4017 , VAR_I1, LT',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 231,
+    OriginalMessage: '18:13:25 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: 'Read',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 232,
+    OriginalMessage:
+      '18:13:30 Bytes Write :  08 00 10 74 85 03 66 40 17 D1 //TML> call loop, var_i1, GT',
+    CobID: 'Write',
+    FrameData: '080010748503664017D1',
+    type: 'Write',
+    AxisID: 1,
+    CS: '7485',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALL 0x4017 , 0x0366, GT',
+    Interpretation: 'Unconditional CALL with address set in 0x4017 , VAR_I1, GT',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 233,
+    OriginalMessage: '18:13:30 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: 'Read',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 234,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 235,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 236,
+    OriginalMessage: '06 10 10 74 00 40 12 EC //goto 0x4012;',
+    CobID: 'RW=?',
+    FrameData: '06101074004012EC',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7400',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GOTO 0x4012 ',
+    Interpretation: 'Unconditional GOTO to label 0x4012 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 237,
+    OriginalMessage: '08 10 10 74 88 03 66 40 12 DF //goto 0x4012, var_i1, LEQ',
+    CobID: 'RW=?',
+    FrameData: '081010748803664012DF',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7488',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GOTO 0x4012 , 0x0366, LEQ',
+    Interpretation: 'Unconditional GOTO to label 0x4012 , VAR_I1, LEQ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 238,
+    OriginalMessage: '08 10 10 74 A0 03 66 40 12 F7 //goto 0x4012, var_i1, NEQ',
+    CobID: 'RW=?',
+    FrameData: '08101074A003664012F7',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '74A0',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GOTO 0x4012 , 0x0366, NEQ',
+    Interpretation: 'Unconditional GOTO to label 0x4012 , VAR_I1, NEQ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 239,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 240,
+    OriginalMessage: '08 10 10 75 91 02 28 40 12 AA //call 0x4012, apos, LT',
+    CobID: 'RW=?',
+    FrameData: '081010759102284012AA',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7591',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALL 0x4012 , 0x0228, LT',
+    Interpretation: 'Unconditional CALL with address set in 0x4012 , APOS, LT',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 241,
+    OriginalMessage: '08 10 10 75 82 02 9E 40 12 11 //goto 0x4012, cpos , geq',
+    CobID: 'RW=?',
+    FrameData: '0810107582029E401211',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7582',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GOTO 0x4012 , 0x029E, GEQ',
+    Interpretation: 'Unconditional GOTO to label 0x4012 , CPOS, GEQ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 242,
+    OriginalMessage: '06 10 10 1E 01 03 66 AE  //calls var_i1',
+    CobID: 'RW=?',
+    FrameData: '0610101E010366AE',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '1E01',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CALLS 0x0366 ',
+    Interpretation: 'Cancelable CALL with address set in var VAR_I1 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 243,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 244,
+    OriginalMessage: '08 10 10 71 B9 02 C2 02 28 40  //!RT apos',
+    CobID: 'RW=?',
+    FrameData: '08101071B902C2022840',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '71B9',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RT 0228  ',
+    Interpretation: '! if Relative Time >= APOS  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 245,
+    OriginalMessage: '0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A101070B902C20012000029',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '70B9',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RT 0x00000012  ',
+    Interpretation: '! if Relative Time >= 0x00000012  [val32(L) val32(H)]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 246,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

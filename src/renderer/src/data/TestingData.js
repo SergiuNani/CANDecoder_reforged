@@ -1,15 +1,19 @@
 export var InsertTextIntoTextArea = `
 
-18:12:48 Bytes Write :  06 00 10 74 01 40 26 F1 //TML>  call loop1 0x4026
-18:12:48 Bytes Read :  4F
-18:13:25 Bytes Write :  08 00 10 74 91 03 66 40 17 DD // TML> call loop, var_i1, LT
-18:13:25 Bytes Read :  4F
-18:13:30 Bytes Write :  08 00 10 74 85 03 66 40 17 D1 //TML> call loop, var_i1, GT
-18:13:30 Bytes Read :  4F
 
+08 10 10 71 81 02 AE 02 28 F4 //!RU apos
+0A 10 10 70 81 02 AE 00 12 00 00 DD //!RU 0x12
+08 10 10 71 81 02 AE 02 28 F4 //!PRU apos
+0A 10 10 70 81 02 AE 00 12 00 00 DD //!PRU 0x12
+08 10 10 71 81 02 AE 02 28 F4 //!SRU apos
+0A 10 10 70 81 02 AE 00 12 00 00 DD //!SRU 0x12
+08 10 10 71 81 02 AE 02 28 F4 //!TRU apos
+0A 10 10 70 81 02 AE 00 00 00 12 DD //!TRU 0x12
 
-
-
+08 10 10 71 96 09 8A 02 A0 64 //!LSO cspd
+0A 10 10 70 96 09 8A 00 12 00 00 D5 //!LSO 0x12
+08 10 10 71 96 02 2C 02 A0 FF //!MSO cspd
+0A 10 10 70 96 02 2C 00 12 00 00 70 //!MSO 0x12
 
 
 `
