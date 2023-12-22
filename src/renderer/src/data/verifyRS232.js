@@ -243,6 +243,39 @@ export const MessageListRs232ToVerify = `
 
 08 10 10 71 B9 02 C2 02 28 40  //!RT apos
 0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x12
+
+08 10 10 71 81 02 AE 02 28 F4 //!RU apos
+0A 10 10 70 81 02 AE 00 12 00 00 DD //!RU 0x12
+08 10 10 71 81 02 AE 02 28 F4 //!PRU apos
+0A 10 10 70 81 02 AE 00 12 00 00 DD //!PRU 0x12
+08 10 10 71 81 02 AE 02 28 F4 //!SRU apos
+0A 10 10 70 81 02 AE 00 12 00 00 DD //!SRU 0x12
+08 10 10 71 81 02 AE 02 28 F4 //!TRU apos
+0A 10 10 70 81 02 AE 00 00 00 12 DD //!TRU 0x12
+
+08 10 10 71 96 09 8A 02 A0 64 //!LSO cspd
+0A 10 10 70 96 09 8A 00 12 00 00 D5 //!LSO 0x12
+08 10 10 71 96 02 2C 02 A0 FF //!MSO cspd
+0A 10 10 70 96 02 2C 00 12 00 00 70 //!MSO 0x12
+08 00 10 71 87 09 8A 02 A0 45 //!LSU cspd
+0A 00 10 70 87 09 8A 00 32 00 00 D6 //!LSU 0x32
+08 00 10 71 87 02 2C 02 A0 E0 //!MSU cspd
+0A 00 10 70 87 02 2C 56 78 12 34 53 //!MSU 0x12345678
+08 10 10 25 68 00 12 00 00 C7 //var_lf =0x12
+08 00 10 71 90 02 9E 02 28 E3  // !VO cpos, apos
+0A 00 10 70 90 02 9E 56 78 12 34 CE  // !VO cpos, 0x12345678
+08 00 10 71 81 02 9E 02 28 D4  // !VU cpos, apos
+0A 00 10 70 81 02 9E 00 12 00 00 BD  // !VU cpos, 0x12
+08 00 10 06 08 56 78 12 34 3A //wait! 0x12345678
+
+04 00 10 04 08 20 
+
+04 00 10 80 28 BC //SAP apos    
+04 00 10 80 9E 32 //SAP cpos    
+04 00 10 81 68 FD //SAP var_lf  
+
+06 00 10 7D 67 02 28 24  //SEG var_i2 , APOS
+
 `
 
 export const Hardcoded_VerifyRS232 = [
@@ -284,7 +317,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B4',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 0367',
+    Data: '(0366), DM = 0367',
     Interpretation: '(VAR_I1), DM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -298,7 +331,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B8',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, SPI = 0367',
+    Data: '(0366), SPI = 0367',
     Interpretation: '(VAR_I1), SPI = VAR_I2 ',
     errorStatus: '-'
   },
@@ -312,7 +345,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B0',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, PM = 0367',
+    Data: '(0366), PM = 0367',
     Interpretation: '(VAR_I1), PM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -340,7 +373,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B4',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 0367',
+    Data: '(0366), DM = 0367',
     Interpretation: '(VAR_I1), DM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -354,7 +387,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B5',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 029E',
+    Data: '(0366), DM = 029E',
     Interpretation: '(VAR_I1), DM = CPOS ',
     errorStatus: '-'
   },
@@ -368,7 +401,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A4',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 1234',
+    Data: '(0366), DM = 1234',
     Interpretation: '(VAR_I1), DM = 0x1234 (4660) ',
     errorStatus: '-'
   },
@@ -382,7 +415,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A4',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 1234',
+    Data: '(0366), DM = 1234',
     Interpretation: '(VAR_I1), DM = 0x1234 (4660) ',
     errorStatus: '-'
   },
@@ -396,7 +429,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A5',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 00012345',
+    Data: '(0366), DM = 00012345',
     Interpretation: '(VAR_I1), DM = 0x00012345 (74565) ',
     errorStatus: '-'
   },
@@ -410,7 +443,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A5',
     Object: '-',
     ObjectName: '-',
-    Data: '0366, DM = 12345678',
+    Data: '(0366), DM = 12345678',
     Interpretation: '(VAR_I1), DM = 0x12345678 (305419896) ',
     errorStatus: '-'
   },
@@ -424,7 +457,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9034',
     Object: '-',
     ObjectName: '-',
-    Data: '0366+, DM = 0367',
+    Data: '(0366+), DM = 0367',
     Interpretation: '(VAR_I1+), DM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -438,7 +471,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9035',
     Object: '-',
     ObjectName: '-',
-    Data: '0366+, DM = 029E',
+    Data: '(0366+), DM = 029E',
     Interpretation: '(VAR_I1+), DM = CPOS ',
     errorStatus: '-'
   },
@@ -452,7 +485,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9024',
     Object: '-',
     ObjectName: '-',
-    Data: '0366+, DM = 1234',
+    Data: '(0366+), DM = 1234',
     Interpretation: '(VAR_I1+), DM = 0x1234 (4660) ',
     errorStatus: '-'
   },
@@ -466,7 +499,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9024',
     Object: '-',
     ObjectName: '-',
-    Data: '0366+, DM = 1234',
+    Data: '(0366+), DM = 1234',
     Interpretation: '(VAR_I1+), DM = 0x1234 (4660) ',
     errorStatus: '-'
   },
@@ -480,7 +513,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9025',
     Object: '-',
     ObjectName: '-',
-    Data: '0366+, DM = 00012345',
+    Data: '(0366+), DM = 00012345',
     Interpretation: '(VAR_I1+), DM = 0x00012345 (74565) ',
     errorStatus: '-'
   },
@@ -494,7 +527,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9025',
     Object: '-',
     ObjectName: '-',
-    Data: '0366+, DM = 12345678',
+    Data: '(0366+), DM = 12345678',
     Interpretation: '(VAR_I1+), DM = 0x12345678 (305419896) ',
     errorStatus: '-'
   },
@@ -915,7 +948,7 @@ export const Hardcoded_VerifyRS232 = [
     Object: '-',
     ObjectName: '-',
     Data: '0228  <<= 1 ',
-    Interpretation: 'APOS<<= 1 ,[32D] ',
+    Interpretation: 'APOS<<= 1 [32D] ',
     errorStatus: '-'
   },
   {
@@ -929,7 +962,7 @@ export const Hardcoded_VerifyRS232 = [
     Object: '-',
     ObjectName: '-',
     Data: '0228  <<= 10 ',
-    Interpretation: 'APOS<<= 10 ,[32D] ',
+    Interpretation: 'APOS<<= 10 [32D] ',
     errorStatus: '-'
   },
   {
@@ -943,7 +976,7 @@ export const Hardcoded_VerifyRS232 = [
     Object: '-',
     ObjectName: '-',
     Data: '0228  >>= 1 ',
-    Interpretation: 'APOS>>= 1 ,[32D] ',
+    Interpretation: 'APOS>>= 1 [32D] ',
     errorStatus: '-'
   },
   {
@@ -957,7 +990,7 @@ export const Hardcoded_VerifyRS232 = [
     Object: '-',
     ObjectName: '-',
     Data: '0228  >>= 10 ',
-    Interpretation: 'APOS>>= 10 ,[32D] ',
+    Interpretation: 'APOS>>= 10 [32D] ',
     errorStatus: '-'
   },
   {
@@ -2286,8 +2319,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2D68',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0228',
-    Interpretation: 'VAR_LF = APOS -- [V32D = V32S]',
+    Data: ' 0x0368 = 0x0228',
+    Interpretation: ' VAR_LF = APOS -- [V32D = V32S]',
     errorStatus: '-'
   },
   {
@@ -2300,8 +2333,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2568',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0x00000012',
-    Interpretation: 'VAR_LF = 0x00000012 -- [V32 = val32]',
+    Data: ' 0x0368 = 0x00000012',
+    Interpretation: ' VAR_LF = 0x00000012 -- [V32 = val32]',
     errorStatus: '-'
   },
   {
@@ -2314,8 +2347,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '261E',
     Object: '-',
     ObjectName: '-',
-    Data: '0x081E = 0x0x00000012',
-    Interpretation: 'CAPPOS2 = 0x00000012 -- [V32 = val32]',
+    Data: ' 0x081E = 0x00000012',
+    Interpretation: ' CAPPOS2 = 0x00000012 -- [V32 = val32]',
     errorStatus: '-'
   },
   {
@@ -2328,8 +2361,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2166',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0012',
-    Interpretation: 'VAR_I1 = 0x0012 -- [V16D = val16/TML label]',
+    Data: ' 0x0366 = 0x0012',
+    Interpretation: ' VAR_I1 = 0x0012 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2342,8 +2375,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2169',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0369 = 0x0012',
-    Interpretation: '0x0369 = 0x0012 -- [V16D = val16/TML label]',
+    Data: ' 0x0369 = 0x0012',
+    Interpretation: ' 0x0369 = 0x0012 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2356,8 +2389,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2168',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0012',
-    Interpretation: 'VAR_LF = 0x0012 -- [V16D = val16/TML label]',
+    Data: ' 0x0368 = 0x0012',
+    Interpretation: ' VAR_LF = 0x0012 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2370,8 +2403,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0367',
-    Interpretation: 'VAR_I1 = VAR_I2 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0366 = 0x0367',
+    Interpretation: ' VAR_I1 = VAR_I2 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2384,8 +2417,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0369',
-    Interpretation: 'VAR_I1 = 0x0369 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0366 = 0x0369',
+    Interpretation: ' VAR_I1 = 0x0369 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2398,8 +2431,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0368',
-    Interpretation: 'VAR_I1 = VAR_LF -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0366 = 0x0368',
+    Interpretation: ' VAR_I1 = VAR_LF -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2412,8 +2445,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2969',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0369 = 0x0366',
-    Interpretation: '0x0369 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0369 = 0x0366',
+    Interpretation: ' 0x0369 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2426,8 +2459,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2968',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0366',
-    Interpretation: 'VAR_LF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0368 = 0x0366',
+    Interpretation: ' VAR_LF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2440,8 +2473,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '290C',
     Object: '-',
     ObjectName: '-',
-    Data: '0x030C = 0x0366',
-    Interpretation: 'AAR = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x030C = 0x0366',
+    Interpretation: ' AAR = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2454,9 +2487,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2B13',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0913 = 0x0366',
+    Data: ' 0x0913 = 0x0366',
     Interpretation:
-      'AAR_table = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' AAR_table = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2469,8 +2502,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '28FF',
     Object: '-',
     ObjectName: '-',
-    Data: '0x02FF = 0x0366',
-    Interpretation: 'ACCPL = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x02FF = 0x0366',
+    Interpretation: ' ACCPL = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2483,9 +2516,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '28C7',
     Object: '-',
     ObjectName: '-',
-    Data: '0x02C7 = 0x0366',
+    Data: ' 0x02C7 = 0x0366',
     Interpretation:
-      'ACC_LIMIT = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' ACC_LIMIT = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2498,8 +2531,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2B12',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0912 = 0x0366',
-    Interpretation: 'ACR = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0912 = 0x0366',
+    Interpretation: ' ACR = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2512,8 +2545,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '283C',
     Object: '-',
     ObjectName: '-',
-    Data: '0x023C = 0x0366',
-    Interpretation: 'AD0 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x023C = 0x0366',
+    Interpretation: ' AD0 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2526,8 +2559,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2844',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0244 = 0x0366',
-    Interpretation: 'AD0OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0244 = 0x0366',
+    Interpretation: ' AD0OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2540,8 +2573,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '283D',
     Object: '-',
     ObjectName: '-',
-    Data: '0x023D = 0x0366',
-    Interpretation: 'AD1 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x023D = 0x0366',
+    Interpretation: ' AD1 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2554,8 +2587,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2845',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0245 = 0x0366',
-    Interpretation: 'AD1OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0245 = 0x0366',
+    Interpretation: ' AD1OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2568,8 +2601,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '283E',
     Object: '-',
     ObjectName: '-',
-    Data: '0x023E = 0x0366',
-    Interpretation: 'AD2 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x023E = 0x0366',
+    Interpretation: ' AD2 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2582,9 +2615,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2BDD',
     Object: '-',
     ObjectName: '-',
-    Data: '0x09DD = 0x0366',
+    Data: ' 0x09DD = 0x0366',
     Interpretation:
-      'AD2FIL_CFG = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' AD2FIL_CFG = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2597,9 +2630,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2BDC',
     Object: '-',
     ObjectName: '-',
-    Data: '0x09DC = 0x0366',
+    Data: ' 0x09DC = 0x0366',
     Interpretation:
-      'AD2FIL_VAL = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' AD2FIL_VAL = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2612,8 +2645,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2846',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0246 = 0x0366',
-    Interpretation: 'AD2OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0246 = 0x0366',
+    Interpretation: ' AD2OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2626,8 +2659,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '283F',
     Object: '-',
     ObjectName: '-',
-    Data: '0x023F = 0x0366',
-    Interpretation: 'AD3 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x023F = 0x0366',
+    Interpretation: ' AD3 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2640,8 +2673,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2847',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0247 = 0x0366',
-    Interpretation: 'AD3OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0247 = 0x0366',
+    Interpretation: ' AD3OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2654,8 +2687,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2840',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0240 = 0x0366',
-    Interpretation: 'AD4 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0240 = 0x0366',
+    Interpretation: ' AD4 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2668,8 +2701,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2848',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0248 = 0x0366',
-    Interpretation: 'AD4OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0248 = 0x0366',
+    Interpretation: ' AD4OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2682,8 +2715,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2841',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0241 = 0x0366',
-    Interpretation: 'AD5 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0241 = 0x0366',
+    Interpretation: ' AD5 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2696,8 +2729,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2849',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0249 = 0x0366',
-    Interpretation: 'AD5OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0249 = 0x0366',
+    Interpretation: ' AD5OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2710,8 +2743,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2842',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0242 = 0x0366',
-    Interpretation: 'AD6 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0242 = 0x0366',
+    Interpretation: ' AD6 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2724,8 +2757,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '284A',
     Object: '-',
     ObjectName: '-',
-    Data: '0x024A = 0x0366',
-    Interpretation: 'AD6OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x024A = 0x0366',
+    Interpretation: ' AD6OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2738,8 +2771,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2843',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0243 = 0x0366',
-    Interpretation: 'AD7 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0243 = 0x0366',
+    Interpretation: ' AD7 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2752,8 +2785,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '284B',
     Object: '-',
     ObjectName: '-',
-    Data: '0x024B = 0x0366',
-    Interpretation: 'AD7OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x024B = 0x0366',
+    Interpretation: ' AD7OFF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2766,8 +2799,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2A0B',
     Object: '-',
     ObjectName: '-',
-    Data: '0x080B = 0x0366',
-    Interpretation: 'AD8 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x080B = 0x0366',
+    Interpretation: ' AD8 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2780,8 +2813,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2BED',
     Object: '-',
     ObjectName: '-',
-    Data: '0x09ED = 0x0366',
-    Interpretation: 'AD9 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x09ED = 0x0366',
+    Interpretation: ' AD9 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2794,9 +2827,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2A55',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0855 = 0x0366',
+    Data: ' 0x0855 = 0x0366',
     Interpretation:
-      'AEI_CLKDIV = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' AEI_CLKDIV = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2809,9 +2842,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '28FA',
     Object: '-',
     ObjectName: '-',
-    Data: '0x02FA = 0x0366',
+    Data: ' 0x02FA = 0x0366',
     Interpretation:
-      'AEI_CMPTIME = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' AEI_CMPTIME = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2824,8 +2857,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2A54',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0854 = 0x0366',
-    Interpretation: 'AEI_PER = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0854 = 0x0366',
+    Interpretation: ' AEI_PER = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2838,9 +2871,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2AAF',
     Object: '-',
     ObjectName: '-',
-    Data: '0x08AF = 0x0366',
+    Data: ' 0x08AF = 0x0366',
     Interpretation:
-      'ANALOGUEREFERENCE = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' ANALOGUEREFERENCE = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2853,9 +2886,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2A9C',
     Object: '-',
     ObjectName: '-',
-    Data: '0x089C = 0x0366',
+    Data: ' 0x089C = 0x0366',
     Interpretation:
-      'ANGLE_INC = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' ANGLE_INC = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2868,9 +2901,9 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2BDE',
     Object: '-',
     ObjectName: '-',
-    Data: '0x09DE = 0x0366',
+    Data: ' 0x09DE = 0x0366',
     Interpretation:
-      'ASPD_BQ_INI = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+      ' ASPD_BQ_INI = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2883,8 +2916,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2801',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0201 = 0x0366',
-    Interpretation: 'ASR = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0201 = 0x0366',
+    Interpretation: ' ASR = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2897,8 +2930,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '28A7',
     Object: '-',
     ObjectName: '-',
-    Data: '0x02A7 = 0x0366',
-    Interpretation: 'ASR2 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x02A7 = 0x0366',
+    Interpretation: ' ASR2 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -2911,8 +2944,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '20FD',
     Object: '-',
     ObjectName: '-',
-    Data: '0x02FD = 0x0021',
-    Interpretation: 'KOMEGA = 0x0021 -- [V16D = val16/TML label]',
+    Data: ' 0x02FD = 0x0021',
+    Interpretation: ' KOMEGA = 0x0021 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2925,8 +2958,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '23B7',
     Object: '-',
     ObjectName: '-',
-    Data: '0x09B7 = 0x0021',
-    Interpretation: 'HOMING_NR = 0x0021 -- [V16D = val16/TML label]',
+    Data: ' 0x09B7 = 0x0021',
+    Interpretation: ' HOMING_NR = 0x0021 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2939,8 +2972,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '219F',
     Object: '-',
     ObjectName: '-',
-    Data: '0x039F = 0x0021',
-    Interpretation: 'HOME_NR_6098 = 0x0021 -- [V16D = val16/TML label]',
+    Data: ' 0x039F = 0x0021',
+    Interpretation: ' HOME_NR_6098 = 0x0021 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2953,8 +2986,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2039',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0239 = 0x0021',
-    Interpretation: 'IA = 0x0021 -- [V16D = val16/TML label]',
+    Data: ' 0x0239 = 0x0021',
+    Interpretation: ' IA = 0x0021 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2967,8 +3000,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2201',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0801 = 0x0021',
-    Interpretation: 'ENCRES = 0x0021 -- [V16D = val16/TML label]',
+    Data: ' 0x0801 = 0x0021',
+    Interpretation: ' ENCRES = 0x0021 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -2995,8 +3028,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2166',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0012',
-    Interpretation: 'VAR_I1 = 0x0012 -- [V16D = val16/TML label]',
+    Data: ' 0x0366 = 0x0012',
+    Interpretation: ' VAR_I1 = 0x0012 -- [V16D = val16/TML label]',
     errorStatus: '-'
   },
   {
@@ -3009,8 +3042,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2568',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0x00000012',
-    Interpretation: 'VAR_LF = 0x00000012 -- [V32 = val32]',
+    Data: ' 0x0368 = 0x00000012',
+    Interpretation: ' VAR_LF = 0x00000012 -- [V32 = val32]',
     errorStatus: '-'
   },
   {
@@ -3023,8 +3056,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0367',
-    Interpretation: 'VAR_I1 = VAR_I2 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0366 = 0x0367',
+    Interpretation: ' VAR_I1 = VAR_I2 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -3037,8 +3070,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2D68',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0228',
-    Interpretation: 'VAR_LF = APOS -- [V32D = V32S]',
+    Data: ' 0x0368 = 0x0228',
+    Interpretation: ' VAR_LF = APOS -- [V32D = V32S]',
     errorStatus: '-'
   },
   {
@@ -3051,8 +3084,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2568',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0x00000012',
-    Interpretation: 'VAR_LF = 0x00000012 -- [V32 = val32]',
+    Data: ' 0x0368 = 0x00000012',
+    Interpretation: ' VAR_LF = 0x00000012 -- [V32 = val32]',
     errorStatus: '-'
   },
   {
@@ -3065,8 +3098,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0369',
-    Interpretation: 'VAR_I1 = 0x0369 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0366 = 0x0369',
+    Interpretation: ' VAR_I1 = 0x0369 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -3079,8 +3112,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = 0x0368',
-    Interpretation: 'VAR_I1 = VAR_LF -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0366 = 0x0368',
+    Interpretation: ' VAR_I1 = VAR_LF -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -3093,8 +3126,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2969',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0369 = 0x0366',
-    Interpretation: '0x0369 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0369 = 0x0366',
+    Interpretation: ' 0x0369 = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -3107,8 +3140,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2968',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0366',
-    Interpretation: 'VAR_LF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
+    Data: ' 0x0368 = 0x0366',
+    Interpretation: ' VAR_LF = VAR_I1 -- [V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]',
     errorStatus: '-'
   },
   {
@@ -3121,8 +3154,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '2568',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = 0x0x12345678',
-    Interpretation: 'VAR_LF = 0x12345678 -- [V32 = val32]',
+    Data: ' 0x0368 = 0x12345678',
+    Interpretation: ' VAR_LF = 0x12345678 -- [V32 = val32]',
     errorStatus: '-'
   },
   {
@@ -3149,8 +3182,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '3166',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 = - 0x0367',
-    Interpretation: 'VAR_I1 = - VAR_I2 -- [V16D = -V16S]',
+    Data: ' 0x0366 = - 0x0367',
+    Interpretation: ' VAR_I1 = - VAR_I2 -- [V16D = -V16S]',
     errorStatus: '-'
   },
   {
@@ -3163,8 +3196,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '3568',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 = - 0x0228',
-    Interpretation: 'VAR_LF = - APOS -- [V32D = -V32S]',
+    Data: ' 0x0368 = - 0x0228',
+    Interpretation: ' VAR_LF = - APOS -- [V32D = -V32S]',
     errorStatus: '-'
   },
   {
@@ -3177,8 +3210,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '3966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 += 0x0012',
-    Interpretation: 'VAR_I1 += 0x0012 -- [V16 += val16 ]',
+    Data: ' 0x0366 += 0x0012',
+    Interpretation: ' VAR_I1 += 0x0012 -- [V16 += val16 ]',
     errorStatus: '-'
   },
   {
@@ -3191,8 +3224,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '3D68',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 += 0x0x00000012',
-    Interpretation: 'VAR_LF += 0x00000012 -- [V32 += val32 ]',
+    Data: ' 0x0368 += 0x00000012',
+    Interpretation: ' VAR_LF += 0x00000012 -- [V32 += val32 ]',
     errorStatus: '-'
   },
   {
@@ -3219,8 +3252,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '4166',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 += 0x0367',
-    Interpretation: 'VAR_I1 += VAR_I2 -- [V16D += V16S]',
+    Data: ' 0x0366 += 0x0367',
+    Interpretation: ' VAR_I1 += VAR_I2 -- [V16D += V16S]',
     errorStatus: '-'
   },
   {
@@ -3233,8 +3266,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '4568',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368 += 0x0228',
-    Interpretation: 'VAR_LF += APOS -- [V32D += V32S ]',
+    Data: ' 0x0368 += 0x0228',
+    Interpretation: ' VAR_LF += APOS -- [V32D += V32S ]',
     errorStatus: '-'
   },
   {
@@ -3247,8 +3280,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '4966',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 -= 0x0012',
-    Interpretation: 'VAR_I1 -= 0x0012 -- [V16 -= val16]',
+    Data: ' 0x0366 -= 0x0012',
+    Interpretation: ' VAR_I1 -= 0x0012 -- [V16 -= val16]',
     errorStatus: '-'
   },
   {
@@ -3261,8 +3294,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '4C28',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0228 -= 0x0x00000012',
-    Interpretation: 'APOS -= 0x00000012 -- [V32 -= val32]',
+    Data: ' 0x0228 -= 0x00000012',
+    Interpretation: ' APOS -= 0x00000012 -- [V32 -= val32]',
     errorStatus: '-'
   },
   {
@@ -3289,8 +3322,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '5166',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366 -= 0x0367',
-    Interpretation: 'VAR_I1 -= VAR_I2 -- [V16D -= V16S]',
+    Data: ' 0x0366 -= 0x0367',
+    Interpretation: ' VAR_I1 -= VAR_I2 -- [V16D -= V16S]',
     errorStatus: '-'
   },
   {
@@ -3303,8 +3336,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '5428',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0228 -= 0x029E',
-    Interpretation: 'APOS -= CPOS -- [V32D -= V32S ]',
+    Data: ' 0x0228 -= 0x029E',
+    Interpretation: ' APOS -= CPOS -- [V32D -= V32S ]',
     errorStatus: '-'
   },
   {
@@ -3415,7 +3448,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '7600',
     Object: '-',
     ObjectName: '-',
-    Data: 'GOTO V16 0x0366',
+    Data: 'GOTO 0x0366',
     Interpretation: 'Unconditional GOTO with address set in VAR_I1',
     errorStatus: '-'
   },
@@ -3684,11 +3717,473 @@ export const Hardcoded_VerifyRS232 = [
     Object: '-',
     ObjectName: '-',
     Data: '!RT 0x00000012  ',
-    Interpretation: '! if Relative Time >= 0x00000012  [val32(L) val32(H)]',
+    Interpretation: '! if Relative Time >= 0x00000012  [val32]',
     errorStatus: '-'
   },
   {
     msgNr: 246,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 247,
+    OriginalMessage: '08 10 10 71 81 02 AE 02 28 F4 //!RU apos',
+    CobID: 'RW=?',
+    FrameData: '081010718102AE0228F4',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7181',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU  0228  ',
+    Interpretation: '! if Reference Under APOS  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 248,
+    OriginalMessage: '0A 10 10 70 81 02 AE 00 12 00 00 DD //!RU 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A1010708102AE00120000DD',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7081',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU 0x00000012  ',
+    Interpretation: '! if Position Reference Under 0x00000012 = 18d  [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 249,
+    OriginalMessage: '08 10 10 71 81 02 AE 02 28 F4 //!PRU apos',
+    CobID: 'RW=?',
+    FrameData: '081010718102AE0228F4',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7181',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU  0228  ',
+    Interpretation: '! if Reference Under APOS  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 250,
+    OriginalMessage: '0A 10 10 70 81 02 AE 00 12 00 00 DD //!PRU 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A1010708102AE00120000DD',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7081',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU 0x00000012  ',
+    Interpretation: '! if Position Reference Under 0x00000012 = 18d  [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 251,
+    OriginalMessage: '08 10 10 71 81 02 AE 02 28 F4 //!SRU apos',
+    CobID: 'RW=?',
+    FrameData: '081010718102AE0228F4',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7181',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU  0228  ',
+    Interpretation: '! if Reference Under APOS  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 252,
+    OriginalMessage: '0A 10 10 70 81 02 AE 00 12 00 00 DD //!SRU 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A1010708102AE00120000DD',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7081',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU 0x00000012  ',
+    Interpretation: '! if Position Reference Under 0x00000012 = 18d  [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 253,
+    OriginalMessage: '08 10 10 71 81 02 AE 02 28 F4 //!TRU apos',
+    CobID: 'RW=?',
+    FrameData: '081010718102AE0228F4',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7181',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU  0228  ',
+    Interpretation: '! if Reference Under APOS  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 254,
+    OriginalMessage: '0A 10 10 70 81 02 AE 00 00 00 12 DD //!TRU 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A1010708102AE00000012DD',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7081',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!RU/!SRU/!PRU/!TRU 0x00120000  ',
+    Interpretation: '! if Position Reference Under 0x00120000 = 1179648d  [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 255,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 256,
+    OriginalMessage: '08 10 10 71 96 09 8A 02 A0 64 //!LSO cspd',
+    CobID: 'RW=?',
+    FrameData: '0810107196098A02A064',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7196',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!LSO  0x02A0  ',
+    Interpretation: '! if Load Speed Over CSPD  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 257,
+    OriginalMessage: '0A 10 10 70 96 09 8A 00 12 00 00 D5 //!LSO 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A10107096098A00120000D5',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7096',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!LSO 0x00000012  ',
+    Interpretation: '! if Load Speed Over 0x00000012 = 18d   [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 258,
+    OriginalMessage: '08 10 10 71 96 02 2C 02 A0 FF //!MSO cspd',
+    CobID: 'RW=?',
+    FrameData: '0810107196022C02A0FF',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7196',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!MSO  0x02A0  ',
+    Interpretation: '! if Motor Speed Over CSPD  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 259,
+    OriginalMessage: '0A 10 10 70 96 02 2C 00 12 00 00 70 //!MSO 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A10107096022C0012000070',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '7096',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!MSO 0x00000012  ',
+    Interpretation: '! if Motor Speed Over 0x00000012 = 18d   [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 260,
+    OriginalMessage: '08 00 10 71 87 09 8A 02 A0 45 //!LSU cspd',
+    CobID: 'RW=?',
+    FrameData: '0800107187098A02A045',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7187',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!LSU  0x02A0  ',
+    Interpretation: '! if Load Speed Under CSPD  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 261,
+    OriginalMessage: '0A 00 10 70 87 09 8A 00 32 00 00 D6 //!LSU 0x32',
+    CobID: 'RW=?',
+    FrameData: '0A00107087098A00320000D6',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7087',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!LSU 0x00000032  ',
+    Interpretation: '! if Load Speed Under 0x00000032 = 50d   [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 262,
+    OriginalMessage: '08 00 10 71 87 02 2C 02 A0 E0 //!MSU cspd',
+    CobID: 'RW=?',
+    FrameData: '0800107187022C02A0E0',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7187',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!MSU  0x02A0  ',
+    Interpretation: '! if Motor Speed Under CSPD  [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 263,
+    OriginalMessage: '0A 00 10 70 87 02 2C 56 78 12 34 53 //!MSU 0x12345678',
+    CobID: 'RW=?',
+    FrameData: '0A00107087022C5678123453',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7087',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!MSU 0x12345678  ',
+    Interpretation: '! if Motor Speed Under 0x12345678 = 305419896d   [val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 264,
+    OriginalMessage: '08 10 10 25 68 00 12 00 00 C7 //var_lf =0x12',
+    CobID: 'RW=?',
+    FrameData: '081010256800120000C7',
+    type: 'RW=?',
+    AxisID: 'G1',
+    CS: '2568',
+    Object: '-',
+    ObjectName: '-',
+    Data: ' 0x0368 = 0x00000012',
+    Interpretation: ' VAR_LF = 0x00000012 -- [V32 = val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 265,
+    OriginalMessage: '08 00 10 71 90 02 9E 02 28 E3  // !VO cpos, apos',
+    CobID: 'RW=?',
+    FrameData: '0800107190029E0228E3',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7190',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!VO 0x029E, 0x0228 ',
+    Interpretation: '! if CPOS over APOS  [V32A, V32B]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 266,
+    OriginalMessage: '0A 00 10 70 90 02 9E 56 78 12 34 CE  // !VO cpos, 0x12345678',
+    CobID: 'RW=?',
+    FrameData: '0A00107090029E56781234CE',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7090',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!VO 0x029E, 0x12345678 ',
+    Interpretation: '! if CPOS over 0x12345678 = 305419896d  [V32A, val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 267,
+    OriginalMessage: '08 00 10 71 81 02 9E 02 28 D4  // !VU cpos, apos',
+    CobID: 'RW=?',
+    FrameData: '0800107181029E0228D4',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7181',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!VU 0x029E, 0x0228 ',
+    Interpretation: '! if CPOS under APOS  [V32A, V32B]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 268,
+    OriginalMessage: '0A 00 10 70 81 02 9E 00 12 00 00 BD  // !VU cpos, 0x12',
+    CobID: 'RW=?',
+    FrameData: '0A00107081029E00120000BD',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7081',
+    Object: '-',
+    ObjectName: '-',
+    Data: '!VU 0x029E, 0x00000012 ',
+    Interpretation: '! if CPOS under 0x00000012 = 18d  [V32A, val32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 269,
+    OriginalMessage: '08 00 10 06 08 56 78 12 34 3A //wait! 0x12345678',
+    CobID: 'RW=?',
+    FrameData: '0800100608567812343A',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '0608',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'WAIT! 0x12345678',
+    Interpretation: 'Wait until event occurs, but exit if Time > 0x12345678 = 305419896',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 270,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 271,
+    OriginalMessage: '04 00 10 04 08 20 ',
+    CobID: 'RW=?',
+    FrameData: '040010040820',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '0408',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'WAIT!',
+    Interpretation: 'Wait until event occurs',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 272,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 273,
+    OriginalMessage: '04 00 10 80 28 BC //SAP apos    ',
+    CobID: 'RW=?',
+    FrameData: '0400108028BC',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '8028',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SAP 0x0228  ',
+    Interpretation: 'Set Actual Position APOS   -- [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 274,
+    OriginalMessage: '04 00 10 80 9E 32 //SAP cpos    ',
+    CobID: 'RW=?',
+    FrameData: '040010809E32',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '809E',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SAP 0x029E  ',
+    Interpretation: 'Set Actual Position CPOS   -- [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 275,
+    OriginalMessage: '04 00 10 81 68 FD //SAP var_lf  ',
+    CobID: 'RW=?',
+    FrameData: '0400108168FD',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '8168',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SAP 0x0368  ',
+    Interpretation: 'Set Actual Position VAR_LF   -- [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 276,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 277,
+    OriginalMessage: '06 00 10 7D 67 02 28 24  //SEG var_i2 , APOS',
+    CobID: 'RW=?',
+    FrameData: '0600107D67022824',
+    type: 'RW=?',
+    AxisID: 1,
+    CS: '7D67',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SEG 0x0367 , 0x0228',
+    Interpretation: 'Segment VAR_I2 , APOS -- [V16, V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 278,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 279,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

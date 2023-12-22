@@ -316,6 +316,20 @@ function getOpCode_RS232(opCode, data) {
   var errorStatus = ''
   var firstAddy = ''
   var secondAddy = ''
+
+  var V16D = getFirmwareAddress_RS232(data.slice(0, 4))[1]
+  var V16S = getFirmwareAddress_RS232(data.slice(4, 8))[1]
+  var val16_1 = '0x' + data.slice(0, 4)
+  var val16_1d = hexToDec(data.slice(0, 4), 16) + 'd'
+  var val16_2 = '0x' + data.slice(4, 8)
+  var val16_2d = hexToDec(data.slice(4, 8), 16) + 'd'
+
+  var val32_1 = '0x' + data.slice(4, 8) + data.slice(0, 4)
+
+  var val32_1d = hexToDec(data.slice(4, 8) + data.slice(0, 4), 16) + 'd'
+  var val32_2 = '0x' + data.slice(8, 12) + data.slice(4, 8)
+  var val32_2d = hexToDec(data.slice(8, 12) + data.slice(4, 8), 16) + 'd'
+
   switch (firstByte) {
     case '90':
       //Assignment
@@ -378,7 +392,7 @@ function getOpCode_RS232(opCode, data) {
 
             sender = '0x' + sender + ` (${hexToDec(sender, rez)})`
           }
-          Data = `${firstAddy}${temp}, ${memoryType} = ${secondAddy}`
+          Data = `(${firstAddy}${temp}), ${memoryType} = ${secondAddy}`
           Interpretation = `(${destinator}${temp}), ${memoryType} = ${sender} `
           break
       }
@@ -426,10 +440,10 @@ function getOpCode_RS232(opCode, data) {
         }
         if (lastByteDec & 0x20) {
           Data = `${firstAddy}  <<= ${temp} `
-          Interpretation = `${destinator}<<= ${temp} ,[32D] `
+          Interpretation = `${destinator}<<= ${temp} [32D] `
         } else {
           Data = `${firstAddy}  >>= ${temp} `
-          Interpretation = `${destinator}>>= ${temp} ,[32D] `
+          Interpretation = `${destinator}>>= ${temp} [32D] `
         }
       }
 
@@ -719,6 +733,15 @@ function getOpCode_RS232(opCode, data) {
               temp2,
               32
             )}, reference can be P/S/T`
+          } else {
+            temp = data.slice(0, 4)
+            destinator = getFirmwareAddress_RS232(temp)[1]
+            temp2 = data.slice(8, 12) + data.slice(4, 8)
+            Data = `!VO 0x${temp}, 0x${temp2} `
+            Interpretation = `! if ${destinator} over 0x${temp2} = ${hexToDec(
+              temp2,
+              32
+            )}d  [V32A, val32]`
           }
           break
         case '94':
@@ -775,6 +798,15 @@ function getOpCode_RS232(opCode, data) {
           if (temp == '02AE') {
             Data = `!RU/!SRU/!PRU/!TRU 0x${temp2}  `
             Interpretation = `! if Position Reference Under 0x${temp2} = ${temp3}d  [val32]`
+          } else {
+            temp = data.slice(0, 4)
+            destinator = getFirmwareAddress_RS232(temp)[1]
+            temp2 = data.slice(8, 12) + data.slice(4, 8)
+            Data = `!VU 0x${temp}, 0x${temp2} `
+            Interpretation = `! if ${destinator} under 0x${temp2} = ${hexToDec(
+              temp2,
+              32
+            )}d  [V32A, val32]`
           }
           break
 
@@ -788,6 +820,19 @@ function getOpCode_RS232(opCode, data) {
           } else if (temp == '022C') {
             Data = `!MSO 0x${temp2}  `
             Interpretation = `! if Motor Speed Over 0x${temp2} = ${temp3}d   [val32]`
+          }
+          break
+
+        case '87':
+          temp = data.slice(0, 4)
+          temp2 = data.slice(8, 12) + data.slice(4, 8)
+          temp3 = hexToDec(temp2, 32)
+          if (temp == '098A') {
+            Data = `!LSU 0x${temp2}  `
+            Interpretation = `! if Load Speed Under 0x${temp2} = ${temp3}d   [val32]`
+          } else if (temp == '022C') {
+            Data = `!MSU 0x${temp2}  `
+            Interpretation = `! if Motor Speed Under 0x${temp2} = ${temp3}d   [val32]`
           }
           break
       }
@@ -831,6 +876,13 @@ function getOpCode_RS232(opCode, data) {
           if (temp == '02AE') {
             Data = `!RO  ${firstAddy} `
             Interpretation = ` if Reference Over V32 => !RO ${destinator} [&32], reference can be P/S/T`
+          } else {
+            temp = data.slice(0, 4)
+            destinator = getFirmwareAddress_RS232(temp)[1]
+            temp2 = data.slice(4, 8)
+            sender = getFirmwareAddress_RS232(temp2)[1]
+            Data = `!VO 0x${temp}, 0x${temp2} `
+            Interpretation = `! if ${destinator} over ${sender}  [V32A, V32B]`
           }
           break
 
@@ -876,6 +928,13 @@ function getOpCode_RS232(opCode, data) {
             destinator = getFirmwareAddress_RS232(firstAddy)[1]
             Data = `!RU/!SRU/!PRU/!TRU  ${firstAddy}  `
             Interpretation = `! if Reference Under ${destinator}  [V32]`
+          } else {
+            temp = data.slice(0, 4)
+            destinator = getFirmwareAddress_RS232(temp)[1]
+            temp2 = data.slice(4, 8)
+            sender = getFirmwareAddress_RS232(temp2)[1]
+            Data = `!VU 0x${temp}, 0x${temp2} `
+            Interpretation = `! if ${destinator} under ${sender}  [V32A, V32B]`
           }
 
           break
@@ -890,6 +949,19 @@ function getOpCode_RS232(opCode, data) {
           } else if (temp == '022C') {
             Data = `!MSO  0x${firstAddy}  `
             Interpretation = `! if Motor Speed Over ${destinator}  [V32]`
+          }
+
+          break
+        case '87':
+          temp = data.slice(0, 4)
+          firstAddy = data.slice(4, 8)
+          destinator = getFirmwareAddress_RS232(firstAddy)[1]
+          if (temp == '098A') {
+            Data = `!LSU  0x${firstAddy}  `
+            Interpretation = `! if Load Speed Under ${destinator}  [V32]`
+          } else if (temp == '022C') {
+            Data = `!MSU  0x${firstAddy}  `
+            Interpretation = `! if Motor Speed Under ${destinator}  [V32]`
           }
 
           break
@@ -930,7 +1002,7 @@ function getOpCode_RS232(opCode, data) {
         Data = `CALL V16 0x${firstAddy}`
         Interpretation = `Uncoditional CALL with address set in ${destinator}`
       } else if (lastByte == '00') {
-        Data = `GOTO V16 0x${firstAddy}`
+        Data = `GOTO 0x${firstAddy}`
         Interpretation = `Unconditional GOTO with address set in ${destinator}`
       }
 
@@ -994,9 +1066,19 @@ function getOpCode_RS232(opCode, data) {
       }
       break
 
+    case '06':
+      temp = data.slice(4, 8) + data.slice(0, 4)
+      Data = `WAIT! 0x${temp}`
+      Interpretation = `Wait until event occurs, but exit if Time > 0x${temp} = ${hexToDec(
+        temp,
+        32
+      )}`
+
+      break
+
     default:
       var nibbleCase = parseInt(firstByte.slice(0, 1))
-      if ([2, 3, 4, 5].includes(nibbleCase)) {
+      if ([2, 3, 4, 5, 8, 7].includes(nibbleCase)) {
         //Potential short addressing
         temp = firstByteDec & 0x0c // 0000 1100
 
@@ -1011,10 +1093,15 @@ function getOpCode_RS232(opCode, data) {
         } else {
           secondAddy = data.slice(0, 4)
           sender = getFirmwareAddress_RS232(secondAddy)[1]
+          if (secondAddy.slice(0, 2) != '0x' && secondAddy != '') {
+            secondAddy = '0x' + secondAddy
+          }
         }
         firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
         destinator = getFirmwareAddress_RS232(firstAddy)[1]
-
+        firstAddy = '0x' + firstAddy
+        var startStr = ''
+        var startSt2 = ''
         if (temp == 0x00) {
           //2000 2200
           if (nibbleCase == 2) {
@@ -1029,6 +1116,11 @@ function getOpCode_RS232(opCode, data) {
           } else if (nibbleCase == 5) {
             rez = '[V16D -= V16S]'
             mask = '-='
+          } else if (nibbleCase == 8) {
+            rez = '[V32]'
+            mask = ''
+            startStr = 'SAP'
+            startSt2 = 'Set Actual Position'
           }
         } else if (temp == 0x04) {
           if (nibbleCase == 2) {
@@ -1068,11 +1160,16 @@ function getOpCode_RS232(opCode, data) {
           } else if (nibbleCase == 4) {
             rez = '[V32 -= val32]'
             mask = '-='
+          } else if (nibbleCase == 7) {
+            startStr = 'SEG'
+            startSt2 = 'Segment'
+            rez = '[V16, V32]'
+            mask = ','
           }
         }
 
-        Data = `0x${firstAddy} ${mask} 0x${secondAddy}`
-        Interpretation = `${destinator} ${mask} ${sender} -- ${rez}`
+        Data = `${startStr} ${firstAddy} ${mask} ${secondAddy}`
+        Interpretation = `${startSt2} ${destinator} ${mask} ${sender} -- ${rez}`
       } else {
         errorStatus = 'error'
       }
