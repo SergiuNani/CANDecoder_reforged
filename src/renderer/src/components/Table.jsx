@@ -128,9 +128,13 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
               width: ProtocolGlobal == 'RS232' ? '11rem' : '7rem'
             }}
           >
-            <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
-              {iteration.Data}
-            </RegisterTooltip>
+            {ProtocolGlobal != 'RS232' ? (
+              <RegisterTooltip objects={iteration.Object} objectData={iteration.Data}>
+                {iteration.Data}
+              </RegisterTooltip>
+            ) : (
+              <p>{iteration.Data}</p>
+            )}
           </td>
           <td
             style={{

@@ -108,11 +108,11 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       row[1], //OriginalMsg
       type, //CobID
       row[3], //Message
-      type, //type
+      DecodedMessage[3], //type
       DecodedMessage[0], //AxisID
       DecodedMessage[1], //CS
       DecodedMessage[2], //Object
-      DecodedMessage[3], //ObjName
+      '-', //ObjName
       DecodedMessage[4], //Data
       DecodedMessage[5], //Interpretation
       DecodedMessage[6] //Error
@@ -172,14 +172,14 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
 
   if (messageString.length == 0) {
     //Invalid Message
-    ObjectName = 'Can`t extract data from this row'
+    Data = 'Can`t extract data from this row'
     Interpretation = 'Invalid Message'
     errorStatus = 'error'
   } else if (messageString.length == 2) {
     //SYNC , ACK, message Length etc...
     var messageDec = hexToDec(messageString, 16)
     if (messageDec < 13) {
-      ObjectName = 'Length'
+      Data = 'Length'
       Interpretation = `Next message = ${messageDec} bytes`
       PreviousMessageInfo_RS232_g.msgNr = msgNr
       PreviousMessageInfo_RS232_g.storedFutureSize = messageString
@@ -204,7 +204,7 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
       // First byte of the message is not the length of the message
       if (historyLength != messageString.length / 2 - 1) {
         // even the length of the pervious message is not the length of the current message
-        ObjectName = `Fist byte ${potentialLength} and history length ${historyLength} don't match`
+        Data = `Fist byte ${potentialLength} and history length ${historyLength} don't match`
         Interpretation = 'Message length doesn`t match'
         errorStatus = 'error'
       } else {
@@ -234,7 +234,7 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
       sum += potentialLength
       sum = sum % 256
       if (checksum != sum) {
-        ObjectName = `Checksum ${checksum} and calculated ${sum} don't match`
+        Data = `Checksum ${checksum} and calculated ${sum} don't match`
         Interpretation = 'Checksum doesn`t match'
         errorStatus = 'error'
       } else {
@@ -242,23 +242,27 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
       }
     }
     // =====================================================================================================
-    frameString = frameString.split('')
-    var AxisID_Destination = frameString.splice(0, 4)
-    AxisID_Destination = getAxisID_RS232(AxisID_Destination)
-    OpCode = frameString.splice(0, 4).join('')
-    var opCode_array = getOpCode_RS232(OpCode, frameString.join(''))
-    if (AxisID_Destination == 'error') {
-      Interpretation = 'Invalid AxisID, either the Group or Host info is wrong'
-      errorStatus = 'error'
-    }
-    if (opCode_array[0] == 'error') {
-      Interpretation = 'OpCode not recognized'
-      errorStatus = 'error'
-    }
     if (errorStatus != 'error') {
-      AxisID = AxisID_Destination
-      Data = opCode_array[1]
-      Interpretation = opCode_array[2]
+      frameString = frameString.split('')
+      var AxisID_Destination = frameString.splice(0, 4)
+      AxisID_Destination = getAxisID_RS232(AxisID_Destination)
+      OpCode = frameString.splice(0, 4).join('')
+      var opCode_array = getOpCode_RS232(OpCode, frameString.join(''))
+      if (AxisID_Destination == 'error') {
+        Interpretation = 'Invalid AxisID, either the Group or Host info is wrong'
+        errorStatus = 'error'
+      }
+      if (opCode_array[0] == 'error') {
+        Interpretation = 'OpCode not recognized'
+        errorStatus = 'error'
+      }
+      if (errorStatus != 'error') {
+        AxisID = AxisID_Destination
+        Data = opCode_array[1]
+        Interpretation = opCode_array[2]
+        Object = opCode_array[4]
+        ObjectName = opCode_array[3]
+      }
     }
   }
   return [AxisID, OpCode, Object, ObjectName, Data, Interpretation, errorStatus]
@@ -312,6 +316,8 @@ function getOpCode_RS232(opCode, data) {
   var opCodeDec = hexToDec(opCode, 32)
   var Interpretation
   var Data
+  var msgType = 'Normal'
+  var SenderMain = '-'
   var rez = ''
   var errorStatus = ''
   var firstAddy = ''
@@ -319,18 +325,189 @@ function getOpCode_RS232(opCode, data) {
 
   var V16D = getFirmwareAddress_RS232(data.slice(0, 4))[1]
   var V16S = getFirmwareAddress_RS232(data.slice(4, 8))[1]
+  var V16S_2 = getFirmwareAddress_RS232(data.slice(8, 12))[1]
   var val16_1 = '0x' + data.slice(0, 4)
   var val16_1d = hexToDec(data.slice(0, 4), 16) + 'd'
   var val16_2 = '0x' + data.slice(4, 8)
   var val16_2d = hexToDec(data.slice(4, 8), 16) + 'd'
+  var val16_3 = '0x' + data.slice(8, 12)
+  var val16_3d = hexToDec(data.slice(8, 12), 16) + 'd'
 
   var val32_1 = '0x' + data.slice(4, 8) + data.slice(0, 4)
 
-  var val32_1d = hexToDec(data.slice(4, 8) + data.slice(0, 4), 16) + 'd'
+  var val32_1d = hexToDec(data.slice(4, 8) + data.slice(0, 4), 32) + 'd'
   var val32_2 = '0x' + data.slice(8, 12) + data.slice(4, 8)
-  var val32_2d = hexToDec(data.slice(8, 12) + data.slice(4, 8), 16) + 'd'
+  var val32_2d = hexToDec(data.slice(8, 12) + data.slice(4, 8), 32) + 'd'
 
   switch (firstByte) {
+    case '00':
+      switch (lastByte) {
+        case '02':
+          Data = 'AXISOFF'
+          Interpretation = `AXIS is OFF (deactivate control)`
+          break
+        case '20':
+          Data = 'ENDINIT'
+          Interpretation = `END of Initialization`
+          break
+
+        case 'C4':
+          Data = 'STOP !'
+          Interpretation = `STOP motion when ! (event occurs)`
+
+          break
+
+        case '08':
+          Data = 'UPD !'
+          Interpretation = `Update when ! (event occurs)`
+          break
+      }
+      break
+    case '01':
+      switch (lastByte) {
+        case '02':
+          Data = 'AXISON'
+          Interpretation = `AXIS is ON (deactivate control)`
+          break
+
+        case 'C4':
+          Data = 'STOP'
+          Interpretation = `STOP motion`
+          break
+        case '08':
+          Data = 'UPD'
+          Interpretation = `Update motion immediate`
+          break
+      }
+      break
+    case '06':
+      switch (lastByte) {
+        case '08':
+          temp = data.slice(4, 8) + data.slice(0, 4)
+          Data = `WAIT! 0x${temp}`
+          Interpretation = `Wait until event occurs, but exit if Time > 0x${temp} = ${hexToDec(
+            temp,
+            32
+          )}`
+          break
+        case '81':
+          Data = 'DISLSN'
+          Interpretation = `Disable LSN limit switch`
+          break
+
+        case 'A0':
+          Data = 'DISLSP'
+          Interpretation = `Disable LSP limit switch`
+          break
+
+        case '01':
+          Data = 'ENLSN0'
+          Interpretation = `Enable LSN limit switch for 1->0`
+          break
+        case '20':
+          Data = 'ENLSP0'
+          Interpretation = `Enable LSP limit switch for 1->0`
+          break
+      }
+
+      break
+    case '07':
+      switch (lastByte) {
+        case '01':
+          Data = 'ENLSN1'
+          Interpretation = `Enable LSN limit switch for 0->1`
+          break
+        case '20':
+          Data = 'ENLSP1'
+          Interpretation = `Enable LSP limit switch for 0->1`
+          break
+      }
+
+      break
+    case '08':
+      switch (lastByte) {
+        case '40':
+          var axisID = hexToDec(data.slice(0, 4), 16)
+          var array = []
+          for (let i = 0; i < 8; i++) {
+            if (axisID & (1 << i)) {
+              array.push(`${i + 1}`)
+            }
+          }
+          Data = `ADDGRID(${array.join(',')})`
+          Interpretation = `Add Group ID = ${array.join(',')}`
+          break
+        case '01':
+          Data = `AxisID  ${val16_1d} `
+          Interpretation = `AXIS ID ${val16_1d}`
+          break
+        case '80':
+          var axisID = hexToDec(data.slice(0, 4), 16)
+          var array = []
+          for (let i = 0; i < 8; i++) {
+            if (axisID & (1 << i)) {
+              array.push(`${i + 1}`)
+            }
+          }
+          Data = `REMGRID(${array.join(',')})`
+          Interpretation = `Remove Group ID = ${array.join(',')}`
+          break
+      }
+
+      break
+    case '09':
+      switch (lastByte) {
+        case '40':
+          Data = `ADDGRID ${val16_1}`
+          Interpretation = `Add Group ID  ${V16D} [V16]`
+          break
+        case '01':
+          Data = `AxisID  ${val16_1} `
+          Interpretation = `AXIS ID ${V16D}`
+          break
+        case '80':
+          Data = `REMGRID ${val16_1}`
+          Interpretation = `Remove Group ID  ${V16D} [V16]`
+          break
+      }
+
+      break
+
+    case '14':
+      if (lastByte == '04') Data = `SETSYNC ${val32_1}`
+      Interpretation = `Synchronization start/stop ${val32_1}= ${val32_1d} [val32]`
+
+      break
+    case '18':
+      var counter = lastByteDec & 0x007f
+
+      temp = '0x' + data.slice(4, 6) + data.slice(0, 4)
+      temp2 = '0x' + data.slice(8, 12)
+      temp3 = '0x' + data.slice(12, 16)
+      Data = `PVTP ${temp}, ${temp2}, ${temp3}, ${counter}`
+      Interpretation = `Send a PVT point PVTP valP= ${temp}, valS=${temp2}, valT=${temp3}, C=${counter}`
+
+      if (lastByte == '80') {
+        Data = `SETPT/SETPVT ${val16_1} `
+        Interpretation = `Configure PT/PVT mode ${val16_1} [val16]`
+      }
+      break
+    case '19':
+      var counter = lastByteDec & 0x007f
+      Data = `PVTP P, S, T, C => ${val16_1} , ${val16_2} , ${val16_3} , ${counter}`
+      Interpretation = `Send a PVT point to the axis, P = ${V16D}, S = ${V16S}, T = ${V16S_2}, C = ${counter}`
+      break
+
+    case '2C':
+      if (lastByte == 'B2') {
+        if (data.slice(0, 4) == '0228') {
+          Data = `STA`
+          Interpretation = `Set Target pos. = Actual pos. `
+        }
+      }
+
+      break
+
     case '90':
       //Assignment
       firstAddy = data.slice(0, 4)
@@ -1066,19 +1243,275 @@ function getOpCode_RS232(opCode, data) {
       }
       break
 
-    case '06':
-      temp = data.slice(4, 8) + data.slice(0, 4)
-      Data = `WAIT! 0x${temp}`
-      Interpretation = `Wait until event occurs, but exit if Time > 0x${temp} = ${hexToDec(
-        temp,
-        32
-      )}`
+    case 'C9':
+      var counter = lastByteDec & 0x007f
+
+      Data = `PTP ${val16_1} , ${val16_2}, ${counter}  `
+      Interpretation = `Send a PT point ${V16D}, ${V16S}, ${counter}  -- [PTP &V32, T, C]`
+      break
+    case 'C8':
+      var counter = lastByteDec & 0x007f
+
+      Data = `PTP ${val32_1} , ${val16_3}, ${counter}  `
+      Interpretation = `Send a PT point ${val32_1} = ${val32_1d}, ${val16_3} = ${val16_3d}, ${counter}  -- [PTP val32,val16, C]`
+      break
+    case '84':
+      Data = `SAP ${val32_1} `
+      Interpretation = `Set actual position = ${val32_1} = ${val32_1d}  -- [SAP val32]`
+      break
+    case '78':
+      Data = `SEG ${val16_1} ${val32_2} `
+      Interpretation = `SSegment ${val16_1}= ${val16_1d},  ${val32_2} = ${val32_2d}  -- [SEG val16, val32]`
+      break
+
+    case 'ED':
+      if (lastByte == '00') {
+        var array = []
+        temp = hexToDec(data.slice(0, 4), 16)
+        for (let i = 0; i < 16; i++) {
+          if (temp & (1 << i)) {
+            array.push(`${i}`)
+          }
+        }
+        Data = `OUT(${array.join(', ')}) = ${val16_2} `
+        Interpretation = `Set output OUT(${array.join(', ')}) = ${V16S}  -- [OUT(#n #m #p) = &V16]`
+      }
+      break
+    case 'EC':
+      if (lastByte == '00') {
+        var array = []
+        temp = hexToDec(data.slice(0, 4), 16)
+        for (let i = 0; i < 16; i++) {
+          if (temp & (1 << i)) {
+            array.push(`${i}`)
+          }
+        }
+        Data = `OUT(${array.join(', ')}) = ${val16_2} `
+        Interpretation = `Set output OUT(${array.join(
+          ', '
+        )}) = ${val16_2d}  -- [OUT(#n #m #p) = val16]`
+      }
+      break
+    case 'E8':
+      if (lastByte == '00') {
+        var array = []
+        temp = hexToDec(data.slice(0, 4), 16)
+        for (let i = 0; i < 16; i++) {
+          if (temp & (1 << i)) {
+            array.push(`${i}`)
+          }
+        }
+        Data = `${val16_2}  = IN(${array.join(',')}) `
+        Interpretation = ` Read inputs ${V16S}  = IN(${array.join(',')}) -- [V16D = IN(n,m,p) ]`
+      }
+      break
+
+    case 'EE':
+      if (lastByte == '00') {
+        var array = []
+        temp = hexToDec(data.slice(0, 4), 16)
+        for (let i = 0; i < 16; i++) {
+          if (temp & (1 << i)) {
+            array.push(`${i}`)
+          }
+        }
+        Data = `SetasInput(${array.join(',')}) `
+        Interpretation = ` Set ${array.join(',')} as inputs `
+      }
+      break
+    case 'EF':
+      if (lastByte == '00') {
+        var array = []
+        temp = hexToDec(data.slice(0, 4), 16)
+        for (let i = 0; i < 16; i++) {
+          if (temp & (1 << i)) {
+            array.push(`${i}`)
+          }
+        }
+        Data = `SetasOutputs(${array.join(',')}) `
+        Interpretation = ` Set ${array.join(',')} as outputs`
+      }
+      break
+
+    case '98':
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+      mask = lastByteDec & 0xc //1100
+      if (mask == 0x8) {
+        memoryType = 'SPI'
+      } else if (mask == 0x4) {
+        memoryType = 'DM'
+      } else {
+        memoryType = 'PM'
+      }
+      mask = lastByteDec & 0x1
+      if (mask) {
+        rez = 32
+        temp3 = '[V16D, V32S]'
+      } else {
+        rez = 16
+        temp3 = '[V16D, V16S]'
+      }
+      mask = lastByteDec & 0x80
+      if (mask) temp2 = ''
+      else temp2 = '+'
+
+      Data = `[${temp}] (${val16_2}${temp2}), ${memoryType}  = ${val16_3}  `
+      Interpretation = `[${temp}] (${V16S}${temp2}),${memoryType} = ${V16S_2} ${temp3}`
+      if (lastByte == '14') {
+        Data = `[${temp}] ${val16_2}${temp2}, ${memoryType}  = ${val16_3}  `
+        Interpretation = `[${temp}] ${V16S}${temp2},${memoryType} = ${V16S_2} [V16D, V16S]`
+      } else if (lastByte == '15') {
+        Data = `[${temp}] ${val16_2}${temp2}, ${memoryType}  = ${val16_3}  `
+        Interpretation = `[${temp}] ${V16S}${temp2},${memoryType} = ${V16S_2} [V32D, V32S]`
+      }
+      break
+    case '9D':
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+      mask = lastByteDec & 0xc //1100
+      if (mask == 0x8) {
+        memoryType = 'SPI'
+      } else if (mask == 0x4) {
+        memoryType = 'DM'
+      } else {
+        memoryType = 'PM'
+      }
+      mask = lastByteDec & 0x1
+      if (mask) {
+        rez = 32
+        temp3 = '[V32D, V16S]'
+      } else {
+        rez = 16
+        temp3 = '[V16D, V16S]'
+      }
+      mask = lastByteDec & 0x80
+      if (mask) temp2 = ''
+      else temp2 = '+'
+
+      Data = `${val16_3} = [${temp}] (${val16_2}${temp2}), ${memoryType} `
+      Interpretation = ` ${V16S_2} = [${temp}] (${V16S}${temp2}),${memoryType}  ${temp3}`
 
       break
 
+    case '9C':
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+      mask = lastByteDec & 0xc //1100
+      if (mask == 0x8) {
+        memoryType = 'SPI'
+      } else if (mask == 0x4) {
+        memoryType = 'DM'
+      } else {
+        memoryType = 'PM'
+      }
+      mask = lastByteDec & 0x1
+      if (mask) {
+        rez = 32
+        temp3 = '[V32D, V32]'
+      } else {
+        rez = 16
+        temp3 = '[V16D, V16S]'
+      }
+      mask = lastByteDec & 0x80
+
+      Data = `${val16_3} = [${temp}] ${val16_2}, ${memoryType} `
+      Interpretation = ` ${V16S_2} = [${temp}] ${V16S},${memoryType}  ${temp3}`
+
+      break
+
+    case '94':
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+      temp2 = data.slice(4)
+      var opCode = temp2.slice(0, 4)
+      var data_temp = temp2.slice(4)
+      temp2 = getOpCode_RS232(opCode, data_temp)
+      Data = `[${temp}]{${temp2[1]};}`
+      Interpretation = `[${temp}] {${temp2[2]};}`
+      break
+
+    case 'B0':
+      mask = lastByteDec & 0xc //1100
+      if (mask == 0x8) {
+        memoryType = 'SPI'
+      } else if (mask == 0x4) {
+        memoryType = 'DM'
+      } else {
+        memoryType = 'PM'
+      }
+      mask = lastByteDec & 0x1
+      if (mask) {
+        rez = 32
+      } else rez = 16
+
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+
+      Data = `?${val16_2} ,${memoryType}  `
+      Interpretation = `?${V16S} ,${memoryType} [V${rez}]`
+      SenderMain = temp
+      msgType = 'GiveData'
+      break
+    case 'B2':
+      mask = lastByteDec & 0xc //1100
+      if (mask == 0x8) {
+        memoryType = 'SPI'
+      } else if (mask == 0x4) {
+        memoryType = 'DM'
+      } else {
+        memoryType = 'PM'
+      }
+      mask = lastByteDec & 0x1
+      if (mask) {
+        rez = 32
+      } else rez = 16
+
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+
+      Data = `??${val16_2} ,${memoryType}  `
+      Interpretation = `??${V16S} ,${memoryType} [V${rez}]`
+      SenderMain = temp
+      msgType = 'GiveData2'
+      break
+    case 'B4':
+      mask = lastByteDec & 0xc //1100
+      if (mask == 0x8) {
+        memoryType = 'SPI'
+      } else if (mask == 0x4) {
+        memoryType = 'DM'
+      } else {
+        memoryType = 'PM'
+      }
+      mask = lastByteDec & 0x1
+      if (mask) {
+        rez = 32
+        temp2 = data.slice(12, 16) + data.slice(8, 12)
+        temp3 = val32_2d
+      } else {
+        rez = 16
+        temp2 = val16_3
+        temp3 = val16_3d
+      }
+
+      temp = getAxisID_RS232(data.slice(0, 4).split(''))
+
+      Data = `${val16_2} == ${temp2} ,${memoryType}  `
+      Interpretation = `${V16S} == ${temp2} == ${temp3} ,${memoryType} [V${rez}]`
+      SenderMain = temp
+      msgType = 'TakeData'
+      break
+    case 'D4':
+      Data = `${val16_1} == ${val16_2} `
+      Interpretation = `${V16D} == ${val16_2} == ${val16_2d} [V16]`
+      SenderMain = hexToDec(lastByte, 16)
+      msgType = 'TakeData2'
+      break
+    case 'D5':
+      Data = `${val16_1} == ${val32_2} `
+      Interpretation = `${V16D} == ${val32_2} == ${val32_2d} [V32]`
+      SenderMain = hexToDec(lastByte, 16)
+      msgType = 'TakeData2'
+      break
     default:
-      var nibbleCase = parseInt(firstByte.slice(0, 1))
-      if ([2, 3, 4, 5, 8, 7].includes(nibbleCase)) {
+      var nibbleCase = hexToDec(firstByte.slice(0, 1), 16)
+      if ([2, 3, 4, 5, 7, 8, 11, 14].includes(nibbleCase)) {
+        // ..., B, E
         //Potential short addressing
         temp = firstByteDec & 0x0c // 0000 1100
 
@@ -1121,6 +1554,18 @@ function getOpCode_RS232(opCode, data) {
             mask = ''
             startStr = 'SAP'
             startSt2 = 'Set Actual Position'
+          } else if (nibbleCase == 0x0e) {
+            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `[${startStr}]`
+            startSt2 = startStr
+            rez = '[V16D, V16S]'
+            mask = '= ' + startSt2
+            startSt2 = ''
+            startStr = ''
+            secondAddy = firstAddy
+            sender = destinator
+            firstAddy = val16_2
+            destinator = V16S
           }
         } else if (temp == 0x04) {
           if (nibbleCase == 2) {
@@ -1135,6 +1580,18 @@ function getOpCode_RS232(opCode, data) {
           } else if (nibbleCase == 5) {
             rez = '[V32D -= V32S ]'
             mask = '-='
+          } else if (nibbleCase == 0x0e) {
+            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `[${startStr}]`
+            startSt2 = startStr
+            rez = '[V32D, V32S]'
+            mask = '= ' + startSt2
+            startSt2 = ''
+            startStr = ''
+            secondAddy = firstAddy
+            sender = destinator
+            firstAddy = val16_2
+            destinator = V16S
           }
         } else if (temp == 0x08) {
           //2800 2A00
@@ -1148,6 +1605,14 @@ function getOpCode_RS232(opCode, data) {
           } else if (nibbleCase == 4) {
             rez = '[V16 -= val16]'
             mask = '-='
+          } else if (nibbleCase == 0x0b) {
+            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `[${startStr}]`
+            startSt2 = startStr
+            rez = '[V16D, V16S]'
+            mask = '='
+            secondAddy = val16_2
+            sender = V16S
           }
         } else if (temp == 0x0c) {
           //2C00 2E00
@@ -1165,6 +1630,14 @@ function getOpCode_RS232(opCode, data) {
             startSt2 = 'Segment'
             rez = '[V16, V32]'
             mask = ','
+          } else if (nibbleCase == 0x0b) {
+            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `[${startStr}]`
+            startSt2 = startStr
+            rez = '[V32D, V32S]'
+            mask = '='
+            secondAddy = val16_2
+            sender = V16S
           }
         }
 
@@ -1175,5 +1648,5 @@ function getOpCode_RS232(opCode, data) {
       }
       break
   }
-  return [errorStatus, Data, Interpretation]
+  return [errorStatus, Data, Interpretation, msgType, SenderMain]
 }
