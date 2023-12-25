@@ -5066,8 +5066,82 @@ export const Registers_CANopen = [
   },
 
   {
-    Index: '60FE2',
+    Index: '60FE_02',
     Title: 'Bit mask',
+    BitInfo: [
+      {
+        bit: '31',
+        info: 'OUT15 command '
+      },
+      {
+        bit: '30',
+        info: 'OUT14 command '
+      },
+      {
+        bit: '29',
+        info: 'OUT13 command '
+      },
+      {
+        bit: '28',
+        info: 'OUT12 command '
+      },
+      {
+        bit: '27',
+        info: 'OUT11 command '
+      },
+      {
+        bit: '26',
+        info: 'OUT10 command '
+      },
+      {
+        bit: '25',
+        info: 'OUT9 command '
+      },
+      {
+        bit: '24',
+        info: 'OUT8 command '
+      },
+      {
+        bit: '23',
+        info: 'OUT7 command '
+      },
+      {
+        bit: '22',
+        info: 'OUT6 command '
+      },
+      {
+        bit: '21',
+        info: 'OUT5 command '
+      },
+      {
+        bit: '20',
+        info: 'OUT4 command '
+      },
+      {
+        bit: '19',
+        info: 'OUT3 command '
+      },
+      {
+        bit: '18',
+        info: 'OUT2 command '
+      },
+      {
+        bit: '17',
+        info: 'OUT1 command '
+      },
+      {
+        bit: '16',
+        info: 'OUT0 command'
+      },
+      {
+        bit: '15-0',
+        info: 'Reserved '
+      }
+    ]
+  },
+  {
+    Index: '60FE_01',
+    Title: 'Physical outputs',
     BitInfo: [
       {
         bit: '31',

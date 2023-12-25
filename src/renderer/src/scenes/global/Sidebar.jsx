@@ -65,6 +65,9 @@ const Sidebar = () => {
       } else if (event.ctrlKey && event.key === '3') {
         setSidebarSelectedItem('Decode CAN-Log')
         navigate('/Decode_CAN_LOG')
+      } else if (event.ctrlKey && event.key === 'v') {
+        setSidebarSelectedItem('Decode CAN-Log')
+        navigate('/DebugScene')
       }
     }
     window.addEventListener('keydown', handleKeyPress)

@@ -229,6 +229,7 @@ const RegisterComponent = ({
 export default RegisterComponent
 
 export const RegisterTooltip = ({ objects, objectData, children }) => {
+  console.log('🚀 ~ file: Register.jsx:232 ~ RegisterTooltip ~ objects:', objects)
   objects = objects.split(' / ')
   objectData = objectData.split(' / ')
   var foundRegisters = []

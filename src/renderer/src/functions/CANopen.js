@@ -257,7 +257,9 @@ function extractDATAfromROW(row, index, original) {
           }
         } else {
           //--fix 201 01
-          aux_data = potentialLength.concat(aux_data)
+          if (potentialLength.length != 1) {
+            aux_data = potentialLength.concat(aux_data)
+          }
         }
       } else {
         if (potentialLength.length == 2) {

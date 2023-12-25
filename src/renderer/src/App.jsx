@@ -1,4 +1,5 @@
-import { useState, createContext, Profiler, useContext, lazy, Suspense } from 'react'
+import { useState, createContext, Profiler, Suspense } from 'react'
+import { lazy } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Topbar from './scenes/global/topbar'
 import Sidebar from './scenes/global/Sidebar'
@@ -13,13 +14,14 @@ export var Registers_THS_LS = []
 export var ESM_info_LS = []
 
 import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG' //because of some useContext problems
-// const Decode_CAN_LOG_Window = LazyImport('./scenes/Decode_CAN_LOG')
 const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
 const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
 const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
 const DebugScene = LazyImport('./scenes/debug')
 const EditDataWindow = LazyImport('./scenes/EditDataWindow')
 const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
+
+//TODO: LazyImport is not working in the the exe compiled version
 
 // import HomeWindow from './scenes/HomeWindow'
 // import MoreOptionsWindow from './scenes/MoreOptionsWindow'

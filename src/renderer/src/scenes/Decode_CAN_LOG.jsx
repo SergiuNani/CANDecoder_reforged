@@ -58,8 +58,8 @@ export let filteredMessages_g = []
 
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
-  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
-  const [fileInnerText, setFileInnerText] = useState('')
+  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
+  // const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -133,7 +133,10 @@ const Decode_CAN_LOG_Window = () => {
               .classList.contains('DrawerOpened')
           ) {
             //Open Drawer, hide table
-            handleClickArrow()
+
+            if (freeTextVsCanLog == 'FreeText') {
+              handleClickArrow()
+            }
           } else {
             shortcutToDecodeMessages_whoCalled.current = 'KeyboardShortcut'
             setShortcutToDecodeMessages((prev) => !prev)
@@ -167,7 +170,7 @@ const Decode_CAN_LOG_Window = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [isAdvancedSearchOpen])
+  }, [isAdvancedSearchOpen, freeTextVsCanLog])
 
   useEffect(() => {
     if (initalMount_Deocde_CAN_LOG_ref.current) {
@@ -295,18 +298,14 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const { hideTableForceParentToggle, isAdvancedSearchOpen } = useContext(
     Decode_CAN_LOG_WindowContext
   )
-
   const initialRender = useRef(true)
-
   const LogDisplayRange = useRef(3000) //BUG Change to 3000
   const LogDisplayRange_Inf = useRef(0)
   const LogDisplayRange_Sup = useRef(3000) //BUG Change to 3000
-
   const FilteredLogLenght = useRef(0) // will be set in HandleDecode
   const FullLogLength = useRef(0)
   const CutTable_Inf = useRef(1)
   const CutTable_Sup = useRef(FullLogLength.current)
-
   const auxTable = useRef([
     LogDisplayRange.current,
     LogDisplayRange_Inf.current,
@@ -416,18 +415,12 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         TableRefForScroll
       }}
     >
-      {ProtocolGlobal == 'CANOPEN' ? (
+      {ProtocolGlobal != 'TMLCAN' ? (
         <Box>
           {DecodePDOs_Memo}
           {Drawer_Memo}
           {Table_Memo}
           {AdvancedSearch_Memo}
-        </Box>
-      ) : ProtocolGlobal == 'RS232' ? (
-        <Box>
-          {Drawer_Memo}
-          {Table_Memo}
-          {/* {AdvancedSearch_Memo} */}
         </Box>
       ) : (
         <Box>TMLCAN</Box>
@@ -452,6 +445,8 @@ const DrawerComponent_DecodeOptions = ({
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [toggle, setToggle] = useState(false)
+  const [CheckedAll, setCheckedAll] = useState(true)
+
   //Shortcut to open/close drawer
   const { shortcutToDecodeMessages, shortcutToDecodeMessages_whoCalled } = useContext(
     Decode_CAN_LOG_WindowContext
@@ -584,7 +579,7 @@ const DrawerComponent_DecodeOptions = ({
 
   const AvailableAxes_Component_Memo = useMemo(() => {
     return <AvailableAxes_Component />
-  }, [])
+  }, [CheckedAll])
 
   const MappingWindowforDrawer_Memo = useMemo(() => {
     return (
@@ -621,12 +616,19 @@ const DrawerComponent_DecodeOptions = ({
       }
     }
   }
+
+  function DeselectAllAxes() {
+    console.log('DeselectAllAxes')
+    var boolean = !CheckedAll
+    CanLogStatistics.forEach((iteration, idx) => {
+      var Keys = Object.keys(iteration)
+      Keys.forEach((prop) => {
+        CanLogStatistics[idx][prop][1] = boolean
+      })
+    })
+  }
   const DrawerOptionsList = useMemo(() => {
     console.log('DrawerOptionsList Rendering')
-
-    if (auxTable.current[4] == undefined) {
-      // auxTable.current[4] = 999
-    }
     return (
       <Box sx={{ userSelect: 'none' }}>
         {/* TABLE DISPLAY OPTIONS ----------------- */}
@@ -835,16 +837,26 @@ const DrawerComponent_DecodeOptions = ({
             padding: '0.4rem'
           }}
         >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            Available Axes:{' '}
-          </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Available Axes:{' '}
+            </p>
+            <Checkbox_Component
+              label={`All Axes`}
+              checked={CheckedAll}
+              onChange={() => {
+                DeselectAllAxes()
+                setCheckedAll((prev) => !prev)
+              }}
+            />
+          </div>
           {AvailableAxes_Component_Memo}
         </Box>
 
@@ -893,7 +905,7 @@ const DrawerComponent_DecodeOptions = ({
         </Box>
       </Box>
     )
-  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting])
+  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting, CheckedAll])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
