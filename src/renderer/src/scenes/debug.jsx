@@ -222,7 +222,7 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
     <Dialog
       open={openState}
       onClose={() => {
-        setOpenState(false) //BUG - turn to false
+        setOpenState(false)
       }}
     >
       <section

@@ -1,6 +1,6 @@
 import { UpdateStatisticsBasedOnMessage } from './CANopen'
 import { CanLogStatistics } from './CANopen'
-import { hexToDec, decToHex, hex2bin } from './NumberConversion'
+import { hexToDec, decToHex, hex2bin, hex_to_ascii } from './NumberConversion'
 import { FirmwareAdrresses_F514L } from '../data/FirmwareAddresses'
 let firmwareAddressesDynamicArray = []
 
@@ -34,7 +34,6 @@ export function Extract_MSGs_from_text_RS232(text) {
     var message = rowSplitted.join('')
     return [index + 1, row, type, message, rowSplitted]
   })
-  // console.log(ExtractedArray) // bug
   return ExtractedArray
 }
 function getFirmwareAddressesIntoArray_RS232(fw) {
@@ -346,6 +345,14 @@ function getOpCode_RS232(opCode, data) {
           Data = 'AXISOFF'
           Interpretation = `AXIS is OFF (deactivate control)`
           break
+        case '01':
+          Data = 'END'
+          Interpretation = `END of a TML program`
+          break
+        case '00':
+          Data = 'NOP'
+          Interpretation = `No Operation`
+          break
         case '20':
           Data = 'ENDINIT'
           Interpretation = `END of Initialization`
@@ -452,6 +459,18 @@ function getOpCode_RS232(opCode, data) {
           Data = `REMGRID(${array.join(',')})`
           Interpretation = `Remove Group ID = ${array.join(',')}`
           break
+        case '20':
+          Data = `SCIBR ${val16_1}`
+          Interpretation = `Set SCI Baud Rate ${val16_1} = ${val16_1d} [val16]`
+          break
+        case '10':
+          Data = `SPIBR ${val16_1}`
+          Interpretation = `Set SPI Baud Rate ${val16_1} = ${val16_1d} [val16]`
+          break
+        case '04':
+          Data = `CANBR ${val16_1}`
+          Interpretation = `Set CAN Baud Rate ${val16_1} = ${val16_1d} [val16]`
+          break
       }
 
       break
@@ -468,6 +487,14 @@ function getOpCode_RS232(opCode, data) {
         case '80':
           Data = `REMGRID ${val16_1}`
           Interpretation = `Remove Group ID  ${V16D} [V16]`
+          break
+        case '20':
+          Data = `SCIBR ${val16_1}`
+          Interpretation = `Set SCI Baud Rate ${V16D} [V16]`
+          break
+        case '10':
+          Data = `SPIBR ${val16_1}`
+          Interpretation = `Set SPI Baud Rate ${V16D} [V16]`
           break
       }
 
@@ -1508,10 +1535,50 @@ function getOpCode_RS232(opCode, data) {
       SenderMain = hexToDec(lastByte, 16)
       msgType = 'TakeData2'
       break
+    case 'D8':
+      if (lastByte == '01') {
+        if (data.length == 8) {
+          //TakeDAta
+          temp = data.slice(4, 8) + data.slice(0, 4)
+          Data = 'GetVAR:  ' + hex_to_ascii(temp)
+        } else {
+          SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+          Data = 'GETVAR'
+        }
+        Interpretation = 'Get version. On-line cmd. '
+      } else if (lastByte == 'C0') {
+        Data = `INITCAM ${val16_1}, ${val16_2} `
+        Interpretation = `Copy CAM table from SPI ${V16D} to RAM ${V16S}  -- [&V16, &V16]`
+      }
+      break
+    case 'D6':
+      if (lastByte == '00') {
+        SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+
+        Data = 'PING: '
+        Interpretation = `PING - Ask group ${val16_2d} for their axes `
+      } else {
+        Data = 'PONG'
+        //TODO Interpretation
+      }
+      break
+    case '95':
+      if (lastByte == '00') {
+        Data = 'ENEEPROM'
+        Interpretation = `Enable EEPROM `
+      }
+      break
+
+    case '64':
+      if (lastByte == '9C') {
+        Data = 'BEGIN'
+        Interpretation = `BEGIN of a TML program `
+      }
+      break
     default:
       var nibbleCase = hexToDec(firstByte.slice(0, 1), 16)
-      if ([2, 3, 4, 5, 7, 8, 11, 14].includes(nibbleCase)) {
-        // ..., B, E
+      if ([2, 3, 4, 5, 7, 8, 10, 11, 14].includes(nibbleCase)) {
+        // ...A, B, E
         //Potential short addressing
         temp = firstByteDec & 0x0c // 0000 1100
 
@@ -1566,6 +1633,13 @@ function getOpCode_RS232(opCode, data) {
             sender = destinator
             firstAddy = val16_2
             destinator = V16S
+          } else if (nibbleCase == 0x0a) {
+            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `?TML `
+            startSt2 = `?TML`
+            rez = '[?TML V16]'
+            secondAddy = ''
+            sender = ''
           }
         } else if (temp == 0x04) {
           if (nibbleCase == 2) {
@@ -1592,6 +1666,13 @@ function getOpCode_RS232(opCode, data) {
             sender = destinator
             firstAddy = val16_2
             destinator = V16S
+          } else if (nibbleCase == 0x0a) {
+            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `?TML `
+            startSt2 = `?TML`
+            rez = '[?TML V32]'
+            secondAddy = ''
+            sender = ''
           }
         } else if (temp == 0x08) {
           //2800 2A00
@@ -1613,6 +1694,14 @@ function getOpCode_RS232(opCode, data) {
             mask = '='
             secondAddy = val16_2
             sender = V16S
+          } else if (nibbleCase == 0x0a) {
+            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `?TML `
+            startSt2 = `?TML`
+            mask = ' = '
+            rez = '[?TML V16 TakeData]'
+            secondAddy = val16_2
+            sender = val16_2 + ' = ' + val16_2d
           }
         } else if (temp == 0x0c) {
           //2C00 2E00
@@ -1638,6 +1727,14 @@ function getOpCode_RS232(opCode, data) {
             mask = '='
             secondAddy = val16_2
             sender = V16S
+          } else if (nibbleCase == 0x0a) {
+            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+            startStr = `?TML `
+            startSt2 = `?TML`
+            rez = '[?TML V32 TakeData]'
+            mask = ' = '
+            secondAddy = val32_2
+            sender = val32_2 + ' = ' + val32_2d
           }
         }
 

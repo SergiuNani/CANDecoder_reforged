@@ -58,8 +58,8 @@ export let filteredMessages_g = []
 
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
-  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
-  // const [fileInnerText, setFileInnerText] = useState('')
+  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
+  const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -503,7 +503,6 @@ const DrawerComponent_DecodeOptions = ({
 
   //On CTRL+ENTER start decoding
   useEffect(() => {
-    // handleDECODE() // BUG - remvoe
     if (isInitialMount.current) {
       console.log('Initial Mount of DrawerComponent_DecodeOptions was ignored')
       isInitialMount.current = false

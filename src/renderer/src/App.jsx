@@ -98,7 +98,7 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [ProtocolGlobal, setProtocolGlobal] = useState('RS232') // CANOPEN --RS232 -- TMLCAN
+  const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- TMLCAN
 
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText

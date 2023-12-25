@@ -372,6 +372,41 @@ export const MessageListRs232ToVerify = `
 08 00 10 59 09 FF FF 20 00 98  //CPA
 0C 00 10 94 02 10 40 59 09 FF FF 20 00 82  //[G3] {CPA;}
 0A 00 10 94 01 10 40 89 25 02 28 D7 //[G3] {APOS <<=5;}
+0C 00 11 B4 05 00 10 02 28 5A 5B AB BA 2A //TakeData 32V ?apos
+08 00 30 B0 04 00 21 03 67 77 //?var_i2
+08 00 30 B0 05 00 21 02 28 38 //?apos
+0A 00 21 B4 04 00 30 03 67 56 78 4B //var_i2 == 5678
+0C 00 21 B4 05 00 30 02 28 56 78 12 34 54 //apos == 12345678
+08 00 30 B2 04 00 21 09 B7 CF //?? homing_nr 
+08 00 30 B2 05 00 21 02 A0 B2 //??CSPD
+4F 
+08 00 21 D4 03 09 B7 56 78 8E  //??homing_nr == 5678
+4F 
+0A 00 21 D5 03 02 A0 56 78 12 34 B9 //??CSPD == 12345678
+08 00 10 B0 04 00 11 03 66 46 //GiveData ?var_i1
+4F 
+0A 00 11 B4 04 00 10 03 66 5A 5B 01 // TakeData ?var_i1
+08 00 10 B0 05 00 11 02 28 08 //?apos
+4F 
+0A 00 20 9D 08 0F F0 03 66 03 67 A1 
+06 00 20 A1 66 00 21 4E //?TML var_i1
+06 00 20 A5 68 00 21 54 //?TML VAr_lf
+08 00 21 A9 66 00 20 12 34 9E // TML var_i1 ==0x1234
+0A 00 21 AD 68 00 20 56 78 12 34 74 // TML var_lf ==0x12345678
+06 00 10 D8 01 00 11 00 //GETVER
+08 00 11 D8 01 34 4B 35 31  D7 //GETVER = F514K
+08 00 20 D6 00 00 21 00 01 20 //PING 0x1
+08 00 20 D6 00 00 21 00 55 74 //PING 0x55
+04 00 20 00 01 25 //end
+04 00 20 95 00 B9 //ENEEPROM
+04 00 20 00 00 24 //nop
+06 00 20 09 20 03 66 B8 //scibr VAR_I1
+06 00 20 08 20 00 12 60 //scibr 0x12
+06 00 20 09 10 03 66 A8 //SPIBR var_i1
+06 00 20 08 10 00 12 50 //SPIBR 0x12
+06 00 20 08 04 00 12 44 //CANBR 0x12
+08 00 20 D8 C0 03 66 03 67 93 //INITCAM var_i1, var_i2
+
 `
 
 export const Hardcoded_VerifyRS232 = [
@@ -5626,6 +5661,496 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 375,
+    OriginalMessage: '0C 00 11 B4 05 00 10 02 28 5A 5B AB BA 2A //TakeData 32V ?apos',
+    CobID: 'RW=?',
+    FrameData: '0C0011B405001002285A5BABBA2A',
+    type: 'TakeData',
+    AxisID: 'H1',
+    CS: 'B405',
+    Object: 1,
+    ObjectName: '-',
+    Data: '0x0228 == ABBA5A5B ,DM  ',
+    Interpretation: 'APOS == ABBA5A5B == 1515913768d ,DM [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 376,
+    OriginalMessage: '08 00 30 B0 04 00 21 03 67 77 //?var_i2',
+    CobID: 'RW=?',
+    FrameData: '080030B0040021036777',
+    type: 'GiveData',
+    AxisID: 3,
+    CS: 'B004',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: '?0x0367 ,DM  ',
+    Interpretation: '?VAR_I2 ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 377,
+    OriginalMessage: '08 00 30 B0 05 00 21 02 28 38 //?apos',
+    CobID: 'RW=?',
+    FrameData: '080030B0050021022838',
+    type: 'GiveData',
+    AxisID: 3,
+    CS: 'B005',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: '?0x0228 ,DM  ',
+    Interpretation: '?APOS ,DM [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 378,
+    OriginalMessage: '0A 00 21 B4 04 00 30 03 67 56 78 4B //var_i2 == 5678',
+    CobID: 'RW=?',
+    FrameData: '0A0021B4040030036756784B',
+    type: 'TakeData',
+    AxisID: 'H2',
+    CS: 'B404',
+    Object: 3,
+    ObjectName: '-',
+    Data: '0x0367 == 0x5678 ,DM  ',
+    Interpretation: 'VAR_I2 == 0x5678 == 22136d ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 379,
+    OriginalMessage: '0C 00 21 B4 05 00 30 02 28 56 78 12 34 54 //apos == 12345678',
+    CobID: 'RW=?',
+    FrameData: '0C0021B405003002285678123454',
+    type: 'TakeData',
+    AxisID: 'H2',
+    CS: 'B405',
+    Object: 3,
+    ObjectName: '-',
+    Data: '0x0228 == 12345678 ,DM  ',
+    Interpretation: 'APOS == 12345678 == 1450705448d ,DM [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 380,
+    OriginalMessage: '08 00 30 B2 04 00 21 09 B7 CF //?? homing_nr ',
+    CobID: 'RW=?',
+    FrameData: '080030B204002109B7CF',
+    type: 'GiveData2',
+    AxisID: 3,
+    CS: 'B204',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: '??0x09B7 ,DM  ',
+    Interpretation: '??HOMING_NR ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 381,
+    OriginalMessage: '08 00 30 B2 05 00 21 02 A0 B2 //??CSPD',
+    CobID: 'RW=?',
+    FrameData: '080030B205002102A0B2',
+    type: 'GiveData2',
+    AxisID: 3,
+    CS: 'B205',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: '??0x02A0 ,DM  ',
+    Interpretation: '??CSPD ,DM [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 382,
+    OriginalMessage: '4F ',
+    CobID: 'RW=?',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 383,
+    OriginalMessage: '08 00 21 D4 03 09 B7 56 78 8E  //??homing_nr == 5678',
+    CobID: 'RW=?',
+    FrameData: '080021D40309B756788E',
+    type: 'TakeData2',
+    AxisID: 'H2',
+    CS: 'D403',
+    Object: 3,
+    ObjectName: '-',
+    Data: '0x09B7 == 0x5678 ',
+    Interpretation: 'HOMING_NR == 0x5678 == 22136d [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 384,
+    OriginalMessage: '4F ',
+    CobID: 'RW=?',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 385,
+    OriginalMessage: '0A 00 21 D5 03 02 A0 56 78 12 34 B9 //??CSPD == 12345678',
+    CobID: 'RW=?',
+    FrameData: '0A0021D50302A056781234B9',
+    type: 'TakeData2',
+    AxisID: 'H2',
+    CS: 'D503',
+    Object: 3,
+    ObjectName: '-',
+    Data: '0x02A0 == 0x12345678 ',
+    Interpretation: 'CSPD == 0x12345678 == 305419896d [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 386,
+    OriginalMessage: '08 00 10 B0 04 00 11 03 66 46 //GiveData ?var_i1',
+    CobID: 'RW=?',
+    FrameData: '080010B0040011036646',
+    type: 'GiveData',
+    AxisID: 1,
+    CS: 'B004',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: '?0x0366 ,DM  ',
+    Interpretation: '?VAR_I1 ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 387,
+    OriginalMessage: '4F ',
+    CobID: 'RW=?',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 388,
+    OriginalMessage: '0A 00 11 B4 04 00 10 03 66 5A 5B 01 // TakeData ?var_i1',
+    CobID: 'RW=?',
+    FrameData: '0A0011B404001003665A5B01',
+    type: 'TakeData',
+    AxisID: 'H1',
+    CS: 'B404',
+    Object: 1,
+    ObjectName: '-',
+    Data: '0x0366 == 0x5A5B ,DM  ',
+    Interpretation: 'VAR_I1 == 0x5A5B == 23131d ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 389,
+    OriginalMessage: '08 00 10 B0 05 00 11 02 28 08 //?apos',
+    CobID: 'RW=?',
+    FrameData: '080010B0050011022808',
+    type: 'GiveData',
+    AxisID: 1,
+    CS: 'B005',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: '?0x0228 ,DM  ',
+    Interpretation: '?APOS ,DM [V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 390,
+    OriginalMessage: '4F ',
+    CobID: 'RW=?',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 391,
+    OriginalMessage: '0A 00 20 9D 08 0F F0 03 66 03 67 A1 ',
+    CobID: 'RW=?',
+    FrameData: '0A00209D080FF003660367A1',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '9D08',
+    Object: '-',
+    ObjectName: '-',
+    Data: '0x0367 = [255] (0x0366+), SPI ',
+    Interpretation: ' VAR_I2 = [255] (VAR_I1+),SPI  [V16D, V16S]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 392,
+    OriginalMessage: '06 00 20 A1 66 00 21 4E //?TML var_i1',
+    CobID: 'RW=?',
+    FrameData: '060020A16600214E',
+    type: 'Normal',
+    AxisID: 2,
+    CS: 'A166',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: '?TML  0x0366  ',
+    Interpretation: '?TML VAR_I1   -- [?TML V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 393,
+    OriginalMessage: '06 00 20 A5 68 00 21 54 //?TML VAr_lf',
+    CobID: 'RW=?',
+    FrameData: '060020A568002154',
+    type: 'Normal',
+    AxisID: 2,
+    CS: 'A568',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: '?TML  0x0368  ',
+    Interpretation: '?TML VAR_LF   -- [?TML V32]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 394,
+    OriginalMessage: '08 00 21 A9 66 00 20 12 34 9E // TML var_i1 ==0x1234',
+    CobID: 'RW=?',
+    FrameData: '080021A966002012349E',
+    type: 'Normal',
+    AxisID: 'H2',
+    CS: 'A966',
+    Object: 2,
+    ObjectName: '-',
+    Data: '?TML  0x0366  =  0x1234',
+    Interpretation: '?TML VAR_I1  =  0x1234 = 4660d -- [?TML V16 TakeData]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 395,
+    OriginalMessage: '0A 00 21 AD 68 00 20 56 78 12 34 74 // TML var_lf ==0x12345678',
+    CobID: 'RW=?',
+    FrameData: '0A0021AD6800205678123474',
+    type: 'Normal',
+    AxisID: 'H2',
+    CS: 'AD68',
+    Object: 2,
+    ObjectName: '-',
+    Data: '?TML  0x0368  =  0x12345678',
+    Interpretation: '?TML VAR_LF  =  0x12345678 = 305419896d -- [?TML V32 TakeData]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 396,
+    OriginalMessage: '06 00 10 D8 01 00 11 00 //GETVER',
+    CobID: 'RW=?',
+    FrameData: '060010D801001100',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'D801',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: 'GETVAR',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 397,
+    OriginalMessage: '08 00 11 D8 01 34 4B 35 31  D7 //GETVER = F514K',
+    CobID: 'RW=?',
+    FrameData: '080011D801344B3531D7',
+    type: 'Normal',
+    AxisID: 'H1',
+    CS: 'D801',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GetVAR:  514K',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 398,
+    OriginalMessage: '08 00 20 D6 00 00 21 00 01 20 //PING 0x1',
+    CobID: 'RW=?',
+    FrameData: '080020D6000021000120',
+    type: 'Normal',
+    AxisID: 2,
+    CS: 'D600',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: 'PING: ',
+    Interpretation: 'PING - Ask group 1d for their axes ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 399,
+    OriginalMessage: '08 00 20 D6 00 00 21 00 55 74 //PING 0x55',
+    CobID: 'RW=?',
+    FrameData: '080020D6000021005574',
+    type: 'Normal',
+    AxisID: 2,
+    CS: 'D600',
+    Object: 'H2',
+    ObjectName: '-',
+    Data: 'PING: ',
+    Interpretation: 'PING - Ask group 85d for their axes ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 400,
+    OriginalMessage: '04 00 20 00 01 25 //end',
+    CobID: 'RW=?',
+    FrameData: '040020000125',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0001',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'END',
+    Interpretation: 'END of a TML program',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 401,
+    OriginalMessage: '04 00 20 95 00 B9 //ENEEPROM',
+    CobID: 'RW=?',
+    FrameData: '0400209500B9',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '9500',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'ENEEPROM',
+    Interpretation: 'Enable EEPROM ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 402,
+    OriginalMessage: '04 00 20 00 00 24 //nop',
+    CobID: 'RW=?',
+    FrameData: '040020000024',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0000',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'NOP',
+    Interpretation: 'No Operation',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 403,
+    OriginalMessage: '06 00 20 09 20 03 66 B8 //scibr VAR_I1',
+    CobID: 'RW=?',
+    FrameData: '06002009200366B8',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0920',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SCIBR 0x0366',
+    Interpretation: 'Set SCI Baud Rate VAR_I1 [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 404,
+    OriginalMessage: '06 00 20 08 20 00 12 60 //scibr 0x12',
+    CobID: 'RW=?',
+    FrameData: '0600200820001260',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0820',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SCIBR 0x0012',
+    Interpretation: 'Set SCI Baud Rate 0x0012 = 18d [val16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 405,
+    OriginalMessage: '06 00 20 09 10 03 66 A8 //SPIBR var_i1',
+    CobID: 'RW=?',
+    FrameData: '06002009100366A8',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0910',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SPIBR 0x0366',
+    Interpretation: 'Set SPI Baud Rate VAR_I1 [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 406,
+    OriginalMessage: '06 00 20 08 10 00 12 50 //SPIBR 0x12',
+    CobID: 'RW=?',
+    FrameData: '0600200810001250',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0810',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SPIBR 0x0012',
+    Interpretation: 'Set SPI Baud Rate 0x0012 = 18d [val16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 407,
+    OriginalMessage: '06 00 20 08 04 00 12 44 //CANBR 0x12',
+    CobID: 'RW=?',
+    FrameData: '0600200804001244',
+    type: 'Normal',
+    AxisID: 2,
+    CS: '0804',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CANBR 0x0012',
+    Interpretation: 'Set CAN Baud Rate 0x0012 = 18d [val16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 408,
+    OriginalMessage: '08 00 20 D8 C0 03 66 03 67 93 //INITCAM var_i1, var_i2',
+    CobID: 'RW=?',
+    FrameData: '080020D8C00366036793',
+    type: 'Normal',
+    AxisID: 2,
+    CS: 'D8C0',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'INITCAM 0x0366, 0x0367 ',
+    Interpretation: 'Copy CAM table from SPI VAR_I1 to RAM VAR_I2  -- [&V16, &V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 409,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 410,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

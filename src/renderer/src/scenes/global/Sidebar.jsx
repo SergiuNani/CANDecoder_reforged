@@ -46,12 +46,12 @@ const Sidebar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [isCollapsed, setIsCollapsed] = useState(true)
-  // const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
+  const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
 
-  var sidebarSelectedItem = 'Home'
-  function setSidebarSelectedItem() {
-    console.log('setSidebarSelectedItem')
-  }
+  // var sidebarSelectedItem = 'Home'
+  // function setSidebarSelectedItem() {
+  //   console.log('setSidebarSelectedItem')
+  // }
   const navigate = useNavigate() //BUG uncomment this to enable shortcuts
   useEffect(() => {
     //SHORTCUTS

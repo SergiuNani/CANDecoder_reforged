@@ -469,8 +469,7 @@ const DecodeCANlogOptionsInsertPart = () => {
   const colors = tokens(theme.palette.mode)
   return (
     <section>
-      {/* {sidebarSelectedItem == 'Decode CAN-Log' ? ( */}
-      {true ? (
+      {sidebarSelectedItem == 'Decode CAN-Log' ? (
         <section style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div
             style={{

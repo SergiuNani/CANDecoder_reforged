@@ -1149,7 +1149,7 @@ export let PDO_mapped_aux = {
   TPDO3: [],
   TPDO4: []
 }
-export let DontBotherWithPDO_flag = [1] // BUG change to zero
+export let DontBotherWithPDO_flag = [0] // BUG change to zero
 export let SetAllPDOsEMPTY = [0]
 
 export function DecodeOnePDOmsg(cobID_array, message) {

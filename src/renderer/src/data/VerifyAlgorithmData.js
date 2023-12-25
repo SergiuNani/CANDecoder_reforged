@@ -5386,11 +5386,11 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'R_SDO',
     AxisID: 23,
     CS: '23',
-    Object: '#x1005',
-    ObjectName: 'COD-ID of the SYNC Message',
+    Object: '1005_00',
+    ObjectName: 'Nothing Found',
     Data: '80000080',
-    Interpretation: '-',
-    errorStatus: 'random'
+    Interpretation: "SDO_Error: Couldn't find object : 1005_00",
+    errorStatus: 'error'
   },
   {
     msgNr: 348,
@@ -5442,10 +5442,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'T_SDO',
     AxisID: 23,
     CS: '60',
-    Object: '#x1005',
-    ObjectName: 'COD-ID of the SYNC Message',
+    Object: '1005_00',
+    ObjectName: 'Nothing Found',
     Data: '-',
-    Interpretation: 'Writing in #x1005 - OK ',
+    Interpretation: 'Writing in 1005_00 - OK ',
     errorStatus: 'perfect'
   },
   {
@@ -6567,7 +6567,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2067',
     ObjectName: 'Write data at specified address',
     Data: '036A1234',
-    Interpretation: 'Write,  0x036Ah <- 1234h , Memory range : 0x1234h - 0x036Ah ',
+    Interpretation: 'Checksum, start: 0x1234h, end: 0x036Ah',
     errorStatus: 'random'
   },
   {

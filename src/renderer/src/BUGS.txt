@@ -39,7 +39,6 @@ The program will fastforward in the code and look for all the mapping that is do
 If the "Set compatible objects for all" or leave empty for all is selected ,its OK even if u select for because the code will look through all the mapping and if he detects anything then he gon put the correct value.If there are multiple SDO messages setting the same PDO then the last value will be selected.
 
 
-//BUG1: For the PDO detected window add another option which the user can select when he has no idea what the object is part of and because if there are random shit it only hinders the canlog reading.
 
 
 
@@ -48,8 +47,15 @@ If the "Set compatible objects for all" or leave empty for all is selected ,its 
 
 // Develop 2064 2065 2066 2067 2069 206A
 
-
-
+//TEST AGAIN WITH DRIVE:
+06 00 20 A1 66 00 21 4E //?TML var_i1
+06 00 20 A5 68 00 21 54 //?TML VAr_lf
+08 00 21 A9 66 00 20 12 34 9E // TML var_i1 ==0x1234
+0A 00 21 AD 68 00 20 56 78 12 34 74 // TML var_lf ==0x12345678
+GETVAR - both give take cmds
+PING PONG
+CHECKSUM, TM Start, Stop, V16D
+LOCKEEPROM var16
 
 TIPS:
    '& .MuiDialog-paper': {
