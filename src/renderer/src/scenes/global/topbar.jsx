@@ -53,6 +53,7 @@ export let FG_OptionsObject_1 = {
   FG_Applied_ACC: 'IU',
   FG_Applied_TIME: 'IU'
 }
+import { DEMO_CANopen_raw } from '../../data/BigData'
 export var fullRot_IU_1 = 2000
 export var slowLoop_1 = 1
 export var FG_DisplayVSApplied_1 = 'Display'
@@ -493,7 +494,7 @@ const DecodeCANlogOptionsInsertPart = () => {
               if (ProtocolGlobal == 'RS232') {
                 text = MessageListRs232ToVerify
               } else if (ProtocolGlobal == 'CANOPEN') {
-                text = VerifyCANopenValidityArray_RAW
+                text = DEMO_CANopen_raw
               }
               document.querySelector('#TextAreaText_ID_global').value = text
             }}

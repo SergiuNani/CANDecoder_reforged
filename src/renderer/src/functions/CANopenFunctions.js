@@ -699,8 +699,8 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
           interpretation = 'Invalid CS for this object '
           errorStatus = 'error'
         } else if (data.length != 8) {
-          interpretation = 'The data should be 32bits '
-          errorStatus = 'warning'
+          errorStatus = 'neutral'
+          data = data.padStart(8, '0')
         } else {
           interpretation = `Write: ${ObjectIndex} <- ${data}h`
           errorStatus = 'neutral'

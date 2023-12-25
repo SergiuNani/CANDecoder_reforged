@@ -205,12 +205,58 @@ export function Check4PotentialCobID(row) {
 
   if (all_COBiDs.length > 0) {
     var tempp = returnMaxFromArr(arrayCount)
+    //check for COBIDs such as 82 or 0, but only if length is expressed in a single digit
+    var proposedCobID = all_COBiDs[tempp[1]][0]
+    var indexCobID = all_COBiDs[tempp[1]][1]
 
-    return [all_COBiDs[tempp[1]][0], all_COBiDs[tempp[1]][1]]
+    if (row[indexCobID + 1] && row[indexCobID + 1].length == 1) {
+      // next element is the length of the message in a single digit
+      var msg = row.slice(indexCobID + 2).join('')
+      if (msg.length == parseInt(row[indexCobID + 1]) * 2) {
+        return [proposedCobID, indexCobID]
+      } else {
+        //If the evaluated length don`t match the recived data
+
+        var result = findCobIDbasedOnLength(row)
+        if (result[0]) {
+          return result
+        } else {
+          return [proposedCobID, indexCobID]
+        }
+      }
+    } else {
+      var result = findCobIDbasedOnLength(row)
+      if (result[0]) {
+        return result
+      } else {
+        return [proposedCobID, indexCobID]
+      }
+    }
+    //Return [TheCobID, indexOfCobId_inTheRow]
   } else {
-    return ['invalid', '-1']
+    var result = findCobIDbasedOnLength(row)
+    if (result[0]) {
+      return result
+    } else {
+      return ['invalid', '-1']
+    }
   }
-  //Return [TheCobID, indexOfCobId_inTheRow]
+}
+function findCobIDbasedOnLength(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    const hexValue = parseInt(arr[i], 16)
+    if (hexValue >= 0 && hexValue <= 8 && arr[i].length === 1) {
+      var joinedData = arr.slice(i + 1).join('')
+      if (joinedData.length == hexValue * 2) {
+        if (arr[i - 1] && CobID_who_dis(arr[i - 1])[0] != 'invalid') {
+          //
+          return [arr[i - 1], i - 1]
+        }
+      }
+    }
+  }
+
+  return [false, 0]
 }
 
 function extractDATAfromROW(row, index, original) {

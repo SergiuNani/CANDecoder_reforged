@@ -429,6 +429,11 @@ SB-to-CAN V2 compact  CAN-1,54,00:06.3,      ,702,1,5,.
 605 23 64 20 00 08 00 38 56
 605 23 65 20 00 00 C4 00 00
 605 23 65 20 00 00 00 00 00	
+Line  3818: USB-to-CAN V2 compact  CAN-1,"5,297",185.639,      ,85,8,00 00 00 00 00 00 00 00,........
+Line  4135: USB-to-CAN V2 compact  CAN-1,"6,774",210.979,      ,85,8,20 32 01 00 00 00 00 00, 2......
+Line  4149: USB-to-CAN V2 compact  CAN-1,"6,808",211.114,      ,85,8,00 00 00 00 00 00 00 00,........
+Line  4271: USB-to-CAN V2 compact  CAN-1,"8,126",256.244,      ,85,8,20 32 01 00 00 00 00 00, 2......
+Line  4321: USB-to-CAN V2 compact  CAN-1,"8,278",258.213,      ,85,8,00 00 00 00 00 00 00 00,...
 
 `
 export const Hardcoded_VerifyCANopenValidityArray = [
@@ -4000,16 +4005,16 @@ export const Hardcoded_VerifyCANopenValidityArray = [
   {
     msgNr: 249,
     OriginalMessage: '0 2 81 00',
-    CobID: 'invalid',
-    FrameData: 'invalid',
-    type: 'invalid',
-    AxisID: 'invalid',
-    CS: '-',
+    CobID: '0',
+    FrameData: '8100',
+    type: 'NMT',
+    AxisID: 'All',
+    CS: '81',
     Object: '-',
-    ObjectName: 'Can`t extract data from this row',
+    ObjectName: '-',
     Data: '-',
-    Interpretation: 'Invalid Message ',
-    errorStatus: 'error'
+    Interpretation: 'All Axes - Reset Node',
+    errorStatus: 'blue'
   },
   {
     msgNr: 250,
@@ -4028,16 +4033,16 @@ export const Hardcoded_VerifyCANopenValidityArray = [
   {
     msgNr: 251,
     OriginalMessage: '0 0x2 81 00',
-    CobID: 'invalid',
-    FrameData: 'invalid',
-    type: 'invalid',
-    AxisID: 'invalid',
-    CS: '-',
+    CobID: '0',
+    FrameData: '8100',
+    type: 'NMT',
+    AxisID: 'All',
+    CS: '81',
     Object: '-',
-    ObjectName: 'Can`t extract data from this row',
+    ObjectName: '-',
     Data: '-',
-    Interpretation: 'Invalid Message ',
-    errorStatus: 'error'
+    Interpretation: 'All Axes - Reset Node',
+    errorStatus: 'blue'
   },
   {
     msgNr: 252,
@@ -4084,30 +4089,30 @@ export const Hardcoded_VerifyCANopenValidityArray = [
   {
     msgNr: 255,
     OriginalMessage: '0 2 0x81 0x00',
-    CobID: 'invalid',
-    FrameData: 'invalid',
-    type: 'invalid',
-    AxisID: 'invalid',
-    CS: '-',
+    CobID: '0',
+    FrameData: '8100',
+    type: 'NMT',
+    AxisID: 'All',
+    CS: '81',
     Object: '-',
-    ObjectName: 'Can`t extract data from this row',
+    ObjectName: '-',
     Data: '-',
-    Interpretation: 'Invalid Message ',
-    errorStatus: 'error'
+    Interpretation: 'All Axes - Reset Node',
+    errorStatus: 'blue'
   },
   {
     msgNr: 256,
     OriginalMessage: '0 2 81 00',
-    CobID: 'invalid',
-    FrameData: 'invalid',
-    type: 'invalid',
-    AxisID: 'invalid',
-    CS: '-',
+    CobID: '0',
+    FrameData: '8100',
+    type: 'NMT',
+    AxisID: 'All',
+    CS: '81',
     Object: '-',
-    ObjectName: 'Can`t extract data from this row',
+    ObjectName: '-',
     Data: '-',
-    Interpretation: 'Invalid Message ',
-    errorStatus: 'error'
+    Interpretation: 'All Axes - Reset Node',
+    errorStatus: 'blue'
   },
   {
     msgNr: 257,
@@ -6080,16 +6085,16 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     msgNr: 396,
     OriginalMessage:
       '12\t    \t20:29:24\t605.338\t          0.360\t                           <NTCAN Event>\t         0\t       000\tE     \t  6\t00\t00\t00\t00\t00\t00\t  \t  \tCONTROLLER(ok)\t',
-    CobID: '000',
-    FrameData: 'E6000000000000',
-    type: 'NMT',
-    AxisID: '-',
+    CobID: 'E',
+    FrameData: '000000000000',
+    type: 'Group-TCAN',
+    AxisID: 14,
     CS: '-',
     Object: '-',
     ObjectName: '-',
     Data: '-',
-    Interpretation: 'DATA too big for this type of message',
-    errorStatus: 'error'
+    Interpretation: 'TCAN: Group-TCAN',
+    errorStatus: 'neutral'
   },
   {
     msgNr: 397,
@@ -6614,6 +6619,81 @@ export const Hardcoded_VerifyCANopenValidityArray = [
   },
   {
     msgNr: 432,
+    OriginalMessage:
+      'Line  3818: USB-to-CAN V2 compact  CAN-1,"5,297",185.639,      ,85,8,00 00 00 00 00 00 00 00,........',
+    CobID: '85',
+    FrameData: '0000000000000000',
+    type: 'EMCY',
+    AxisID: 5,
+    CS: '-',
+    Object: '1001',
+    ObjectName: 'Error Register',
+    Data: '00 ',
+    Interpretation: 'EMCY : 0000 - Error Reset or No Error',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 433,
+    OriginalMessage:
+      'Line  4135: USB-to-CAN V2 compact  CAN-1,"6,774",210.979,      ,85,8,20 32 01 00 00 00 00 00, 2......',
+    CobID: '85',
+    FrameData: '2032010000000000',
+    type: 'EMCY',
+    AxisID: 5,
+    CS: '-',
+    Object: '1001',
+    ObjectName: 'Error Register',
+    Data: '01 ',
+    Interpretation: 'EMCY : 3220 - DC-link under-voltage',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 434,
+    OriginalMessage:
+      'Line  4149: USB-to-CAN V2 compact  CAN-1,"6,808",211.114,      ,85,8,00 00 00 00 00 00 00 00,........',
+    CobID: '85',
+    FrameData: '0000000000000000',
+    type: 'EMCY',
+    AxisID: 5,
+    CS: '-',
+    Object: '1001',
+    ObjectName: 'Error Register',
+    Data: '00 ',
+    Interpretation: 'EMCY : 0000 - Error Reset or No Error',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 435,
+    OriginalMessage:
+      'Line  4271: USB-to-CAN V2 compact  CAN-1,"8,126",256.244,      ,85,8,20 32 01 00 00 00 00 00, 2......',
+    CobID: '85',
+    FrameData: '2032010000000000',
+    type: 'EMCY',
+    AxisID: 5,
+    CS: '-',
+    Object: '1001',
+    ObjectName: 'Error Register',
+    Data: '01 ',
+    Interpretation: 'EMCY : 3220 - DC-link under-voltage',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 436,
+    OriginalMessage:
+      'Line  4321: USB-to-CAN V2 compact  CAN-1,"8,278",258.213,      ,85,8,00 00 00 00 00 00 00 00,...',
+    CobID: '85',
+    FrameData: '0000000000000000',
+    type: 'EMCY',
+    AxisID: 5,
+    CS: '-',
+    Object: '1001',
+    ObjectName: 'Error Register',
+    Data: '00 ',
+    Interpretation: 'EMCY : 0000 - Error Reset or No Error',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 437,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',
@@ -6627,7 +6707,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     errorStatus: '-'
   },
   {
-    msgNr: 433,
+    msgNr: 438,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',
