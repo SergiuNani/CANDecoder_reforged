@@ -35,7 +35,8 @@ function App() {
     !localStorage.getItem('Objects_collection_LS') ||
     !localStorage.getItem('Registers_CANopen_LS') ||
     !localStorage.getItem('Registers_THS_LS') ||
-    !localStorage.getItem('ESM_info_LS')
+    !localStorage.getItem('ESM_info_LS') ||
+    !localStorage.getItem('Timer')
   ) {
     // First Write in Local Storage if there is nothing there
     localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection))
@@ -43,12 +44,12 @@ function App() {
     localStorage.setItem('Registers_THS_LS', JSON.stringify(Registers_THS))
     ESM_info_LS = Text2JSON_ESM_info()
     localStorage.setItem('ESM_info_LS', JSON.stringify(ESM_info_LS))
+    localStorage.setItem('Timer', 0)
   }
   Objects_collection_LS = JSON.parse(localStorage.getItem('Objects_collection_LS'))
   Registers_CANopen_LS = JSON.parse(localStorage.getItem('Registers_CANopen_LS'))
   Registers_THS_LS = JSON.parse(localStorage.getItem('Registers_THS_LS'))
   ESM_info_LS = JSON.parse(localStorage.getItem('ESM_info_LS'))
-
   return (
     <MyProviders>
       <HashRouter>
@@ -83,7 +84,7 @@ export const MotorSpecificationsContext = createContext()
 export const ProtocolGlobalContext = createContext()
 export const FG_Context = createContext()
 export const DecodeCANlog_topbarOptionsContext = createContext()
-
+export const ClearanceContext = createContext()
 export const FG_OptionsStarter = {
   FG_Display_POS: 'IU',
   FG_Display_SPD: 'IU',
@@ -101,6 +102,7 @@ function MyProviders({ children }) {
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
   const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- TMLCAN
+  const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
 
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
@@ -115,36 +117,43 @@ function MyProviders({ children }) {
     <Profiler id="MyComponent" onRender={logProfilerData}>
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <DecodeCANlog_topbarOptionsContext.Provider
+          <ClearanceContext.Provider
             value={{
-              freeTextVsCanLog,
-              setFreeTextVsCanLog,
-              toggleFilterWindow_app,
-              setToggleFilterWindow_app,
-              toggleSearchWindow_app,
-              setToggleSearchWindow_app
+              Clearance,
+              setClearance
             }}
           >
-            <MotorSpecificationsContext.Provider
-              value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+            <CssBaseline />
+            <DecodeCANlog_topbarOptionsContext.Provider
+              value={{
+                freeTextVsCanLog,
+                setFreeTextVsCanLog,
+                toggleFilterWindow_app,
+                setToggleFilterWindow_app,
+                toggleSearchWindow_app,
+                setToggleSearchWindow_app
+              }}
             >
-              <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-                <ProtocolGlobalContext.Provider value={{ ProtocolGlobal, setProtocolGlobal }}>
-                  <FG_Context.Provider
-                    value={{
-                      FG_DisplayVSApplied,
-                      setFG_DisplayVSApplied,
-                      FG_OptionsObject,
-                      setFG_OptionsObject
-                    }}
-                  >
-                    {children}
-                  </FG_Context.Provider>
-                </ProtocolGlobalContext.Provider>
-              </SidebarContext.Provider>
-            </MotorSpecificationsContext.Provider>
-          </DecodeCANlog_topbarOptionsContext.Provider>
+              <MotorSpecificationsContext.Provider
+                value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+              >
+                <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
+                  <ProtocolGlobalContext.Provider value={{ ProtocolGlobal, setProtocolGlobal }}>
+                    <FG_Context.Provider
+                      value={{
+                        FG_DisplayVSApplied,
+                        setFG_DisplayVSApplied,
+                        FG_OptionsObject,
+                        setFG_OptionsObject
+                      }}
+                    >
+                      {children}
+                    </FG_Context.Provider>
+                  </ProtocolGlobalContext.Provider>
+                </SidebarContext.Provider>
+              </MotorSpecificationsContext.Provider>
+            </DecodeCANlog_topbarOptionsContext.Provider>
+          </ClearanceContext.Provider>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </Profiler>

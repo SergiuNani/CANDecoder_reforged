@@ -1,4 +1,4 @@
-import { useContext, useState, createContext, useEffect, useRef } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import { Box, IconButton, useTheme, Typography } from '@mui/material'
 import { ColorModeContext, tokens } from '../../theme'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
@@ -21,7 +21,8 @@ import {
   ProtocolGlobalContext,
   FG_Context,
   DecodeCANlog_topbarOptionsContext,
-  SidebarContext
+  SidebarContext,
+  ClearanceContext
 } from '../../App'
 import { Input_AutoFormat, Input_ChooseOption } from '../../components/ForumsComponents'
 import {
@@ -30,7 +31,8 @@ import {
   hex2bin,
   bin2hex,
   decToHex,
-  hexToDec
+  hexToDec,
+  asciiToDec
 } from '../../functions/NumberConversion'
 import { SwitchComponent, ButtonTransparent } from '../../components/SmallComponents'
 import SearchIcon from '@mui/icons-material/Search'
@@ -57,13 +59,12 @@ import { DEMO_CANopen_raw } from '../../data/BigData'
 export var fullRot_IU_1 = 2000
 export var slowLoop_1 = 1
 export var FG_DisplayVSApplied_1 = 'Display'
-
 const Topbar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
 
-  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(true)
   const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
 
@@ -137,6 +138,8 @@ export default Topbar
 export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  var { Clearance, setClearance } = useContext(ClearanceContext)
+
   function handleClose() {
     setSettingsDialogOpen(false)
   }
@@ -152,14 +155,20 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
         <Typography variant="h4" sx={{ mb: '1rem' }}>
           Application Settings
         </Typography>
-
-        <AccordionComponent
-          title="Communication Protocol"
-          children={<WorkingModeInsertPart />}
-          defaultExpanded
-        />
+        {Clearance > 22 ? (
+          <AccordionComponent
+            title="Communication Protocol"
+            children={<WorkingModeInsertPart />}
+            defaultExpanded
+          />
+        ) : null}
         <AccordionComponent title="General Settings" children={<GeneralSettingsInsertPart />} />
         <AccordionComponent title="Factor Group" children={<FactorGroupInsertPart />} />
+        <AccordionComponent
+          title="Authentication"
+          children={<AutenthificationDialog />}
+          defaultExpanded
+        />
       </div>
     </Dialog>
   )
@@ -466,6 +475,8 @@ const DecodeCANlogOptionsInsertPart = () => {
     DecodeCANlog_topbarOptionsContext
   )
   const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
+  var { Clearance } = useContext(ClearanceContext)
+
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
@@ -509,14 +520,17 @@ const DecodeCANlogOptionsInsertPart = () => {
           >
             <FilterAltIcon />
           </IconButton>
-          <IconButton
-            sx={{ zoom: '1.1' }}
-            onClick={() => {
-              setToggleSearchWindow_app((prev) => !prev)
-            }}
-          >
-            <SearchIcon />
-          </IconButton>
+
+          {Clearance > 11 ? (
+            <IconButton
+              sx={{ zoom: '1.1' }}
+              onClick={() => {
+                setToggleSearchWindow_app((prev) => !prev)
+              }}
+            >
+              <SearchIcon />
+            </IconButton>
+          ) : null}
         </section>
       ) : null}
     </section>
@@ -814,5 +828,93 @@ const CalculatorDialog = ({
         </section>
       )}
     </Dialog>
+  )
+}
+
+const AutenthificationDialog = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  const InputRef = useRef(null)
+  const [level, setLevel] = useState(1)
+  var { Clearance, setClearance } = useContext(ClearanceContext)
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter' && document.activeElement === InputRef.current) {
+        // setIsDrawerOpen((prev) => !prev)
+        var pass = asciiToDec(InputRef.current.value)
+        console.log(InputRef.current.value)
+        console.log(pass)
+        console.log(Clearance)
+        if (pass == 418548904545) {
+          //asura
+          localStorage.setItem('Timer', 44)
+          setClearance(44)
+          setLevel(4)
+        } else if (pass == 27988495321099876 || pass == 8319385953830004000 || pass == 1952804208) {
+          //cocaine, steroids,temp
+          setClearance(44)
+
+          setLevel(4)
+        } else if (pass == 465491092325) {
+          //lance
+          localStorage.setItem('Timer', 33)
+          setClearance(33)
+
+          setLevel(3)
+        } else if (pass == 1751474532) {
+          //head
+          localStorage.setItem('Timer', 22)
+          setClearance(22)
+
+          setLevel(2)
+        } else if (pass == 32492133653505390) {
+          //soldier
+          localStorage.setItem('Timer', 11)
+          setClearance(11)
+
+          setLevel(1)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [InputRef.current])
+
+  useEffect(() => {
+    var pass = localStorage.getItem('Timer')
+    if (pass == '44') {
+      setLevel(4)
+    } else if (pass == '33') {
+      setLevel(3)
+    } else if (pass == '22') {
+      setLevel(2)
+    } else if (pass == '11') {
+      setLevel(1)
+    }
+  }, [])
+  return (
+    <Box sx={{ padding: '1rem' }}>
+      <li>Enter your login information</li>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <input
+          type="password"
+          ref={InputRef}
+          style={{
+            color: `${colors.grey[700]}`,
+            padding: '0.5rem',
+            background: `${colors.primary[200]}`,
+            border: `1px solid ${colors.green[400]}`,
+            borderRadius: '0.5rem',
+            margin: '0.5rem 0',
+            fontSize: '1rem'
+          }}
+        />
+      </div>
+      <div style={{ fontSize: '1rem' }}>
+        Clearance: <b style={{ color: `${colors.primary[400]}` }}>{level}</b>
+      </div>
+    </Box>
   )
 }

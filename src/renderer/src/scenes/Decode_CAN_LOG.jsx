@@ -21,7 +21,7 @@ import {
 import { tokens } from '../theme'
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import { DecodeCANlog_topbarOptionsContext, ProtocolGlobalContext } from '../App'
+import { DecodeCANlog_topbarOptionsContext, ProtocolGlobalContext, ClearanceContext } from '../App'
 import { InsertTextIntoTextArea } from '../data/TestingData'
 import {
   Extract_MSGs_from_text,
@@ -53,9 +53,8 @@ export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
 export let MessagesDecoded_ArrayOfObjects = []
 export let AllCAN_MsgsExtracted_array = []
-export let filteredMessages_auxGlobal = []
-export let filteredMessages_g = []
-
+export let filteredMessages_auxGlobal = [] // only filtered messages
+export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
   console.log('---1---. Decode_CAN_LOG_Window')
   const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
@@ -69,6 +68,7 @@ const Decode_CAN_LOG_Window = () => {
   const colors = tokens(theme.palette.mode)
 
   const { freeTextVsCanLog, toggleSearchWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
+  var { Clearance } = useContext(ClearanceContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
   const initalMount_Deocde_CAN_LOG_ref = useRef(true)
@@ -144,7 +144,7 @@ const Decode_CAN_LOG_Window = () => {
         }
       } else if (event.ctrlKey && event.key === 'Tab') {
         TextAreaText_Ref.current.focus()
-      } else if (event.ctrlKey && event.key === 'f') {
+      } else if (event.ctrlKey && event.key === 'f' && Clearance > 11) {
         if (SearchVsGotoLineRef.current == 'Search') {
           setIsAdvancedSearchOpen((prev) => !prev)
         } else {
@@ -154,7 +154,7 @@ const Decode_CAN_LOG_Window = () => {
           }, 10)
         }
         SearchVsGotoLineRef.current = 'Search'
-      } else if (event.ctrlKey && event.key === 'g') {
+      } else if (event.ctrlKey && event.key === 'g' && Clearance > 11) {
         if (SearchVsGotoLineRef.current == 'gotoLine') {
           setIsAdvancedSearchOpen((prev) => !prev)
         } else {
@@ -170,7 +170,7 @@ const Decode_CAN_LOG_Window = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [isAdvancedSearchOpen, freeTextVsCanLog])
+  }, [isAdvancedSearchOpen, freeTextVsCanLog, Clearance])
 
   useEffect(() => {
     if (initalMount_Deocde_CAN_LOG_ref.current) {
@@ -439,11 +439,12 @@ const DrawerComponent_DecodeOptions = ({
   console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
+  var { Clearance } = useContext(ClearanceContext)
   const [messageTypeSorting, setMessageTypeSorting] = useState('All')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
+  const [showMessagesModal, setShowMessagesModal] = useState(false)
   const [toggle, setToggle] = useState(false)
   const [CheckedAll, setCheckedAll] = useState(true)
 
@@ -592,6 +593,17 @@ const DrawerComponent_DecodeOptions = ({
     )
   }, [showMappingWindow])
 
+  const MessagesRawForDrawer_Memo = useMemo(() => {
+    return (
+      showMessagesModal && (
+        <MessageWindowForDrawerComponent
+          showMessagesModal={showMessagesModal}
+          setShowMessagesModal={setShowMessagesModal}
+        />
+      )
+    )
+  }, [showMessagesModal, filteredMessages_auxGlobal])
+
   function handleLogCUTLimits(e, name) {
     console.log('🚀 ~  handleLogCUTLimits:')
     setToggle((prev) => !prev)
@@ -632,43 +644,45 @@ const DrawerComponent_DecodeOptions = ({
     return (
       <Box sx={{ userSelect: 'none' }}>
         {/* TABLE DISPLAY OPTIONS ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            Table display options:{' '}
-          </p>
-          <RadioGroup
-            row
-            onChange={(e) => {
-              setTableOption(e.target.value)
-            }}
-            value={TableOption}
+        {Clearance == 44 ? (
+          <Box
             sx={{
-              justifyContent: 'center',
-              '& .MuiSvgIcon-root': {
-                // fontSize: '1rem'
-                color: `${colors.green[400]}`
-              }
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
             }}
           >
-            <FormControlLabel value="Default" control={<Radio />} label="Default" />
-            <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
-          </RadioGroup>
-        </Box>
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Table display options:{' '}
+            </p>
+            <RadioGroup
+              row
+              onChange={(e) => {
+                setTableOption(e.target.value)
+              }}
+              value={TableOption}
+              sx={{
+                justifyContent: 'center',
+                '& .MuiSvgIcon-root': {
+                  // fontSize: '1rem'
+                  color: `${colors.green[400]}`
+                }
+              }}
+            >
+              <FormControlLabel value="Default" control={<Radio />} label="Default" />
+              <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
+            </RadioGroup>
+          </Box>
+        ) : null}
 
         {/* GROUPING OPTIONS ----------------- */}
         <Box
@@ -828,37 +842,39 @@ const DrawerComponent_DecodeOptions = ({
         </Box>
 
         {/* Available Axes  ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p
-              style={{
-                fontSize: '1rem',
-                marginBottom: '0.5rem',
-                marginLeft: '1rem',
-                color: `${colors.yellow[500]}`
-              }}
-            >
-              Available Axes:{' '}
-            </p>
-            <Checkbox_Component
-              label={`All Axes`}
-              checked={CheckedAll}
-              onChange={() => {
-                DeselectAllAxes()
-                setCheckedAll((prev) => !prev)
-              }}
-            />
-          </div>
-          {AvailableAxes_Component_Memo}
-        </Box>
+        {Clearance > 11 ? (
+          <Box
+            sx={{
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p
+                style={{
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem',
+                  marginLeft: '1rem',
+                  color: `${colors.yellow[500]}`
+                }}
+              >
+                Available Axes:{' '}
+              </p>
+              <Checkbox_Component
+                label={`All Axes`}
+                checked={CheckedAll}
+                onChange={() => {
+                  DeselectAllAxes()
+                  setCheckedAll((prev) => !prev)
+                }}
+              />
+            </div>
+            {AvailableAxes_Component_Memo}
+          </Box>
+        ) : null}
 
         {/* SORT BY ----------------- */}
         <Box
@@ -905,7 +921,7 @@ const DrawerComponent_DecodeOptions = ({
         </Box>
       </Box>
     )
-  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting, CheckedAll])
+  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting, CheckedAll, Clearance])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -949,7 +965,8 @@ const DrawerComponent_DecodeOptions = ({
                 display: 'flex',
                 justifyContent: 'start',
                 alignItems: 'center',
-                gap: '1rem'
+                gap: '1rem',
+                marginLeft: '0.5rem'
               }}
             >
               <Button3
@@ -961,14 +978,26 @@ const DrawerComponent_DecodeOptions = ({
                 DECODE
               </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
-              <Button1
-                onClick={() => {
-                  setShowMappingWindow(true)
-                }}
-              >
-                Show Mapping
-              </Button1>
+              {Clearance > 11 ? (
+                <Box style={{ display: 'flex', gap: '0.5rem' }}>
+                  <Button1
+                    onClick={() => {
+                      setShowMappingWindow(true)
+                    }}
+                  >
+                    Show Mapping
+                  </Button1>
+                  <Button1
+                    onClick={() => {
+                      setShowMessagesModal(true)
+                    }}
+                  >
+                    Show Messages
+                  </Button1>
+                </Box>
+              ) : null}
               {MappingWindowforDrawer_Memo}
+              {MessagesRawForDrawer_Memo}
             </Box>
           </Box>
         </Box>
@@ -1174,7 +1203,53 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
     </Dialog>
   )
 }
+const MessageWindowForDrawerComponent = ({ showMessagesModal, setShowMessagesModal }) => {
+  console.log('---7---. MessageWindowForDrawerComponent -- only once')
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
 
+  const textAreaRef = useRef(null)
+  return (
+    <Dialog
+      open={showMessagesModal}
+      onClose={() => setShowMessagesModal(false)}
+      sx={{
+        '& .MuiDialog-paper': {
+          maxWidth: 'none'
+        }
+      }}
+    >
+      <div
+        style={{
+          border: `1px solid ${colors.primary[400]}`,
+          padding: '1rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: '1rem' }}>
+          Filtered Original Messages
+        </Typography>
+        <textarea
+          ref={textAreaRef}
+          name=""
+          id=""
+          cols="30"
+          rows="10"
+          defaultValue={filteredMessages_auxGlobal
+            .map((iteration) => `[${iteration.msgNr}] --  ${iteration.OriginalMessage}`)
+            .join('\n')}
+          style={{
+            background: `${colors.primary[300]}`,
+            color: `${colors.green[500]}`,
+            border: `1px solid ${colors.green[400]}`,
+            height: '75vh',
+            width: '80rem'
+          }}
+        ></textarea>
+      </div>
+    </Dialog>
+  )
+}
 const AdvancedSearchComponent = () => {
   console.log('---6---. AdvancedSearchComponent ')
   const theme = useTheme()

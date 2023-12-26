@@ -22,7 +22,6 @@ import { Hardcoded_VerifyRS232, MessageListRs232ToVerify } from '../data/verifyR
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
   const [verifyRS232, setVerifyRS232] = useState(false)
-
   const [fileInnerText, setFileInnerText] = useState('')
   const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(false)
 
@@ -354,11 +353,11 @@ const DialogVerifyMyObjects = ({
 export function handleDebugButton() {
   console.log(`------ DEBUG BUTTON ----------`)
 
-  console.log(MessagesDecoded_ArrayOfObjects)
-  console.log(groupedFilteredArray)
-  console.log(PDO_mapped)
-  console.log(CanLogStatistics)
+  console.log('MessagesDecoded_ArrayOfObjects: ', MessagesDecoded_ArrayOfObjects)
+  console.log('groupedFilteredArray: ', groupedFilteredArray)
+  console.log('PDO_mapped: ', PDO_mapped)
   console.log('PDO_mapped_aux:', PDO_mapped_aux)
+  console.log('CanLogStatistics: ', CanLogStatistics)
 }
 
 //------DONT NEED-------------------------------------------

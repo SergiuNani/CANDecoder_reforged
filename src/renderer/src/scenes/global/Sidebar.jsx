@@ -12,7 +12,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { useNavigate } from 'react-router-dom'
-import { SidebarContext } from '../../App'
+import { SidebarContext, ClearanceContext } from '../../App'
 import TableChartIcon from '@mui/icons-material/TableChart'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import { handleDebugButton } from '../debug'
@@ -47,6 +47,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode)
   const [isCollapsed, setIsCollapsed] = useState(true)
   const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
+  var { Clearance } = useContext(ClearanceContext)
 
   // var sidebarSelectedItem = 'Home'
   // function setSidebarSelectedItem() {
@@ -62,10 +63,10 @@ const Sidebar = () => {
       } else if (event.ctrlKey && event.key === '2') {
         setSidebarSelectedItem('Registers')
         navigate('/Registers')
-      } else if (event.ctrlKey && event.key === '3') {
+      } else if (event.ctrlKey && event.key === '3' && Clearance > 1) {
         setSidebarSelectedItem('Decode CAN-Log')
         navigate('/Decode_CAN_LOG')
-      } else if (event.altKey && event.key === 'v') {
+      } else if (event.altKey && event.key === 'v' && Clearance > 33) {
         setSidebarSelectedItem('Decode CAN-Log')
         navigate('/DebugScene')
       }
@@ -74,7 +75,7 @@ const Sidebar = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [])
+  }, [Clearance])
 
   return (
     <Box
@@ -156,23 +157,29 @@ const Sidebar = () => {
               setSelected={setSidebarSelectedItem}
             />
 
-            <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
-              Decode
-            </Typography>
-            <Item
-              title="Decode CAN-Log"
-              to="/Decode_CAN_LOG"
-              icon={<TableChartIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
-            <Item
-              title="More Options"
-              to="/MoreOptionsWindow"
-              icon={<DragIndicatorIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
+            {Clearance > 1 ? (
+              <section>
+                <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
+                  Decode
+                </Typography>
+                <Item
+                  title="Decode CAN-Log"
+                  to="/Decode_CAN_LOG"
+                  icon={<TableChartIcon />}
+                  selected={sidebarSelectedItem}
+                  setSelected={setSidebarSelectedItem}
+                />
+              </section>
+            ) : null}
+            {Clearance > 11 ? (
+              <Item
+                title="More Options"
+                to="/MoreOptionsWindow"
+                icon={<DragIndicatorIcon />}
+                selected={sidebarSelectedItem}
+                setSelected={setSidebarSelectedItem}
+              />
+            ) : null}
 
             <Typography variant="h6" color={colors.grey[200]} sx={{ m: '0 0 0.1rem 1.1rem' }}>
               More
@@ -184,20 +191,24 @@ const Sidebar = () => {
               selected={sidebarSelectedItem}
               setSelected={setSidebarSelectedItem}
             />
-            <Item
-              title="Debug"
-              to="/DebugScene"
-              icon={<AdbIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
-            <Item
-              title="DebugButton"
-              // to="/DebugScene"
-              icon={<HealthAndSafetyIcon />}
-              selected={sidebarSelectedItem}
-              setSelected={setSidebarSelectedItem}
-            />
+            {Clearance > 33 ? (
+              <Item
+                title="Debug"
+                to="/DebugScene"
+                icon={<AdbIcon />}
+                selected={sidebarSelectedItem}
+                setSelected={setSidebarSelectedItem}
+              />
+            ) : null}
+            {Clearance > 33 ? (
+              <Item
+                title="DebugButton"
+                // to="/DebugScene"
+                icon={<HealthAndSafetyIcon />}
+                selected={sidebarSelectedItem}
+                setSelected={setSidebarSelectedItem}
+              />
+            ) : null}
           </Box>
         </Menu>
       </ProSidebar>
