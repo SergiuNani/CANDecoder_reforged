@@ -578,42 +578,6 @@ export function HelpEditDataWindow() {
     ]
   }
 
-  // Function to recursively display object properties
-  function displayObject(obj, isRoot = true) {
-    return (
-      <div>
-        {isRoot ? '{' : ''}
-        {Object.entries(obj).map(([key, value], index, array) => (
-          <div key={key}>
-            {key !== 'BitInfo' ? (
-              <>
-                {typeof value === 'object' ? (
-                  <div style={{ marginLeft: '1rem', border: `1px solid yellow` }}>
-                    {'{'}
-                    <p style={{ color: colors.yellow[500] }}>"{key}":</p>
-                    {displayObject(value, false)}
-                    {'}'}
-                  </div>
-                ) : (
-                  <p>
-                    <span style={{ color: colors.yellow[500] }}>"{key}"":</span> "{value}"
-                    {index < array.length - 1 ? ',' : ''}
-                  </p>
-                )}
-              </>
-            ) : (
-              <>
-                <p style={{ color: colors.yellow[500] }}>"{key}"":</p>
-                {displayObject(value, false)}
-              </>
-            )}
-          </div>
-        ))}
-        {isRoot ? '}' : ''}
-      </div>
-    )
-  }
-
   return (
     <div
       style={{
@@ -725,25 +689,6 @@ export function HelpEditDataWindow() {
               by storing it into the second Database.
             </p>
           </div>
-        </section>
-        <section style={{ marginTop: '1rem' }}>
-          <p>Don`t forget that when changing a </p>
-          <pre style={{ background: `${colors.primary[200]}`, width: '20rem' }}>
-            <p>&#123;</p>
-            <p>
-              <span style={{ color: `${colors.yellow[500]}` }}>Index"</span>: "#x100A",
-            </p>
-            <p>
-              <span style={{ color: `${colors.yellow[500]}` }}>"Name"</span>: "Software version",{' '}
-            </p>
-
-            <p>
-              <span style={{ color: `${colors.yellow[500]}` }}>"BitSize"</span>: 40
-            </p>
-            <p>&#125;</p>
-          </pre>
-          <pre>{displayObject(obj)}</pre>
-          <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur, rerum.</p>
         </section>
       </div>
     </div>

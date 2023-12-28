@@ -69,6 +69,7 @@ const Decode_CAN_LOG_Window = () => {
 
   const { freeTextVsCanLog, toggleSearchWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   var { Clearance } = useContext(ClearanceContext)
+  const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
   const initalMount_Deocde_CAN_LOG_ref = useRef(true)
@@ -207,7 +208,11 @@ const Decode_CAN_LOG_Window = () => {
       }}
     >
       <Box style={{ position: 'relative' }}>
-        <Header title="Decode a CAN LOG "></Header>
+        {ProtocolGlobal == 'CANOPEN' ? (
+          <Header title="Decode a CAN LOG "></Header>
+        ) : (
+          <Header title="Decode a RS232 LOG "></Header>
+        )}
         {/* TOP MENU options --------------------------- */}
 
         {freeTextVsCanLog === 'FreeText' ? (

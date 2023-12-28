@@ -1,12 +1,22 @@
-import { useState, useRef, useEffect, useContext, SyntheticEvent } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import { Header } from '../components/SmallComponents.jsx'
-import { Typography, Box, useTheme, Button, Tabs, Tab } from '@mui/material'
+import {
+  Typography,
+  Box,
+  useTheme,
+  Button,
+  Tabs,
+  Tab,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  Dialog
+} from '@mui/material'
 import { tokens } from '../theme.js'
 import { Objects_collection_LS } from '../App.jsx'
 import SearchIcon from '@mui/icons-material/Search'
-import { RadioGroup, FormControlLabel } from '@mui/material'
-import Radio from '@mui/material/Radio'
 import { Input_AutoFormat, Input_ChooseOption } from '../components/ForumsComponents.jsx'
+import { HelpWelcomePage } from './HelpWindow.jsx'
 import {
   filterHex,
   filterDecimalWithComma,
@@ -19,7 +29,7 @@ import {
   hex2Fixed
 } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
-import { MotorSpecificationsContext } from '../App.jsx'
+import { MotorSpecificationsContext, ClearanceContext } from '../App.jsx'
 import { CobID_who_dis } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
@@ -37,7 +47,6 @@ const HomeWindow = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [tabsOption, setTabsOption] = useState(0)
-
   const handleChange = (event) => {
     setTabsOption(event)
   }
@@ -48,6 +57,7 @@ const HomeWindow = () => {
       }}
     >
       <Header title="Home Page"></Header>
+      <WelcomePageComponent />
       <div style={{ display: 'flex', width: '100%' }}>
         <div style={{ flex: '0.55', marginRight: '1rem' }}>
           <TabsComponent tellParentValueChanged={handleChange} valueFromParent={tabsOption} />
@@ -672,5 +682,23 @@ export function TabsComponent({ tellParentValueChanged, valueFromParent }) {
         />
       ))}
     </Tabs>
+  )
+}
+
+function WelcomePageComponent() {
+  const { WelcomePage, setWelcomePage } = useContext(ClearanceContext)
+
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  return (
+    <Dialog
+      open={Boolean(WelcomePage)}
+      onClose={() => {
+        setWelcomePage(false) //BUG - turn to false
+      }}
+    >
+      <HelpWelcomePage />
+    </Dialog>
   )
 }

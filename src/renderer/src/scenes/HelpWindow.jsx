@@ -1,8 +1,10 @@
 import { Header } from '../components/SmallComponents'
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { useState } from 'react'
 import { useTheme, Box } from '@mui/material'
 import { tokens } from '../theme'
 import Accordion from '@mui/material/Accordion'
+import WavingHandIcon from '@mui/icons-material/WavingHand'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
@@ -11,9 +13,10 @@ import { HelpRegister } from './global/RegisterWindow'
 import { HelpEditDataWindow } from './EditDataWindow'
 import DvrIcon from '@mui/icons-material/Dvr'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
-import {} from './Decode_CAN_LOG'
 import CreateIcon from '@mui/icons-material/Create'
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import DecodeCANLOG from '../styles/images/DecodeCANLOG.png'
+import TableChartIcon from '@mui/icons-material/TableChart'
 import pdoDetected from '../styles/images/pdoDetected.png'
 
 const HelpWindow = () => {
@@ -29,9 +32,7 @@ const HelpWindow = () => {
 }
 
 function ControlledAccordions() {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  const [expanded, setExpanded] = useState('4')
+  const [expanded, setExpanded] = useState('2')
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -48,6 +49,24 @@ function ControlledAccordions() {
           expanded={expanded}
           panelNR="1"
           handleChange={handleChange}
+          icon={<WavingHandIcon sx={{ zoom: 1.2 }} />}
+          title="Welcome"
+          subtitle="Welcoming Page"
+          body={<HelpWelcomePage />}
+        />
+        <AccordionComponent
+          expanded={expanded}
+          panelNR="2"
+          handleChange={handleChange}
+          icon={<HomeOutlinedIcon sx={{ zoom: 1.2 }} />}
+          title="Home"
+          subtitle="This menu allows to quickly find some information about a CAN frame"
+          body={<HelpHOME_Component />}
+        />
+        <AccordionComponent
+          expanded={expanded}
+          panelNR="3"
+          handleChange={handleChange}
           icon={<LibraryBooksIcon sx={{ zoom: 1.2 }} />}
           title="Register"
           subtitle=" This component allows you to search any Register and visualize it"
@@ -55,7 +74,7 @@ function ControlledAccordions() {
         />
         <AccordionComponent
           expanded={expanded}
-          panelNR="2"
+          panelNR="4"
           handleChange={handleChange}
           icon={<CreateIcon sx={{ zoom: 1.2 }} />}
           title="Edit Data Menu"
@@ -64,18 +83,27 @@ function ControlledAccordions() {
         />
         <AccordionComponent
           expanded={expanded}
-          panelNR="3"
+          panelNR="5"
           handleChange={handleChange}
-          icon={<DvrIcon sx={{ zoom: 1.2 }} />}
-          title="Decode CANlog Menu"
+          icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
+          title="Decode LOG Menu"
           subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
           body={<HelpDecodeCanMenu />}
         />
         <AccordionComponent
           expanded={expanded}
-          panelNR="4"
+          panelNR="6"
           handleChange={handleChange}
-          icon={<DvrIcon sx={{ zoom: 1.2 }} />}
+          icon={<DragIndicatorIcon sx={{ zoom: 1.2 }} />}
+          title="More Options Menu"
+          subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
+          body={<HelpDecodeCanMenu />}
+        />
+        <AccordionComponent
+          expanded={expanded}
+          panelNR="7"
+          handleChange={handleChange}
+          icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
           title="RS232"
           subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
           body={<HelpDecodeRS232 />}
@@ -378,12 +406,86 @@ const HelpDecodeCanMenu = () => {
           </div>
         </section>
       </section>
+      <section>
+        <Typography variant="h3">Algorithm Description:</Typography>
+
+        <h4>
+          This algorithm processes text input line by line, assuming each line contains valid CAN
+          messages. The goal is to extract two parts from each line: the CobID (identifier) and the
+          frame itself.
+        </h4>
+        <br />
+        <Typography variant="h5">1. Parsing:</Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>{`The algorithm starts by parsing the first line, splitting strings based on symbols like: single quote (" ' "), double-quote (""), comma (" , ") , arrows("< ,>"),  empty-spaces.`}</li>
+          <li>
+            It then filters out non-hexadecimal numbers, considering only those expressed in
+            hexadecimal format (e.g. '2B', 'aBc', '0x2B').
+          </li>
+        </ul>
+        <Typography variant="h5">2. CAN Message Structure:</Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            A typical CAN message has a CobID with three characters followed by a single digit
+            representing the message length and finally the message content.
+          </li>
+          <li>
+            The message will have an even nr of characters dived 2 by 2. However, variations exist
+            due to different data recording tools.
+          </li>
+        </ul>
+        <Typography variant="h5">3. CobID Extraction:</Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            The system identifies potential CobIDs by considering strings with a length greater than
+            2 digits as possible candidates
+          </li>
+          <li>
+            It counts the occurrences of characters with lengths 1 or 2, assuming the CobID with the
+            most potential 'data' is the correct one.
+          </li>
+        </ul>
+        <Typography variant="h5">4. Message Length Verification:</Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            The system checks if the next character from the selected CobID is a string of length 1,
+            representing the length of the message to follow.
+          </li>
+          <li>
+            If the length character is present, the algorithm verifies it. If the length matches,
+            the data from the row is successfully extracted. If not, the algorithm re-parses the
+            row, looking for all the potential message lengths.
+          </li>
+        </ul>
+        <Typography variant="h5">5. Message Length Verification:</Typography>
+
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            If multiple potential message lengths exist, the algorithm tests each length with the
+            corresponding message. The first one that matches is considered correct.
+          </li>
+          <li>
+            Each potential CobID undergoes a validation function, and if successful, the algorithm
+            chooses the new CobID and message, disregarding previous findings.
+          </li>
+          <li>
+            If none of the potential lengths check out, the first CobID found is considered correct,
+            and the algorithm moves to the next line.
+          </li>
+        </ul>
+        <b>Note: </b>
+        <p>
+          It is crucial to double-check the extracted CobID and message before trusting how the
+          system interpreted the message, as the algorithm may not cover all possible variations.
+        </p>
+      </section>
+
       {/* Shortcuts */}
       <br />
       <br />
       <section>
         <p>
-          <span className="primaryColor">" ALT + 3 "</span> - Open the Decode CAN-Log menu
+          <span className="primaryColor">" ALT + 3 "</span> - Open the Decode LOG menu
         </p>
         <p>
           <span className="primaryColor"> " CTRL + ` " </span> - Open the Overview sidebar
@@ -403,9 +505,107 @@ const HelpDecodeCanMenu = () => {
   )
 }
 
+const HelpHOME_Component = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Box>
+      <section>
+        <Typography variant="h4" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+          Search Bar
+        </Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            <b>CANopen Objects</b>- User can search through list of all the supported CANopen
+            objects from Technosoft. The system supports a case-insensitive search, allowing users
+            to locate specific objects by index, name, or size.
+          </li>
+          <li>
+            <b>Abort Codes</b> - In the event of an error occuring during the transmission of an SDO
+            message, an Abort SDO message is sent which contains a specific code. Users can search
+            for these codes by either the code number or code description.
+          </li>
+          <li>
+            <b>Emergency Errors</b>- a list of all the error codes.
+          </li>
+        </ul>
+        <br />
+        <Typography variant="h4" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+          Quick Conversion
+        </Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            This component is designed to execute transformations from IU (Drive's internal units)
+            to SI or vici versa. Prior to utilizing this menu, users need to configure the
+            transmission type, define the counts equivalent of 1 rotation or 1 meter (depending on
+            the transmission type), and define the period of one slow loop. These settings are
+            accessible in the "General Settings" section within the Settings Window.
+          </li>
+          <li>
+            The main purpose of this component is to quickly find out what is the equivalent value
+            of, for example, one rotation in hexadecimal or Little Endian format to either quickly
+            decipher or encode a CAN message
+          </li>
+        </ul>
+
+        <br />
+        <Typography variant="h4" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+          COB-ID Search
+        </Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            This component enables users to search for any CobID, providing information on the
+            message type and the corresponding Axis from which the message originates.
+          </li>
+        </ul>
+      </section>
+    </Box>
+  )
+}
 const HelpDecodeRS232 = () => {
   return (
     <Box>
+      <ul>
+        <li>- Checks checksum</li>
+        <li>
+          - Checks datalength. It doesn`t matter if length is in the same frame or the previous one.
+          If the first byte isnt the correct length of the frame then the program looks at the
+          previous frame and if even that doesn`t match then the message will report an error
+        </li>
+        <li>Checks if the axisID code is wrong</li>
+      </ul>
+    </Box>
+  )
+}
+
+const HelpMoreOptionsWindow = () => {
+  return (
+    <Box>
+      <ul>
+        <li>- Checks checksum</li>
+        <li>
+          - Checks datalength. It doesn`t matter if length is in the same frame or the previous one.
+          If the first byte isnt the correct length of the frame then the program looks at the
+          previous frame and if even that doesn`t match then the message will report an error
+        </li>
+        <li>Checks if the axisID code is wrong</li>
+      </ul>
+    </Box>
+  )
+}
+export const HelpWelcomePage = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Box>
+      <Typography variant="h2" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+        Welcome to <b style={{ color: `${colors.primary[400]}` }}>CAN</b>
+        <b style={{ color: `${colors.red[500]}` }}>Decoder</b>
+      </Typography>
+      <p>
+        This application was primarily developed for decoding a CANlog, but it also encompasses
+        additional features. Here is a comprehensive list of all the supported functionalities:
+      </p>
       <ul>
         <li>- Checks checksum</li>
         <li>

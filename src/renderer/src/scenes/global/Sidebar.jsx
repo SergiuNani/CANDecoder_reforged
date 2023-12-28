@@ -64,10 +64,10 @@ const Sidebar = () => {
         setSidebarSelectedItem('Registers')
         navigate('/Registers')
       } else if (event.ctrlKey && event.key === '3' && Clearance > 1) {
-        setSidebarSelectedItem('Decode CAN-Log')
+        setSidebarSelectedItem('Decode LOG')
         navigate('/Decode_CAN_LOG')
       } else if (event.altKey && event.key === 'v' && Clearance > 33) {
-        setSidebarSelectedItem('Decode CAN-Log')
+        setSidebarSelectedItem('DebugScene')
         navigate('/DebugScene')
       }
     }
@@ -163,7 +163,7 @@ const Sidebar = () => {
                   Decode
                 </Typography>
                 <Item
-                  title="Decode CAN-Log"
+                  title="Decode LOG"
                   to="/Decode_CAN_LOG"
                   icon={<TableChartIcon />}
                   selected={sidebarSelectedItem}

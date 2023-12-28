@@ -36,7 +36,8 @@ function App() {
     !localStorage.getItem('Registers_CANopen_LS') ||
     !localStorage.getItem('Registers_THS_LS') ||
     !localStorage.getItem('ESM_info_LS') ||
-    !localStorage.getItem('Timer')
+    !localStorage.getItem('Timer') ||
+    !localStorage.getItem('WelcomePageStatus')
   ) {
     // First Write in Local Storage if there is nothing there
     localStorage.setItem('Objects_collection_LS', JSON.stringify(Objects_collection))
@@ -45,6 +46,7 @@ function App() {
     ESM_info_LS = Text2JSON_ESM_info()
     localStorage.setItem('ESM_info_LS', JSON.stringify(ESM_info_LS))
     localStorage.setItem('Timer', 0)
+    localStorage.setItem('WelcomePageStatus', true)
   }
   Objects_collection_LS = JSON.parse(localStorage.getItem('Objects_collection_LS'))
   Registers_CANopen_LS = JSON.parse(localStorage.getItem('Registers_CANopen_LS'))
@@ -103,6 +105,7 @@ function MyProviders({ children }) {
   const [slowLoop, setSlowLoop] = useState(1)
   const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- TMLCAN
   const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
+  const [WelcomePage, setWelcomePage] = useState(localStorage.getItem('WelcomePageStatus'))
 
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
@@ -120,7 +123,9 @@ function MyProviders({ children }) {
           <ClearanceContext.Provider
             value={{
               Clearance,
-              setClearance
+              setClearance,
+              WelcomePage,
+              setWelcomePage
             }}
           >
             <CssBaseline />
