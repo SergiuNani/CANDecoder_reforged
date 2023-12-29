@@ -693,12 +693,52 @@ function WelcomePageComponent() {
 
   return (
     <Dialog
-      open={Boolean(WelcomePage)}
+      open={WelcomePage}
       onClose={() => {
-        setWelcomePage(false) //BUG - turn to false
+        setWelcomePage(false)
+      }}
+      sx={{
+        border: `1px solid ${colors.primary[400]}`,
+        padding: '10rem',
+        color: `${colors.primary[200]}`,
+        top: 0,
+        '& .MuiDialog-paper': {
+          maxWidth: 'none',
+          maxHeight: 'none'
+        }
       }}
     >
+      <div
+        style={{
+          background: `${colors.primary[200]}`
+        }}
+      ></div>
       <HelpWelcomePage />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'end',
+          background: `${colors.primary[300]}`
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => {
+            setWelcomePage(false)
+            localStorage.setItem('WelcomePageStatus', false)
+          }}
+          sx={{
+            zoom: '1.2',
+            color: `${colors.primary[200]}`,
+            backgroundColor: `${colors.yellow[500]}`,
+            '&:hover': {
+              backgroundColor: `${colors.yellow[400]}`
+            }
+          }}
+        >
+          Proceed
+        </Button>
+      </div>
     </Dialog>
   )
 }

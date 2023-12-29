@@ -375,7 +375,7 @@ const EditDataWindow = () => {
   }
   return (
     <div>
-      <Header title="Edit Menu" subtitle="Edit any Objects or Registers"></Header>
+      <Header title="Edit Data Menu" subtitle="Edit any Objects or Registers"></Header>
       {/* DATA category and Search option menu----------- */}
       <div
         style={{

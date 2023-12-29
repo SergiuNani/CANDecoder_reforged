@@ -597,24 +597,190 @@ export const HelpWelcomePage = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
-    <Box>
+    <Box
+      sx={{
+        background: `${colors.primary[300]}`,
+        padding: '1rem'
+        // height: '100vh'
+      }}
+    >
       <Typography variant="h2" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
         Welcome to <b style={{ color: `${colors.primary[400]}` }}>CAN</b>
         <b style={{ color: `${colors.red[500]}` }}>Decoder</b>
       </Typography>
-      <p>
+      <br />
+      <Typography variant="h5">
         This application was primarily developed for decoding a CANlog, but it also encompasses
         additional features. Here is a comprehensive list of all the supported functionalities:
-      </p>
-      <ul>
-        <li>- Checks checksum</li>
-        <li>
-          - Checks datalength. It doesn`t matter if length is in the same frame or the previous one.
-          If the first byte isnt the correct length of the frame then the program looks at the
-          previous frame and if even that doesn`t match then the message will report an error
-        </li>
-        <li>Checks if the axisID code is wrong</li>
-      </ul>
+      </Typography>
+      <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+        {/* Decode CANlog */}
+        <section>
+          <section>
+            <Typography variant="h4" sx={{ color: `${colors.yellow[500]}`, m: '0.5rem 0' }}>
+              Decode CANlog
+            </Typography>
+
+            <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+              <li>
+                <b>Upload CANlog as a file</b>
+              </li>
+              <li>
+                <b>Paste/Write log in text input</b>
+              </li>
+              <li>
+                <b>Editable max displayed messages</b>
+              </li>
+              <li>
+                <b>Overview</b> - Filter CANlog in Overview sidebar
+              </li>
+              <li>
+                <b>Cut Log</b> - Specify segment range (e.g., show lines 500-600 of 10000)
+              </li>
+              <li>
+                <b>Search</b> - Search by message number, object index, cobID, etc.
+              </li>
+              <li>
+                <b>Table</b> - Display log in table format
+              </li>
+              <li>
+                <b>Grouping</b> - Group by Modes of Operation, Mapping Objects, or repetitive
+                messages
+              </li>
+              <li>
+                <b>Mapping</b> - View recorded mappings in the CANlog
+              </li>
+              <li>
+                <b>Filter</b> - the log by AxisIDs or specific message types
+              </li>
+              <li>
+                <b>Sort by</b> - All origins, from Master, Mapping related or Errors messages
+              </li>
+              <li>
+                <b>Factor Group</b> - Customize the units for POS/SPD/ACC/Time
+              </li>
+              <li>
+                <b>GOTO line</b>
+              </li>
+            </ul>
+          </section>
+          {/* Tool*/}
+          <section>
+            <Typography variant="h4" sx={{ color: `${colors.yellow[500]}`, m: '0.5rem 0' }}>
+              Available Tools
+            </Typography>
+
+            <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+              <li>
+                <b>Programmer Calculator </b> - Convert between decimal, hexadecimal, and binary
+              </li>
+              <li>
+                <b>Quick Register tool</b> - Overlays on other menus for quick access
+              </li>
+              <li>
+                <b>Quick Converstion tool</b> - Converts between IU and SI, hexadecimal, and Little
+                Endian format for POS/SPD/ACC/Time units
+              </li>
+              <li>
+                <b>Edit Data tool</b> - Edit any register or object with the possibility to restore
+                to the default values.
+              </li>
+              <li>
+                <b>Data Exchange Tool</b> - A tool which generates the CAN messages for data
+                transfers using objects 2064h/2065h
+              </li>
+              <li>
+                <b>XML finder</b> - by typing a fimrware version the tool wil provide it back in
+                decimal format
+              </li>
+            </ul>
+          </section>
+        </section>
+        {/* SECOND COLUMN ---------- */}
+        <section>
+          {/* Registers Window */}
+          <section>
+            <Typography variant="h4" sx={{ color: `${colors.yellow[500]}`, m: '0.5rem 0' }}>
+              Registers Window
+            </Typography>
+
+            <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+              <li>
+                <b>CANopen / Technosoft Registers</b>
+              </li>
+              <li>
+                <b>Up to 3 Register windows</b>
+              </li>
+              <li>
+                <b>Hexadecimal or decimal value input</b>
+              </li>
+              <li>
+                <b>Update register value real time by clicking on its bits</b>
+              </li>
+            </ul>
+          </section>
+          {/* Search Tools*/}
+          <section>
+            <Typography variant="h4" sx={{ color: `${colors.yellow[500]}`, m: '0.5rem 0' }}>
+              Search Tools
+            </Typography>
+
+            <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+              <li>
+                <b>AutoComplete search for CANopen Objects </b>
+              </li>
+              <li>
+                <b>AutoComplete search for SDO abort codes</b>
+              </li>
+              <li>
+                <b>AutoComplete search for EMCY codes</b>
+              </li>
+              <li>
+                <b>AutoComplete search for Technosoft Products</b>
+              </li>
+              <li>
+                <b>Search for CobIDs</b>
+              </li>
+            </ul>
+          </section>
+          {/* Settings Window */}
+          <section>
+            <Typography variant="h4" sx={{ color: `${colors.yellow[500]}`, m: '0.5rem 0' }}>
+              Settings Window
+            </Typography>
+
+            <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+              <li>
+                <b>Change Protocol</b>
+              </li>
+              <li>
+                <b>General Motor and Drive characteristics</b>
+              </li>
+              <li>
+                <b>Factor Group preferences</b>
+              </li>
+              <li>
+                <b>Autentification</b>
+              </li>
+            </ul>
+          </section>
+          {/* Features  */}
+          <section>
+            <Typography variant="h4" sx={{ color: `${colors.yellow[500]}`, m: '0.5rem 0' }}>
+              Features
+            </Typography>
+
+            <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+              <li>
+                <b>Dark / Light mode</b>
+              </li>
+              <li>
+                <b>Supported Protocols: CANopen, RS232</b>
+              </li>
+            </ul>
+          </section>
+        </section>
+      </section>
     </Box>
   )
 }

@@ -55,7 +55,7 @@ function App() {
   return (
     <MyProviders>
       <HashRouter>
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', overflowX: 'hidden' }}>
           <Sidebar />
           <main style={{ flexGrow: 1, position: 'relative', height: '100%' }}>
             <Topbar />
@@ -105,7 +105,9 @@ function MyProviders({ children }) {
   const [slowLoop, setSlowLoop] = useState(1)
   const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- TMLCAN
   const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
-  const [WelcomePage, setWelcomePage] = useState(localStorage.getItem('WelcomePageStatus'))
+  const [WelcomePage, setWelcomePage] = useState(
+    localStorage.getItem('WelcomePageStatus') === 'true'
+  )
 
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
