@@ -335,17 +335,16 @@ export const HelpRegister = () => {
         </Typography>
         <br />
         <p>
-          A <span className="primaryColor">REGISTER</span> is a fundamental component of a
-          computer's central processing unit (CPU) and is used to store and manage data temporarily
-          during the execution of instructions. Registers are typically divided into bits, where
-          each bit corresponds to a specific action or represents a unit of information.
+          A <span className="primaryColor">REGISTER</span> is a key part of a computer's central
+          processing unit (CPU), which plays a fundamental role in temporarily storing and managing
+          data during the execution of instructions. These registers are usually divided into bits,
+          where each bit signifies a specific action or represents a unit of information.
         </p>
         <br />
         <p>
-          This interface offers a significant advantage by eliminating the need for users to manualy
-          search through the CiA standard or the Technosoft Help menu to access specific register
-          details and then convert the register values into binary for the purpose of linking each
-          bit description to its corresponding value.
+          This interface saves users from manually searching through the CiA standard or the
+          Technosoft Help menu. It eliminates the need to access specific register details, convert
+          register values into binary, and link bit descriptions to their corresponding values.
         </p>
         <br />
         <p>Basic overview of the Register Tool:</p>
@@ -361,9 +360,8 @@ export const HelpRegister = () => {
           <li>
             {' '}
             <span className="primaryColor">HEX/DEC Toggle Button: </span>
-            Next component is a button which toggles between HEX (hexadecimal) and DEC(decimal) and
-            the purpose of it is to tell the tool in which format the user will input the register
-            value.
+            The next part is a button that switches between HEX (hexadecimal) and DEC (decimal). Its
+            purpose is to let the user choose the format for entering the register value.
           </li>
           <li>
             <span className="primaryColor">Value Input Bar:</span> This input bar allows users to
@@ -375,8 +373,7 @@ export const HelpRegister = () => {
           <li>
             <span className="primaryColor">CANopen/Technosoft Toggle:</span> This button provides
             the option to switch between "CANopen" and "Technosoft" registers. It helps users
-            differentiate between CiA registers and Technosoft TML registers, allowing them to
-            select the relevant category for their search.
+            differentiate between CiA registers and Technosoft TML registers.
           </li>
           <li>
             <span className="primaryColor">Clone Button (+):</span> The "+" button can replicate the

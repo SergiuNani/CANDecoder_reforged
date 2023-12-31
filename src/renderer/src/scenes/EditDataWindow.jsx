@@ -492,7 +492,7 @@ const EditDataWindow = () => {
 export default EditDataWindow
 
 function RowRadioButtonsGroup({ tellParent, defaultValue, style }) {
-  const [startValue, setStartValue] = useState(defaultValue)
+  const [startValue, setStartValue] = useState('objectList')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -537,47 +537,6 @@ export function HelpEditDataWindow() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const obj = {
-    Index: 'MCR',
-    Title: 'Motion Command Register (command, RO)',
-    BitInfo: [
-      {
-        bit: '15',
-        zero: 'Same motion mode',
-        one: 'New motion mode',
-        info: 'MMODE. Motion mode'
-      },
-      {
-        bit: '14',
-        info: 'Update the reference'
-      },
-      {
-        bit: '13-5',
-        info: 'Reserved'
-      },
-
-      {
-        bit: '4-0',
-        info: 'REFTYPE. Reference type',
-
-        value: [
-          {
-            bitValue: '00000',
-            info: 'External reference'
-          },
-          {
-            bitValue: '00001',
-            info: 'Trapezoidal reference'
-          },
-          {
-            bitValue: '00010',
-            info: 'Contouring position/speed'
-          }
-        ]
-      }
-    ]
-  }
-
   return (
     <div
       style={{
@@ -589,25 +548,6 @@ export function HelpEditDataWindow() {
       }}
     >
       <div>
-        <Typography variant="h5" style={{ display: 'flex', alignItems: 'center' }}>
-          {' '}
-          To access this menu click on the highlighted icon "
-          <Box display="flex">
-            <IconButton>
-              <DarkModeOutlinedIcon />
-            </IconButton>
-            <IconButton>
-              <SettingsOutlinedIcon />
-            </IconButton>
-            <IconButton
-              sx={{ border: `2px solid ${colors.green[200]}`, color: `${colors.yellow[500]}` }}
-            >
-              <CreateIcon />
-            </IconButton>
-          </Box>
-          {'    '}" from the Topbar menu.
-        </Typography>
-        <br />
         <section
           style={{ display: 'flex', justifyContent: 'center', gap: '2rem', alignItems: 'center' }}
         >
@@ -621,22 +561,15 @@ export function HelpEditDataWindow() {
           />
           <div>
             <p>
-              The "Edit Data Menu" provides the opportunity for modifying essential application
-              data, including Registers and Objects. . Inside this application`s memory there is a
-              lot of data which is saved and called upon when the user interacts with the Visual
-              Interface.
+              The "Edit Data Menu" lets you modify important application data, such as Registers and
+              Objects. This data is stored in the application's memory and is used when the user
+              interacts with the Visual Interface.
             </p>
             <br />
             <p>
-              The primary purpose of this menu is to empower users to keep their application
-              up-to-date with the latest changes in information. For instance, when new data is
-              added, updated, or deprecated, this menu provides a seamless way for users to
-              synchronize their application with the most relevant data.
-              <br />
-              There are three key data categories, each represented as options on the left:
-              "Objects," "Technosoft Registers," and "CANopen Registers." Within this menu, users
-              can select any of these three options. The "Autocomplete Search Bar" dynamically
-              adjusts its search scope based on the chosen category.
+              This menu is designed to help users keep their application current with the latest
+              information changes. Whether it's adding new data, updating existing information, or
+              removing outdated data.
             </p>
             <br />
             <p>

@@ -32,7 +32,7 @@ const HelpWindow = () => {
 }
 
 function ControlledAccordions() {
-  const [expanded, setExpanded] = useState('2')
+  const [expanded, setExpanded] = useState('')
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -97,7 +97,7 @@ function ControlledAccordions() {
           icon={<DragIndicatorIcon sx={{ zoom: 1.2 }} />}
           title="More Options Menu"
           subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
-          body={<HelpDecodeCanMenu />}
+          body={<HelpMoreOptionsWindow />}
         />
         <AccordionComponent
           expanded={expanded}
@@ -195,20 +195,21 @@ const HelpDecodeCanMenu = () => {
             <ul
               style={{
                 color: `${colors.primary[400]}`,
-                listStyleType: 'disc',
+                // listStyleType: 'disc',
                 display: 'flex',
-                gap: '1.5rem',
-                marginLeft: '2rem'
+                gap: '1rem',
+                marginLeft: '1rem',
+                marginBottom: '0.2rem'
               }}
             >
-              <li>Message Number</li>
+              <li>MsgNumber</li>
               <li>Object</li>
-              <li>Object Name</li>
+              <li>ObjName</li>
               <li>CobID</li>
               <li>AxisID</li>
               <li>Data</li>
               <li>Interpretation</li>
-              <li>Filtered messages</li>
+              <li>FilteredMsgs</li>
             </ul>
             <p>
               Also the user has the option to go to a specific line in the CANlog just by clicking
@@ -220,11 +221,10 @@ const HelpDecodeCanMenu = () => {
                 <span style={{ color: `${colors.yellow[100]}` }}>- Table display options</span>
               </p>
               <p>
-                Users can pick between two table display options. The "Default" choice shows the
-                main table with all the decoded information. In contrast, the "Debug" option is for
-                debugging and displays the algorithm's line-by-line extraction process from the
-                CANlog. The table includes four columns: original message, extracted hexadecimal
-                data, estimated CobID, and estimated data.
+                Users have a choice between two table display options. The "Default" option shows
+                the main table with all the decoded information. On the other hand, the "Debug"
+                option is meant for debugging and presents the algorithm's line-by-line extraction
+                process from the CANlog.
               </p>
             </div>
             <div>
@@ -238,17 +238,16 @@ const HelpDecodeCanMenu = () => {
                 CANlog the algorithm groups the messages based on the selected options.
               </p>
               <li>
-                <span style={{ color: `${colors.primary[400]}` }}>Modes of Operation</span> - Once
-                there has been detected a Receive message as a SDO or PDO which changes the Modes of
-                Operation (6060h) object to a different mode then the remaining messages that follow
-                until a new mode is selected will be grouped together. This rule will only apply if
-                the frames are coming from the same Axis as the initial frame.
+                <span style={{ color: `${colors.primary[400]}` }}>Modes of Operation</span> - Upon
+                detecting a receive SDO or receive PDO that alters the Modes of Operation (6060h)
+                object, all subsequent messages until a new mode is chosen will be grouped together.
+                This condition is applicable only if the frames originate from the same Axis as the
+                initial frame
               </li>
               <li>
                 <span style={{ color: `${colors.primary[400]}` }}>Mapping Objects</span> - If there
-                are any messages which are send as SDOs and the objects to which those messages are
-                trying to write has anything to do with mapping and they have the same axisID then
-                they will be grouped together.
+                are messages sent as SDOs that target objects related to mapping and share the same
+                axisID, they will be grouped together.
               </li>
               <li>
                 <span style={{ color: `${colors.primary[400]}` }}>Repetitive messages</span> -
@@ -361,17 +360,17 @@ const HelpDecodeCanMenu = () => {
               }}
             >
               <li>
-                <span style={{ color: `${colors.primary[400]}` }}>User input</span> - The user needs
-                to input the objects that have been mapped for that specific PDO for that specific
-                axis.
+                <span style={{ color: `${colors.primary[400]}` }}>User input</span> - The user is
+                required to input the objects that have been mapped specifically for the PDO
+                corresponding to that particular axis.
               </li>
               <li>
-                <span style={{ color: `${colors.primary[400]}` }}>Default objects</span> - When
-                clicking this button the system will automatically fill the objects that, by
-                default, are mapped to that specific PDO. Usually when there is a log and there is
-                no information about mapping, then most likely there wasn`t any mapping done. The
-                checkbox next to it will set for the remaining 126 posible axes the same objects for
-                that specific PDO.
+                <span style={{ color: `${colors.primary[400]}` }}>Default objects</span> -Clicking
+                this button will prompt the system to automatically populate the objects that are
+                defaultly mapped to the designated PDO. Usually, in cases where a log lacks
+                information about mapping, it most likely suggests the lack of user custom mapping.
+                The checkbox beside it will configure the same objects for that specific PDO across
+                the remaining 126 possible axes.
               </li>
               <li>
                 <span style={{ color: `${colors.primary[400]}` }}>Set compatible objects</span> -
@@ -401,13 +400,15 @@ const HelpDecodeCanMenu = () => {
               This window will appear only if there is no mapping registered. If there is some
               mapping done then no options from this window will affect it. Also, it`s important to
               note that if in the future there are some messages which are trying to map something
-              different, then the changes will be applied for the remaining messages.
+              different, then mapping information will be updated.
             </p>
           </div>
         </section>
       </section>
       <section>
-        <Typography variant="h3">Algorithm Description:</Typography>
+        <Typography variant="h3" sx={{ mb: '0.5rem', color: `${colors.yellow[500]}` }}>
+          Algorithm Description:
+        </Typography>
 
         <h4>
           This algorithm processes text input line by line, assuming each line contains valid CAN
@@ -516,9 +517,9 @@ const HelpHOME_Component = () => {
         </Typography>
         <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
           <li>
-            <b>CANopen Objects</b>- User can search through list of all the supported CANopen
-            objects from Technosoft. The system supports a case-insensitive search, allowing users
-            to locate specific objects by index, name, or size.
+            <b>CANopen Objects</b>- User can search through a list of all the supported CANopen
+            objects from Technosoft. The search is case-insensitive, where the search pattern can be
+            object index, name, or size.
           </li>
           <li>
             <b>Abort Codes</b> - In the event of an error occuring during the transmission of an SDO
@@ -554,8 +555,8 @@ const HelpHOME_Component = () => {
         </Typography>
         <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
           <li>
-            This component enables users to search for any CobID, providing information on the
-            message type and the corresponding Axis from which the message originates.
+            This part allows users to search for a CobID and get details on the <b>message type</b>{' '}
+            and the <b>AxisID</b> it comes from.
           </li>
         </ul>
       </section>
