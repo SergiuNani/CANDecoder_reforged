@@ -47,6 +47,16 @@ const DebugScene = () => {
   return (
     <>
       <Header title="Debug" subtitle="Validity tests "></Header>
+      <textarea
+        cols="100"
+        style={{
+          background: `${colors.primary[300]}`,
+          color: `${colors.yellow[600]}`,
+          border: `1px solid ${colors.green[400]}`,
+          height: '30vh',
+          width: '80%'
+        }}
+      ></textarea>
       <section
         style={{
           display: 'flex',

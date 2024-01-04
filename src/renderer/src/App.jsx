@@ -82,7 +82,7 @@ function App() {
 export default App
 
 export const SidebarContext = createContext()
-export const MotorSpecificationsContext = createContext()
+export const AppContext = createContext()
 export const ProtocolGlobalContext = createContext()
 export const FG_Context = createContext()
 export const DecodeCANlog_topbarOptionsContext = createContext()
@@ -118,6 +118,7 @@ function MyProviders({ children }) {
   const [FG_DisplayVSApplied, setFG_DisplayVSApplied] = useState('Display')
   const [FG_OptionsObject, setFG_OptionsObject] = useState(FG_OptionsStarter)
 
+  const [shortcutTrigger_g, setShortcutTrigger_g] = useState(false)
   return (
     <Profiler id="MyComponent" onRender={logProfilerData}>
       <ColorModeContext.Provider value={colorMode}>
@@ -141,8 +142,17 @@ function MyProviders({ children }) {
                 setToggleSearchWindow_app
               }}
             >
-              <MotorSpecificationsContext.Provider
-                value={{ loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop }}
+              <AppContext.Provider
+                value={{
+                  loadType,
+                  setLoadType,
+                  fullRot_IU,
+                  setFullRot_IU,
+                  slowLoop,
+                  setSlowLoop,
+                  shortcutTrigger_g,
+                  setShortcutTrigger_g
+                }}
               >
                 <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
                   <ProtocolGlobalContext.Provider value={{ ProtocolGlobal, setProtocolGlobal }}>
@@ -158,7 +168,7 @@ function MyProviders({ children }) {
                     </FG_Context.Provider>
                   </ProtocolGlobalContext.Provider>
                 </SidebarContext.Provider>
-              </MotorSpecificationsContext.Provider>
+              </AppContext.Provider>
             </DecodeCANlog_topbarOptionsContext.Provider>
           </ClearanceContext.Provider>
         </ThemeProvider>
@@ -199,6 +209,6 @@ export function LazyImport(path, namedExport) {
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
-  console.log(actualTime)
-  console.log(diffTime)
+  // console.log(actualTime)
+  // console.log(diffTime)
 }

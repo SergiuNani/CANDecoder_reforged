@@ -208,7 +208,8 @@ export function AutocompleteInput_RegisterList({
   extendStyle = false,
   resetValueofInputFromParent,
   focus,
-  width
+  width,
+  className
 }) {
   var options = []
   if (type == '1') {
@@ -345,6 +346,7 @@ export function AutocompleteInput_RegisterList({
           onBlur={handleBlur}
           placeholder={placeholder}
           autoFocus={focus}
+          className={className}
           style={{
             backgroundColor: `${colors.primary[300]}`,
             padding: '0.5rem 1rem',
@@ -414,7 +416,8 @@ export function Input_AutoFormat({
   background,
   padding,
   border,
-  height
+  height,
+  className
 }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -487,6 +490,7 @@ export function Input_AutoFormat({
           onChange={handleInputChange}
           placeholder={placeholder}
           disabled={disabled}
+          className={className}
           style={{
             backgroundColor: background
               ? background

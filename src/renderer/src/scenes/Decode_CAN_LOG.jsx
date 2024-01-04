@@ -67,7 +67,9 @@ const Decode_CAN_LOG_Window = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const { freeTextVsCanLog, toggleSearchWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
+  const { freeTextVsCanLog, toggleSearchWindow_app, setFreeTextVsCanLog } = useContext(
+    DecodeCANlog_topbarOptionsContext
+  )
   var { Clearance } = useContext(ClearanceContext)
   const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
   const TextAreaText_Ref = useRef()
@@ -134,7 +136,6 @@ const Decode_CAN_LOG_Window = () => {
               .classList.contains('DrawerOpened')
           ) {
             //Open Drawer, hide table
-
             if (freeTextVsCanLog == 'FreeText') {
               handleClickArrow()
             }

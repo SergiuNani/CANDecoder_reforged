@@ -12,7 +12,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined'
 import AdbIcon from '@mui/icons-material/Adb'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
 import { useNavigate } from 'react-router-dom'
-import { SidebarContext, ClearanceContext } from '../../App'
+import { SidebarContext, ClearanceContext, AppContext } from '../../App'
 import TableChartIcon from '@mui/icons-material/TableChart'
 import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety'
 import { handleDebugButton } from '../debug'
@@ -48,6 +48,7 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(true)
   const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
   var { Clearance } = useContext(ClearanceContext)
+  const { setShortcutTrigger_g } = useContext(AppContext)
 
   // var sidebarSelectedItem = 'Home'
   // function setSidebarSelectedItem() {
@@ -78,6 +79,13 @@ const Sidebar = () => {
       } else if (event.altKey && event.key === 'v' && Clearance > 33) {
         setSidebarSelectedItem('DebugScene')
         navigate('/DebugScene')
+      } else if (event.ctrlKey && event.key === 's') {
+        setSidebarSelectedItem('Home')
+        navigate('/Home')
+        setShortcutTrigger_g((prev) => !prev)
+        setTimeout(() => {
+          document.querySelector('#HomeSearchBar').focus()
+        }, 90)
       }
     }
     window.addEventListener('keydown', handleKeyPress)

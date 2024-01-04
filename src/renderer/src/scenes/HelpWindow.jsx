@@ -490,28 +490,6 @@ const HelpDecodeCanMenu = () => {
           system interpreted the message, as the algorithm may not cover all possible variations.
         </p>
       </section>
-
-      {/* Shortcuts */}
-      <br />
-      <br />
-      <section>
-        <p>
-          <span className="primaryColor">" ALT + 3 "</span> - Open the Decode LOG menu
-        </p>
-        <p>
-          <span className="primaryColor"> " CTRL + ` " </span> - Open the Overview sidebar
-        </p>
-        <p>
-          <span className="primaryColor"> " CTRL + f " </span> - Open the Advanced Search
-        </p>
-        <p>
-          <span className="primaryColor"> " CTRL + g " </span> - Open GOTO menu
-        </p>
-        <p>
-          <span className="primaryColor"> " CTRL + ENTER " </span> - Process the log in the TextArea
-          or display table if Overview opened
-        </p>
-      </section>
     </Box>
   )
 }
@@ -838,49 +816,95 @@ export const HelpShortcutPage = () => {
         // height: '100vh'
       }}
     >
-      <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
-        <li>
-          <b>Global Shortcuts: </b>
-        </li>
-        <p>
-          Open Home window:
-          <span className="primaryColor"> "Ctrl + 1" </span>
-        </p>
-        <p>
-          Open Register window:
-          <span className="primaryColor"> "Ctrl + 2" </span>
-        </p>
-        <p>
-          Open Edit Data window:
-          <span className="primaryColor"> "Ctrl + 3" </span>
-        </p>
-        <p>
-          Open Decode Log window:
-          <span className="primaryColor"> "Ctrl + 4" </span>
-        </p>
-        <p>
-          Open Extra Options window:
-          <span className="primaryColor"> "Ctrl + 5" </span>
-        </p>
-        <p>
-          Open Help window:
-          <span className="primaryColor"> "Ctrl + 6" </span>
-        </p>
-        <p>
-          Open/alternate between Calculator and RegisterTool :{' '}
-          <span className="primaryColor"> "Alt + c" </span>
-        </p>
-        <p>
-          Open Debug window to verify the Application :{' '}
-          <span className="primaryColor"> "Alt + v" </span>
-        </p>
-        <br />
-        <li>
-          <b>Register Window shortcuts: </b>
-        </li>
-        <p>
-          Shortcut to focus on the search bar : <span className="primaryColor"> "CTRL + TAB" </span>
-        </p>
+      <ul style={{ listStyleType: 'disc', marginLeft: '2rem', display: 'flex', gap: '2rem' }}>
+        <section>
+          <li>
+            <b>Global Shortcuts: </b>
+          </li>
+          <p>
+            Open Home window:
+            <span className="primaryColor"> "Ctrl + 1" </span>
+          </p>
+          <p>
+            Open Register window:
+            <span className="primaryColor"> "Ctrl + 2" </span>
+          </p>
+          <p>
+            Open Edit Data window:
+            <span className="primaryColor"> "Ctrl + 3" </span>
+          </p>
+          <p>
+            Open Decode Log window:
+            <span className="primaryColor"> "Ctrl + 4" </span>
+          </p>
+          <p>
+            Open Extra Options window:
+            <span className="primaryColor"> "Ctrl + 5" </span>
+          </p>
+          <p>
+            Open Help window:
+            <span className="primaryColor"> "Ctrl + 6" </span>
+          </p>
+          <p>
+            Open/alternate between Calculator and RegisterTool :{' '}
+            <span className="primaryColor"> "Alt + c" </span>
+          </p>
+          <p>
+            Open Debug window to verify the Application :{' '}
+            <span className="primaryColor"> "Alt + v" </span>
+          </p>
+          <br />
+          <li>
+            <b>Home Window shortcuts: </b>
+          </li>
+          <p>
+            Focus on the search bar : <span className="primaryColor"> "CTRL + s" </span>
+          </p>
+
+          <br />
+        </section>
+        <section>
+          <li>
+            <b>Register Window shortcuts: </b>
+          </li>
+          <p>
+            Focus/jump between the search bar(s) :{' '}
+            <span className="primaryColor"> "CTRL + TAB" </span>
+          </p>
+          <p>
+            Focus/jump between the value bar(s) :{' '}
+            <span className="primaryColor"> "LeftArrow" </span>
+          </p>
+          <p>
+            Focus/jump between Register windows(s) :{' '}
+            <span className="primaryColor"> "Ctrl + LeftArrow" </span>
+          </p>
+          <p>
+            Create additional Register window :{' '}
+            <span className="primaryColor"> "Ctrl + `+` " </span>
+          </p>
+          <p>
+            Delete one Register window : <span className="primaryColor"> "Ctrl + `-` " </span>
+          </p>
+
+          <br />
+          <li>
+            <b>Decode Log Window shortcuts: </b>
+          </li>
+          <p>
+            Open Overview sidebar : <span className="primaryColor"> "CTRL + ` " </span>
+          </p>
+          <p>
+            Open Advanced Search : <span className="primaryColor"> "CTRL + f " </span>
+          </p>
+          <p>
+            Open GOTO menu : <span className="primaryColor"> "CTRL + g " </span>
+          </p>
+          <p>
+            Process the log in the TextArea or display table if Overview is opened :{' '}
+            <span className="primaryColor"> " CTRL + ENTER " </span>
+          </p>
+        </section>
       </ul>
     </Box>
   )

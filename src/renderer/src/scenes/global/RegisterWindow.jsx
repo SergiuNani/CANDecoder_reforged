@@ -22,46 +22,42 @@ export const RegisterWindow = () => {
   const [windowsNumber, setWindowsNumber] = useState(1)
   const [ctrlTabCount, setCtrlTabCount] = useState(0)
   const [ctrlCount, setCtrlCount] = useState(0)
-  const [bugFixShortcut, setBugFixShortcut] = useState(0)
   const RegisterWindowRef = useRef()
   const { setSidebarSelectedItem } = useContext(SidebarContext)
-
+  const valueInputsRef = useRef(0)
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'Tab') {
         event.preventDefault()
-
-        setCtrlTabCount((prev) => {
-          if (prev === windowsNumber) {
-            if (windowsNumber == 1) {
-              //Because the second refocus doesn`t work when there is only one window
-              setBugFixShortcut((p) => p + 1)
-            }
-            return 1
-          } else if (prev > 3) {
-            return 0
-          } else {
-            return prev + 1
-          }
-        })
+        var allValueInputs = document.querySelectorAll('.RegisterNameInput_class')
+        if (valueInputsRef.current == windowsNumber) valueInputsRef.current = 0
+        valueInputsRef.current += 1
+        allValueInputs[valueInputsRef.current - 1].focus()
       } else if (event.ctrlKey && event.key === 'ArrowRight') {
         event.preventDefault()
         RegisterWindowRef.current.focus()
         setCtrlCount((prev) => {
           var temp = prev + 1
           if (temp > windowsNumber) temp = 1
-
           return temp
         })
+      } else if (event.key === 'ArrowRight') {
+        var allValueInputs = document.querySelectorAll('.RegisterValueInput_class')
+        if (valueInputsRef.current == windowsNumber) valueInputsRef.current = 0
+        valueInputsRef.current += 1
+        allValueInputs[valueInputsRef.current - 1].focus()
+      } else if (event.ctrlKey && event.key === '+') {
+        IncrementWindows()
+      } else if (event.ctrlKey && event.key === '-') {
+        DecrementWindows()
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [windowsNumber])
+  }, [windowsNumber, valueInputsRef])
 
   const IncrementWindows = () => {
     if (windowsNumber > 3) return
@@ -90,7 +86,6 @@ export const RegisterWindow = () => {
       >
         {windowsNumber > 0 && (
           <RegisterSelectionComponent
-            key={bugFixShortcut}
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
             focus={ctrlTabCount == 1 ? true : false}
@@ -238,23 +233,15 @@ export const RegisterSelectionComponent = ({
           justifyContent: 'center'
         }}
       >
-        {listType == 'CANopen' ? (
-          <AutocompleteInput_RegisterList
-            type="1"
-            listType={listType}
-            tellParentRegisterChanged={tellParentRegisterChanged}
-            placeholder="Select"
-            focus={focus}
-          />
-        ) : (
-          <AutocompleteInput_RegisterList
-            type="2"
-            listType={listType}
-            tellParentRegisterChanged={tellParentRegisterChanged}
-            placeholder="Select"
-            focus={focus}
-          />
-        )}
+        <AutocompleteInput_RegisterList
+          type={listType == 'CANopen' ? '1' : '2'}
+          listType={listType}
+          tellParentRegisterChanged={tellParentRegisterChanged}
+          placeholder="Select"
+          focus={focus}
+          className="RegisterNameInput_class"
+        />
+
         <Button
           sx={{
             // border: '1px solid yellow',
@@ -266,27 +253,17 @@ export const RegisterSelectionComponent = ({
         >
           {inputType} :
         </Button>
-        {inputType == 'HEX' ? (
-          <Input_AutoFormat
-            callback={filterHex}
-            resolution={registerResolution}
-            inputType={inputType}
-            placeholder="Value"
-            tellParentValueChanged={tellParentValueChanged}
-            registerChanged={registerSelected}
-            forceValueFromParent={valueRegister4Child}
-          />
-        ) : (
-          <Input_AutoFormat
-            callback={filterDecimal}
-            resolution={registerResolution}
-            inputType={inputType}
-            placeholder="Value"
-            tellParentValueChanged={tellParentValueChanged}
-            registerChanged={registerSelected}
-            forceValueFromParent={valueRegister4Child}
-          />
-        )}
+        <Input_AutoFormat
+          callback={inputType == 'HEX' ? filterHex : filterDecimal}
+          resolution={registerResolution}
+          inputType={inputType}
+          placeholder="Value"
+          tellParentValueChanged={tellParentValueChanged}
+          registerChanged={registerSelected}
+          forceValueFromParent={valueRegister4Child}
+          className="RegisterValueInput_class"
+        />
+
         <Button
           onClick={handleChangeListType}
           sx={{

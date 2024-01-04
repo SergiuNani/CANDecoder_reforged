@@ -29,7 +29,7 @@ import {
   hex2Fixed
 } from '../functions/NumberConversion.js'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
-import { MotorSpecificationsContext, ClearanceContext } from '../App.jsx'
+import { AppContext, ClearanceContext } from '../App.jsx'
 import { CobID_who_dis } from '../functions/CANopen.js'
 import {
   FG_units_pos_rot,
@@ -50,6 +50,7 @@ const HomeWindow = () => {
   const handleChange = (event) => {
     setTabsOption(event)
   }
+
   return (
     <div
       style={{
@@ -107,7 +108,6 @@ function BigObjectSearchInputComponent({
   const [selectedOption, setSelectedOption] = useState(null)
   const [isFocused, setIsFocused] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
-
   const inputRef = useRef()
   const ulRef = useRef()
 
@@ -231,6 +231,7 @@ function BigObjectSearchInputComponent({
           onBlur={handleBlur}
           autoFocus={focus}
           placeholder={placeholder}
+          id="HomeSearchBar"
           style={{
             backgroundColor: `${colors.primary[300]}`,
             borderRadius: '2rem',
@@ -298,7 +299,7 @@ function BigObjectSearchInputComponent({
 function NumberTransformationComponent() {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var { loadType } = useContext(MotorSpecificationsContext)
+  var { loadType } = useContext(AppContext)
 
   const [fourOptionsRadioSelection, setFourOptionsRadioSelection] = useState('POS')
   const [initialValueFieldValue, setInitialValueFieldValue] = useState('')

@@ -140,25 +140,31 @@ export const ButtonTransparent = ({ children, onClick, sx }) => {
   )
 }
 
-export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) => {
+export const SwitchComponent = ({ option1, option2, tellParentValueChanged, freeTextVsCanLog }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const [isSwitchedOn, setIsSwitchedOn] = useState(0)
-  function handleChange(e) {
-    if (isSwitchedOn == 1) {
-      tellParentValueChanged(option1)
-      setIsSwitchedOn(0)
-    } else {
-      tellParentValueChanged(option2)
-      setIsSwitchedOn(1)
-    }
+  const [isSwitchedOn, setIsSwitchedOn] = useState(freeTextVsCanLog === 'CANlog')
+
+  function handleChange() {
+    const newSwitchValue = !isSwitchedOn
+    setIsSwitchedOn(newSwitchValue)
+
+    const selectedOption = newSwitchValue ? option2 : option1
+    tellParentValueChanged(selectedOption)
   }
+
+  // Update the state when freeTextVsCanLog prop changes
+  useEffect(() => {
+    setIsSwitchedOn(freeTextVsCanLog === 'CANlog')
+  }, [freeTextVsCanLog])
+
   return (
     <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', zoom: '0.85' }}>
       <p>{option1}</p>
       <Switch
         onChange={handleChange}
+        checked={isSwitchedOn}
         sx={{
           color: 'red',
           '& .MuiSwitch-switchBase.Mui-checked': {
@@ -168,7 +174,7 @@ export const SwitchComponent = ({ option1, option2, tellParentValueChanged }) =>
             background: `${colors.yellow[400]}`
           }
         }}
-      ></Switch>
+      />
       <p>{option2}</p>
     </Box>
   )

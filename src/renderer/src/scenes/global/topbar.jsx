@@ -17,7 +17,7 @@ import { RegisterSelectionComponent } from './RegisterWindow'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import { MessageListRs232ToVerify } from '../../data/verifyRS232'
 import {
-  MotorSpecificationsContext,
+  AppContext,
   ProtocolGlobalContext,
   FG_Context,
   DecodeCANlog_topbarOptionsContext,
@@ -232,9 +232,8 @@ const GeneralSettingsInsertPart = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  var { loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop } = useContext(
-    MotorSpecificationsContext
-  )
+  var { loadType, setLoadType, fullRot_IU, setFullRot_IU, slowLoop, setSlowLoop } =
+    useContext(AppContext)
 
   function fctSetFullRot_IU(value) {
     setFullRot_IU(value)
@@ -309,7 +308,7 @@ const FactorGroupInsertPart = () => {
   const [delayedUseEffect, setDelayedUseEffect] = useState(false)
   const { FG_DisplayVSApplied, setFG_DisplayVSApplied, FG_OptionsObject, setFG_OptionsObject } =
     useContext(FG_Context)
-  var { loadType } = useContext(MotorSpecificationsContext)
+  var { loadType } = useContext(AppContext)
 
   function handleAnyInputChange(value, title) {
     if (title == 'POS') {
@@ -469,11 +468,37 @@ const FactorGroupInsertPart = () => {
 
 const DecodeCANlogOptionsInsertPart = () => {
   var { sidebarSelectedItem } = useContext(SidebarContext)
-  var { setFreeTextVsCanLog, setToggleFilterWindow_app, setToggleSearchWindow_app } = useContext(
-    DecodeCANlog_topbarOptionsContext
-  )
+  var {
+    freeTextVsCanLog,
+    setFreeTextVsCanLog,
+    setToggleFilterWindow_app,
+    setToggleSearchWindow_app
+  } = useContext(DecodeCANlog_topbarOptionsContext)
   const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
   var { Clearance } = useContext(ClearanceContext)
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      event.preventDefault()
+      if (
+        event.ctrlKey &&
+        (event.key === 'ArrowRight' || event.key === 'ArrowLeft') &&
+        sidebarSelectedItem == 'Decode LOG'
+      ) {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth' // You can use 'auto' or 'smooth'
+        })
+
+        if (freeTextVsCanLog == 'CANlog') setFreeTextVsCanLog('FreeText')
+        else setFreeTextVsCanLog('CANlog')
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [sidebarSelectedItem, freeTextVsCanLog])
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -492,6 +517,7 @@ const DecodeCANlogOptionsInsertPart = () => {
               option1="FreeText"
               option2="Upload File"
               tellParentValueChanged={setFreeTextVsCanLog}
+              freeTextVsCanLog={freeTextVsCanLog}
             />
           </div>
           <ButtonTransparent

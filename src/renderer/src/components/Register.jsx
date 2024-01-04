@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { Typography } from '@mui/material'
 import { Box } from '@mui/material'
 import { useTheme } from '@mui/material'
 import { tokens } from '../theme'
@@ -10,7 +9,6 @@ import {
   bin2hex
 } from '../functions/NumberConversion'
 import { Registers_CANopen_LS } from '../App'
-import { ClickAwayListener } from '@mui/material'
 
 const RegisterComponent = ({
   register,
