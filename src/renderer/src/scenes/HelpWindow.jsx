@@ -12,6 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { HelpRegister } from './global/RegisterWindow'
 import { HelpEditDataWindow } from './EditDataWindow'
 import DvrIcon from '@mui/icons-material/Dvr'
+import KeyboardIcon from '@mui/icons-material/Keyboard'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import CreateIcon from '@mui/icons-material/Create'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
@@ -52,7 +53,7 @@ function ControlledAccordions() {
           icon={<WavingHandIcon sx={{ zoom: 1.2 }} />}
           title="Welcome"
           subtitle="Welcoming Page"
-          body={<HelpWelcomePage />}
+          body={<HelpWelcomePage extended />}
         />
         <AccordionComponent
           expanded={expanded}
@@ -69,7 +70,7 @@ function ControlledAccordions() {
           handleChange={handleChange}
           icon={<LibraryBooksIcon sx={{ zoom: 1.2 }} />}
           title="Register"
-          subtitle=" This component allows you to search any Register and visualize it"
+          subtitle=" This menu allows a quick search for any Register and it`s visualization"
           body={<HelpRegister />}
         />
         <AccordionComponent
@@ -78,7 +79,7 @@ function ControlledAccordions() {
           handleChange={handleChange}
           icon={<CreateIcon sx={{ zoom: 1.2 }} />}
           title="Edit Data Menu"
-          subtitle=" This menu allows you to edit any Register or Object"
+          subtitle=" This menu allows the editing of any Register or Object"
           body={<HelpEditDataWindow />}
         />
         <AccordionComponent
@@ -87,7 +88,7 @@ function ControlledAccordions() {
           handleChange={handleChange}
           icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
           title="Decode LOG Menu"
-          subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
+          subtitle=" This menu allows the decodification of a log file"
           body={<HelpDecodeCanMenu />}
         />
         <AccordionComponent
@@ -96,7 +97,7 @@ function ControlledAccordions() {
           handleChange={handleChange}
           icon={<DragIndicatorIcon sx={{ zoom: 1.2 }} />}
           title="More Options Menu"
-          subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
+          subtitle=" This menu allows access to additional tools"
           body={<HelpMoreOptionsWindow />}
         />
         <AccordionComponent
@@ -105,8 +106,17 @@ function ControlledAccordions() {
           handleChange={handleChange}
           icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
           title="RS232"
-          subtitle=" This menu allows you to either paste or upload a CANlog file to decode it"
+          subtitle=" This menu contains a brief description of the algorithm of the said protocol"
           body={<HelpDecodeRS232 />}
+        />
+        <AccordionComponent
+          expanded={expanded}
+          panelNR="8"
+          handleChange={handleChange}
+          icon={<KeyboardIcon sx={{ zoom: 1.2 }} />}
+          title="Shortcuts"
+          subtitle="All available keyboard shortcuts"
+          body={<HelpShortcutPage />}
         />
       </div>
     </div>
@@ -506,7 +516,7 @@ const HelpDecodeCanMenu = () => {
   )
 }
 
-const HelpHOME_Component = () => {
+const HelpHOME_Component = ({ extended }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
@@ -580,17 +590,49 @@ const HelpDecodeRS232 = () => {
 }
 
 const HelpMoreOptionsWindow = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
   return (
     <Box>
-      <ul>
-        <li>- Checks checksum</li>
-        <li>
-          - Checks datalength. It doesn`t matter if length is in the same frame or the previous one.
-          If the first byte isnt the correct length of the frame then the program looks at the
-          previous frame and if even that doesn`t match then the message will report an error
-        </li>
-        <li>Checks if the axisID code is wrong</li>
-      </ul>
+      <section>
+        <Typography variant="h4" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+          Technosoft Product Search:
+        </Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            Use the autocomplete search to find Technosoft products by Drive Name, Drive's Part
+            Number, firmware version, or HardwareID.
+          </li>
+        </ul>
+        <br />
+        <Typography variant="h4" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+          Data Exchange Objects Tool
+        </Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            This tool encodes data transfer CANopen messages.For it to provide accurate output the
+            user has to specify the Data size, Memory Type, AutoIncrement flag, which write object
+            is used, address at which the user needs to write to, and value which will be written at
+            the mentioned address. Copy/Paste the encoded messages for further use.
+          </li>
+        </ul>
+        <br />
+        <Typography variant="h4" sx={{ color: `${colors.yellow[400]}`, mb: '0.5rem' }}>
+          XML Finder
+        </Typography>
+        <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+          <li>
+            This tool converts the firmware names (from ASCII) to their corresponding decimal
+            format. This helps users quickly locate the correct XML file in the TWINCAT list when
+            trying to write a different XML file to the EEPROM memory of the drive.
+          </li>
+          <li>
+            {' '}
+            For user convenience, the system ignores the first letter if it is 'F' or 'f' becase
+            this letter is not present in the XML code name.
+          </li>
+        </ul>
+      </section>
     </Box>
   )
 }
@@ -782,6 +824,64 @@ export const HelpWelcomePage = () => {
           </section>
         </section>
       </section>
+    </Box>
+  )
+}
+export const HelpShortcutPage = () => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Box
+      sx={{
+        background: `${colors.primary[300]}`,
+        padding: '1rem'
+        // height: '100vh'
+      }}
+    >
+      <ul style={{ listStyleType: 'disc', marginLeft: '2rem' }}>
+        <li>
+          <b>Global Shortcuts: </b>
+        </li>
+        <p>
+          Open Home window:
+          <span className="primaryColor"> "Ctrl + 1" </span>
+        </p>
+        <p>
+          Open Register window:
+          <span className="primaryColor"> "Ctrl + 2" </span>
+        </p>
+        <p>
+          Open Edit Data window:
+          <span className="primaryColor"> "Ctrl + 3" </span>
+        </p>
+        <p>
+          Open Decode Log window:
+          <span className="primaryColor"> "Ctrl + 4" </span>
+        </p>
+        <p>
+          Open Extra Options window:
+          <span className="primaryColor"> "Ctrl + 5" </span>
+        </p>
+        <p>
+          Open Help window:
+          <span className="primaryColor"> "Ctrl + 6" </span>
+        </p>
+        <p>
+          Open/alternate between Calculator and RegisterTool :{' '}
+          <span className="primaryColor"> "Alt + c" </span>
+        </p>
+        <p>
+          Open Debug window to verify the Application :{' '}
+          <span className="primaryColor"> "Alt + v" </span>
+        </p>
+        <br />
+        <li>
+          <b>Register Window shortcuts: </b>
+        </li>
+        <p>
+          Shortcut to focus on the search bar : <span className="primaryColor"> "CTRL + TAB" </span>
+        </p>
+      </ul>
     </Box>
   )
 }

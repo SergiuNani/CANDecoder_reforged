@@ -58,8 +58,8 @@ const HomeWindow = () => {
     >
       <Header title="Home Page"></Header>
       <WelcomePageComponent />
-      <div style={{ display: 'flex', width: '100%' }}>
-        <div style={{ flex: '0.55', marginRight: '1rem' }}>
+      <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>
+        <div>
           <TabsComponent tellParentValueChanged={handleChange} valueFromParent={tabsOption} />
           <BigObjectSearchInputComponent
             placeholder={
@@ -73,7 +73,7 @@ const HomeWindow = () => {
             resetValueofInputFromParent={tabsOption}
           />
         </div>
-        <div style={{ flex: '1', marginRight: '2rem' }}>
+        <div>
           <section>
             <NumberTransformationComponent />
             <BigFindCobIDComponent />
@@ -462,7 +462,7 @@ function NumberTransformationComponent() {
       <Typography variant="h3" sx={{ mb: '1rem', color: `${colors.yellow[500]}` }}>
         Quick Conversion
       </Typography>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', gap: '1rem' }}>
         {/* RADIO GROUP: POS/SPD/ACC/TIME------------------------------------------------------- */}
         <RadioGroup
           onChange={handle4OptionChanged}

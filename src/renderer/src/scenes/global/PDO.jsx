@@ -233,7 +233,7 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
   let Str1 = `Default objects for ${objectIteration.type}`
   let Str2 = `All ${objectIteration.type}`
   return (
-    <Dialog open={open}>
+    <Dialog open={open} sx={{ userSelect: 'none' }}>
       {openSnackBarError && (
         <SnackBarMessage
           message={messageSnackbar}

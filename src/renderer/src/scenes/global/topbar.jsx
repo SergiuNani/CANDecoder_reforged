@@ -64,15 +64,13 @@ const Topbar = () => {
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
 
-  const [settingsDialogOpen, setSettingsDialogOpen] = useState(true)
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
   const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
 
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.altKey && event.key === 'c') {
-        console.log('ev')
-
         setCalcVsRegDialogStatus(true)
         if (CalcVsRegister == 'Calculator') {
           setCalcVsRegister('Register')

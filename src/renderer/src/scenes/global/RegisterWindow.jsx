@@ -392,17 +392,6 @@ export const HelpRegister = () => {
             changed.
           </li>
         </ol>
-        <br />
-        <div>
-          <p>
-            Shortcut to open the Register Window : <span className="primaryColor">"ALT + 1"</span>
-          </p>
-          <br />
-          <p>
-            Shortcut to focus on the search bar :{' '}
-            <span className="primaryColor"> "CTRL + TAB" </span>
-          </p>
-        </div>
       </div>
 
       <div>

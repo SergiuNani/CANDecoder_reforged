@@ -55,7 +55,7 @@ function App() {
   return (
     <MyProviders>
       <HashRouter>
-        <div style={{ display: 'flex', overflowX: 'hidden' }}>
+        <div style={{ display: 'flex' }}>
           <Sidebar />
           <main style={{ flexGrow: 1, position: 'relative', height: '100%' }}>
             <Topbar />
