@@ -479,15 +479,15 @@ const DecodeCANlogOptionsInsertPart = () => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      event.preventDefault()
       if (
         event.ctrlKey &&
         (event.key === 'ArrowRight' || event.key === 'ArrowLeft') &&
         sidebarSelectedItem == 'Decode LOG'
       ) {
+        event.preventDefault()
         window.scrollTo({
           top: 0,
-          behavior: 'smooth' // You can use 'auto' or 'smooth'
+          behavior: 'smooth'
         })
 
         if (freeTextVsCanLog == 'CANlog') setFreeTextVsCanLog('FreeText')

@@ -904,6 +904,10 @@ export const HelpShortcutPage = () => {
             Process the log in the TextArea or display table if Overview is opened :{' '}
             <span className="primaryColor"> " CTRL + ENTER " </span>
           </p>
+          <p>
+            Toggle between FreeText or Upload a log file :{' '}
+            <span className="primaryColor"> " CTRL + LeftArrow (or RightArrow) " </span>
+          </p>
         </section>
       </ul>
     </Box>
