@@ -104,15 +104,6 @@ function ControlledAccordions() {
           expanded={expanded}
           panelNR="7"
           handleChange={handleChange}
-          icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
-          title="RS232"
-          subtitle=" This menu contains a brief description of the algorithm of the said protocol"
-          body={<HelpDecodeRS232 />}
-        />
-        <AccordionComponent
-          expanded={expanded}
-          panelNR="8"
-          handleChange={handleChange}
           icon={<KeyboardIcon sx={{ zoom: 1.2 }} />}
           title="Shortcuts"
           subtitle="All available keyboard shortcuts"
@@ -551,21 +542,6 @@ const HelpHOME_Component = ({ extended }) => {
     </Box>
   )
 }
-const HelpDecodeRS232 = () => {
-  return (
-    <Box>
-      <ul>
-        <li>- Checks checksum</li>
-        <li>
-          - Checks datalength. It doesn`t matter if length is in the same frame or the previous one.
-          If the first byte isnt the correct length of the frame then the program looks at the
-          previous frame and if even that doesn`t match then the message will report an error
-        </li>
-        <li>Checks if the axisID code is wrong</li>
-      </ul>
-    </Box>
-  )
-}
 
 const HelpMoreOptionsWindow = () => {
   const theme = useTheme()
@@ -853,6 +829,9 @@ export const HelpShortcutPage = () => {
             Open Debug window to verify the Application :{' '}
             <span className="primaryColor"> "Alt + v" </span>
           </p>
+          <p>
+            Open LogIn menu : <span className="primaryColor"> "Ctrl + l" </span>
+          </p>
           <br />
           <li>
             <b>Home Window shortcuts: </b>
@@ -907,6 +886,9 @@ export const HelpShortcutPage = () => {
           <p>
             Toggle between FreeText or Upload a log file :{' '}
             <span className="primaryColor"> " CTRL + LeftArrow (or RightArrow) " </span>
+          </p>
+          <p>
+            Focus on TextArea : <span className="primaryColor"> " CTRL + TAB " </span>
           </p>
         </section>
       </ul>

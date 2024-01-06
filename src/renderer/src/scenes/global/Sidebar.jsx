@@ -77,7 +77,7 @@ const Sidebar = () => {
         setSidebarSelectedItem('Help')
         navigate('/Help')
       } else if (event.altKey && event.key === 'v' && Clearance > 33) {
-        setSidebarSelectedItem('DebugScene')
+        setSidebarSelectedItem('Debug')
         navigate('/DebugScene')
       } else if (event.ctrlKey && event.key === 's') {
         setSidebarSelectedItem('Home')

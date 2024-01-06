@@ -67,6 +67,7 @@ const Topbar = () => {
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
   const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
+  const [expandLogin, setExpandLogin] = useState(false)
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -77,6 +78,9 @@ const Topbar = () => {
         } else {
           setCalcVsRegister('Calculator')
         }
+      } else if (event.ctrlKey && event.key === 'l') {
+        setSettingsDialogOpen(true)
+        setExpandLogin(true)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -104,6 +108,7 @@ const Topbar = () => {
       <SettingsDialog
         settingsDialogOpen={settingsDialogOpen}
         setSettingsDialogOpen={setSettingsDialogOpen}
+        expandLogin={expandLogin}
       />
       <CalculatorDialog
         CalcVsRegDialogStatus={CalcVsRegDialogStatus}
@@ -133,10 +138,10 @@ const Topbar = () => {
 
 export default Topbar
 
-export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
+export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expandLogin }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  var { Clearance, setClearance } = useContext(ClearanceContext)
+  var { Clearance } = useContext(ClearanceContext)
 
   function handleClose() {
     setSettingsDialogOpen(false)
@@ -164,20 +169,22 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen }) {
         <AccordionComponent title="Factor Group" children={<FactorGroupInsertPart />} />
         <AccordionComponent
           title="Authentication"
-          children={<AutenthificationDialog />}
-          defaultExpanded
+          children={<AutenthificationDialog expandLogin={expandLogin} />}
+          expanded={expandLogin}
         />
       </div>
     </Dialog>
   )
 }
 
-const AccordionComponent = ({ title, children, defaultExpanded }) => {
+const AccordionComponent = ({ title, children, defaultExpanded, expanded }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const [expandedd, setExpandedd] = useState(expanded ?? false)
   return (
     <Accordion
       defaultExpanded={defaultExpanded}
+      expanded={expandedd}
       sx={{ background: `${colors.primary[300]}`, userSelect: 'none' }}
     >
       <AccordionSummary
@@ -192,6 +199,9 @@ const AccordionComponent = ({ title, children, defaultExpanded }) => {
           '& .css-o4b71y-MuiAccordionSummary-content.Mui-expanded': {
             margin: '0 !important'
           }
+        }}
+        onClick={() => {
+          setExpandedd((prev) => !prev)
         }}
       >
         {title}
@@ -855,12 +865,17 @@ const CalculatorDialog = ({
   )
 }
 
-const AutenthificationDialog = () => {
+const AutenthificationDialog = ({ expandLogin }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const InputRef = useRef(null)
+  const InputRef = useRef()
   const [level, setLevel] = useState(1)
   var { Clearance, setClearance } = useContext(ClearanceContext)
+  useEffect(() => {
+    if (expandLogin) {
+      InputRef.current.focus()
+    }
+  }, [expandLogin])
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === 'Enter' && document.activeElement === InputRef.current) {

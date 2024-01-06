@@ -44,36 +44,42 @@ export function CobID_who_dis(cob_id) {
     return (aux = ['NMT', '-', 'NMT'])
   }
   if (cob_id >= 1 && cob_id <= 31) {
-    axis_id = cob_id - 1 + 1
-    return (aux = ['TCAN', axis_id, 'Group-TCAN'])
+    // axis_id = cob_id - 1 + 1
+    var a = []
+    for (let i = 0; i < 5; i++) {
+      if (cob_id & (1 << i)) {
+        a.push(`G${i + 1}`)
+      }
+    }
+    return (aux = ['TCAN', a.join(' , '), 'TGroup'])
   }
   if (cob_id == 32) {
-    return (aux = ['TCAN', 'All', 'SYNC-TCAN'])
+    return (aux = ['TCAN', 'All', 'TSYNC'])
   }
 
   if (cob_id >= 65 && cob_id <= 95) {
     axis_id = cob_id - 65 + 1
-    return (aux = ['TCAN', axis_id, 'PVT-TCAN'])
+    return (aux = ['TCAN', axis_id, 'PVT'])
   }
   if (cob_id == 256) {
     // axis_id = cob_id - 65 + 1
-    return (aux = ['TCAN', 'All', 'TimeStamp-TCAN'])
+    return (aux = ['TCAN', 'All', 'TimeStamp'])
   }
   if (cob_id >= 257 && cob_id <= 287) {
     axis_id = cob_id - 257 + 1
-    return (aux = ['TCAN', axis_id, 'TakeData2-TCAN'])
+    return (aux = ['TCAN', axis_id, 'TakeData2'])
   }
   if (cob_id >= 289 && cob_id <= 319) {
     axis_id = cob_id - 289 + 1
-    return (aux = ['TCAN', axis_id, 'Normal-TCAN'])
+    return (aux = ['TCAN', axis_id, 'Normal'])
   }
   if (cob_id >= 321 && cob_id <= 351) {
     axis_id = cob_id - 321 + 1
-    return (aux = ['TCAN', axis_id, 'Host-TCAN'])
+    return (aux = ['TCAN', axis_id, 'Host'])
   }
   if (cob_id >= 353 && cob_id <= 383) {
     axis_id = cob_id - 353 + 1
-    return (aux = ['TCAN', axis_id, 'TakeData-TCAN'])
+    return (aux = ['TCAN', axis_id, 'TakeData'])
   }
   if (cob_id == 128) {
     return (aux = ['SYNC', 'All', 'SYNC'])
@@ -92,7 +98,7 @@ export function CobID_who_dis(cob_id) {
   }
 
   if (cob_id == 512) {
-    return (aux = ['TCAN', 'All', 'Broadcast-TCAN'])
+    return (aux = ['TCAN', 'All', 'Broadcast'])
   }
   if (cob_id >= 513 && cob_id <= 639) {
     axis_id = cob_id - 513 + 1

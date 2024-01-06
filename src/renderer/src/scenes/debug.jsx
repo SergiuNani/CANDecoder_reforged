@@ -28,6 +28,21 @@ const DebugScene = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      event.preventDefault()
+      if (event.key === '1') {
+        setverifyCANopenAlgorithm(true)
+      } else if (event.key === '2') {
+        setVerifyRS232(true)
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
   function handleFileUpload(e) {
     const file = e.target.files[0]
 
@@ -47,16 +62,6 @@ const DebugScene = () => {
   return (
     <>
       <Header title="Debug" subtitle="Validity tests "></Header>
-      <textarea
-        cols="100"
-        style={{
-          background: `${colors.primary[300]}`,
-          color: `${colors.yellow[600]}`,
-          border: `1px solid ${colors.green[400]}`,
-          height: '30vh',
-          width: '80%'
-        }}
-      ></textarea>
       <section
         style={{
           display: 'flex',
@@ -252,7 +257,7 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
               return <div key={index}>{item}</div>
             })
           ) : (
-            <div>All good</div>
+            <div>All good, Protocol: {protocol}</div>
           )}
         </div>
       </section>

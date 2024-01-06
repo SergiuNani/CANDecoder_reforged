@@ -6087,7 +6087,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
       '12\t    \t20:29:24\t605.338\t          0.360\t                           <NTCAN Event>\t         0\t       000\tE     \t  6\t00\t00\t00\t00\t00\t00\t  \t  \tCONTROLLER(ok)\t',
     CobID: 'E',
     FrameData: '000000000000',
-    type: 'Group-TCAN',
+    type: 'TGroup',
     AxisID: 14,
     CS: '-',
     Object: '-',

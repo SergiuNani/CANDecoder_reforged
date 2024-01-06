@@ -300,7 +300,7 @@ function getAxisID_RS232(hex) {
   }
 }
 
-function getOpCode_RS232(opCode, data) {
+export function getOpCode_RS232(opCode, data) {
   var firstByte = opCode.slice(0, 2)
   var lastByte = opCode.slice(2)
   var destinator = ''
@@ -1287,7 +1287,7 @@ function getOpCode_RS232(opCode, data) {
       Interpretation = `Set actual position = ${val32_1} = ${val32_1d}  -- [SAP val32]`
       break
     case '78':
-      Data = `SEG ${val16_1} ${val32_2} `
+      Data = `SEG ${val16_1}, ${val32_2} `
       Interpretation = `SSegment ${val16_1}= ${val16_1d},  ${val32_2} = ${val32_2d}  -- [SEG val16, val32]`
       break
 

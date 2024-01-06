@@ -4618,7 +4618,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '7800',
     Object: '-',
     ObjectName: '-',
-    Data: 'SEG 0x8521 0x12345678 ',
+    Data: 'SEG 0x8521, 0x12345678 ',
     Interpretation: 'SSegment 0x8521= -31455d,  0x12345678 = 305419896d  -- [SEG val16, val32]',
     errorStatus: '-'
   },
