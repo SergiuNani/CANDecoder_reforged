@@ -407,6 +407,61 @@ export const MessageListRs232ToVerify = `
 06 00 20 08 04 00 12 44 //CANBR 0x12
 08 00 20 D8 C0 03 66 03 67 93 //INITCAM var_i1, var_i2
 
+19:27:59 Bytes Write :  04 00 10 96 00 AA
+19:27:59 Bytes Read :  4F
+19:28:01 Bytes Write :  04 00 10 96 01 AB
+19:28:01 Bytes Read :  4F
+19:28:02 Bytes Write :  04 00 10 96 02 AC
+19:28:02 Bytes Read :  4F
+19:28:03 Bytes Write :  04 00 10 96 03 AD
+19:28:03 Bytes Read :  4F
+19:15:09 Bytes Write :  0A 00 10 DB 10 03 66 50 00 50 07 15
+19:15:09 Bytes Read :  4F
+19:15:14 Bytes Write :  0A 00 10 DB 30 03 66 50 00 50 07 35
+19:15:14 Bytes Read :  4F
+19:15:25 Bytes Write :  0A 00 10 DB 50 03 66 50 00 50 07 55
+19:15:25 Bytes Read :  4F
+
+19:08:31 Bytes Write :  0A 00 10 DB 50 03 66 50 00 50 07 55
+19:08:31 Bytes Read :  4F
+19:08:56 Bytes Write :  08 00 10 B0 04 00 11 03 66 46
+19:08:56 Bytes Read :  4F
+19:08:56 Bytes Read :  0A
+19:08:56 Bytes Read :  00 11 B4 04 00 10 03 66 F5 68 A9
+08 00 10 90 A4 03 66 00 12 C7
+18:14:16 Bytes Write :  08 10 00 D6 00 00 11 07 D0 D6
+18:14:16 Bytes Read :  4F
+18:14:16 Bytes Read :  08
+18:14:16 Bytes Read :  00 11 D6 01 35 31 34 4C D6
+18:14:16 Bytes Read :  08
+18:14:16 Bytes Read :  00 11 D6 02 35 30 39 4E DD
+08 00 10 C9 63 02 28 03 67 D8 DD
+08 00 00 B0 00 00 01 00 00 B9
+17:29:47 Bytes Write :  04 00 10 04 02 1A
+17:29:47 Bytes Read :  4F
+17:29:47 Bytes Write :  FF
+17:29:47 Bytes Read :  0D
+17:29:47 Bytes Write :  FF
+17:29:47 Bytes Read :  0D
+17:29:47 Bytes Write :  06 00 10 D8 01 00 11 00
+17:29:47 Bytes Read :  4F
+17:29:47 Bytes Read :  08
+17:29:47 Bytes Read :  00 11 D8 01 35 31 34 4C D8
+17:29:47 Bytes Write :  06 00 10 08 20 00 04 42
+17:29:47 Bytes Read :  4F
+17:29:47 Bytes Write :  06 00 10 D8 01 00 11 00
+17:29:47 Bytes Read :  4F
+17:29:47 Bytes Read :  08
+17:29:47 Bytes Read :  00 11 D8 01 35 31 34 4C D8
+17:29:47 Bytes Write :  08 00 00 B0 00 00 01 00 00 B9
+17:29:47 Bytes Read :  4F
+17:29:47 Bytes Read :  0A
+17:29:47 Bytes Read :  00 01 B4 04 00 10 00 00 24 F3 EA
+17:29:47 Bytes Write :  06 00 10 D8 01 00 11 00
+17:29:47 Bytes Read :  4F
+17:29:47 Bytes Read :  08
+17:29:47 Bytes Read :  00 11 D8 01 35 31 34 4C D8
+
 `
 
 export const Hardcoded_VerifyRS232 = [
@@ -448,7 +503,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B4',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 0367',
+    Data: '(0x0366), DM = 0x0367',
     Interpretation: '(VAR_I1), DM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -462,7 +517,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B8',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), SPI = 0367',
+    Data: '(0x0366), SPI = 0x0367',
     Interpretation: '(VAR_I1), SPI = VAR_I2 ',
     errorStatus: '-'
   },
@@ -476,7 +531,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B0',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), PM = 0367',
+    Data: '(0x0366), PM = 0x0367',
     Interpretation: '(VAR_I1), PM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -504,7 +559,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B4',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 0367',
+    Data: '(0x0366), DM = 0x0367',
     Interpretation: '(VAR_I1), DM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -518,7 +573,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90B5',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 029E',
+    Data: '(0x0366), DM = 0x029E',
     Interpretation: '(VAR_I1), DM = CPOS ',
     errorStatus: '-'
   },
@@ -532,8 +587,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A4',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 1234',
-    Interpretation: '(VAR_I1), DM = 0x1234 (4660) ',
+    Data: '(0x0366), DM = 0x1234',
+    Interpretation: '(VAR_I1), DM = 1234 (4660) ',
     errorStatus: '-'
   },
   {
@@ -546,8 +601,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A4',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 1234',
-    Interpretation: '(VAR_I1), DM = 0x1234 (4660) ',
+    Data: '(0x0366), DM = 0x1234',
+    Interpretation: '(VAR_I1), DM = 1234 (4660) ',
     errorStatus: '-'
   },
   {
@@ -560,8 +615,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A5',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 00012345',
-    Interpretation: '(VAR_I1), DM = 0x00012345 (74565) ',
+    Data: '(0x0366), DM = 0x00012345',
+    Interpretation: '(VAR_I1), DM = 00012345 (74565) ',
     errorStatus: '-'
   },
   {
@@ -574,8 +629,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '90A5',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366), DM = 12345678',
-    Interpretation: '(VAR_I1), DM = 0x12345678 (305419896) ',
+    Data: '(0x0366), DM = 0x12345678',
+    Interpretation: '(VAR_I1), DM = 12345678 (305419896) ',
     errorStatus: '-'
   },
   {
@@ -588,7 +643,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9034',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366+), DM = 0367',
+    Data: '(0x0366+), DM = 0x0367',
     Interpretation: '(VAR_I1+), DM = VAR_I2 ',
     errorStatus: '-'
   },
@@ -602,7 +657,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9035',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366+), DM = 029E',
+    Data: '(0x0366+), DM = 0x029E',
     Interpretation: '(VAR_I1+), DM = CPOS ',
     errorStatus: '-'
   },
@@ -616,8 +671,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9024',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366+), DM = 1234',
-    Interpretation: '(VAR_I1+), DM = 0x1234 (4660) ',
+    Data: '(0x0366+), DM = 0x1234',
+    Interpretation: '(VAR_I1+), DM = 1234 (4660) ',
     errorStatus: '-'
   },
   {
@@ -630,8 +685,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9024',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366+), DM = 1234',
-    Interpretation: '(VAR_I1+), DM = 0x1234 (4660) ',
+    Data: '(0x0366+), DM = 0x1234',
+    Interpretation: '(VAR_I1+), DM = 1234 (4660) ',
     errorStatus: '-'
   },
   {
@@ -644,8 +699,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9025',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366+), DM = 00012345',
-    Interpretation: '(VAR_I1+), DM = 0x00012345 (74565) ',
+    Data: '(0x0366+), DM = 0x00012345',
+    Interpretation: '(VAR_I1+), DM = 00012345 (74565) ',
     errorStatus: '-'
   },
   {
@@ -658,8 +713,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9025',
     Object: '-',
     ObjectName: '-',
-    Data: '(0366+), DM = 12345678',
-    Interpretation: '(VAR_I1+), DM = 0x12345678 (305419896) ',
+    Data: '(0x0366+), DM = 0x12345678',
+    Interpretation: '(VAR_I1+), DM = 12345678 (305419896) ',
     errorStatus: '-'
   },
   {
@@ -686,7 +741,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9014',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0366,dm= 0x0367',
+    Data: '0x0366,dm= 0x0x0367',
     Interpretation: 'VAR_I1,dm= VAR_I2',
     errorStatus: '-'
   },
@@ -714,7 +769,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '9015',
     Object: '-',
     ObjectName: '-',
-    Data: '0x0368,dm= 0x029E',
+    Data: '0x0368,dm= 0x0x029E',
     Interpretation: 'VAR_LF,dm= CPOS',
     errorStatus: '-'
   },
@@ -3621,7 +3676,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -3650,7 +3705,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -3679,7 +3734,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -4281,7 +4336,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: "Fist byte 8 and history length 0 don't match",
+    Data: "MsgLength = 10 which don't match fist byte 8 or history length 8 ",
     Interpretation: 'Message length doesn`t match',
     errorStatus: 'error'
   },
@@ -5683,8 +5738,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'B004',
     Object: 'H2',
     ObjectName: '-',
-    Data: '?0x0367 ,DM  ',
-    Interpretation: '?VAR_I2 ,DM [V16]',
+    Data: '?0x0367 | DM  ',
+    Interpretation: '?VAR_I2 | DM [?V16]',
     errorStatus: '-'
   },
   {
@@ -5697,8 +5752,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'B005',
     Object: 'H2',
     ObjectName: '-',
-    Data: '?0x0228 ,DM  ',
-    Interpretation: '?APOS ,DM [V32]',
+    Data: '?0x0228 | DM  ',
+    Interpretation: '?APOS | DM [?V32]',
     errorStatus: '-'
   },
   {
@@ -5767,7 +5822,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -5795,7 +5850,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -5823,8 +5878,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'B004',
     Object: 'H1',
     ObjectName: '-',
-    Data: '?0x0366 ,DM  ',
-    Interpretation: '?VAR_I1 ,DM [V16]',
+    Data: '?0x0366 | DM  ',
+    Interpretation: '?VAR_I1 | DM [?V16]',
     errorStatus: '-'
   },
   {
@@ -5837,7 +5892,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -5865,8 +5920,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'B005',
     Object: 'H1',
     ObjectName: '-',
-    Data: '?0x0228 ,DM  ',
-    Interpretation: '?APOS ,DM [V32]',
+    Data: '?0x0228 | DM  ',
+    Interpretation: '?APOS | DM [?V32]',
     errorStatus: '-'
   },
   {
@@ -5879,7 +5934,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: '-',
     Object: '-',
     ObjectName: '-',
-    Data: '-',
+    Data: 'OK',
     Interpretation: 'OK',
     errorStatus: '-'
   },
@@ -5977,7 +6032,7 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'D801',
     Object: '-',
     ObjectName: '-',
-    Data: 'GetVAR:  514K',
+    Data: 'GetVAR response:  F4K51',
     Interpretation: 'Get version. On-line cmd. ',
     errorStatus: '-'
   },
@@ -5991,8 +6046,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'D600',
     Object: 'H2',
     ObjectName: '-',
-    Data: 'PING: ',
-    Interpretation: 'PING - Ask group 1d for their axes ',
+    Data: 'PING 1d',
+    Interpretation: 'PING - Ask a group of axes to return their axis ID ',
     errorStatus: '-'
   },
   {
@@ -6005,8 +6060,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'D600',
     Object: 'H2',
     ObjectName: '-',
-    Data: 'PING: ',
-    Interpretation: 'PING - Ask group 85d for their axes ',
+    Data: 'PING 85d',
+    Interpretation: 'PING - Ask a group of axes to return their axis ID ',
     errorStatus: '-'
   },
   {
@@ -6151,6 +6206,776 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 410,
+    OriginalMessage: '19:27:59 Bytes Write :  04 00 10 96 00 AA',
+    CobID: 'Write',
+    FrameData: '0400109600AA',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '9600',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'LOCKEEPROM 0',
+    Interpretation: 'Write protect/unprotect EEPROM 0',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 411,
+    OriginalMessage: '19:27:59 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 412,
+    OriginalMessage: '19:28:01 Bytes Write :  04 00 10 96 01 AB',
+    CobID: 'Write',
+    FrameData: '0400109601AB',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '9601',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'LOCKEEPROM 1',
+    Interpretation: 'Write protect/unprotect EEPROM 1',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 413,
+    OriginalMessage: '19:28:01 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 414,
+    OriginalMessage: '19:28:02 Bytes Write :  04 00 10 96 02 AC',
+    CobID: 'Write',
+    FrameData: '0400109602AC',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '9602',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'LOCKEEPROM 2',
+    Interpretation: 'Write protect/unprotect EEPROM 2',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 415,
+    OriginalMessage: '19:28:02 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 416,
+    OriginalMessage: '19:28:03 Bytes Write :  04 00 10 96 03 AD',
+    CobID: 'Write',
+    FrameData: '0400109603AD',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '9603',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'LOCKEEPROM 3',
+    Interpretation: 'Write protect/unprotect EEPROM 3',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 417,
+    OriginalMessage: '19:28:03 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 418,
+    OriginalMessage: '19:15:09 Bytes Write :  0A 00 10 DB 10 03 66 50 00 50 07 15',
+    CobID: 'Write',
+    FrameData: '0A0010DB1003665000500715',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'DB10',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CHECKSUM, PM 0x5000, 0x5007, 0x0366',
+    Interpretation: 'CHECKSUM, PM 0x5000, 0x5007, VAR_I1 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 419,
+    OriginalMessage: '19:15:09 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 420,
+    OriginalMessage: '19:15:14 Bytes Write :  0A 00 10 DB 30 03 66 50 00 50 07 35',
+    CobID: 'Write',
+    FrameData: '0A0010DB3003665000500735',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'DB30',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CHECKSUM, DM 0x5000, 0x5007, 0x0366',
+    Interpretation: 'CHECKSUM, DM 0x5000, 0x5007, VAR_I1 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 421,
+    OriginalMessage: '19:15:14 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 422,
+    OriginalMessage: '19:15:25 Bytes Write :  0A 00 10 DB 50 03 66 50 00 50 07 55',
+    CobID: 'Write',
+    FrameData: '0A0010DB5003665000500755',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'DB50',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CHECKSUM, SPI 0x5000, 0x5007, 0x0366',
+    Interpretation: 'CHECKSUM, SPI 0x5000, 0x5007, VAR_I1 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 423,
+    OriginalMessage: '19:15:25 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 424,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 425,
+    OriginalMessage: '19:08:31 Bytes Write :  0A 00 10 DB 50 03 66 50 00 50 07 55',
+    CobID: 'Write',
+    FrameData: '0A0010DB5003665000500755',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'DB50',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'CHECKSUM, SPI 0x5000, 0x5007, 0x0366',
+    Interpretation: 'CHECKSUM, SPI 0x5000, 0x5007, VAR_I1 ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 426,
+    OriginalMessage: '19:08:31 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 427,
+    OriginalMessage: '19:08:56 Bytes Write :  08 00 10 B0 04 00 11 03 66 46',
+    CobID: 'Write',
+    FrameData: '080010B0040011036646',
+    type: 'GiveData',
+    AxisID: 1,
+    CS: 'B004',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: '?0x0366 | DM  ',
+    Interpretation: '?VAR_I1 | DM [?V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 428,
+    OriginalMessage: '19:08:56 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 429,
+    OriginalMessage: '19:08:56 Bytes Read :  0A',
+    CobID: 'Read',
+    FrameData: '0A',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 10 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 430,
+    OriginalMessage: '19:08:56 Bytes Read :  00 11 B4 04 00 10 03 66 F5 68 A9',
+    CobID: 'Read',
+    FrameData: '0011B40400100366F568A9',
+    type: 'TakeData',
+    AxisID: 'H1',
+    CS: 'B404',
+    Object: 1,
+    ObjectName: '-',
+    Data: '0x0366 == 0xF568 ,DM  ',
+    Interpretation: 'VAR_I1 == 0xF568 == -2712d ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 431,
+    OriginalMessage: '08 00 10 90 A4 03 66 00 12 C7',
+    CobID: 'RW=?',
+    FrameData: '08001090A403660012C7',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '90A4',
+    Object: '-',
+    ObjectName: '-',
+    Data: '(0x0366), DM = 0x0012',
+    Interpretation: '(VAR_I1), DM = 0012 (18) ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 432,
+    OriginalMessage: '18:14:16 Bytes Write :  08 10 00 D6 00 00 11 07 D0 D6',
+    CobID: 'Write',
+    FrameData: '081000D600001107D0D6',
+    type: 'Normal',
+    AxisID: 'All',
+    CS: 'D600',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: 'PING 2000d',
+    Interpretation: 'PING - Ask a group of axes to return their axis ID ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 433,
+    OriginalMessage: '18:14:16 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 434,
+    OriginalMessage: '18:14:16 Bytes Read :  08',
+    CobID: 'Read',
+    FrameData: '08',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 8 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 435,
+    OriginalMessage: '18:14:16 Bytes Read :  00 11 D6 01 35 31 34 4C D6',
+    CobID: 'Read',
+    FrameData: '0011D6013531344CD6',
+    type: 'Normal',
+    AxisID: 'H1',
+    CS: 'D601',
+    Object: 1,
+    ObjectName: '-',
+    Data: 'PONG: F514L',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 436,
+    OriginalMessage: '18:14:16 Bytes Read :  08',
+    CobID: 'Read',
+    FrameData: '08',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 8 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 437,
+    OriginalMessage: '18:14:16 Bytes Read :  00 11 D6 02 35 30 39 4E DD',
+    CobID: 'Read',
+    FrameData: '0011D6023530394EDD',
+    type: 'Normal',
+    AxisID: 'H1',
+    CS: 'D602',
+    Object: 2,
+    ObjectName: '-',
+    Data: 'PONG: F509N',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 438,
+    OriginalMessage: '08 00 10 C9 63 02 28 03 67 D8 DD',
+    CobID: 'RW=?',
+    FrameData: '080010C96302280367D8DD',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: "MsgLength = 10 which don't match fist byte 8 or history length 8 ",
+    Interpretation: 'Message length doesn`t match',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 439,
+    OriginalMessage: '08 00 00 B0 00 00 01 00 00 B9',
+    CobID: 'RW=?',
+    FrameData: '080000B00000010000B9',
+    type: 'GiveData',
+    AxisID: '0',
+    CS: 'B000',
+    Object: 'H0',
+    ObjectName: '-',
+    Data: '?0x0000 | PM  ',
+    Interpretation: '?0x0000 | PM [?V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 440,
+    OriginalMessage: '17:29:47 Bytes Write :  04 00 10 04 02 1A',
+    CobID: 'Write',
+    FrameData: '04001004021A',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '0402',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'RESET',
+    Interpretation: 'Reset DSP controller',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 441,
+    OriginalMessage: '17:29:47 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 442,
+    OriginalMessage: '17:29:47 Bytes Write :  FF',
+    CobID: 'Write',
+    FrameData: 'FF',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'SYNC',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 443,
+    OriginalMessage: '17:29:47 Bytes Read :  0D',
+    CobID: 'Read',
+    FrameData: '0D',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'SYNC response',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 444,
+    OriginalMessage: '17:29:47 Bytes Write :  FF',
+    CobID: 'Write',
+    FrameData: 'FF',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'SYNC',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 445,
+    OriginalMessage: '17:29:47 Bytes Read :  0D',
+    CobID: 'Read',
+    FrameData: '0D',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'SYNC response',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 446,
+    OriginalMessage: '17:29:47 Bytes Write :  06 00 10 D8 01 00 11 00',
+    CobID: 'Write',
+    FrameData: '060010D801001100',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'D801',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: 'GETVAR',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 447,
+    OriginalMessage: '17:29:47 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 448,
+    OriginalMessage: '17:29:47 Bytes Read :  08',
+    CobID: 'Read',
+    FrameData: '08',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 8 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 449,
+    OriginalMessage: '17:29:47 Bytes Read :  00 11 D8 01 35 31 34 4C D8',
+    CobID: 'Read',
+    FrameData: '0011D8013531344CD8',
+    type: 'Normal',
+    AxisID: 'H1',
+    CS: 'D801',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GetVAR response:  F514L',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 450,
+    OriginalMessage: '17:29:47 Bytes Write :  06 00 10 08 20 00 04 42',
+    CobID: 'Write',
+    FrameData: '0600100820000442',
+    type: 'Normal',
+    AxisID: 1,
+    CS: '0820',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'SCIBR 0x0004',
+    Interpretation: 'Set SCI Baud Rate 0x0004 = 4d [val16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 451,
+    OriginalMessage: '17:29:47 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 452,
+    OriginalMessage: '17:29:47 Bytes Write :  06 00 10 D8 01 00 11 00',
+    CobID: 'Write',
+    FrameData: '060010D801001100',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'D801',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: 'GETVAR',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 453,
+    OriginalMessage: '17:29:47 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 454,
+    OriginalMessage: '17:29:47 Bytes Read :  08',
+    CobID: 'Read',
+    FrameData: '08',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 8 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 455,
+    OriginalMessage: '17:29:47 Bytes Read :  00 11 D8 01 35 31 34 4C D8',
+    CobID: 'Read',
+    FrameData: '0011D8013531344CD8',
+    type: 'Normal',
+    AxisID: 'H1',
+    CS: 'D801',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GetVAR response:  F514L',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 456,
+    OriginalMessage: '17:29:47 Bytes Write :  08 00 00 B0 00 00 01 00 00 B9',
+    CobID: 'Write',
+    FrameData: '080000B00000010000B9',
+    type: 'GiveData',
+    AxisID: '0',
+    CS: 'B000',
+    Object: 'H0',
+    ObjectName: '-',
+    Data: '?0x0000 | PM  ',
+    Interpretation: '?0x0000 | PM [?V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 457,
+    OriginalMessage: '17:29:47 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 458,
+    OriginalMessage: '17:29:47 Bytes Read :  0A',
+    CobID: 'Read',
+    FrameData: '0A',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 10 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 459,
+    OriginalMessage: '17:29:47 Bytes Read :  00 01 B4 04 00 10 00 00 24 F3 EA',
+    CobID: 'Read',
+    FrameData: '0001B4040010000024F3EA',
+    type: 'TakeData',
+    AxisID: 'H0',
+    CS: 'B404',
+    Object: 1,
+    ObjectName: '-',
+    Data: '0x0000 == 0x24F3 ,DM  ',
+    Interpretation: '0x0000 == 0x24F3 == 9459d ,DM [V16]',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 460,
+    OriginalMessage: '17:29:47 Bytes Write :  06 00 10 D8 01 00 11 00',
+    CobID: 'Write',
+    FrameData: '060010D801001100',
+    type: 'Normal',
+    AxisID: 1,
+    CS: 'D801',
+    Object: 'H1',
+    ObjectName: '-',
+    Data: 'GETVAR',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 461,
+    OriginalMessage: '17:29:47 Bytes Read :  4F',
+    CobID: 'Read',
+    FrameData: '4F',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'OK',
+    Interpretation: 'OK',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 462,
+    OriginalMessage: '17:29:47 Bytes Read :  08',
+    CobID: 'Read',
+    FrameData: '08',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'Length',
+    Interpretation: 'Next message = 8 bytes',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 463,
+    OriginalMessage: '17:29:47 Bytes Read :  00 11 D8 01 35 31 34 4C D8',
+    CobID: 'Read',
+    FrameData: '0011D8013531344CD8',
+    type: 'Normal',
+    AxisID: 'H1',
+    CS: 'D801',
+    Object: '-',
+    ObjectName: '-',
+    Data: 'GetVAR response:  F514L',
+    Interpretation: 'Get version. On-line cmd. ',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 464,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: '-',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 465,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

@@ -97,10 +97,9 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       createObject(row[0], row[1], row[2], row[3], false, '-')
       continue
     }
-    var aux_CobID = ['AxisID', 'type_RS232'] //function here
-    var DecodedMessage = DecodeOneRS232_msg(msgNr, type, messageString)
+    var DecodedMessage = DecodeOneRS232_msg(msgNr, messageString)
 
-    UpdateStatisticsBasedOnMessage(aux_CobID[1], aux_CobID[2])
+    UpdateStatisticsBasedOnMessage(DecodedMessage[0], DecodedMessage[3])
 
     createObject(
       msgNr, //Message NR
@@ -159,7 +158,7 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
   return ResultingArray
 }
 
-function DecodeOneRS232_msg(msgNr, type, messageString) {
+function DecodeOneRS232_msg(msgNr, messageString) {
   var AxisID = '-'
   var OpCode = '-'
   var Object = '-'
@@ -179,17 +178,21 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
     var messageDec = hexToDec(messageString, 16)
     if (messageDec < 13) {
       Data = 'Length'
+      ObjectName = 'Length'
       Interpretation = `Next message = ${messageDec} bytes`
       PreviousMessageInfo_RS232_g.msgNr = msgNr
       PreviousMessageInfo_RS232_g.storedFutureSize = messageString
     } else if (messageDec >= 13 && messageDec <= 15) {
       Interpretation = 'SYNC response'
+      ObjectName = 'SYNC reply'
     } else if (messageDec == 255) {
       //FF
       Interpretation = 'SYNC'
+      ObjectName = 'SYNC'
     } else if (messageDec == 79) {
       //4F -OK
       Interpretation = 'OK'
+      ObjectName = 'ACK'
     } else {
       Interpretation = 'unknown'
       errorStatus = 'error'
@@ -203,7 +206,9 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
       // First byte of the message is not the length of the message
       if (historyLength != messageString.length / 2 - 1) {
         // even the length of the pervious message is not the length of the current message
-        Data = `Fist byte ${potentialLength} and history length ${historyLength} don't match`
+        Data = `MsgLength = ${
+          messageString.length / 2 - 1
+        } which don't match fist byte ${potentialLength} or history length ${historyLength} `
         Interpretation = 'Message length doesn`t match'
         errorStatus = 'error'
       } else {
@@ -270,7 +275,10 @@ function DecodeOneRS232_msg(msgNr, type, messageString) {
 function getAxisID_RS232(hex) {
   let codeDec = hexToDec(hex.join(''), 32)
 
-  if (codeDec & 0xe00e || (codeDec & 0x1001) == 0x1001 || codeDec == 0) {
+  if (codeDec == 0) return '0'
+  else if (codeDec == 1) return 'H0'
+
+  if (codeDec & 0xe00e || (codeDec & 0x1001) == 0x1001) {
     // reserved bits are set
     return 'error'
   }
@@ -333,7 +341,6 @@ export function getOpCode_RS232(opCode, data) {
   var val16_3d = hexToDec(data.slice(8, 12), 16) + 'd'
 
   var val32_1 = '0x' + data.slice(4, 8) + data.slice(0, 4)
-
   var val32_1d = hexToDec(data.slice(4, 8) + data.slice(0, 4), 32) + 'd'
   var val32_2 = '0x' + data.slice(8, 12) + data.slice(4, 8)
   var val32_2d = hexToDec(data.slice(8, 12) + data.slice(4, 8), 32) + 'd'
@@ -537,18 +544,18 @@ export function getOpCode_RS232(opCode, data) {
 
     case '90':
       //Assignment
-      firstAddy = data.slice(0, 4)
-      destinator = getFirmwareAddress_RS232(firstAddy)[1]
+      firstAddy = val16_1
+      destinator = V16D
 
       switch (lastByte) {
         case '14':
         case '04':
         case '05':
         case '15':
-          secondAddy = data.slice(4, 8)
+          secondAddy = val16_2
           if (lastByteDec & 0x10) {
             // sender is a pointer
-            sender = getFirmwareAddress_RS232(secondAddy)[1]
+            sender = V16S
           } else {
             //sender is a variable
             sender = data.slice(4)
@@ -562,7 +569,7 @@ export function getOpCode_RS232(opCode, data) {
             secondAddy = sender
             sender = '0x' + sender + ` (${hexToDec(sender, rez)})`
           }
-          Data = `0x${firstAddy},dm= 0x${secondAddy}`
+          Data = `${firstAddy},dm= 0x${secondAddy}`
           Interpretation = `${destinator},dm= ${sender}`
           break
 
@@ -594,9 +601,9 @@ export function getOpCode_RS232(opCode, data) {
             }
             secondAddy = sender
 
-            sender = '0x' + sender + ` (${hexToDec(sender, rez)})`
+            sender = sender + ` (${hexToDec(sender, rez)})`
           }
-          Data = `(${firstAddy}${temp}), ${memoryType} = ${secondAddy}`
+          Data = `(${firstAddy}${temp}), ${memoryType} = 0x${secondAddy}`
           Interpretation = `(${destinator}${temp}), ${memoryType} = ${sender} `
           break
       }
@@ -1470,8 +1477,8 @@ export function getOpCode_RS232(opCode, data) {
 
       temp = getAxisID_RS232(data.slice(0, 4).split(''))
 
-      Data = `?${val16_2} ,${memoryType}  `
-      Interpretation = `?${V16S} ,${memoryType} [V${rez}]`
+      Data = `?${val16_2} | ${memoryType}  `
+      Interpretation = `?${V16S} | ${memoryType} [?V${rez}]`
       SenderMain = temp
       msgType = 'GiveData'
       break
@@ -1538,9 +1545,9 @@ export function getOpCode_RS232(opCode, data) {
     case 'D8':
       if (lastByte == '01') {
         if (data.length == 8) {
-          //TakeDAta
-          temp = data.slice(4, 8) + data.slice(0, 4)
-          Data = 'GetVAR:  ' + hex_to_ascii(temp)
+          //TakeData
+          temp = data.slice(0, 8)
+          Data = 'GetVAR response:  F' + hex_to_ascii(temp)
         } else {
           SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
           Data = 'GETVAR'
@@ -1555,11 +1562,15 @@ export function getOpCode_RS232(opCode, data) {
       if (lastByte == '00') {
         SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
 
-        Data = 'PING: '
-        Interpretation = `PING - Ask group ${val16_2d} for their axes `
+        Data = `PING ${val16_2d}`
+        Interpretation = `PING - Ask a group of axes to return their axis ID `
       } else {
         Data = 'PONG'
         //TODO Interpretation
+        temp = '0' + opCode.slice(2) + '0'
+        SenderMain = getAxisID_RS232(temp.split(''))
+        temp = data.slice(0, 8)
+        Data = 'PONG: F' + hex_to_ascii(temp)
       }
       break
     case '95':
@@ -1575,6 +1586,30 @@ export function getOpCode_RS232(opCode, data) {
         Interpretation = `BEGIN of a TML program `
       }
       break
+    case 'DB':
+      if (lastByteDec & 0x10) {
+        mask = (lastByteDec & 0xef) >> 3
+        if (mask == 0x8) {
+          memoryType = 'SPI'
+        } else if (mask == 0x4) {
+          memoryType = 'DM'
+        } else {
+          memoryType = 'PM'
+        }
+        Data = `CHECKSUM, ${memoryType} ${val16_2}, ${val16_3}, ${val16_1}`
+
+        Interpretation = `CHECKSUM, ${memoryType} ${val16_2}, ${val16_3}, ${V16D} `
+      }
+      break
+    case '96':
+      //LOCKEPPROM
+      mask = lastByteDec & 0x0f
+
+      Data = `LOCKEEPROM ${mask}`
+      Interpretation = `Write protect/unprotect EEPROM ${mask}`
+
+      break
+
     default:
       var nibbleCase = hexToDec(firstByte.slice(0, 1), 16)
       if ([2, 3, 4, 5, 7, 8, 10, 11, 14].includes(nibbleCase)) {
