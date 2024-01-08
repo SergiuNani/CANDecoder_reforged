@@ -18,10 +18,17 @@ import {
 import { Button2 } from '../components/SmallComponents'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { GetObject } from '../functions/CANopenFunctions'
-import { Hardcoded_VerifyRS232, MessageListRs232ToVerify } from '../data/verifyRS232'
+import {
+  Hardcoded_VerifyRS232,
+  Verify_RS232_rawList,
+  Verify_TechnoCAN_rawList,
+  Hardcoded_VerifyTechnoCAN
+} from '../data/verifyRS232'
+import { ProtocolGlobalContext } from '../App'
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
   const [verifyRS232, setVerifyRS232] = useState(false)
+  const [verifyTechnoCAN, setVerifyTechnoCAN] = useState(false)
   const [fileInnerText, setFileInnerText] = useState('')
   const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(false)
 
@@ -35,6 +42,8 @@ const DebugScene = () => {
         setverifyCANopenAlgorithm(true)
       } else if (event.key === '2') {
         setVerifyRS232(true)
+      } else if (event.key === '3') {
+        setVerifyTechnoCAN(true)
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -91,6 +100,16 @@ const DebugScene = () => {
             Verify RS232
           </Button2>
         </section>
+        {/* //Verify TechnoCAN ===================================== */}
+        <section>
+          <Button2
+            onClick={() => {
+              setVerifyTechnoCAN(true)
+            }}
+          >
+            Verify TechnoCAN
+          </Button2>
+        </section>
       </section>
 
       {/* //Check for missing objects or errors ========================*/}
@@ -138,6 +157,13 @@ const DebugScene = () => {
           protocol={'RS232'}
         />
       )}
+      {verifyTechnoCAN && (
+        <DialogVerifyAlgorithmComponent
+          openState={verifyTechnoCAN}
+          setOpenState={setVerifyTechnoCAN}
+          protocol={'TechnoCAN'}
+        />
+      )}
 
       {showCompareExistingVsFileObjects && (
         <DialogVerifyMyObjects
@@ -157,18 +183,93 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
   const colors = tokens(theme.palette.mode)
   var InputTEXT
   var hardcodedArray = []
-  if (protocol == 'CANOPEN') {
-    InputTEXT = VerifyCANopenValidityArray_RAW
-    hardcodedArray = Hardcoded_VerifyCANopenValidityArray
-  } else if (protocol == 'RS232') {
-    InputTEXT = MessageListRs232ToVerify
-    hardcodedArray = Hardcoded_VerifyRS232
-  }
+  const { ValidationMethod } = useContext(ProtocolGlobalContext)
 
   var ReturnText = []
   var errorStatus = 'neutral'
   DontBotherWithPDO_flag[0] = 1
   function DoNothing() {}
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.ctrlKey && event.key === 'Enter') {
+        RewriteLocalStorage()
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [openState, protocol])
+
+  const tt = (
+    <section>
+      <Typography variant="h4">
+        No array present in LocalStorage for Protocol: {protocol}{' '}
+      </Typography>
+      <br />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '2rem'
+        }}
+      >
+        <Button2 onClick={RewriteLocalStorage}>ADD</Button2>
+        <Button2
+          onClick={() => {
+            setOpenState(false)
+          }}
+        >
+          Close
+        </Button2>
+      </div>
+    </section>
+  )
+
+  if (protocol == 'CANOPEN') {
+    InputTEXT = VerifyCANopenValidityArray_RAW
+    if (ValidationMethod == 'LocalStorage') {
+      if (localStorage.getItem('VerifyCANopen')) {
+        hardcodedArray = JSON.parse(localStorage.getItem('VerifyCANopen'))
+      } else {
+        //Dont exist
+        ReturnText.push(tt)
+        errorStatus = 'NoArrayInLocalStorage'
+      }
+    } else {
+      hardcodedArray = Hardcoded_VerifyCANopenValidityArray
+    }
+  } else if (protocol == 'RS232') {
+    InputTEXT = Verify_RS232_rawList
+
+    if (ValidationMethod == 'LocalStorage') {
+      if (localStorage.getItem('VerifyRS232')) {
+        hardcodedArray = JSON.parse(localStorage.getItem('VerifyRS232'))
+      } else {
+        //Dont exist
+        ReturnText.push(tt)
+        errorStatus = 'NoArrayInLocalStorage'
+      }
+    } else {
+      hardcodedArray = Hardcoded_VerifyRS232
+    }
+  } else if (protocol == 'TechnoCAN') {
+    InputTEXT = Verify_TechnoCAN_rawList
+
+    if (ValidationMethod == 'LocalStorage') {
+      if (localStorage.getItem('VerifyTechnoCAN')) {
+        hardcodedArray = JSON.parse(localStorage.getItem('VerifyTechnoCAN'))
+      } else {
+        //Dont exist
+        ReturnText.push(tt)
+        errorStatus = 'NoArrayInLocalStorage'
+      }
+    } else {
+      hardcodedArray = Hardcoded_VerifyTechnoCAN
+    }
+  }
 
   var MsgsExtracted_array = Extract_MSGs_from_text(InputTEXT.split('\n'), protocol)
 
@@ -179,58 +280,79 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
     DoNothing,
     protocol
   )
+
   console.log('🚀 ResultFromFunction:', MessagesDecoded)
   console.log('🚀 hardcodedArray:', hardcodedArray)
+  if (errorStatus != 'NoArrayInLocalStorage') {
+    if (MessagesDecoded.length != hardcodedArray.length) {
+      ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has $
+          {hardcodedArray.length} length`
 
-  if (MessagesDecoded.length != hardcodedArray.length) {
-    ReturnText = `Decoded list has ${MessagesDecoded.length} length, while Hardcoded data has ${hardcodedArray.length} length`
-    errorStatus = 'errorLength'
-  } else {
-    MessagesDecoded.forEach((oneObjectMessage, index) => {
-      for (const key in oneObjectMessage) {
-        if (key != 'msgNr') {
-          if (oneObjectMessage[key] != hardcodedArray[index][key]) {
-            ReturnText.push(
-              <div
-                style={{
-                  border: `1px solid ${colors.grey[100]}`,
-                  marginBottom: '0.5rem',
-                  padding: '0.5rem'
-                }}
-              >
-                -- Message:
-                <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
-                  {' '}
-                  //{oneObjectMessage.OriginalMessage}//
-                </span>
-                <div>
-                  LINE:
-                  <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+      errorStatus = 'errorLength'
+    } else {
+      MessagesDecoded.forEach((oneObjectMessage, index) => {
+        for (const key in oneObjectMessage) {
+          if (key != 'msgNr') {
+            if (oneObjectMessage[key] != hardcodedArray[index][key]) {
+              ReturnText.push(
+                <div
+                  style={{
+                    border: `1px solid ${colors.grey[100]}`,
+                    marginBottom: '0.5rem',
+                    padding: '0.5rem'
+                  }}
+                >
+                  -- Message:
+                  <span style={{ color: `${colors.blue[500]}`, fontWeight: '700' }}>
                     {' '}
-                    "{oneObjectMessage.msgNr}"
+                    //{oneObjectMessage.OriginalMessage}//
                   </span>
-                  , KEY :
-                  <span style={{ color: `${colors.green[400]}`, fontWeight: '700' }}> {key} </span>,
-                  Fct/Hardcoded:
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    LINE:
+                    <span style={{ color: `${colors.primary[400]}`, fontWeight: '700' }}>
+                      {' '}
+                      "{oneObjectMessage.msgNr}"
+                    </span>
+                    , KEY :
+                    <span style={{ color: `${colors.green[400]}`, fontWeight: '700' }}>
+                      {' '}
+                      {key}{' '}
+                    </span>
+                    , <span style={{ color: `${colors.red[500]}`, fontWeight: '700' }}>Fct</span>/
+                    <span style={{ color: `${colors.red[200]}`, fontWeight: '700' }}>
+                      Hardcoded:
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ color: `${colors.red[500]}`, fontWeight: '700' }}>
+                      {`${oneObjectMessage[key]}`}
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ color: `${colors.red[200]}`, fontWeight: '700' }}>
+                      {' '}
+                      {`${hardcodedArray[index][key]}`}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span style={{ color: `${colors.red[500]}`, fontWeight: '700' }}>
-                    {`${oneObjectMessage[key]}`}
-                  </span>
-                </div>
-                <div>
-                  <span style={{ color: `${colors.red[200]}`, fontWeight: '700' }}>
-                    {' '}
-                    {`${hardcodedArray[index][key]}`}
-                  </span>
-                </div>
-              </div>
-            )
-            return (errorStatus = 'error')
+              )
+              return (errorStatus = 'error')
+            }
           }
         }
-      }
-    })
+      })
+    }
+  }
+
+  function RewriteLocalStorage() {
+    if (protocol == 'CANOPEN') {
+      localStorage.setItem('VerifyCANopen', JSON.stringify(MessagesDecoded))
+    } else if (protocol == 'RS232') {
+      localStorage.setItem('VerifyRS232', JSON.stringify(MessagesDecoded))
+    } else if (protocol == 'TechnoCAN') {
+      localStorage.setItem('VerifyTechnoCAN', JSON.stringify(MessagesDecoded))
+    }
+    setOpenState(false)
   }
   return (
     <Dialog
@@ -238,9 +360,20 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
       onClose={() => {
         setOpenState(false)
       }}
+      sx={{
+        border: `1px solid ${colors.primary[400]}`,
+        padding: '10rem',
+        color: `${colors.primary[200]}`,
+        top: 0,
+        fontSize: '1rem',
+        '& .MuiDialog-paper': {
+          maxWidth: 'none',
+          maxHeight: '90vh'
+        }
+      }}
     >
-      <section
-        style={{
+      <Box
+        sx={{
           padding: '1rem 2rem',
           border: `2px solid`,
           borderColor: ['error', 'errorLength'].includes(errorStatus)
@@ -249,18 +382,38 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
           background: `${colors.primary[300]}`
         }}
       >
-        <div>
-          {errorStatus == 'errorLength' ? (
-            ReturnText
-          ) : ReturnText.length > 0 ? (
-            ReturnText.map((item, index) => {
-              return <div key={index}>{item}</div>
-            })
-          ) : (
-            <div>All good, Protocol: {protocol}</div>
-          )}
-        </div>
-      </section>
+        {errorStatus != 'neutral' && errorStatus != 'NoArrayInLocalStorage' ? (
+          <section>
+            <Button2 onClick={RewriteLocalStorage}>Rewrite LocalStorage</Button2>
+          </section>
+        ) : null}
+        <section style={{}}>
+          <div>
+            {errorStatus == 'errorLength' ? (
+              ReturnText
+            ) : ReturnText.length > 0 ? (
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns:
+                    errorStatus != 'NoArrayInLocalStorage' ? 'repeat(3, 1fr)' : null,
+                  gap: '0.5rem'
+                }}
+              >
+                {ReturnText.map((item, index) => {
+                  return (
+                    <div key={index} style={{ width: '100%' }}>
+                      {item}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div>All good, Protocol: {protocol}</div>
+            )}
+          </div>
+        </section>
+      </Box>
     </Dialog>
   )
 }

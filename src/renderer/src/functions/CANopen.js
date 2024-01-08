@@ -151,7 +151,7 @@ export function CobID_who_dis(cob_id) {
 }
 
 export function Extract_MSGs_from_text(text, ProtocolGlobal) {
-  if (ProtocolGlobal == 'CANOPEN') {
+  if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'TechnoCAN') {
     //Text should be array of strings
     var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
     const hexPattern = /^(0x)?[0-9a-f]+$/gi
@@ -375,7 +375,7 @@ export function CreateDecodedArrayOfObjects(
   ProtocolGlobal
 ) {
   console.log(`DANGER -- CreateDecodedArrayOfObjects`)
-  if (ProtocolGlobal == 'CANOPEN') {
+  if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'TechnoCAN') {
     var arr = AllCAN_MsgsExtracted_array
     var PDOMessageToDecode
     var ResultingArray = MessagesDecoded_ArrayOfObjects

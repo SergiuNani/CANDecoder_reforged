@@ -1216,7 +1216,6 @@ export function getOpCode_RS232(opCode, data) {
         Data = `GOTO 0x${firstAddy}`
         Interpretation = `Unconditional GOTO with address set in ${destinator}`
       }
-
       break
 
     case '74':
@@ -1565,7 +1564,6 @@ export function getOpCode_RS232(opCode, data) {
         Data = `PING ${val16_2d}`
         Interpretation = `PING - Ask a group of axes to return their axis ID `
       } else {
-        Data = 'PONG'
         //TODO Interpretation
         temp = '0' + opCode.slice(2) + '0'
         SenderMain = getAxisID_RS232(temp.split(''))

@@ -108,7 +108,7 @@ function MyProviders({ children }) {
   const [WelcomePage, setWelcomePage] = useState(
     localStorage.getItem('WelcomePageStatus') === 'true'
   )
-
+  const [ValidationMethod, setValidationMethod] = useState('LocalStorage') // Internal -- LocalStorage
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
   const [toggleFilterWindow_app, setToggleFilterWindow_app] = useState(false)
@@ -155,7 +155,14 @@ function MyProviders({ children }) {
                 }}
               >
                 <SidebarContext.Provider value={{ sidebarSelectedItem, setSidebarSelectedItem }}>
-                  <ProtocolGlobalContext.Provider value={{ ProtocolGlobal, setProtocolGlobal }}>
+                  <ProtocolGlobalContext.Provider
+                    value={{
+                      ProtocolGlobal,
+                      setProtocolGlobal,
+                      ValidationMethod,
+                      setValidationMethod
+                    }}
+                  >
                     <FG_Context.Provider
                       value={{
                         FG_DisplayVSApplied,

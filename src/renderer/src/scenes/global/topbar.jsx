@@ -15,7 +15,7 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt'
 import { VerifyCANopenValidityArray_RAW } from '../../data/VerifyAlgorithmData'
 import { RegisterSelectionComponent } from './RegisterWindow'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
-import { MessageListRs232ToVerify } from '../../data/verifyRS232'
+import { Verify_RS232_rawList } from '../../data/verifyRS232'
 import {
   AppContext,
   ProtocolGlobalContext,
@@ -160,9 +160,9 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expa
         </Typography>
         {Clearance > 22 ? (
           <AccordionComponent
-            title="Communication Protocol"
+            title="Working Mode"
             children={<WorkingModeInsertPart />}
-            defaultExpanded
+            expanded={true}
           />
         ) : null}
         <AccordionComponent title="General Settings" children={<GeneralSettingsInsertPart />} />
@@ -214,26 +214,54 @@ const AccordionComponent = ({ title, children, defaultExpanded, expanded }) => {
 const WorkingModeInsertPart = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const { ProtocolGlobal, setProtocolGlobal } = useContext(ProtocolGlobalContext)
+  const { ProtocolGlobal, setProtocolGlobal, ValidationMethod, setValidationMethod } =
+    useContext(ProtocolGlobalContext)
+  var { Clearance } = useContext(ClearanceContext)
+
   return (
-    <section style={{ padding: '1rem' }}>
-      <RadioGroup
-        onChange={(e) => {
-          setProtocolGlobal(e.target.value)
-        }}
-        value={ProtocolGlobal}
-        sx={{
-          justifyContent: 'center',
-          ml: '1rem',
-          '& .MuiSvgIcon-root': {
-            color: `${colors.green[400]}`
-          }
-        }}
-      >
-        <FormControlLabel value="CANOPEN" control={<Radio />} label="CANOpen/TehnoCan" />
-        <FormControlLabel value="RS232" control={<Radio />} label="RS232" />
-        {/* <FormControlLabel value="TMLCAN" control={<Radio />} label="TMLCAN" /> */}
-      </RadioGroup>
+    <section style={{ padding: '1rem', display: 'flex', gap: '3rem' }}>
+      <div>
+        <li>Communication Protocol: </li>
+        <RadioGroup
+          onChange={(e) => {
+            setProtocolGlobal(e.target.value)
+          }}
+          value={ProtocolGlobal}
+          sx={{
+            justifyContent: 'center',
+            ml: '1rem',
+            '& .MuiSvgIcon-root': {
+              color: `${colors.green[400]}`
+            }
+          }}
+        >
+          <FormControlLabel value="CANOPEN" control={<Radio />} label="CANOpen/TehnoCan" />
+          <FormControlLabel value="RS232" control={<Radio />} label="RS232" />
+          {/* <FormControlLabel value="TMLCAN" control={<Radio />} label="TMLCAN" /> */}
+        </RadioGroup>
+        <br />
+      </div>
+      {Clearance > 33 ? (
+        <div>
+          <li>Validation Method</li>
+          <RadioGroup
+            onChange={(e) => {
+              setValidationMethod(e.target.value)
+            }}
+            value={ValidationMethod}
+            sx={{
+              justifyContent: 'center',
+              ml: '1rem',
+              '& .MuiSvgIcon-root': {
+                color: `${colors.green[400]}`
+              }
+            }}
+          >
+            <FormControlLabel value="Internal" control={<Radio />} label="Internal" />
+            <FormControlLabel value="LocalStorage" control={<Radio />} label="LocalStorage" />
+          </RadioGroup>
+        </div>
+      ) : null}
     </section>
   )
 }
@@ -537,7 +565,7 @@ const DecodeCANlogOptionsInsertPart = () => {
             onClick={() => {
               var text = ''
               if (ProtocolGlobal == 'RS232') {
-                text = MessageListRs232ToVerify
+                text = Verify_RS232_rawList
               } else if (ProtocolGlobal == 'CANOPEN') {
                 text = DEMO_CANopen_raw
               }
