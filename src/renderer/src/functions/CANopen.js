@@ -12,7 +12,11 @@ import { MessagesDecoded_ArrayOfObjects } from '../scenes/Decode_CAN_LOG'
 import { DecodeOnePDOmsg } from './CANopenFunctions'
 import { globalIndex } from '../scenes/Decode_CAN_LOG'
 import { Mapping_objects_array } from '../data/SmallData'
-import { Extract_MSGs_from_text_RS232, CreateDecodedArrayOfObjects_RS232 } from './RS232'
+import {
+  Extract_MSGs_from_text_RS232,
+  CreateDecodedArrayOfObjects_RS232,
+  getFirmwareAddressesIntoArray_RS232
+} from './RS232'
 export let CanLogStatistics = [] // array of all the axes
 
 export function CobID_who_dis(cob_id) {
@@ -376,6 +380,8 @@ export function CreateDecodedArrayOfObjects(
 ) {
   console.log(`DANGER -- CreateDecodedArrayOfObjects`)
   if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'TechnoCAN') {
+    getFirmwareAddressesIntoArray_RS232('F514L') // for TechnoCAN
+
     var arr = AllCAN_MsgsExtracted_array
     var PDOMessageToDecode
     var ResultingArray = MessagesDecoded_ArrayOfObjects

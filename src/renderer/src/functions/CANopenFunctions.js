@@ -307,7 +307,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       TextReturn = hexToDec(value, 8)
       break
     case '201A':
-      TextReturn = `Address : ${value}`
+      TextReturn = `Cam table run address : 0x${value}`
       break
     case '2108_01':
       TextReturn = `Address of the variable which will be filtered: ${value}`
@@ -469,6 +469,26 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
                     180°, the axis moves in positive direction.`
           break
       }
+      break
+    case '2019':
+      TextReturn = `Cam table load address : 0x${value}`
+      break
+
+    case '2010':
+      var valueDec = hexToDec(value, 32)
+      var axixIDSlave = valueDec & 0xff
+      var temp = []
+      if (valueDec & 0x100) {
+        for (let i = 0; i < 8; i++) {
+          if (axixIDSlave & (1 << i)) {
+            temp.push(`G${i + 1}`)
+          }
+        }
+        axixIDSlave = temp.join(',')
+      }
+      var masterSendsHisPosition =
+        valueDec & 0x8000 ? 'Master is sending his position' : 'Master is inactive'
+      TextReturn = `Slave AxisID: ${axixIDSlave} -- ${masterSendsHisPosition}`
       break
 
     default:

@@ -36,7 +36,7 @@ export function Extract_MSGs_from_text_RS232(text) {
   })
   return ExtractedArray
 }
-function getFirmwareAddressesIntoArray_RS232(fw) {
+export function getFirmwareAddressesIntoArray_RS232(fw) {
   var initialText = ``
   var resultingArray = []
   if ((fw = 'F514L')) {
@@ -80,7 +80,6 @@ var PreviousMessageInfo_RS232_g = {
 export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen) {
   console.log('--BB-- CreateDecodedArrayOfObjects_RS232')
   getFirmwareAddressesIntoArray_RS232('F514L') // BUg in the future add more options and make it dynamic
-  getFirmwareAddress_RS232('0303')
 
   var arr = AllCAN_MsgsExtracted_array
   var ResultingArray = []
@@ -152,9 +151,6 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
     //Because the first time the page is loaded it thinks the first empty line is a message and tries to decode it
     setIsDrawerOpen(true)
   }
-
-  // console.log('🚀 ~  ResultingArray:', ResultingArray)
-  // console.log(CanLogStatistics)
   return ResultingArray
 }
 
@@ -1524,8 +1520,8 @@ export function getOpCode_RS232(opCode, data) {
 
       temp = getAxisID_RS232(data.slice(0, 4).split(''))
 
-      Data = `${val16_2} == ${temp2} ,${memoryType}  `
-      Interpretation = `${V16S} == ${temp2} == ${temp3} ,${memoryType} [V${rez}]`
+      Data = `${val16_2} == ${temp2} | ${memoryType}  `
+      Interpretation = `${V16S} == ${temp2} == ${temp3} | ${memoryType} [?V${rez} - TakeData]`
       SenderMain = temp
       msgType = 'TakeData'
       break
@@ -1635,6 +1631,7 @@ export function getOpCode_RS232(opCode, data) {
         firstAddy = '0x' + firstAddy
         var startStr = ''
         var startSt2 = ''
+        var endStr = ''
         if (temp == 0x00) {
           //2000 2200
           if (nibbleCase == 2) {
@@ -1678,6 +1675,7 @@ export function getOpCode_RS232(opCode, data) {
           if (nibbleCase == 2) {
             rez = '[V32 = val32]'
             mask = '='
+            endStr = `= ${val32_1d}`
           } else if (nibbleCase == 3) {
             rez = '[V32D = -V32S]'
             mask = '= -'
@@ -1772,7 +1770,7 @@ export function getOpCode_RS232(opCode, data) {
         }
 
         Data = `${startStr} ${firstAddy} ${mask} ${secondAddy}`
-        Interpretation = `${startSt2} ${destinator} ${mask} ${sender} -- ${rez}`
+        Interpretation = `${startSt2} ${destinator} ${mask} ${sender} ${endStr} -- ${rez}`
       } else {
         errorStatus = 'error'
       }
