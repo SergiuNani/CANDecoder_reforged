@@ -960,8 +960,8 @@ export function getOpCode_RS232(opCode, data) {
         }
         temp = data.slice(4, 8)
         temp2 = data.slice(8, 12)
-        Data = `SRB ${firstAddy}, 0x${temp}, 0x${temp2} `
-        Interpretation = `Set / Reset Bits  "${destinator}" , AND_mask: 0x${temp}, OR_mask: 0x${temp2} `
+        Data = `SRBL 0x${firstAddy}, 0x${temp}, 0x${temp2} `
+        Interpretation = `Set / Reset Bits  "${destinator}" (long address) , AND_mask: 0x${temp}, OR_mask: 0x${temp2} `
       }
       if (!Data) shortArressingMessages()
       break
@@ -1599,6 +1599,7 @@ export function getOpCode_RS232(opCode, data) {
         Data = `[${temp}] ${val16_2}${temp2}, ${memoryType}  = ${val16_3}  `
         Interpretation = `[${temp}] ${V16S}${temp2},${memoryType} = ${V16S_2} [V32D, V32S]`
       }
+      if (!Data) shortArressingMessages()
       break
     case '9D':
       temp = getAxisID_RS232(data.slice(0, 4).split(''))
@@ -1649,7 +1650,6 @@ export function getOpCode_RS232(opCode, data) {
 
       Data = `${val16_3} = [${temp}] ${val16_2}, ${memoryType} `
       Interpretation = ` ${V16S_2} = [${temp}] ${V16S},${memoryType}  ${temp3}`
-
       break
 
     case '94':
