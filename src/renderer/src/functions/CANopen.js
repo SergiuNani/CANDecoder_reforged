@@ -630,38 +630,45 @@ export function verifyValidityOfMappingGroup(group) {
   return [returnText, currectCOBID, errorStatus]
 }
 export function verifyRepetitiveGroup(group) {
-  var emptyLines = 0
-  var syncLines = 0
-  var NMT_M = 0
-  var invalidLines = 0
   var returnText = ''
-  group.forEach((oneMessage) => {
-    if (oneMessage.CobID == 'invalid') {
-      invalidLines++
-    } else if (oneMessage.type == 'SYNC') {
-      syncLines++
-    } else if (oneMessage.CobID == 'Empty') {
-      emptyLines++
-    } else if (oneMessage.type == 'NMT_M') {
-      NMT_M++
+  if (group[0].CobID == 'Repetitive') {
+    var emptyLines = 0
+    var syncLines = 0
+    var NMT_M = 0
+    var invalidLines = 0
+    group.forEach((oneMessage) => {
+      if (oneMessage.CobID == 'invalid') {
+        invalidLines++
+      } else if (oneMessage.type == 'SYNC') {
+        syncLines++
+      } else if (oneMessage.CobID == 'Empty') {
+        emptyLines++
+      } else if (oneMessage.type == 'NMT_M') {
+        NMT_M++
+      }
+    })
+    var sum = emptyLines + syncLines + NMT_M + invalidLines
+    if (emptyLines) {
+      returnText = returnText.concat('Empty: ', emptyLines, ', ')
     }
-  })
-  var sum = emptyLines + syncLines + NMT_M + invalidLines
-  if (emptyLines) {
-    returnText = returnText.concat('Empty: ', emptyLines, ', ')
+    if (syncLines) {
+      returnText = returnText.concat('SYNC: ', syncLines, ', ')
+    }
+    if (NMT_M) {
+      returnText = returnText.concat('NMT_M: ', NMT_M, ', ')
+    }
+    if (invalidLines) {
+      returnText = returnText.concat('Invalid: ', invalidLines, ', ')
+    }
+    if (sum) {
+      returnText = returnText.concat('Total: ', sum)
+    }
+  } else {
+    returnText = `Frame: ${group[0].CobID} - ${group[0].FrameData} repeats ${
+      group.length - 1
+    } times`
   }
-  if (syncLines) {
-    returnText = returnText.concat('SYNC: ', syncLines, ', ')
-  }
-  if (NMT_M) {
-    returnText = returnText.concat('NMT_M: ', NMT_M, ', ')
-  }
-  if (invalidLines) {
-    returnText = returnText.concat('Invalid: ', invalidLines, ', ')
-  }
-  if (sum) {
-    returnText = returnText.concat('Total: ', sum)
-  }
+
   return returnText
 }
 

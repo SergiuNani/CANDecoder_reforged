@@ -341,6 +341,178 @@ export function getOpCode_RS232(opCode, data) {
   var val32_2 = '0x' + data.slice(8, 12) + data.slice(4, 8)
   var val32_2d = hexToDec(data.slice(8, 12) + data.slice(4, 8), 32) + 'd'
 
+  function shortArressingMessages() {
+    var nibbleCase = hexToDec(firstByte.slice(0, 1), 16)
+    if ([2, 3, 4, 5, 7, 8, 10, 11, 14].includes(nibbleCase)) {
+      // ...A, B, E
+      //Potential short addressing
+      temp = firstByteDec & 0x0c // 0000 1100
+
+      if (firstByteDec & 0x02) temp2 = 0x800
+      else temp2 = 0x200
+
+      temp3 = opCodeDec & 0x01ff
+
+      if (data.length == 8) {
+        secondAddy = '0x' + data.slice(4, 8) + data.slice(0, 4)
+        sender = secondAddy
+      } else {
+        secondAddy = data.slice(0, 4)
+        sender = getFirmwareAddress_RS232(secondAddy)[1]
+        if (secondAddy.slice(0, 2) != '0x' && secondAddy != '') {
+          secondAddy = '0x' + secondAddy
+        }
+      }
+      firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
+      destinator = getFirmwareAddress_RS232(firstAddy)[1]
+      firstAddy = '0x' + firstAddy
+      var startStr = ''
+      var startSt2 = ''
+      var endStr = ''
+      if (temp == 0x00) {
+        //2000 2200
+        if (nibbleCase == 2) {
+          rez = '[V16D = val16/TML label]'
+          mask = '='
+        } else if (nibbleCase == 3) {
+          rez = '[V16D = -V16S]'
+          mask = '= -'
+        } else if (nibbleCase == 4) {
+          rez = '[V16D += V16S]'
+          mask = '+='
+        } else if (nibbleCase == 5) {
+          rez = '[V16D -= V16S]'
+          mask = '-='
+        } else if (nibbleCase == 8) {
+          rez = '[V32]'
+          mask = ''
+          startStr = 'SAP'
+          startSt2 = 'Set Actual Position'
+        } else if (nibbleCase == 0x0e) {
+          startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `[${startStr}]`
+          startSt2 = startStr
+          rez = '[V16D, V16S]'
+          mask = '= ' + startSt2
+          startSt2 = ''
+          startStr = ''
+          secondAddy = firstAddy
+          sender = destinator
+          firstAddy = val16_2
+          destinator = V16S
+        } else if (nibbleCase == 0x0a) {
+          SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `?TML `
+          startSt2 = `?TML`
+          rez = '[?TML V16]'
+          secondAddy = ''
+          sender = ''
+        }
+      } else if (temp == 0x04) {
+        if (nibbleCase == 2) {
+          rez = '[V32 = val32]'
+          mask = '='
+          endStr = `= ${val32_1d}`
+        } else if (nibbleCase == 3) {
+          rez = '[V32D = -V32S]'
+          mask = '= -'
+        } else if (nibbleCase == 4) {
+          rez = '[V32D += V32S ]'
+          mask = '+='
+        } else if (nibbleCase == 5) {
+          rez = '[V32D -= V32S ]'
+          mask = '-='
+        } else if (nibbleCase == 0x0e) {
+          startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `[${startStr}]`
+          startSt2 = startStr
+          rez = '[V32D, V32S]'
+          mask = '= ' + startSt2
+          startSt2 = ''
+          startStr = ''
+          secondAddy = firstAddy
+          sender = destinator
+          firstAddy = val16_2
+          destinator = V16S
+        } else if (nibbleCase == 0x0a) {
+          SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `?TML `
+          startSt2 = `?TML`
+          rez = '[?TML V32]'
+          secondAddy = ''
+          sender = ''
+        }
+      } else if (temp == 0x08) {
+        //2800 2A00
+
+        if (nibbleCase == 2) {
+          rez = '[V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]'
+          mask = '='
+        } else if (nibbleCase == 3) {
+          rez = '[V16 += val16 ]'
+          mask = '+='
+        } else if (nibbleCase == 4) {
+          rez = '[V16 -= val16]'
+          mask = '-='
+        } else if (nibbleCase == 0x0b) {
+          startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `[${startStr}]`
+          startSt2 = startStr
+          rez = '[V16D, V16S]'
+          mask = '='
+          secondAddy = val16_2
+          sender = V16S
+        } else if (nibbleCase == 0x0a) {
+          SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `?TML `
+          startSt2 = `?TML`
+          mask = ' = '
+          rez = '[?TML V16 TakeData]'
+          secondAddy = val16_2
+          sender = val16_2 + ' = ' + val16_2d
+        }
+      } else if (temp == 0x0c) {
+        //2C00 2E00
+        if (nibbleCase == 2) {
+          rez = '[V32D = V32S]'
+          mask = '='
+        } else if (nibbleCase == 3) {
+          rez = '[V32 += val32 ]'
+          mask = '+='
+        } else if (nibbleCase == 4) {
+          rez = '[V32 -= val32]'
+          mask = '-='
+        } else if (nibbleCase == 7) {
+          startStr = 'SEG'
+          startSt2 = 'Segment'
+          rez = '[V16, V32]'
+          mask = ','
+        } else if (nibbleCase == 0x0b) {
+          startStr = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `[${startStr}]`
+          startSt2 = startStr
+          rez = '[V32D, V32S]'
+          mask = '='
+          secondAddy = val16_2
+          sender = V16S
+        } else if (nibbleCase == 0x0a) {
+          SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
+          startStr = `?TML `
+          startSt2 = `?TML`
+          rez = '[?TML V32 TakeData]'
+          mask = ' = '
+          secondAddy = val32_2
+          sender = val32_2 + ' = ' + val32_2d
+        }
+      }
+
+      Data = `${startStr} ${firstAddy} ${mask} ${secondAddy}`
+      Interpretation = `${startSt2} ${destinator} ${mask} ${sender} ${endStr} -- ${rez}`
+    } else {
+      errorStatus = 'error'
+    }
+  }
+
   switch (firstByte) {
     case '00':
       switch (lastByte) {
@@ -390,6 +562,73 @@ export function getOpCode_RS232(opCode, data) {
           break
       }
       break
+
+    case '04':
+      switch (lastByte) {
+        case '04':
+          Data = 'RET'
+          Interpretation = 'Return from TML function'
+          break
+        case '08':
+          Data = 'WAIT!'
+          Interpretation = 'Wait until event occurs'
+          break
+        case '10':
+          Data = 'DINT'
+          Interpretation = 'Disable TML Interrupts '
+          break
+        case '02':
+          Data = 'RESET'
+          Interpretation = 'Reset DSP controller'
+          break
+        case 'A0':
+          Data = 'DIS2CAPI'
+          Interpretation = 'Disable 2nd CAPI capture'
+          break
+        case '81':
+          Data = 'DISCAPI'
+          Interpretation = 'Disable CAPI capture'
+          break
+
+        case '20':
+          Data = 'EN2CAPI0'
+          Interpretation = 'Enable 2nd CAPI capture for 1->0'
+          break
+        case '01':
+          Data = 'ENCAPI0'
+          Interpretation = 'Enable CAPI capture for 1->0 '
+          break
+        default:
+          errorStatus = 'error'
+          break
+      }
+
+      break
+    case '05':
+      switch (lastByte) {
+        case '04':
+          Data = 'RETI'
+          Interpretation = 'Return from TML Interrupt SR '
+          break
+        case '10':
+          Data = 'EINT'
+          Interpretation = 'Enable TML Interrupts  '
+          break
+        case '20':
+          Data = 'EN2CAPI1'
+          Interpretation = 'Enable 2nd CAPI capture for 0->1'
+          break
+        case '01':
+          Data = 'ENCAPI1'
+          Interpretation = 'Enable CAPI capture for 0->1 '
+          break
+        default:
+          errorStatus = 'error'
+          break
+      }
+
+      break
+
     case '06':
       switch (lastByte) {
         case '08':
@@ -536,6 +775,7 @@ export function getOpCode_RS232(opCode, data) {
         }
       }
 
+      if (!Data) shortArressingMessages()
       break
 
     case '90':
@@ -627,8 +867,8 @@ export function getOpCode_RS232(opCode, data) {
       if (lastByteDec & 0x1) {
         temp2 = '32'
       } else temp2 = '16'
-      Data = `${firstAddy} =  (${secondAddy}${temp}), ${memoryType} `
-      Interpretation = `${destinator}= (${sender}${temp}), ${memoryType} , ${temp2} bits`
+      Data = `0x${firstAddy} =  (0x${secondAddy}${temp}), ${memoryType} `
+      Interpretation = `${destinator}= (${sender}${temp}), ${memoryType} , [V${temp2}D = ...]`
       break
     case '89':
       firstAddy = data.slice(0, 4)
@@ -653,7 +893,7 @@ export function getOpCode_RS232(opCode, data) {
           Interpretation = `${destinator}>>= ${temp} [32D] `
         }
       }
-
+      if (!Data) shortArressingMessages()
       break
     case '88':
       firstAddy = data.slice(0, 4)
@@ -673,6 +913,7 @@ export function getOpCode_RS232(opCode, data) {
         Data = `${firstAddy}  >>= ${temp} `
         Interpretation = `${destinator} >>= ${temp} [16D] `
       }
+      if (!Data) shortArressingMessages()
       break
     case '8C':
     case '8D':
@@ -706,19 +947,25 @@ export function getOpCode_RS232(opCode, data) {
           16
         )}) `
       }
+      if (!Data) shortArressingMessages()
+
       break
 
     case '5C':
-      firstAddy = data.slice(0, 4)
-      destinator = getFirmwareAddress_RS232(firstAddy)[1]
-      if (lastByteDec != 0) {
-        errorStatus = 'error'
+      if (lastByte == '00') {
+        firstAddy = data.slice(0, 4)
+        destinator = getFirmwareAddress_RS232(firstAddy)[1]
+        if (lastByteDec != 0) {
+          errorStatus = 'error'
+        }
+        temp = data.slice(4, 8)
+        temp2 = data.slice(8, 12)
+        Data = `SRB ${firstAddy}, 0x${temp}, 0x${temp2} `
+        Interpretation = `Set / Reset Bits  "${destinator}" , AND_mask: 0x${temp}, OR_mask: 0x${temp2} `
       }
-      temp = data.slice(4, 8)
-      temp2 = data.slice(8, 12)
-      Data = `SRB ${firstAddy}, 0x${temp}, 0x${temp2} `
-      Interpretation = `Set / Reset Bits  "${destinator}" , AND_mask: 0x${temp}, OR_mask: 0x${temp2} `
+      if (!Data) shortArressingMessages()
       break
+
     case 'DC':
       if (lastByteDec == 0x01) {
         firstAddy = data.slice(0, 4)
@@ -730,72 +977,6 @@ export function getOpCode_RS232(opCode, data) {
       } else {
         errorStatus = 'error'
       }
-      break
-    case '04':
-      switch (lastByte) {
-        case '04':
-          Data = 'RET'
-          Interpretation = 'Return from TML function'
-          break
-        case '08':
-          Data = 'WAIT!'
-          Interpretation = 'Wait until event occurs'
-          break
-        case '10':
-          Data = 'DINT'
-          Interpretation = 'Disable TML Interrupts '
-          break
-        case '02':
-          Data = 'RESET'
-          Interpretation = 'Reset DSP controller'
-          break
-        case 'A0':
-          Data = 'DIS2CAPI'
-          Interpretation = 'Disable 2nd CAPI capture'
-          break
-        case '81':
-          Data = 'DISCAPI'
-          Interpretation = 'Disable CAPI capture'
-          break
-
-        case '20':
-          Data = 'EN2CAPI0'
-          Interpretation = 'Enable 2nd CAPI capture for 1->0'
-          break
-        case '01':
-          Data = 'ENCAPI0'
-          Interpretation = 'Enable CAPI capture for 1->0 '
-          break
-        default:
-          errorStatus = 'error'
-          break
-      }
-
-      break
-    case '05':
-      switch (lastByte) {
-        case '04':
-          Data = 'RETI'
-          Interpretation = 'Return from TML Interrupt SR '
-          break
-        case '10':
-          Data = 'EINT'
-          Interpretation = 'Enable TML Interrupts  '
-          break
-
-        case '20':
-          Data = 'EN2CAPI1'
-          Interpretation = 'Enable 2nd CAPI capture for 0->1'
-          break
-        case '01':
-          Data = 'ENCAPI1'
-          Interpretation = 'Enable CAPI capture for 0->1 '
-          break
-        default:
-          errorStatus = 'error'
-          break
-      }
-
       break
 
     case '59':
@@ -853,7 +1034,7 @@ export function getOpCode_RS232(opCode, data) {
           firstAddy = decToHex(temp3, 32).padStart(4, '0')
           destinator = getFirmwareAddress_RS232(firstAddy)[1]
           Data = `SRB 0x${firstAddy}, 0x${data.slice(0, 4)}, 0x${data.slice(4, 8)}`
-          Interpretation = `SRB 0x${destinator},AND: 0x${data.slice(0, 4)}, OR: 0x${data.slice(
+          Interpretation = `SRB ${destinator}, AND: 0x${data.slice(0, 4)}, OR: 0x${data.slice(
             4,
             8
           )}`
@@ -1042,6 +1223,9 @@ export function getOpCode_RS232(opCode, data) {
             Interpretation = `! if Motor Speed Under 0x${temp2} = ${temp3}d   [val32]`
           }
           break
+        default:
+          if (!Data) shortArressingMessages()
+          break
       }
       break
 
@@ -1170,7 +1354,9 @@ export function getOpCode_RS232(opCode, data) {
             Data = `!MSU  0x${firstAddy}  `
             Interpretation = `! if Motor Speed Under ${destinator}  [V32]`
           }
-
+          break
+        default:
+          if (!Data) shortArressingMessages()
           break
       }
       break
@@ -1212,6 +1398,7 @@ export function getOpCode_RS232(opCode, data) {
         Data = `GOTO 0x${firstAddy}`
         Interpretation = `Unconditional GOTO with address set in ${destinator}`
       }
+      if (!Data) shortArressingMessages()
       break
 
     case '74':
@@ -1262,6 +1449,7 @@ export function getOpCode_RS232(opCode, data) {
         Interpretation = `Unconditional GOTO to label ${destinator} ${sender}`
       }
 
+      if (!Data) shortArressingMessages()
       break
     case '1E':
       if (lastByte == '01') {
@@ -1285,12 +1473,20 @@ export function getOpCode_RS232(opCode, data) {
       Interpretation = `Send a PT point ${val32_1} = ${val32_1d}, ${val16_3} = ${val16_3d}, ${counter}  -- [PTP val32,val16, C]`
       break
     case '84':
-      Data = `SAP ${val32_1} `
-      Interpretation = `Set actual position = ${val32_1} = ${val32_1d}  -- [SAP val32]`
+      if (lastByte == '00') {
+        Data = `SAP ${val32_1} `
+        Interpretation = `Set actual position = ${val32_1} = ${val32_1d}  -- [SAP val32]`
+      } else {
+        shortArressingMessages()
+      }
       break
     case '78':
-      Data = `SEG ${val16_1}, ${val32_2} `
-      Interpretation = `SSegment ${val16_1}= ${val16_1d},  ${val32_2} = ${val32_2d}  -- [SEG val16, val32]`
+      if (lastByte == '00') {
+        Data = `SEG ${val16_1}, ${val32_2} `
+        Interpretation = `SSegment ${val16_1}= ${val16_1d},  ${val32_2} = ${val32_2d}  -- [SEG val16, val32]`
+      } else {
+        shortArressingMessages()
+      }
       break
 
     case 'ED':
@@ -1304,6 +1500,8 @@ export function getOpCode_RS232(opCode, data) {
         }
         Data = `OUT(${array.join(', ')}) = ${val16_2} `
         Interpretation = `Set output OUT(${array.join(', ')}) = ${V16S}  -- [OUT(#n #m #p) = &V16]`
+      } else {
+        shortArressingMessages()
       }
       break
     case 'EC':
@@ -1319,6 +1517,8 @@ export function getOpCode_RS232(opCode, data) {
         Interpretation = `Set output OUT(${array.join(
           ', '
         )}) = ${val16_2d}  -- [OUT(#n #m #p) = val16]`
+      } else {
+        shortArressingMessages()
       }
       break
     case 'E8':
@@ -1332,6 +1532,8 @@ export function getOpCode_RS232(opCode, data) {
         }
         Data = `${val16_2}  = IN(${array.join(',')}) `
         Interpretation = ` Read inputs ${V16S}  = IN(${array.join(',')}) -- [V16D = IN(n,m,p) ]`
+      } else {
+        shortArressingMessages()
       }
       break
 
@@ -1346,6 +1548,8 @@ export function getOpCode_RS232(opCode, data) {
         }
         Data = `SetasInput(${array.join(',')}) `
         Interpretation = ` Set ${array.join(',')} as inputs `
+      } else {
+        shortArressingMessages()
       }
       break
     case 'EF':
@@ -1359,6 +1563,8 @@ export function getOpCode_RS232(opCode, data) {
         }
         Data = `SetasOutputs(${array.join(',')}) `
         Interpretation = ` Set ${array.join(',')} as outputs`
+      } else {
+        shortArressingMessages()
       }
       break
 
@@ -1469,13 +1675,12 @@ export function getOpCode_RS232(opCode, data) {
       if (mask) {
         rez = 32
       } else rez = 16
-
       temp = getAxisID_RS232(data.slice(0, 4).split(''))
-
       Data = `?${val16_2} | ${memoryType}  `
       Interpretation = `?${V16S} | ${memoryType} [?V${rez}]`
       SenderMain = temp
       msgType = 'GiveData'
+
       break
     case 'B2':
       mask = lastByteDec & 0xc //1100
@@ -1603,177 +1808,8 @@ export function getOpCode_RS232(opCode, data) {
       Interpretation = `Write protect/unprotect EEPROM ${mask}`
 
       break
-
     default:
-      var nibbleCase = hexToDec(firstByte.slice(0, 1), 16)
-      if ([2, 3, 4, 5, 7, 8, 10, 11, 14].includes(nibbleCase)) {
-        // ...A, B, E
-        //Potential short addressing
-        temp = firstByteDec & 0x0c // 0000 1100
-
-        if (firstByteDec & 0x02) temp2 = 0x800
-        else temp2 = 0x200
-
-        temp3 = opCodeDec & 0x01ff
-
-        if (data.length == 8) {
-          secondAddy = '0x' + data.slice(4, 8) + data.slice(0, 4)
-          sender = secondAddy
-        } else {
-          secondAddy = data.slice(0, 4)
-          sender = getFirmwareAddress_RS232(secondAddy)[1]
-          if (secondAddy.slice(0, 2) != '0x' && secondAddy != '') {
-            secondAddy = '0x' + secondAddy
-          }
-        }
-        firstAddy = decToHex(temp3 + temp2, 32).padStart(4, '0')
-        destinator = getFirmwareAddress_RS232(firstAddy)[1]
-        firstAddy = '0x' + firstAddy
-        var startStr = ''
-        var startSt2 = ''
-        var endStr = ''
-        if (temp == 0x00) {
-          //2000 2200
-          if (nibbleCase == 2) {
-            rez = '[V16D = val16/TML label]'
-            mask = '='
-          } else if (nibbleCase == 3) {
-            rez = '[V16D = -V16S]'
-            mask = '= -'
-          } else if (nibbleCase == 4) {
-            rez = '[V16D += V16S]'
-            mask = '+='
-          } else if (nibbleCase == 5) {
-            rez = '[V16D -= V16S]'
-            mask = '-='
-          } else if (nibbleCase == 8) {
-            rez = '[V32]'
-            mask = ''
-            startStr = 'SAP'
-            startSt2 = 'Set Actual Position'
-          } else if (nibbleCase == 0x0e) {
-            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `[${startStr}]`
-            startSt2 = startStr
-            rez = '[V16D, V16S]'
-            mask = '= ' + startSt2
-            startSt2 = ''
-            startStr = ''
-            secondAddy = firstAddy
-            sender = destinator
-            firstAddy = val16_2
-            destinator = V16S
-          } else if (nibbleCase == 0x0a) {
-            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `?TML `
-            startSt2 = `?TML`
-            rez = '[?TML V16]'
-            secondAddy = ''
-            sender = ''
-          }
-        } else if (temp == 0x04) {
-          if (nibbleCase == 2) {
-            rez = '[V32 = val32]'
-            mask = '='
-            endStr = `= ${val32_1d}`
-          } else if (nibbleCase == 3) {
-            rez = '[V32D = -V32S]'
-            mask = '= -'
-          } else if (nibbleCase == 4) {
-            rez = '[V32D += V32S ]'
-            mask = '+='
-          } else if (nibbleCase == 5) {
-            rez = '[V32D -= V32S ]'
-            mask = '-='
-          } else if (nibbleCase == 0x0e) {
-            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `[${startStr}]`
-            startSt2 = startStr
-            rez = '[V32D, V32S]'
-            mask = '= ' + startSt2
-            startSt2 = ''
-            startStr = ''
-            secondAddy = firstAddy
-            sender = destinator
-            firstAddy = val16_2
-            destinator = V16S
-          } else if (nibbleCase == 0x0a) {
-            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `?TML `
-            startSt2 = `?TML`
-            rez = '[?TML V32]'
-            secondAddy = ''
-            sender = ''
-          }
-        } else if (temp == 0x08) {
-          //2800 2A00
-
-          if (nibbleCase == 2) {
-            rez = '[V16D = V16S /V32S(H)/V32S(L) || V32D(H)/V32D(L) = V16S]'
-            mask = '='
-          } else if (nibbleCase == 3) {
-            rez = '[V16 += val16 ]'
-            mask = '+='
-          } else if (nibbleCase == 4) {
-            rez = '[V16 -= val16]'
-            mask = '-='
-          } else if (nibbleCase == 0x0b) {
-            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `[${startStr}]`
-            startSt2 = startStr
-            rez = '[V16D, V16S]'
-            mask = '='
-            secondAddy = val16_2
-            sender = V16S
-          } else if (nibbleCase == 0x0a) {
-            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `?TML `
-            startSt2 = `?TML`
-            mask = ' = '
-            rez = '[?TML V16 TakeData]'
-            secondAddy = val16_2
-            sender = val16_2 + ' = ' + val16_2d
-          }
-        } else if (temp == 0x0c) {
-          //2C00 2E00
-          if (nibbleCase == 2) {
-            rez = '[V32D = V32S]'
-            mask = '='
-          } else if (nibbleCase == 3) {
-            rez = '[V32 += val32 ]'
-            mask = '+='
-          } else if (nibbleCase == 4) {
-            rez = '[V32 -= val32]'
-            mask = '-='
-          } else if (nibbleCase == 7) {
-            startStr = 'SEG'
-            startSt2 = 'Segment'
-            rez = '[V16, V32]'
-            mask = ','
-          } else if (nibbleCase == 0x0b) {
-            startStr = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `[${startStr}]`
-            startSt2 = startStr
-            rez = '[V32D, V32S]'
-            mask = '='
-            secondAddy = val16_2
-            sender = V16S
-          } else if (nibbleCase == 0x0a) {
-            SenderMain = getAxisID_RS232(data.slice(0, 4).split(''))
-            startStr = `?TML `
-            startSt2 = `?TML`
-            rez = '[?TML V32 TakeData]'
-            mask = ' = '
-            secondAddy = val32_2
-            sender = val32_2 + ' = ' + val32_2d
-          }
-        }
-
-        Data = `${startStr} ${firstAddy} ${mask} ${secondAddy}`
-        Interpretation = `${startSt2} ${destinator} ${mask} ${sender} ${endStr} -- ${rez}`
-      } else {
-        errorStatus = 'error'
-      }
+      shortArressingMessages()
       break
   }
   return [errorStatus, Data, Interpretation, msgType, SenderMain]

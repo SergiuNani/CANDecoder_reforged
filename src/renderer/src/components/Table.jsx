@@ -317,8 +317,6 @@ export function CreateGroupedFilteredArray(
     var isLastElementArray = Array.isArray(lastElementFromSortedArray)
 
     if (GroupingOptionsForMessages.Mapping) {
-      //Either Mapping or Modes -----------------------------------------------------
-
       var isObjectRelatedToMapping = whatPDOisObject(oneMessage.Object)
 
       if (isObjectRelatedToMapping && oneMessage.type.slice(2) == 'SDO') {
@@ -386,10 +384,13 @@ export function CreateGroupedFilteredArray(
       if (spamElementsArray.includes(oneMessage.type)) {
         if (isLastElementArray) {
           //Not done
-          if (lastElementFromSortedArray[0].GroupType == 'Repetitive') {
+          if (
+            lastElementFromSortedArray[0].GroupType == 'Repetitive' &&
+            lastElementFromSortedArray[0].CobID == 'Repetitive'
+          ) {
             return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
           } else {
-            // All 5 elements have the type included in the array
+            //Create new group
             var Next5ElemQualify = true
             for (let i = index + 1; i < index + 5; i++) {
               if (!allMessages[i] || !spamElementsArray.includes(allMessages[i].type)) {
@@ -399,14 +400,15 @@ export function CreateGroupedFilteredArray(
             if (Next5ElemQualify) {
               groupedFilteredArray.push([
                 {
-                  GroupType: 'Repetitive'
+                  GroupType: 'Repetitive',
+                  CobID: 'Repetitive'
                 }
               ])
               return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
             }
           }
         } else {
-          // All 5 elements have the type included in the array
+          //Create new group
           var Next5ElemQualify = true
           for (let i = index + 1; i < index + 5; i++) {
             if (!allMessages[i] || !spamElementsArray.includes(allMessages[i].type)) {
@@ -416,7 +418,61 @@ export function CreateGroupedFilteredArray(
           if (Next5ElemQualify) {
             groupedFilteredArray.push([
               {
-                GroupType: 'Repetitive'
+                GroupType: 'Repetitive',
+                CobID: 'Repetitive'
+              }
+            ])
+            return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          }
+        }
+      } else {
+        // If we have identical messages we will group em together
+        if (isLastElementArray) {
+          if (
+            lastElementFromSortedArray[0].GroupType == 'Repetitive' &&
+            lastElementFromSortedArray[0].CobID == oneMessage.CobID &&
+            lastElementFromSortedArray[0].FrameData == oneMessage.FrameData
+          ) {
+            return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+          } else {
+            var Next10ElemQualify = true
+            for (let i = index + 1; i < index + 10; i++) {
+              if (
+                !allMessages[i] ||
+                oneMessage.CobID != allMessages[i].CobID ||
+                oneMessage.FrameData != allMessages[i].FrameData
+              ) {
+                Next10ElemQualify = false
+              }
+            }
+            if (Next10ElemQualify) {
+              groupedFilteredArray.push([
+                {
+                  GroupType: 'Repetitive',
+                  CobID: oneMessage.CobID,
+                  FrameData: oneMessage.FrameData
+                }
+              ])
+              return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
+            }
+          }
+        } else {
+          var Next10ElemQualify = true
+          for (let i = index + 1; i < index + 10; i++) {
+            if (
+              !allMessages[i] ||
+              oneMessage.CobID != allMessages[i].CobID ||
+              oneMessage.FrameData != allMessages[i].FrameData
+            ) {
+              Next10ElemQualify = false
+            }
+          }
+          if (Next10ElemQualify) {
+            groupedFilteredArray.push([
+              {
+                GroupType: 'Repetitive',
+                CobID: oneMessage.CobID,
+                FrameData: oneMessage.FrameData
               }
             ])
             return groupedFilteredArray[groupedFilteredArray.length - 1].push(oneMessage)
