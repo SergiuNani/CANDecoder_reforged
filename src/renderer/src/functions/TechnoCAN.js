@@ -1,5 +1,6 @@
 import { getOpCode_RS232 } from './RS232'
 import { LittleEndian } from './NumberConversion'
+import { hexToDec, decToHex } from './NumberConversion'
 
 export function DecodeTCANglobal(cobID_array, message) {
   var CS = '-'
@@ -16,11 +17,24 @@ export function DecodeTCANglobal(cobID_array, message) {
     LittleEndian(message.slice(12, 16))
   CS = opCode
   var result
-  console.log('🚀 ~ file: TechnoCAN.js:9 ~ DecodeTCANglobal ~ msgType:', msgType)
   switch (msgType) {
     case 'TSYNC':
       break
     case 'PVT':
+      // 3456 12 00 44 55 4b 28
+
+      var temp = '0x' + rawData.slice(0, 2) + opCode
+      var temp2 = '0x' + rawData.slice(2, 8)
+      var counter = hexToDec(rawData.slice(8, 10), 32)
+      var temp3 = '0x' + (counter & 0x1) + rawData.slice(10, 12)
+      counter = (counter & 0xfe) >> 1
+
+      Data = `PVTP ${temp}, ${temp2}, ${temp3}, 0x${decToHex(counter, 32)}`
+      Interpretation = ` valP=${temp}=${hexToDec(temp, 32)} , valS=${temp2}=${hexToDec(
+        temp2,
+        32
+      )}, valT=${temp3}=${hexToDec(temp3, 32)}, C=0x${decToHex(counter, 32)}=${counter}`
+      CS = '-'
       break
     case 'TakeData2':
       break
