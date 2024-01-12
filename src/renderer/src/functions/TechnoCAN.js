@@ -18,8 +18,6 @@ export function DecodeTCANglobal(cobID_array, message) {
   CS = opCode
   var result
   switch (msgType) {
-    case 'TSYNC':
-      break
     case 'PVT':
       var temp = '0x' + rawData.slice(0, 2) + opCode
       var temp2 = '0x' + rawData.slice(2, 8)
@@ -34,8 +32,7 @@ export function DecodeTCANglobal(cobID_array, message) {
       )}, valT=${temp3}=${hexToDec(temp3, 32)}, C=0x${decToHex(counter, 32)}=${counter}`
       CS = '-'
       break
-    case 'TakeData2':
-      break
+
     case 'Normal':
     case 'TGroup':
     case 'Broadcast':
@@ -47,19 +44,55 @@ export function DecodeTCANglobal(cobID_array, message) {
       if (result[4] != '-') {
         Object = result[4]
       }
-      Object = result[4]
+      Object = result[4].toString()
+      Data = result[1]
+      Interpretation = result[2]
+
+      break
+
+    case 'TakeData':
+      Object = hexToDec(opCode.slice(0, 2), 16) >> 3
+      Object = Object.toString()
+      opCode = 'B4'.concat(opCode.slice(2, 4))
+      result = getOpCode_RS232(opCode, '0000' + rawData)
+      Data = result[1]
+      Interpretation = result[2]
+      break
+    case 'TakeData2':
+      var temp = message.slice(0, 2)
+      var temp2 =
+        LittleEndian(message.slice(2, 6)) +
+        LittleEndian(message.slice(6, 10)) +
+        LittleEndian(message.slice(10, 14))
+
+      if (temp == '00') {
+        result = getOpCode_RS232('D401', temp2)
+      } else if (temp == '80') {
+        result = getOpCode_RS232('D501', temp2)
+      } else {
+        result = ['IDK', 'IDK']
+      }
+
       Data = result[1]
       Interpretation = result[2]
 
       break
     case 'Host':
-      break
-    case 'TakeData':
-      Object = (hexToDec(opCode.slice(0, 2), 16) >> 3).toString()
-      opCode = 'B4'.concat(opCode.slice(2, 4))
-      result = getOpCode_RS232(opCode, '0000' + rawData)
+      result = getOpCode_RS232(opCode, rawData)
+      // return [errorStatus, Data, Interpretation, msgType, SenderMain]
+      if (result[0] == 'error') {
+        Error = 'error'
+      }
+      if (result[4] != '-') {
+        Object = result[4]
+      }
+      Object = result[4].toString()
       Data = result[1]
       Interpretation = result[2]
+
+      break
+      break
+    case 'TSYNC':
       break
   }
 

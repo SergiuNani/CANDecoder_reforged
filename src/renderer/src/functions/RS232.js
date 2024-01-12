@@ -1755,7 +1755,7 @@ export function getOpCode_RS232(opCode, data) {
           Data = 'GETVAR'
         }
         Interpretation = 'Get version. On-line cmd. '
-      } else if (lastByte == 'C0') {
+      } else if (lastByte == 'C0' || lastByte == '40') {
         Data = `INITCAM ${val16_1}, ${val16_2} `
         Interpretation = `Copy CAM table from SPI ${V16D} to RAM ${V16S}  -- [&V16, &V16]`
       }

@@ -63,3 +63,10 @@ TIPS:
           // backgroundImage: `none`
         }
         ----- doar o clasa si make sure ca exista spatiul intre & si .
+
+
+
+   BUGS for THS:
+   1. Binary code viewer:  for PING , if the axis destinator is 4 or 5 the pong  generated message is the same
+   2.   initcam 0X1122 , 0X4545  - the opCode dont exist in the PDF description
+     
