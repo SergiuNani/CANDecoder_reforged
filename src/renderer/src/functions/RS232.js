@@ -93,7 +93,7 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       row[2] = 'Empty'
       row[3] = 'Line'
       UpdateStatisticsBasedOnMessage('All', '-')
-      createObject(row[0], row[1], row[2], row[3], false, '-')
+      createObject(row[0], row[1], row[2], row[3], '-', 'All')
       continue
     }
     var DecodedMessage = DecodeOneRS232_msg(msgNr, messageString)
@@ -169,6 +169,7 @@ function DecodeOneRS232_msg(msgNr, messageString) {
     Data = 'Can`t extract data from this row'
     Interpretation = 'Invalid Message'
     errorStatus = 'error'
+    AxisID = 'All'
   } else if (messageString.length == 2) {
     //SYNC , ACK, message Length etc...
     var messageDec = hexToDec(messageString, 16)
@@ -193,6 +194,7 @@ function DecodeOneRS232_msg(msgNr, messageString) {
       Interpretation = 'unknown'
       errorStatus = 'error'
     }
+    AxisID = 'All'
   } else {
     var potentialLength = hexToDec(messageString.slice(0, 2), 8) //nr of bytes
     var historyLength = hexToDec(PreviousMessageInfo_RS232_g.storedFutureSize, 8)

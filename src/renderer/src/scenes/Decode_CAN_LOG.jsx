@@ -446,6 +446,8 @@ const DrawerComponent_DecodeOptions = ({
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var { Clearance } = useContext(ClearanceContext)
+  var { ProtocolGlobal} = useContext(ProtocolGlobalContext)
+  
   const [messageTypeSorting, setMessageTypeSorting] = useState('All')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
@@ -558,7 +560,8 @@ const DrawerComponent_DecodeOptions = ({
         CreateGroupedFilteredArray(
           filteredMessages_g,
           GroupingOptionsForMessages,
-          setProgressBarInsideDrawer
+          setProgressBarInsideDrawer,
+          ProtocolGlobal
         )
 
         setisTableVisible(true)

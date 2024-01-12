@@ -306,7 +306,8 @@ const TableRowGroup = ({ groupTitle, groupSubTitle, groupData, errorStatus, Prot
 export function CreateGroupedFilteredArray(
   allMessages,
   GroupingOptionsForMessages,
-  setProgressBar
+  setProgressBar,
+  ProtocolGlobal
 ) {
   console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
@@ -316,7 +317,7 @@ export function CreateGroupedFilteredArray(
     var lastElementFromSortedArray = groupedFilteredArray[groupedFilteredArray.length - 1]
     var isLastElementArray = Array.isArray(lastElementFromSortedArray)
 
-    if (GroupingOptionsForMessages.Mapping) {
+    if (GroupingOptionsForMessages.Mapping && ProtocolGlobal != 'RS232') {
       var isObjectRelatedToMapping = whatPDOisObject(oneMessage.Object)
 
       if (isObjectRelatedToMapping && oneMessage.type.slice(2) == 'SDO') {
@@ -341,7 +342,7 @@ export function CreateGroupedFilteredArray(
         }
       }
     }
-    if (GroupingOptionsForMessages.Modes) {
+    if (GroupingOptionsForMessages.Modes && ProtocolGlobal != 'RS232') {
       var objects = oneMessage.Object.split(' / ').indexOf('#x6060')
       var ObjectValue = oneMessage.Data.split(' / ')[objects]
       if (

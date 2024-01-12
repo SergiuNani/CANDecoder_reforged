@@ -733,6 +733,13 @@ INVALID OPERAND - APOS//!LSO apos
 12A 81 9D 70 01 67 03 28 02 //apos = [23] (var_i2),PM 
 12A 01 9D 70 01 67 03 28 02 //apos = [23] (var_i2+),PM 
 12A 9E E4 70 01 28 02 //apos = [23] cpos 
+q1 162 04 08 66 03 78 56 
+qH1 162 04 0C 66 03 78 56 
+q2 162 04 10 66 03 78 56 
+q8 162 04 40 66 03 78 56 
+q10 162 04 50 66 03 78 56 
+q31 162 04 F8 66 03 78 56 
+q31H 162 04 FC 66 03 78 56 
 `
 
 export const Hardcoded_VerifyRS232 = [

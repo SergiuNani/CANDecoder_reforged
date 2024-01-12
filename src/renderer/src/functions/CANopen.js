@@ -479,6 +479,10 @@ export function CreateDecodedArrayOfObjects(
           DecodedMessage[5] = 'neutral'
         }
         aux_CobID[2] = 'SYNC'
+      } else if (aux_CobID[2] == 'TakeData') {
+        if (hexToDec(DecodedMessage[0].slice(0, 2), 16) & 0x4) {
+          aux_CobID[1] = 'H'.concat(aux_CobID[1])
+        }
       }
       UpdateStatisticsBasedOnMessage(aux_CobID[1], aux_CobID[2])
 
