@@ -155,7 +155,7 @@ export function CobID_who_dis(cob_id) {
 }
 
 export function Extract_MSGs_from_text(text, ProtocolGlobal) {
-  if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'TechnoCAN') {
+  if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'CAN') {
     //Text should be array of strings
     var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
     const hexPattern = /^(0x)?[0-9a-f]+$/gi
@@ -379,7 +379,7 @@ export function CreateDecodedArrayOfObjects(
   ProtocolGlobal
 ) {
   console.log(`DANGER -- CreateDecodedArrayOfObjects`)
-  if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'TechnoCAN') {
+  if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'CAN') {
     getFirmwareAddressesIntoArray_RS232('F514L') // for TechnoCAN
 
     var arr = AllCAN_MsgsExtracted_array
@@ -444,7 +444,7 @@ export function CreateDecodedArrayOfObjects(
         continue
       }
       var aux_CobID = CobID_who_dis(row[2])
-      var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase())
+      var DecodedMessage = DecodeOneCAN_msgFct(aux_CobID, row[3].toUpperCase(), ProtocolGlobal)
 
       if (aux_CobID[2] == 'NMT') {
         //Special case for NMT axisID
@@ -529,7 +529,7 @@ export function CreateDecodedArrayOfObjects(
   }
 }
 
-function DecodeOneCAN_msgFct(cobID_array, message) {
+function DecodeOneCAN_msgFct(cobID_array, message, ProtocolGlobal) {
   var result = []
 
   if (cobID_array[0] == 'SDO') {
@@ -545,7 +545,11 @@ function DecodeOneCAN_msgFct(cobID_array, message) {
   } else if (cobID_array[0] == 'SYNC') {
     result = DecodeSYNC(message)
   } else if (cobID_array[0] == 'TCAN') {
-    result = DecodeTCANglobal(cobID_array, message)
+    if (ProtocolGlobal == 'CAN') {
+      result = DecodeTCANglobal(cobID_array, message)
+    } else {
+      result = ['-', '-', 'Can`t extract data from this row', '-', 'TechnoCAN Message ', 'blue']
+    }
   } else result = ['-', '-', 'Can`t extract data from this row', '-', 'Invalid Message ', 'error']
 
   return result
@@ -641,7 +645,7 @@ export function verifyRepetitiveGroup(group) {
     var NMT_M = 0
     var invalidLines = 0
     group.forEach((oneMessage) => {
-      if (oneMessage.CobID == 'invalid') {
+      if (oneMessage.CobID == 'invalid' || oneMessage.type == 'invalid') {
         invalidLines++
       } else if (oneMessage.type == 'SYNC') {
         syncLines++

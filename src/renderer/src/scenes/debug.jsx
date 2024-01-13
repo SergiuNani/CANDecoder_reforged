@@ -161,7 +161,7 @@ const DebugScene = () => {
         <DialogVerifyAlgorithmComponent
           openState={verifyTechnoCAN}
           setOpenState={setVerifyTechnoCAN}
-          protocol={'TechnoCAN'}
+          protocol={'CAN'}
         />
       )}
 
@@ -255,7 +255,7 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
     } else {
       hardcodedArray = Hardcoded_VerifyRS232
     }
-  } else if (protocol == 'TechnoCAN') {
+  } else if (protocol == 'CAN') {
     InputTEXT = Verify_TechnoCAN_rawList
 
     if (ValidationMethod == 'LocalStorage') {
@@ -349,7 +349,7 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
       localStorage.setItem('VerifyCANopen', JSON.stringify(MessagesDecoded))
     } else if (protocol == 'RS232') {
       localStorage.setItem('VerifyRS232', JSON.stringify(MessagesDecoded))
-    } else if (protocol == 'TechnoCAN') {
+    } else if (protocol == 'CAN') {
       localStorage.setItem('VerifyTechnoCAN', JSON.stringify(MessagesDecoded))
     }
     setOpenState(false)

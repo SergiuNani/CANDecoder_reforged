@@ -1,4 +1,5 @@
-export var InsertTextIntoTextArea = `
+export var InsertTextIntoTextArea = `127 00 00 //NOP 
+
 127 40 D8 12 40 52 52 //INITCAM q0x4012, q0x5252
 142 07 D6 32 35 4C 34  D8  //Axis2,7;
 
@@ -17,5 +18,7 @@ export var InsertTextIntoTextArea = `
 127 10 08 34 12 //SPIBR q0x1234 
 127 04 08 34 12 //CANBR q0x1234 
 
+`
+var a = `
 
 `

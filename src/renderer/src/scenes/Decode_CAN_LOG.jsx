@@ -209,11 +209,8 @@ const Decode_CAN_LOG_Window = () => {
       }}
     >
       <Box style={{ position: 'relative' }}>
-        {ProtocolGlobal == 'CANOPEN' ? (
-          <Header title="Decode a CAN LOG "></Header>
-        ) : (
-          <Header title="Decode a RS232 LOG "></Header>
-        )}
+        <Header title="Decode LOG "></Header>
+
         {/* TOP MENU options --------------------------- */}
 
         {freeTextVsCanLog === 'FreeText' ? (
@@ -446,8 +443,8 @@ const DrawerComponent_DecodeOptions = ({
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var { Clearance } = useContext(ClearanceContext)
-  var { ProtocolGlobal} = useContext(ProtocolGlobalContext)
-  
+  var { ProtocolGlobal } = useContext(ProtocolGlobalContext)
+
   const [messageTypeSorting, setMessageTypeSorting] = useState('All')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)

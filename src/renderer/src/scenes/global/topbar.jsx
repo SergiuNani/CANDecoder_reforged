@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, useRef } from 'react'
-import { Box, IconButton, useTheme, Typography } from '@mui/material'
+import { Box, IconButton, useTheme, Typography, useStepContext } from '@mui/material'
 import { ColorModeContext, tokens } from '../../theme'
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
@@ -12,10 +12,9 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { RadioGroup, FormControlLabel, Radio } from '@mui/material'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
-import { VerifyCANopenValidityArray_RAW } from '../../data/VerifyAlgorithmData'
 import { RegisterSelectionComponent } from './RegisterWindow'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
-import { Verify_RS232_rawList } from '../../data/verifyRS232'
+import { Verify_RS232_rawList, Verify_TechnoCAN_rawList } from '../../data/verifyRS232'
 import {
   AppContext,
   ProtocolGlobalContext,
@@ -68,7 +67,8 @@ const Topbar = () => {
   const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
   const [expandLogin, setExpandLogin] = useState(false)
-
+  const { setProtocolGlobal } = useContext(ProtocolGlobalContext)
+  const { Clearance } = useContext(ClearanceContext)
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.altKey && event.key === 'c') {
@@ -81,13 +81,21 @@ const Topbar = () => {
       } else if (event.ctrlKey && event.key === 'l') {
         setSettingsDialogOpen(true)
         setExpandLogin(true)
+      } else if ((event.key == 'F1' || event.key == 'F2' || event.key == 'F3') && Clearance > 22) {
+        if (event.key == 'F1') {
+          setProtocolGlobal('CANOPEN')
+        } else if (event.key == 'F2') {
+          setProtocolGlobal('CAN')
+        } else if (event.key == 'F3') {
+          setProtocolGlobal('RS232')
+        }
       }
     }
     window.addEventListener('keydown', handleKeyPress)
     return () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
-  }, [CalcVsRegister])
+  }, [CalcVsRegister, Clearance])
 
   return (
     <Box
@@ -235,9 +243,9 @@ const WorkingModeInsertPart = () => {
             }
           }}
         >
-          <FormControlLabel value="CANOPEN" control={<Radio />} label="CANOpen/TehnoCan" />
+          <FormControlLabel value="CANOPEN" control={<Radio />} label="CANopen" />
+          <FormControlLabel value="CAN" control={<Radio />} label="CANOpen + TechnoCAN" />
           <FormControlLabel value="RS232" control={<Radio />} label="RS232" />
-          {/* <FormControlLabel value="TMLCAN" control={<Radio />} label="TMLCAN" /> */}
         </RadioGroup>
         <br />
       </div>
@@ -568,6 +576,8 @@ const DecodeCANlogOptionsInsertPart = () => {
                 text = Verify_RS232_rawList
               } else if (ProtocolGlobal == 'CANOPEN') {
                 text = DEMO_CANopen_raw
+              } else if (ProtocolGlobal == 'CAN') {
+                text = Verify_TechnoCAN_rawList
               }
               document.querySelector('#TextAreaText_ID_global').value = text
             }}
@@ -593,6 +603,7 @@ const DecodeCANlogOptionsInsertPart = () => {
               <SearchIcon />
             </IconButton>
           ) : null}
+          <p style={{ color: `${colors.blue[400]}`, fontWeight: '700' }}>{ProtocolGlobal}</p>
         </section>
       ) : null}
     </section>

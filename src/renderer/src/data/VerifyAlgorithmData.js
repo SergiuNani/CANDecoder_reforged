@@ -6088,13 +6088,13 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     CobID: 'E',
     FrameData: '000000000000',
     type: 'TGroup',
-    AxisID: 14,
+    AxisID: 'G2 , G3 , G4',
     CS: '-',
     Object: '-',
-    ObjectName: '-',
+    ObjectName: 'Can`t extract data from this row',
     Data: '-',
-    Interpretation: 'TCAN: Group-TCAN',
-    errorStatus: 'neutral'
+    Interpretation: 'TechnoCAN Message ',
+    errorStatus: 'blue'
   },
   {
     msgNr: 397,

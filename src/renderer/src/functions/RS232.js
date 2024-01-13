@@ -97,7 +97,9 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       continue
     }
     var DecodedMessage = DecodeOneRS232_msg(msgNr, messageString)
-
+    if (DecodedMessage[6] == 'error') {
+      DecodedMessage[3] = 'invalid'
+    }
     UpdateStatisticsBasedOnMessage(DecodedMessage[0], DecodedMessage[3])
 
     createObject(
@@ -200,7 +202,7 @@ function DecodeOneRS232_msg(msgNr, messageString) {
     var historyLength = hexToDec(PreviousMessageInfo_RS232_g.storedFutureSize, 8)
     var historyMsgNr = PreviousMessageInfo_RS232_g.msgNr
     //Check errors with length ===
-    if (potentialLength != messageString.length / 2 - 2) {
+    if (potentialLength != messageString.length / 2 - 2 || potentialLength == 0) {
       // First byte of the message is not the length of the message
       if (historyLength != messageString.length / 2 - 1) {
         // even the length of the pervious message is not the length of the current message
@@ -230,9 +232,11 @@ function DecodeOneRS232_msg(msgNr, messageString) {
       var checksum = hexToDec(frameString.slice(frameString.length - 2), 16)
       var sum = 0
       messageToCheck = messageToCheck.match(/.{1,2}/g)
-      messageToCheck.forEach((el) => {
-        sum += hexToDec(el, 16)
-      })
+      if (messageToCheck != null) {
+        messageToCheck.forEach((el) => {
+          sum += hexToDec(el, 16)
+        })
+      }
       sum += potentialLength
       sum = sum % 256
       if (checksum != sum) {

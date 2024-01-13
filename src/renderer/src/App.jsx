@@ -14,14 +14,6 @@ export var Registers_THS_LS = []
 export var ESM_info_LS = []
 
 import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG' //because of some useContext problems
-const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
-const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
-const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
-const DebugScene = LazyImport('./scenes/debug')
-const EditDataWindow = LazyImport('./scenes/EditDataWindow')
-const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
-
-//TODO: LazyImport is not working in the the exe compiled version
 
 // import HomeWindow from './scenes/HomeWindow'
 // import MoreOptionsWindow from './scenes/MoreOptionsWindow'
@@ -29,6 +21,14 @@ const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
 // import DebugScene from './scenes/debug'
 // import EditDataWindow from './scenes/EditDataWindow'
 // import HelpWindow from './scenes/HelpWindow.jsx'
+
+//TODO: LazyImport is not working in the the exe compiled version
+const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
+const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
+const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
+const DebugScene = LazyImport('./scenes/debug')
+const EditDataWindow = LazyImport('./scenes/EditDataWindow')
+const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
 
 function App() {
   if (
@@ -103,12 +103,12 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- TMLCAN
+  const [ProtocolGlobal, setProtocolGlobal] = useState('RS232') // CANOPEN --RS232 -- CAN
   const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
   const [WelcomePage, setWelcomePage] = useState(
     localStorage.getItem('WelcomePageStatus') === 'true'
   )
-  const [ValidationMethod, setValidationMethod] = useState('LocalStorage') // Internal -- LocalStorage
+  const [ValidationMethod, setValidationMethod] = useState('Internal') // Internal -- LocalStorage
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
   const [toggleFilterWindow_app, setToggleFilterWindow_app] = useState(false)

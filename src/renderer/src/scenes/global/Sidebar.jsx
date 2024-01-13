@@ -58,6 +58,9 @@ const Sidebar = () => {
   useEffect(() => {
     //SHORTCUTS
     const handleKeyPress = (event) => {
+      if (event.ctrlKey && event.altKey) {
+        return // Do nothing if both Ctrl and Alt keys are pressed
+      }
       if (event.ctrlKey && event.key === '1') {
         setSidebarSelectedItem('Home')
         navigate('/Home')
