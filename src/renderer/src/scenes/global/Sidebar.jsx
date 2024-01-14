@@ -50,7 +50,7 @@ const Sidebar = () => {
   var { Clearance } = useContext(ClearanceContext)
   const { setShortcutTrigger_g } = useContext(AppContext)
 
-  const navigate = useNavigate() //BUG uncomment this to enable shortcuts
+  const navigate = useNavigate()
   useEffect(() => {
     //SHORTCUTS
     const handleKeyPress = (event) => {

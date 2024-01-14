@@ -488,7 +488,7 @@ const DialogVerifyMyObjects = ({
     <Dialog
       open={showCompareExistingVsFileObjects}
       onClose={() => {
-        setshowCompareExistingVsFileObjects(false) //BUG - turn to false
+        setshowCompareExistingVsFileObjects(false)
       }}
     >
       <section

@@ -22,7 +22,6 @@ import DebugScene from './scenes/debug'
 import EditDataWindow from './scenes/EditDataWindow'
 import HelpWindow from './scenes/HelpWindow.jsx'
 
-//TODO: LazyImport is not working in the the exe compiled version
 // const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
 // const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
 // const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
@@ -201,18 +200,18 @@ function Text2JSON_ESM_info() {
   return text
 }
 
-export function LazyImport(path, namedExport) {
-  return lazy(() => {
-    const promise = import(path)
-    if (namedExport == null) {
-      return promise
-    } else {
-      return promise.then((module) => {
-        return { default: module[namedExport] }
-      })
-    }
-  })
-}
+// function LazyImport(path, namedExport) {
+//   return lazy(() => {
+//     const promise = import(path)
+//     if (namedExport == null) {
+//       return promise
+//     } else {
+//       return promise.then((module) => {
+//         return { default: module[namedExport] }
+//       })
+//     }
+//   })
+// }
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime

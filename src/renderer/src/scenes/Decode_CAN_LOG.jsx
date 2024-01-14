@@ -55,7 +55,7 @@ export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = [] // only filtered messages
 export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
-  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
+  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
   const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
@@ -75,7 +75,7 @@ const Decode_CAN_LOG_Window = () => {
   const SearchVsGotoLineRef = useRef('')
 
   function newLog_resetSystem() {
-    DontBotherWithPDO_flag[0] = 0 //BUG -  Reset the convinience not to specify the PDOs
+    DontBotherWithPDO_flag[0] = 0
     SetAllPDOsEMPTY[0] = 0
     globalIndex = [0]
     for (const prop in PDO_mapped) {

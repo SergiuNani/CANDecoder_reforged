@@ -66,8 +66,6 @@ export const RegisterWindow = () => {
     }
   }
   const DecrementWindows = () => {
-    //TODO: change the icon color accordingly
-
     setWindowsNumber((prev) => prev - 1)
     if (windowsNumber == 1) {
       setSidebarSelectedItem('Home')

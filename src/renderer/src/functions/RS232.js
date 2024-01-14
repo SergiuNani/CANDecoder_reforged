@@ -1768,7 +1768,6 @@ export function getOpCode_RS232(opCode, data) {
         Data = `PING ${val16_2d}`
         Interpretation = `PING - Ask a group of axes to return their axis ID `
       } else {
-        //TODO Interpretation
         temp = '0' + opCode.slice(2) + '0'
         SenderMain = getAxisID_RS232(temp.split(''))
         temp = data.slice(0, 8)
