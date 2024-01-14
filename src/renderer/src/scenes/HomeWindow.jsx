@@ -44,8 +44,6 @@ import {
 } from '../data/SmallData.js'
 
 const HomeWindow = () => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
   const [tabsOption, setTabsOption] = useState(0)
   const handleChange = (event) => {
     setTabsOption(event)
@@ -54,12 +52,13 @@ const HomeWindow = () => {
   return (
     <div
       style={{
-        position: 'relative'
+        position: 'relative',
+        marginLeft: '1rem'
       }}
     >
       <Header title="Home Page"></Header>
       <WelcomePageComponent />
-      <div style={{ display: 'flex', width: '100%', gap: '1rem' }}>
+      <div style={{ display: 'flex', width: '100%', gap: '5rem' }}>
         <div>
           <TabsComponent tellParentValueChanged={handleChange} valueFromParent={tabsOption} />
           <BigObjectSearchInputComponent
@@ -74,7 +73,7 @@ const HomeWindow = () => {
             resetValueofInputFromParent={tabsOption}
           />
         </div>
-        <div>
+        <div style={{ flex: 0.7 }}>
           <section>
             <NumberTransformationComponent />
             <BigFindCobIDComponent />

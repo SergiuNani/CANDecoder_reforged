@@ -83,6 +83,7 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
 
   var arr = AllCAN_MsgsExtracted_array
   var ResultingArray = []
+
   for (let index = 0; index < arr.length; index++) {
     let row = arr[index]
     var type = row[2]
@@ -93,7 +94,7 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
       row[2] = 'Empty'
       row[3] = 'Line'
       UpdateStatisticsBasedOnMessage('All', '-')
-      createObject(row[0], row[1], row[2], row[3], '-', 'All')
+      createObject(row[0], row[1], row[2], row[3], '-', 'All')(index, arr)
       continue
     }
     var DecodedMessage = DecodeOneRS232_msg(msgNr, messageString)

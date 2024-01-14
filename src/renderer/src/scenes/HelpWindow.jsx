@@ -772,7 +772,7 @@ export const HelpWelcomePage = () => {
                 <b>Dark / Light mode</b>
               </li>
               <li>
-                <b>Supported Protocols: CANopen, RS232</b>
+                <b>Supported Protocols: CANopen, TechnoCAN, RS232</b>
               </li>
             </ul>
           </section>

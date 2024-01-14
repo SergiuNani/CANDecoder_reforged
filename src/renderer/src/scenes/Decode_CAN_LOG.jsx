@@ -47,7 +47,7 @@ import {
   DebugTable,
   TableROW_simple
 } from '../components/Table'
-import { LazyImport } from '../App'
+import { SnackBarMessage } from '../components/FloatingComponents'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
@@ -71,7 +71,6 @@ const Decode_CAN_LOG_Window = () => {
     DecodeCANlog_topbarOptionsContext
   )
   var { Clearance } = useContext(ClearanceContext)
-  const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
   const initalMount_Deocde_CAN_LOG_ref = useRef(true)
@@ -290,6 +289,7 @@ export default Decode_CAN_LOG_Window
 export let globalIndex = [0] //used when there is a PDO detected and no mapping is done - then we cancel the function and will recall it with this index
 const DecodedTableOptions = ({ fileInnerText }) => {
   console.log('---2---. DecodedTableOptions')
+  console.log(MessagesDecoded_ArrayOfObjects)
   const [TableOption, setTableOption] = useState('Default') //Default vs Debug
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -302,9 +302,9 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     Decode_CAN_LOG_WindowContext
   )
   const initialRender = useRef(true)
-  const LogDisplayRange = useRef(3000) //BUG Change to 3000
+  const LogDisplayRange = useRef(3000)
   const LogDisplayRange_Inf = useRef(0)
-  const LogDisplayRange_Sup = useRef(3000) //BUG Change to 3000
+  const LogDisplayRange_Sup = useRef(3000)
   const FilteredLogLenght = useRef(0) // will be set in HandleDecode
   const FullLogLength = useRef(0)
   const CutTable_Inf = useRef(1)
@@ -317,6 +317,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     CutTable_Sup.current
   ])
   const TableRefForScroll = useRef(null)
+  const LoadFromStorageRequest = useRef(false)
 
   // SHORTCUTS==========================
   useEffect(() => {
@@ -332,7 +333,6 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   useEffect(() => {
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
-
   AllCAN_MsgsExtracted_array = useMemo(() => {
     console.log('-2.1- - AllCAN_MsgsExtracted_array -  only once')
     globalIndex = [0]
@@ -415,7 +415,8 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         CutTable_Sup,
         auxTable,
         AllCAN_MsgsExtracted_array,
-        TableRefForScroll
+        TableRefForScroll,
+        LoadFromStorageRequest
       }}
     >
       {ProtocolGlobal != 'TMLCAN' ? (
@@ -444,7 +445,6 @@ const DrawerComponent_DecodeOptions = ({
   const colors = tokens(theme.palette.mode)
   var { Clearance } = useContext(ClearanceContext)
   var { ProtocolGlobal } = useContext(ProtocolGlobalContext)
-
   const [messageTypeSorting, setMessageTypeSorting] = useState('All')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
@@ -452,6 +452,9 @@ const DrawerComponent_DecodeOptions = ({
   const [showMessagesModal, setShowMessagesModal] = useState(false)
   const [toggle, setToggle] = useState(false)
   const [CheckedAll, setCheckedAll] = useState(true)
+  const [openSnackBar, setOpenSnackBar] = useState(false)
+  const SnackBarMessageRef = useRef('Message here')
+  const severitySnackbar = useRef('success')
 
   //Shortcut to open/close drawer
   const { shortcutToDecodeMessages, shortcutToDecodeMessages_whoCalled } = useContext(
@@ -467,7 +470,8 @@ const DrawerComponent_DecodeOptions = ({
     FullLogLength,
     CutTable_Inf,
     CutTable_Sup,
-    auxTable
+    auxTable,
+    LoadFromStorageRequest
   } = useContext(DecodedTableOptionsContext)
 
   useEffect(() => {
@@ -586,7 +590,7 @@ const DrawerComponent_DecodeOptions = ({
 
   const AvailableAxes_Component_Memo = useMemo(() => {
     return <AvailableAxes_Component />
-  }, [CheckedAll])
+  }, [CheckedAll, openSnackBar])
 
   const MappingWindowforDrawer_Memo = useMemo(() => {
     return (
@@ -925,9 +929,124 @@ const DrawerComponent_DecodeOptions = ({
             <FormControlLabel value="Errors" control={<Radio />} label="Errors" />
           </RadioGroup>
         </Box>
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Features:{' '}
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <ButtonTransparent
+              onClick={() => {
+                setOpenSnackBar(true)
+                SnackBarMessageRef.current = 'Log saved!'
+                severitySnackbar.current = 'success'
+                localStorage.setItem(
+                  'MessagesDecoded_ArrayOfObjects',
+                  JSON.stringify(MessagesDecoded_ArrayOfObjects)
+                )
+                localStorage.setItem(
+                  'AllCAN_MsgsExtracted_array',
+                  JSON.stringify(AllCAN_MsgsExtracted_array)
+                )
+                localStorage.setItem('CanLogStatistics', JSON.stringify(CanLogStatistics))
+              }}
+              sx={{
+                background: `${colors.primary[400]}`,
+                padding: '0.5rem',
+                '&:hover': {
+                  background: `${colors.primary[500]}`
+                }
+              }}
+            >
+              Save current LOG
+            </ButtonTransparent>
+            <ButtonTransparent
+              onClick={() => {
+                // setShowMappingWindow(true)
+                setOpenSnackBar(true)
+                if (localStorage.getItem('MessagesDecoded_ArrayOfObjects')) {
+                  MessagesDecoded_ArrayOfObjects = JSON.parse(
+                    localStorage.getItem('MessagesDecoded_ArrayOfObjects')
+                  )
+                  AllCAN_MsgsExtracted_array = JSON.parse(
+                    localStorage.getItem('AllCAN_MsgsExtracted_array')
+                  )
+                  var localSt_array = JSON.parse(localStorage.getItem('CanLogStatistics'))
+                  localSt_array.forEach((element, index) => {
+                    CanLogStatistics[index] = element
+                  })
+                  CanLogStatistics.splice(localSt_array.length, CanLogStatistics.length)
+                  SnackBarMessageRef.current = 'Log reloaded!'
+                  severitySnackbar.current = 'success'
+                  LoadFromStorageRequest.current = true
+                  setToggle((prev) => !prev)
+                } else {
+                  SnackBarMessageRef.current = 'There is no saved LOG!'
+                  severitySnackbar.current = 'error'
+                }
+              }}
+              sx={{
+                background: `${colors.primary[400]}`,
+                padding: '0.5rem',
+                '&:hover': {
+                  background: `${colors.primary[500]}`
+                }
+              }}
+            >
+              Load saved LOG
+            </ButtonTransparent>
+            <ButtonTransparent
+              onClick={() => {
+                setShowMessagesModal(true)
+              }}
+              sx={{
+                background: `${colors.primary[400]}`,
+                padding: '0.5rem',
+                '&:hover': {
+                  background: `${colors.primary[500]}`
+                }
+              }}
+            >
+              Show Messages
+            </ButtonTransparent>
+          </div>
+
+          {openSnackBar && (
+            <SnackBarMessage
+              message={SnackBarMessageRef.current}
+              severity={severitySnackbar.current}
+              isOpen={openSnackBar}
+              closeSnackBarParent={() => {
+                setOpenSnackBar(false)
+              }}
+            />
+          )}
+        </Box>
       </Box>
     )
-  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting, CheckedAll, Clearance])
+  }, [
+    TableOption,
+    groupingOptionsRender,
+    toggle,
+    messageTypeSorting,
+    CheckedAll,
+    Clearance,
+    openSnackBar
+  ])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -992,13 +1111,6 @@ const DrawerComponent_DecodeOptions = ({
                     }}
                   >
                     Show Mapping
-                  </Button1>
-                  <Button1
-                    onClick={() => {
-                      setShowMessagesModal(true)
-                    }}
-                  >
-                    Show Messages
                   </Button1>
                 </Box>
               ) : null}

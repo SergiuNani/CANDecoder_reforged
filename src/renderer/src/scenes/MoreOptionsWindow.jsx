@@ -22,9 +22,9 @@ const MoreOptionsWindow = () => {
   return (
     <Box>
       <Header title="Extra Options" />
-      <section style={{ display: 'flex', gap: '4rem' }}>
+      <section style={{ display: 'flex', gap: '4rem', marginLeft: '1rem' }}>
         <ESM_info_SearchComponent placeholder="Drive /partNumber /fw /hwid" />
-        <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: '0.7' }}>
           <DataExchangeObjectsMENU />
           <XMLfinder />
         </section>

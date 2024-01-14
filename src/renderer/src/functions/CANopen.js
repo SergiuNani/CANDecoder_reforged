@@ -428,12 +428,6 @@ export function CreateDecodedArrayOfObjects(
     }
 
     for (let index = globalIndex[0]; index < arr.length; index++) {
-      if (index == 0) {
-        console.log('🚀xXx First index: ', index)
-      } else if (index == arr.length - 1 || index == arr.length - 2) {
-        console.log('🚀xXx SemiLast/Last index: ', index)
-      }
-
       let row = arr[index]
       //Handle Empty Lines
       if (row[1] == '') {
@@ -681,7 +675,6 @@ export function verifyRepetitiveGroup(group) {
 }
 
 export function filterMessagesByAxesAndCobID(filteredMessages, messageTypeSorting) {
-  console.log('🚀 ~  messageTypeSorting:', messageTypeSorting)
   const allFiltersOnTrue = CanLogStatistics.every((oneAxis) => {
     var ObjectProps = Object.keys(oneAxis)
     return ObjectProps.every((prop) => oneAxis[prop][1] == true)
