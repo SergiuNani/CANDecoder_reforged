@@ -50,10 +50,6 @@ const Sidebar = () => {
   var { Clearance } = useContext(ClearanceContext)
   const { setShortcutTrigger_g } = useContext(AppContext)
 
-  // var sidebarSelectedItem = 'Home'
-  // function setSidebarSelectedItem() {
-  //   console.log('setSidebarSelectedItem')
-  // }
   const navigate = useNavigate() //BUG uncomment this to enable shortcuts
   useEffect(() => {
     //SHORTCUTS

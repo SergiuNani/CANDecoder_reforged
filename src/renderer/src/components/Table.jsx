@@ -309,7 +309,6 @@ export function CreateGroupedFilteredArray(
   setProgressBar,
   ProtocolGlobal
 ) {
-  console.log('CreateGroupedFilteredArray -- only Once')
   groupedFilteredArray = []
 
   allMessages.forEach((oneMessage, index) => {
@@ -491,7 +490,6 @@ export function CreateGroupedFilteredArray(
 
 //-------------------ALL TYPES OF TABLE-------------------
 export const DefaultTable = ({ ProtocolGlobal }) => {
-  console.log('TableComponent -- only Once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var { LogDisplayRange, LogDisplayRange_Inf, LogDisplayRange_Sup, FilteredLogLenght } = useContext(
@@ -503,7 +501,6 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
 
   function LoadPrevMessagesButton() {
     function handleLoadPrev() {
-      console.log('LoadPrevMessagesButton')
       LogDisplayRange_Inf.current = aux_inf
       LogDisplayRange_Sup.current = aux_sup
       shortcutToDecodeMessages_whoCalled.current = 'NextPrevMsgsButtons'
@@ -542,7 +539,6 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
   }
   const LoadNextMessagesButton = () => {
     function handleLoadNext() {
-      console.log('LoadPrevMessagesButton')
       LogDisplayRange_Inf.current = aux_inf - 1
       LogDisplayRange_Sup.current = aux_sup
       shortcutToDecodeMessages_whoCalled.current = 'NextPrevMsgsButtons'
@@ -585,7 +581,6 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
   }
 
   const Table_Memo = useMemo(() => {
-    console.log('Table_Memo')
     return (
       <Box
         style={{
@@ -691,8 +686,6 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
 }
 
 export const DebugTable = () => {
-  console.log('DebugTable -- only Once')
-
   const [lineToScroll, setLineToScroll] = useState('')
   const scrollRef = useRef(null)
 

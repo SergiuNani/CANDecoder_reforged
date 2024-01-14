@@ -16,9 +16,6 @@ import {
 } from '../functions/NumberConversion'
 
 const MoreOptionsWindow = () => {
-  console.log('MoreOptionsWindow')
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
   return (
     <Box>
       <Header title="Extra Options" />

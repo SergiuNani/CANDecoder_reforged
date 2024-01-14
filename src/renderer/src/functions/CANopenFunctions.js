@@ -1213,9 +1213,6 @@ export function DecodeOnePDOmsg(cobID_array, message) {
 }
 
 export function helping_DecodePDO(cobID_array, message) {
-  console.log('🚀 helping_DecodePDO:')
-  // console.log('🚀 :', PDO_mapped)
-
   if (message == '-' || message == 'INVALID') {
     return ['-', '-', '-', '-', 'PDO_Error: invalid message', 'error']
   }
@@ -1529,7 +1526,6 @@ function helping_ProvideMappingInfo(PDO_type, AxisID, oneMapping) {
       }
       String = String.slice(0, -1)
     }
-    console.log('🚀 moreDetails:', String)
     arrayOfObjectsInfo[index] = [
       `${aux_CobID}h [${index + 1}] `,
       objectFound[0],

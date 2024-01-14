@@ -378,7 +378,6 @@ export function CreateDecodedArrayOfObjects(
   setObjectIterationPDO,
   ProtocolGlobal
 ) {
-  console.log(`DANGER -- CreateDecodedArrayOfObjects`)
   if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'CAN') {
     getFirmwareAddressesIntoArray_RS232('F514L') // for TechnoCAN
 
@@ -495,7 +494,6 @@ export function CreateDecodedArrayOfObjects(
         DecodedMessage[5] //Error
       )
       if (DecodedMessage[0] == 'MissingPDO') {
-        console.log('MissingPDO we reseted the proccess')
         PDOMessageToDecode = ResultingArray[index]
         prematureEnd = true
         globalIndex[0] = index
@@ -512,7 +510,6 @@ export function CreateDecodedArrayOfObjects(
         setIsDrawerOpen(true)
       }
     } else {
-      console.log('-------------------PREMATURE EXIT')
       setOpenPDOModal(true)
       setObjectIterationPDO(PDOMessageToDecode)
     }

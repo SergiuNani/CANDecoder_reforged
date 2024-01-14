@@ -832,6 +832,11 @@ export const HelpShortcutPage = () => {
           <p>
             Open LogIn menu : <span className="primaryColor"> "Ctrl + l" </span>
           </p>
+          <p>
+            Change protocol (CANopen, CAN, RS232) <span className="primaryColor"> "F1" </span>,
+            <span className="primaryColor"> "F2" </span>,
+            <span className="primaryColor"> "F3" </span>
+          </p>
           <br />
           <li>
             <b>Home Window shortcuts: </b>

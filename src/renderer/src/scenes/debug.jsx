@@ -466,9 +466,7 @@ const DialogVerifyMyObjects = ({
     return returnObject
   })
   console.log('!!!extractedObjects:', extractedObjects)
-
   var ConclusionArray = []
-
   extractedObjects.forEach((oneIndex, idx) => {
     if (oneIndex[1] != null) {
       var temp = GetObject(oneIndex[0])

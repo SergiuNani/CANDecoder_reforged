@@ -16,7 +16,6 @@ import { SnackBarMessage } from '../../components/FloatingComponents'
 import { DefaultPDOs, CompatibleMapping } from '../../data/SmallData'
 
 export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDecoding }) {
-  console.log('!!! PDOdetectedModal:')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -156,7 +155,6 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
         PDO_mapped[objectIteration.type][objectIteration.AxisID] = ['--']
       }
     }
-    console.log('--Close modal --')
     setRestartDecoding((prev) => !prev)
     onClose(false)
   }
@@ -205,7 +203,6 @@ export function PDOdetectedModal({ open, onClose, objectIteration, setRestartDec
   }
 
   function handleCheckBoxClicks(e) {
-    console.log('radioOption:', radioOption)
     var whichCheckbox = e.target.closest('label').innerText
     if (whichCheckbox == 'All PDOs') {
       //All compatible

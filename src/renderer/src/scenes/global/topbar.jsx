@@ -615,7 +615,6 @@ const CalculatorDialog = ({
   CalcVsRegister,
   setCalcVsRegister
 }) => {
-  console.log('CalculatorDialog')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -667,7 +666,6 @@ const CalculatorDialog = ({
   }
 
   function handleBitClick(e) {
-    console.log(e.target.innerText)
     var temp = e.target.innerText
     if (temp == '1') {
       e.target.innerText = '0'
@@ -918,38 +916,25 @@ const AutenthificationDialog = ({ expandLogin }) => {
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.key === 'Enter' && document.activeElement === InputRef.current) {
-        // setIsDrawerOpen((prev) => !prev)
         var pass = asciiToDec(InputRef.current.value)
-        console.log(InputRef.current.value)
-        console.log(pass)
-        console.log(Clearance)
         if (pass == 418548904545) {
-          //asura
           localStorage.setItem('Timer', 44)
           setClearance(44)
           setLevel(4)
         } else if (pass == 27988495321099876 || pass == 8319385953830004000 || pass == 1952804208) {
-          //cocaine, steroids,temp
           setClearance(44)
-
           setLevel(4)
         } else if (pass == 465491092325) {
-          //lance
           localStorage.setItem('Timer', 33)
           setClearance(33)
-
           setLevel(3)
         } else if (pass == 1751474532) {
-          //head
           localStorage.setItem('Timer', 22)
           setClearance(22)
-
           setLevel(2)
         } else if (pass == 32492133653505390) {
-          //soldier
           localStorage.setItem('Timer', 11)
           setClearance(11)
-
           setLevel(1)
         }
       }

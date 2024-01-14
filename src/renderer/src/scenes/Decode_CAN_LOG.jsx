@@ -55,9 +55,8 @@ export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = [] // only filtered messages
 export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
-  console.log('---1---. Decode_CAN_LOG_Window')
-  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
-  // const [fileInnerText, setFileInnerText] = useState('')
+  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //BUG - delete this line
+  const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -287,8 +286,6 @@ export default Decode_CAN_LOG_Window
 
 export let globalIndex = [0] //used when there is a PDO detected and no mapping is done - then we cancel the function and will recall it with this index
 const DecodedTableOptions = ({ fileInnerText }) => {
-  console.log('---2---. DecodedTableOptions')
-  console.log(MessagesDecoded_ArrayOfObjects)
   const [TableOption, setTableOption] = useState('Default') //Default vs Debug
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -331,13 +328,11 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
   AllCAN_MsgsExtracted_array = useMemo(() => {
-    console.log('-2.1- - AllCAN_MsgsExtracted_array -  only once')
     globalIndex = [0]
     return Extract_MSGs_from_text(fileInnerText.split('\n'), ProtocolGlobal)
   }, [fileInnerText])
 
   MessagesDecoded_ArrayOfObjects = useMemo(() => {
-    console.log('-2.2- - MessagesDecoded_ArrayOfObjects')
     FullLogLength.current = AllCAN_MsgsExtracted_array.length
     CutTable_Sup.current = FullLogLength.current
 
@@ -436,7 +431,6 @@ const DrawerComponent_DecodeOptions = ({
   setIsDrawerOpen,
   TableOption
 }) => {
-  console.log('---3---. DrawerComponent_DecodeOptions')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var { Clearance } = useContext(ClearanceContext)
@@ -501,7 +495,6 @@ const DrawerComponent_DecodeOptions = ({
   //On CTRL+ENTER start decoding
   useEffect(() => {
     if (isInitialMount.current) {
-      console.log('Initial Mount of DrawerComponent_DecodeOptions was ignored')
       isInitialMount.current = false
       return // Skip the first render on mount
     } else if (
@@ -517,7 +510,6 @@ const DrawerComponent_DecodeOptions = ({
   //*=============================================
 
   function handleDECODE() {
-    console.log('handleDECODE')
     setisTableVisible(false) // Needed to reset the table
     if (shortcutToDecodeMessages_whoCalled.current == 'DecodeButton') {
       // Because of the animation of the button
@@ -607,7 +599,6 @@ const DrawerComponent_DecodeOptions = ({
   }, [showMessagesModal, filteredMessages_auxGlobal])
 
   function handleLogCUTLimits(e, name) {
-    console.log('🚀 ~  handleLogCUTLimits:')
     setToggle((prev) => !prev)
     e = parseInt(e)
     if (name == 'lower') {
@@ -632,7 +623,6 @@ const DrawerComponent_DecodeOptions = ({
   }
 
   function DeselectAllAxes() {
-    console.log('DeselectAllAxes')
     var boolean = !CheckedAll
     CanLogStatistics.forEach((iteration, idx) => {
       var Keys = Object.keys(iteration)
@@ -642,7 +632,6 @@ const DrawerComponent_DecodeOptions = ({
     })
   }
   const DrawerOptionsList = useMemo(() => {
-    console.log('DrawerOptionsList Rendering')
     return (
       <Box sx={{ userSelect: 'none' }}>
         {/* TABLE DISPLAY OPTIONS ----------------- */}
@@ -879,51 +868,62 @@ const DrawerComponent_DecodeOptions = ({
         ) : null}
 
         {/* SORT BY ----------------- */}
-        <Box
-          sx={{
-            border: `2px solid ${colors.primary[400]}`,
-            borderRadius: '1rem',
-            margin: '1rem 0',
-            background: `${colors.blue[200]}`,
-            padding: '0.4rem'
-          }}
-        >
-          <p
-            style={{
-              fontSize: '1rem',
-              marginBottom: '0.5rem',
-              marginLeft: '1rem',
-              color: `${colors.yellow[500]}`
-            }}
-          >
-            Sort By:{' '}
-          </p>
 
-          <RadioGroup
-            row
-            onChange={(e) => {
-              setMessageTypeSorting(e.target.value)
-            }}
-            value={messageTypeSorting}
+        {ProtocolGlobal != 'RS232' ? (
+          <Box
             sx={{
-              justifyContent: 'center',
-              '& .MuiSvgIcon-root': {
-                // fontSize: '1rem'
-                color: `${colors.green[400]}`,
-                display: 'flex',
-                gap: '2rem'
-              }
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
             }}
           >
-            <FormControlLabel value="All" control={<Radio />} label="All" />
-            <FormControlLabel value="Master" control={<Radio />} label="Master" />
-            <FormControlLabel value="Mapping" control={<Radio />} label="Mapping" />
-            <FormControlLabel value="Errors" control={<Radio />} label="Errors" />
-          </RadioGroup>
-        </Box>
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Sort By:{' '}
+            </p>
+
+            <RadioGroup
+              row
+              onChange={(e) => {
+                setMessageTypeSorting(e.target.value)
+              }}
+              value={messageTypeSorting}
+              sx={{
+                justifyContent: 'center',
+                '& .MuiSvgIcon-root': {
+                  // fontSize: '1rem'
+                  color: `${colors.green[400]}`,
+                  display: 'flex',
+                  gap: '2rem'
+                }
+              }}
+            >
+              <FormControlLabel value="All" control={<Radio />} label="All" />
+              <FormControlLabel value="Master" control={<Radio />} label="Master" />
+              <FormControlLabel value="Mapping" control={<Radio />} label="Mapping" />
+              <FormControlLabel value="Errors" control={<Radio />} label="Errors" />
+            </RadioGroup>
+          </Box>
+        ) : null}
       </Box>
     )
-  }, [TableOption, groupingOptionsRender, toggle, messageTypeSorting, CheckedAll, Clearance])
+  }, [
+    TableOption,
+    groupingOptionsRender,
+    toggle,
+    messageTypeSorting,
+    CheckedAll,
+    Clearance,
+    ProtocolGlobal
+  ])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -1016,7 +1016,6 @@ const DrawerComponent_DecodeOptions = ({
   )
 }
 const AvailableAxes_Component = () => {
-  console.log('---4---. AvailableAxes_Component ')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [renderToggle, setRenderToggle] = useState(true)
@@ -1134,7 +1133,6 @@ const AvailableAxes_Component = () => {
 }
 
 const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => {
-  console.log('---5---. MappingWindowforDrawer -- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var SortedMapping = SortMappingByAxis(PDO_mapped)
@@ -1210,7 +1208,6 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
   )
 }
 const MessageWindowForDrawerComponent = ({ showMessagesModal, setShowMessagesModal }) => {
-  console.log('---7---. MessageWindowForDrawerComponent -- only once')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -1257,7 +1254,6 @@ const MessageWindowForDrawerComponent = ({ showMessagesModal, setShowMessagesMod
   )
 }
 const AdvancedSearchComponent = () => {
-  console.log('---6---. AdvancedSearchComponent ')
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [FilteredArray, setFilteredArray] = useState([])

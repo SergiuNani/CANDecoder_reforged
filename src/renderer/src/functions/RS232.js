@@ -5,8 +5,6 @@ import { FirmwareAdrresses_F514L } from '../data/FirmwareAddresses'
 let firmwareAddressesDynamicArray = []
 
 export function Extract_MSGs_from_text_RS232(text) {
-  console.log('--AA-- Extract_MSGs_from_text_RS232')
-
   const hexPattern = /^(0x)?[0-9a-f]+$/gi
   var ExtractedArray = text.map((row, index) => {
     var rowSplitted = row.split(' ')
@@ -78,47 +76,10 @@ var PreviousMessageInfo_RS232_g = {
   storedFutureSize: null
 }
 export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen) {
-  console.log('--BB-- CreateDecodedArrayOfObjects_RS232')
   getFirmwareAddressesIntoArray_RS232('F514L') // BUg in the future add more options and make it dynamic
 
   var arr = AllCAN_MsgsExtracted_array
   var ResultingArray = []
-
-  for (let index = 0; index < arr.length; index++) {
-    let row = arr[index]
-    var type = row[2]
-    var messageString = row[3].toUpperCase()
-    var msgNr = row[0]
-    //Handle Empty Lines
-    if (row[1] == '') {
-      row[2] = 'Empty'
-      row[3] = 'Line'
-      UpdateStatisticsBasedOnMessage('All', '-')
-      createObject(row[0], row[1], row[2], row[3], '-', 'All')(index, arr)
-      continue
-    }
-    var DecodedMessage = DecodeOneRS232_msg(msgNr, messageString)
-    if (DecodedMessage[6] == 'error') {
-      DecodedMessage[3] = 'invalid'
-    }
-    UpdateStatisticsBasedOnMessage(DecodedMessage[0], DecodedMessage[3])
-
-    createObject(
-      msgNr, //Message NR
-      row[1], //OriginalMsg
-      type, //CobID
-      row[3], //Message
-      DecodedMessage[3], //type
-      DecodedMessage[0], //AxisID
-      DecodedMessage[1], //CS
-      DecodedMessage[2], //Object
-      '-', //ObjName
-      DecodedMessage[4], //Data
-      DecodedMessage[5], //Interpretation
-      DecodedMessage[6] //Error
-    )
-  }
-
   function createObject(
     msgNr,
     OriginalMessage,
@@ -150,6 +111,41 @@ export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, se
 
     ResultingArray.push(newObj)
   }
+  for (let index = 0; index < arr.length; index++) {
+    let row = arr[index]
+    var type = row[2]
+    var messageString = row[3].toUpperCase()
+    var msgNr = row[0]
+    //Handle Empty Lines
+    if (row[1] == '') {
+      row[2] = 'Empty'
+      row[3] = 'Line'
+      UpdateStatisticsBasedOnMessage('All', '-')
+      createObject(row[0], row[1], row[2], row[3], '-', 'All')
+      continue
+    }
+    var DecodedMessage = DecodeOneRS232_msg(msgNr, messageString)
+    if (DecodedMessage[6] == 'error') {
+      DecodedMessage[3] = 'invalid'
+    }
+    UpdateStatisticsBasedOnMessage(DecodedMessage[0], DecodedMessage[3])
+
+    createObject(
+      msgNr, //Message NR
+      row[1], //OriginalMsg
+      type, //CobID
+      row[3], //Message
+      DecodedMessage[3], //type
+      DecodedMessage[0], //AxisID
+      DecodedMessage[1], //CS
+      DecodedMessage[2], //Object
+      '-', //ObjName
+      DecodedMessage[4], //Data
+      DecodedMessage[5], //Interpretation
+      DecodedMessage[6] //Error
+    )
+  }
+
   if (!(AllCAN_MsgsExtracted_array.length == 1 && AllCAN_MsgsExtracted_array[0][2] == 'Empty')) {
     //Because the first time the page is loaded it thinks the first empty line is a message and tries to decode it
     setIsDrawerOpen(true)
