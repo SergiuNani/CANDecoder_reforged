@@ -55,8 +55,8 @@ export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = [] // only filtered messages
 export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
-  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
-  const [fileInnerText, setFileInnerText] = useState('')
+  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
+  // const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -440,6 +440,7 @@ const DrawerComponent_DecodeOptions = ({
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [showMessagesModal, setShowMessagesModal] = useState(false)
+  const [showTime, setShowTime] = useState(true)
   const [toggle, setToggle] = useState(false)
   const [CheckedAll, setCheckedAll] = useState(true)
 
@@ -548,7 +549,7 @@ const DrawerComponent_DecodeOptions = ({
           setProgressBarInsideDrawer,
           ProtocolGlobal
         )
-
+        extractTIME()
         setisTableVisible(true)
         setIsDrawerOpen(false)
       },
@@ -597,6 +598,10 @@ const DrawerComponent_DecodeOptions = ({
       )
     )
   }, [showMessagesModal, filteredMessages_auxGlobal])
+
+  const showTimeWindow_Memo = useMemo(() => {
+    return showTime && <ShowTimeWindowComponent showTime={showTime} setShowTime={setShowTime} />
+  }, [showTime])
 
   function handleLogCUTLimits(e, name) {
     setToggle((prev) => !prev)
@@ -913,6 +918,78 @@ const DrawerComponent_DecodeOptions = ({
             </RadioGroup>
           </Box>
         ) : null}
+        {/* Extra help ----------------- */}
+        {Clearance > 11 ? (
+          <Box
+            sx={{
+              border: `2px solid ${colors.primary[400]}`,
+              borderRadius: '1rem',
+              margin: '1rem 0',
+              background: `${colors.blue[200]}`,
+              padding: '0.4rem'
+            }}
+          >
+            <p
+              style={{
+                fontSize: '1rem',
+                marginBottom: '0.5rem',
+                marginLeft: '1rem',
+                color: `${colors.yellow[500]}`
+              }}
+            >
+              Extra help:
+            </p>
+            <Box style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+              <ButtonTransparent
+                onClick={() => {
+                  setShowMappingWindow(true)
+                }}
+                sx={{
+                  background: `${colors.primary1[100]}`,
+                  padding: '0.5rem',
+                  fontSize: '0.8rem',
+                  '&:hover': {
+                    background: `${colors.primary[500]}`
+                  }
+                }}
+              >
+                Show Mapping
+              </ButtonTransparent>
+
+              <ButtonTransparent
+                onClick={() => {
+                  setShowMessagesModal(true)
+                }}
+                sx={{
+                  background: `${colors.primary1[100]}`,
+                  padding: '0.5rem',
+                  fontSize: '0.8rem',
+                  '&:hover': {
+                    background: `${colors.primary[500]}`
+                  }
+                }}
+              >
+                Show Messages
+              </ButtonTransparent>
+
+              <ButtonTransparent
+                onClick={() => {
+                  setShowTime(true)
+                }}
+                sx={{
+                  background: `${colors.primary1[100]}`,
+                  padding: '0.5rem',
+                  fontSize: '0.8rem',
+                  '&:hover': {
+                    background: `${colors.primary[500]}`
+                  }
+                }}
+              >
+                Show Time
+              </ButtonTransparent>
+            </Box>
+          </Box>
+        ) : null}
       </Box>
     )
   }, [
@@ -980,34 +1057,10 @@ const DrawerComponent_DecodeOptions = ({
                 DECODE
               </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
-              {Clearance > 11 ? (
-                <Box style={{ display: 'flex', gap: '0.5rem' }}>
-                  <Button1
-                    onClick={() => {
-                      setShowMappingWindow(true)
-                    }}
-                  >
-                    Show Mapping
-                  </Button1>
 
-                  <Button1
-                    onClick={() => {
-                      setShowMessagesModal(true)
-                    }}
-                    sx={{
-                      background: `${colors.primary[400]}`,
-                      padding: '0.5rem',
-                      '&:hover': {
-                        background: `${colors.primary[500]}`
-                      }
-                    }}
-                  >
-                    Show Messages
-                  </Button1>
-                </Box>
-              ) : null}
               {MappingWindowforDrawer_Memo}
               {MessagesRawForDrawer_Memo}
+              {showTimeWindow_Memo}
             </Box>
           </Box>
         </Box>
@@ -1548,4 +1601,127 @@ const AdvancedSearchComponent = () => {
       )}
     </section>
   )
+}
+
+const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  return (
+    <Dialog
+      open={showTime}
+      onClose={() => setShowTime(false)}
+      sx={{
+        '& .MuiDialog-paper': {
+          maxWidth: 'none'
+        }
+      }}
+    >
+      <div
+        style={{
+          border: `1px solid ${colors.primary[400]}`,
+          padding: '1rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: '1rem' }}>
+          Time difference
+        </Typography>
+        <li style={{ color: `${colors.green[400]}`, marginBottom: '1rem' }}>
+          {'For filters to apply first click on DECODE button'}
+        </li>
+        <section>
+          {filteredMessages_auxGlobal.length > 0 ? (
+            filteredMessages_auxGlobal.map((iteration) => {
+              return <TableROW_simple key={iteration.msgNr} obj={iteration} />
+            })
+          ) : (
+            <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
+          )}
+        </section>
+      </div>
+    </Dialog>
+  )
+}
+
+function extractTIME() {
+  var TimeArray = []
+
+  function timeStringToMilliseconds(timeString) {
+    var Process = ''
+    var attachedMiliseconds = 0
+    var attachedMicroSeconds = 0
+    var attachement = ''
+    var [hours, minutes, seconds] = timeString.split(':').map(Number)
+    if (isNaN(seconds)) {
+      var temp = timeString.split(':')[2].split('.')
+      seconds = parseInt(temp[0])
+      attachedMiliseconds = parseInt(temp[1])
+      attachedMicroSeconds = parseInt(temp[2]) / 1000
+      attachement = ` + ${attachedMiliseconds} +  ${temp[2]}/1000`
+    }
+    // Calculate the total milliseconds
+    const totalMilliseconds =
+      (hours * 60 * 60 + minutes * 60 + seconds) * 1000 + attachedMiliseconds + attachedMicroSeconds
+    Process = `${hours}*60*60 + ${minutes}*60 + ${seconds} ${attachement}`
+
+    return [totalMilliseconds, Process]
+  }
+  function ExtractTimeFromFrame(strInput) {
+    console.log(strInput)
+    var time = 0
+    var Proccess = ''
+    strInput = strInput.replace(/\t/g, ' ')
+    strInput = strInput
+      .split(' ')
+      .filter((el) => el !== '')
+      .filter((el) => el.includes(':') || el.includes('.'))
+    var DoubleColumn_flag = -1
+    strInput.forEach((item, idx) => {
+      const colonCount = (item.match(/:/g) || []).length
+      if (colonCount == 2) {
+        DoubleColumn_flag = idx
+      }
+    })
+    if (DoubleColumn_flag != -1) {
+      // there is an item which has time like this : hh:mm:ss. IF there are multiple only the last one will be considered
+
+      ;[time, Proccess] = timeStringToMilliseconds(strInput[DoubleColumn_flag])
+      if (strInput[DoubleColumn_flag].split(':')[2].length == 2) {
+        // checking for ms and us if they were not attached to the second unit
+        if (strInput[DoubleColumn_flag + 1]) {
+          // hh:mm:ss + ms + us
+          var temp = strInput[DoubleColumn_flag + 1].split('.')
+          time += parseInt(temp[0]) + parseInt(temp[1]) / 1000
+          Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / 1000}`
+          strInput.splice(DoubleColumn_flag + 2)
+        } else {
+          //only hh:mm:ss and no ms or us
+          strInput.splice(DoubleColumn_flag + 1)
+        }
+      } else {
+        // hh:mm:ss.ms.us
+        strInput.splice(DoubleColumn_flag + 1)
+      }
+    } else {
+      // ms.us
+      var temp = strInput[0].split('.')
+      time += parseInt(temp[0]) + parseInt(temp[1]) / 1000
+      Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / 1000}`
+      strInput.splice(0)
+    }
+
+    console.log('🚀 time:', time)
+    console.log('🚀 time:', Proccess)
+    console.log('🚀 ~ extractTIME ~ strInput:', strInput)
+    console.log('----------------------------------------------------')
+    return [strInput, time, Proccess]
+  }
+
+  filteredMessages_auxGlobal.forEach((iteration, indexMain) => {
+    var strIndex = iteration.OriginalMessage.match(iteration.CobID)
+    if (strIndex && strIndex.input && strIndex.index) {
+      ExtractTimeFromFrame(strIndex.input.slice(0, strIndex.index))
+    }
+  })
 }

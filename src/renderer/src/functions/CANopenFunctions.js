@@ -988,7 +988,7 @@ export function checkSDOforMapping(object, data, axisID) {
 
           break
         case '03':
-          var aux = hexToDec(data, 32)
+          var aux = hexToDec(data, 32) / 10
           interpretationInfo = interpretationInfo.concat(` - Inhibit time : ${aux}ms`)
           PDO_mapped_aux[typePDO][axisID].InhibitTime = aux
           break

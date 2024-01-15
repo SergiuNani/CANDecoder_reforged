@@ -1967,7 +1967,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1800_03',
     ObjectName: 'Inhibit time',
     Data: '03E8',
-    Interpretation: '[184h] - Inhibit time : 1000ms',
+    Interpretation: '[184h] - Inhibit time : 100ms',
     errorStatus: 'blue'
   },
   {
@@ -2568,7 +2568,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1802_03',
     ObjectName: 'Inhibit time',
     Data: '0032',
-    Interpretation: '[384h] - Inhibit time : 50ms',
+    Interpretation: '[384h] - Inhibit time : 5ms',
     errorStatus: 'blue'
   },
   {

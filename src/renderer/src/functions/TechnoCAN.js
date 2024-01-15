@@ -91,8 +91,17 @@ export function DecodeTCANglobal(cobID_array, message) {
       Interpretation = result[2]
 
       break
-      break
+
     case 'TSYNC':
+      break
+    case 'TimeStamp':
+      var time =
+        LittleEndian(message.slice(8, 12)) +
+        LittleEndian(message.slice(4, 8)) +
+        LittleEndian(message.slice(0, 4))
+      Data = `0x${time}h us`
+      time = hexToDec(time, 64)
+      Interpretation = `${time}d us`
       break
   }
 

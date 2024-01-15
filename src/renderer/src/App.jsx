@@ -102,12 +102,12 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- CAN
+  const [ProtocolGlobal, setProtocolGlobal] = useState('CAN') // CANOPEN --RS232 -- CAN
   const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
   const [WelcomePage, setWelcomePage] = useState(
     localStorage.getItem('WelcomePageStatus') === 'true'
   )
-  const [ValidationMethod, setValidationMethod] = useState('Internal') // Internal -- LocalStorage
+  const [ValidationMethod, setValidationMethod] = useState('LocalStorage') // Internal -- LocalStorage
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
   const [toggleFilterWindow_app, setToggleFilterWindow_app] = useState(false)
