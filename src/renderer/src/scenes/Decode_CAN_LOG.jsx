@@ -549,7 +549,6 @@ const DrawerComponent_DecodeOptions = ({
           setProgressBarInsideDrawer,
           ProtocolGlobal
         )
-        extractTIME()
         setisTableVisible(true)
         setIsDrawerOpen(false)
       },
@@ -1057,7 +1056,6 @@ const DrawerComponent_DecodeOptions = ({
                 DECODE
               </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
-
               {MappingWindowforDrawer_Memo}
               {MessagesRawForDrawer_Memo}
               {showTimeWindow_Memo}
@@ -1607,6 +1605,114 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
+  function extractTimeFromDecodedArray() {
+    var TimeArray = []
+
+    function timeStringToMilliseconds(timeString) {
+      var Process = ''
+      var attachedMiliseconds = 0
+      var attachedMicroSeconds = 0
+      var attachement = ''
+      var devision = 1000
+      var [hours, minutes, seconds] = timeString.split(':').map(Number)
+      if (isNaN(seconds)) {
+        var temp = timeString.split(':')[2].split('.')
+        seconds = parseInt(temp[0])
+        if (temp[2].length == 1) devision = 10
+        attachedMiliseconds = parseInt(temp[1])
+        attachedMicroSeconds = parseInt(temp[2]) / devision
+        attachement = ` + ${attachedMiliseconds} +  ${temp[2]}/${devision}`
+      }
+      // Calculate the total milliseconds
+      const totalMilliseconds =
+        (hours * 60 * 60 + minutes * 60 + seconds) * 1000 +
+        attachedMiliseconds +
+        attachedMicroSeconds
+      Process = `${hours}*60*60 + ${minutes}*60 + ${seconds} ${attachement}`
+
+      return [totalMilliseconds, Process]
+    }
+    function ExtractTimeFromFrame(strInput, previousElement) {
+      var time = 0
+      var Proccess = ''
+      var devision = 1000
+
+      strInput = strInput.replace(/\t/g, ' ')
+      strInput = strInput
+        .split(' ')
+        .filter((el) => el !== '')
+        .filter((el) => el.includes(':') || el.includes('.'))
+      var DoubleColumn_flag = -1
+      strInput.forEach((item, idx) => {
+        const colonCount = (item.match(/:/g) || []).length
+        if (colonCount == 2) {
+          DoubleColumn_flag = idx
+        }
+      })
+      if (DoubleColumn_flag != -1) {
+        // there is an item which has time like this : hh:mm:ss. IF there are multiple only the last one will be considered
+
+        ;[time, Proccess] = timeStringToMilliseconds(strInput[DoubleColumn_flag])
+        if (strInput[DoubleColumn_flag].split(':')[2].length == 2) {
+          // checking for ms and us if they were not attached to the second unit
+          if (strInput[DoubleColumn_flag + 1]) {
+            // hh:mm:ss + ms + us
+            var temp = strInput[DoubleColumn_flag + 1].split('.')
+            if (temp[1].length == 1) devision = 10
+            time += parseInt(temp[0]) + parseInt(temp[1]) / devision
+            Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / ${devision}}`
+            strInput.splice(DoubleColumn_flag + 2)
+          } else {
+            //only hh:mm:ss and no ms or us
+            strInput.splice(DoubleColumn_flag + 1)
+          }
+        } else {
+          // hh:mm:ss.ms.us
+          strInput.splice(DoubleColumn_flag + 1)
+        }
+      } else {
+        if (strInput.length > 0) {
+          // ms.us
+
+          var temp = strInput[0].split('.')
+          if (temp[1].length == 1) devision = 10
+
+          time += parseInt(temp[0]) + parseInt(temp[1]) / devision
+          Proccess = Proccess + `${temp[0]} + ${temp[1]} / ${devision}}`
+          strInput.splice(1)
+        } else {
+          return ['-', '-', '-', '-']
+        }
+      }
+
+      // console.log('🚀 time:', time)
+      // console.log('🚀 time:', Proccess)
+      // console.log('🚀 ~ extractTIME ~ strInput:', strInput)
+      // console.log('----------------------------------------------------')
+      var diffTime = '-'
+      if (previousElement && previousElement[0] != '-' && time != '-') {
+        diffTime = (time - previousElement[0]).toFixed(3)
+      }
+      return [time, diffTime, strInput, Proccess]
+    }
+
+    filteredMessages_auxGlobal.forEach((iteration, indexMain) => {
+      console.log('🚀  ~ indexMain:', indexMain)
+      console.log('🚀 ~ filteredMessages_auxGlobal.forEach ~ iteration:', iteration.OriginalMessage)
+      var strIndex = iteration.OriginalMessage.match(iteration.CobID)
+      if (strIndex && strIndex.input && strIndex.index && iteration.FrameData != 'invalid') {
+        TimeArray.push(
+          ExtractTimeFromFrame(strIndex.input.slice(0, strIndex.index), TimeArray[indexMain - 1])
+        )
+      } else {
+        TimeArray.push(['-', '-', '-', '-'])
+      }
+    })
+
+    return TimeArray
+  }
+  var TimeArray = extractTimeFromDecodedArray()
+  console.log('🚀 ~ TimeArray:', TimeArray)
   return (
     <Dialog
       open={showTime}
@@ -1628,12 +1734,18 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
           Time difference
         </Typography>
         <li style={{ color: `${colors.green[400]}`, marginBottom: '1rem' }}>
-          {'For filters to apply first click on DECODE button'}
+          {'Click on DECODE button first to apply the filters'}
         </li>
         <section>
           {filteredMessages_auxGlobal.length > 0 ? (
-            filteredMessages_auxGlobal.map((iteration) => {
-              return <TableROW_simple key={iteration.msgNr} obj={iteration} />
+            filteredMessages_auxGlobal.map((iteration, index) => {
+              return (
+                <TableROW_simple
+                  key={iteration.msgNr}
+                  obj={iteration}
+                  timeInfo={TimeArray[index]}
+                />
+              )
             })
           ) : (
             <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
@@ -1642,86 +1754,4 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
       </div>
     </Dialog>
   )
-}
-
-function extractTIME() {
-  var TimeArray = []
-
-  function timeStringToMilliseconds(timeString) {
-    var Process = ''
-    var attachedMiliseconds = 0
-    var attachedMicroSeconds = 0
-    var attachement = ''
-    var [hours, minutes, seconds] = timeString.split(':').map(Number)
-    if (isNaN(seconds)) {
-      var temp = timeString.split(':')[2].split('.')
-      seconds = parseInt(temp[0])
-      attachedMiliseconds = parseInt(temp[1])
-      attachedMicroSeconds = parseInt(temp[2]) / 1000
-      attachement = ` + ${attachedMiliseconds} +  ${temp[2]}/1000`
-    }
-    // Calculate the total milliseconds
-    const totalMilliseconds =
-      (hours * 60 * 60 + minutes * 60 + seconds) * 1000 + attachedMiliseconds + attachedMicroSeconds
-    Process = `${hours}*60*60 + ${minutes}*60 + ${seconds} ${attachement}`
-
-    return [totalMilliseconds, Process]
-  }
-  function ExtractTimeFromFrame(strInput) {
-    console.log(strInput)
-    var time = 0
-    var Proccess = ''
-    strInput = strInput.replace(/\t/g, ' ')
-    strInput = strInput
-      .split(' ')
-      .filter((el) => el !== '')
-      .filter((el) => el.includes(':') || el.includes('.'))
-    var DoubleColumn_flag = -1
-    strInput.forEach((item, idx) => {
-      const colonCount = (item.match(/:/g) || []).length
-      if (colonCount == 2) {
-        DoubleColumn_flag = idx
-      }
-    })
-    if (DoubleColumn_flag != -1) {
-      // there is an item which has time like this : hh:mm:ss. IF there are multiple only the last one will be considered
-
-      ;[time, Proccess] = timeStringToMilliseconds(strInput[DoubleColumn_flag])
-      if (strInput[DoubleColumn_flag].split(':')[2].length == 2) {
-        // checking for ms and us if they were not attached to the second unit
-        if (strInput[DoubleColumn_flag + 1]) {
-          // hh:mm:ss + ms + us
-          var temp = strInput[DoubleColumn_flag + 1].split('.')
-          time += parseInt(temp[0]) + parseInt(temp[1]) / 1000
-          Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / 1000}`
-          strInput.splice(DoubleColumn_flag + 2)
-        } else {
-          //only hh:mm:ss and no ms or us
-          strInput.splice(DoubleColumn_flag + 1)
-        }
-      } else {
-        // hh:mm:ss.ms.us
-        strInput.splice(DoubleColumn_flag + 1)
-      }
-    } else {
-      // ms.us
-      var temp = strInput[0].split('.')
-      time += parseInt(temp[0]) + parseInt(temp[1]) / 1000
-      Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / 1000}`
-      strInput.splice(0)
-    }
-
-    console.log('🚀 time:', time)
-    console.log('🚀 time:', Proccess)
-    console.log('🚀 ~ extractTIME ~ strInput:', strInput)
-    console.log('----------------------------------------------------')
-    return [strInput, time, Proccess]
-  }
-
-  filteredMessages_auxGlobal.forEach((iteration, indexMain) => {
-    var strIndex = iteration.OriginalMessage.match(iteration.CobID)
-    if (strIndex && strIndex.input && strIndex.index) {
-      ExtractTimeFromFrame(strIndex.input.slice(0, strIndex.index))
-    }
-  })
 }

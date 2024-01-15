@@ -168,7 +168,7 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
   )
 }
 
-export const TableROW_simple = ({ obj }) => {
+export const TableROW_simple = ({ obj, timeInfo }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
@@ -189,6 +189,24 @@ export const TableROW_simple = ({ obj }) => {
       <p style={{ color: colors.primary[600], minWidth: '2rem', textAlign: 'center' }}>
         {obj.msgNr}{' '}
       </p>
+      {timeInfo ? (
+        <>
+          <p style={{ color: colors.blue[100], minWidth: '8rem', textAlign: 'center' }}>
+            {timeInfo[0] != '-' ? `${timeInfo[0]} ms` : '-'}
+          </p>
+          <p
+            style={{
+              color: colors.yellow[100],
+              minWidth: '8rem',
+              textAlign: 'center',
+              fontWeight: '700'
+            }}
+          >
+            {timeInfo[1] != '-' ? `${timeInfo[1]} ms` : '-'}
+          </p>
+        </>
+      ) : null}
+
       <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
       <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
         `{obj.CobID} - {obj.FrameData}`
