@@ -183,13 +183,16 @@ export const SwitchComponent = ({ option1, option2, tellParentValueChanged, free
 export const TooltipClickable = styled(({ className, children, ...props }) => {
   const [open, setOpen] = useState(false)
 
-  const handleTooltipClose = () => {
+  const handleTooltipClose = (event) => {
+    if (event && event.target.closest(`.${tooltipClasses.tooltip}`)) {
+      return
+    }
+
     setOpen(false)
   }
 
   const handleTooltipOpen = () => {
-    if (open == true) setOpen(false)
-    else setOpen(true)
+    setOpen(!open)
   }
   return (
     <div>
@@ -213,8 +216,8 @@ export const TooltipClickable = styled(({ className, children, ...props }) => {
     [`& .${tooltipClasses.tooltip}`]: {
       backgroundColor: `${colors.primary[100]}`,
       color: `${colors.yellow[100]}`,
-      maxWidth: '40rem',
-      fontSize: '1.3rem',
+      maxWidth: '80rem',
+      fontSize: '1.2rem',
       fontWeight: '500',
       border: `3px solid ${colors.primary[400]}`,
       padding: '0.6rem'

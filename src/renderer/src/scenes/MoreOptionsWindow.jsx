@@ -124,10 +124,11 @@ const DataExchangeObjectsMENU = () => {
           },
           '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
             padding: '0.1rem'
-          }
+          },
+          minWidth: '5rem'
         }}
       >
-        <p>{label}: </p>
+        <p style={{ marginBottom: '0.4rem' }}>{label}: </p>
         {options.map((option) => (
           <FormControlLabel
             key={option.value}
@@ -153,7 +154,7 @@ const DataExchangeObjectsMENU = () => {
         <Typography variant="h3" sx={{ mb: '1rem', color: colors.yellow[500] }}>
           Data Exchange Objects
         </Typography>
-        <section style={{ display: 'flex', gap: '1rem' }}>
+        <section style={{ display: 'flex', gap: '1.5rem' }}>
           {renderRadioGroup('Data size', 'DataSize', [
             { value: '16', label: '16 bits' },
             { value: '32', label: '32 bits' }

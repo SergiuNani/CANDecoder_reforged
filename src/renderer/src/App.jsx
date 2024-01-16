@@ -107,7 +107,7 @@ function MyProviders({ children }) {
   const [WelcomePage, setWelcomePage] = useState(
     localStorage.getItem('WelcomePageStatus') === 'true'
   )
-  const [ValidationMethod, setValidationMethod] = useState('LocalStorage') // Internal -- LocalStorage
+  const [ValidationMethod, setValidationMethod] = useState('Internal') // Internal -- LocalStorage
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
   const [toggleFilterWindow_app, setToggleFilterWindow_app] = useState(false)

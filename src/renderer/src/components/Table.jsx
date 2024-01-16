@@ -168,14 +168,145 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
   )
 }
 
-export const TableROW_simple = ({ obj, timeInfo }) => {
+export const TableROW_simple = ({ obj, timeInfo, type }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  for (const prop in obj) {
-    if (obj[prop] === '-') {
-      obj[prop] = ''
-    }
+  const TypeFinder = () => {
+    return (
+      <>
+        <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
+        <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
+          `{obj.CobID} - {obj.FrameData}`
+        </p>
+        <p
+          style={{ color: colors.yellow[300], fontWeight: 700, minWidth: '12rem' }}
+        >{` -  ${obj.Object} -`}</p>
+        <p
+          style={{ color: colors.personal[100], fontWeight: 700, minWidth: '12rem' }}
+        >{` ${obj.Data} `}</p>
+        <p
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+            fontWeight: 700,
+            minWidth: '15rem'
+          }}
+        >
+          {obj.Interpretation}
+        </p>
+      </>
+    )
+  }
+
+  const TypeTime = () => {
+    return (
+      <>
+        <TooltipClickable
+          title={
+            <div>
+              <p>{obj.OriginalMessage}</p>
+              <p style={{ color: `${colors.primary[400]}` }}>
+                {' '}
+                {`Extracted: ${timeInfo[2]} => ${timeInfo[3]}`}
+              </p>
+            </div>
+          }
+          arrow
+          placement="top"
+        >
+          <p
+            style={{
+              color: colors.green[100],
+              minWidth: '8rem',
+              textAlign: 'center',
+              cursor: 'pointer',
+              fontWeight: '400'
+            }}
+          >
+            {timeInfo[0] != '-' ? `${timeInfo[0]} ms` : '-'}
+          </p>
+        </TooltipClickable>
+        <p
+          style={{
+            color: colors.yellow[100],
+            minWidth: '8rem',
+            textAlign: 'center'
+          }}
+        >
+          {timeInfo[1] != '-' ? `${timeInfo[1]} ms` : '-'}
+        </p>
+        <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{` - [${obj.AxisID}] - `}</p>
+        <p style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}>
+          `{obj.CobID} - {obj.FrameData}`
+        </p>
+        <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{` -  ${obj.Object} -`}</p>
+        <p style={{ color: colors.personal[100], minWidth: '10rem' }}>{` ${obj.Data} `}</p>
+        <p
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+            fontWeight: 700
+          }}
+        >
+          {obj.Interpretation}
+        </p>
+      </>
+    )
+  }
+  const TypeExtraction = () => {
+    return (
+      <>
+        <TooltipClickable
+          title={
+            <div>
+              <p>{obj.OriginalMessage}</p>
+              <p>{`Extracted: ${timeInfo[2]} => ${timeInfo[3]}`}</p>
+            </div>
+          }
+          arrow
+          placement="top"
+        >
+          <p
+            style={{
+              color: colors.blue[100],
+              minWidth: '8rem',
+              textAlign: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            {timeInfo[0] != '-' ? `${timeInfo[0]} ms` : '-'}
+          </p>
+        </TooltipClickable>
+        <p
+          style={{
+            color: colors.yellow[100],
+            minWidth: '8rem',
+            textAlign: 'center',
+            fontWeight: '700'
+          }}
+        >
+          {timeInfo[1] != '-' ? `${timeInfo[1]} ms` : '-'}
+        </p>
+        <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
+        <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
+          `{obj.CobID} - {obj.FrameData}`
+        </p>
+        <p
+          style={{ color: colors.yellow[300], fontWeight: 700, minWidth: '12rem' }}
+        >{` -  ${obj.Object} -`}</p>
+        <p
+          style={{ color: colors.personal[100], fontWeight: 700, minWidth: '12rem' }}
+        >{` ${obj.Data} `}</p>
+        <p
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
+            fontWeight: 700,
+            minWidth: '15rem'
+          }}
+        >
+          {obj.Interpretation}
+        </p>
+      </>
+    )
   }
 
   return (
@@ -183,49 +314,22 @@ export const TableROW_simple = ({ obj, timeInfo }) => {
       style={{
         display: 'flex',
         width: '100%',
-        borderBottom: `1px solid ${colors.grey[400]}`
+        borderBottom: `1px solid ${colors.grey[400]}`,
+        fontWeight: '550'
       }}
     >
-      <p style={{ color: colors.primary[600], minWidth: '2rem', textAlign: 'center' }}>
-        {obj.msgNr}{' '}
-      </p>
-      {timeInfo ? (
-        <>
-          <p style={{ color: colors.blue[100], minWidth: '8rem', textAlign: 'center' }}>
-            {timeInfo[0] != '-' ? `${timeInfo[0]} ms` : '-'}
-          </p>
-          <p
-            style={{
-              color: colors.yellow[100],
-              minWidth: '8rem',
-              textAlign: 'center',
-              fontWeight: '700'
-            }}
-          >
-            {timeInfo[1] != '-' ? `${timeInfo[1]} ms` : '-'}
-          </p>
-        </>
-      ) : null}
-
-      <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
-      <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
-        `{obj.CobID} - {obj.FrameData}`
-      </p>
-      <p
-        style={{ color: colors.yellow[300], fontWeight: 700, minWidth: '12rem' }}
-      >{` -  ${obj.Object} -`}</p>
-      <p
-        style={{ color: colors.personal[100], fontWeight: 700, minWidth: '12rem' }}
-      >{` ${obj.Data} `}</p>
       <p
         style={{
-          color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-          fontWeight: 700,
-          minWidth: '15rem'
+          color: colors.primary[600],
+          minWidth: '2rem',
+          textAlign: 'center',
+          fontWeight: '400'
         }}
       >
-        {obj.Interpretation}
+        {obj.msgNr}{' '}
       </p>
+
+      {type == 'Finder' ? <TypeFinder /> : type == 'Time' ? <TypeTime /> : <TypeExtraction />}
     </section>
   )
 }
@@ -701,88 +805,4 @@ export const DefaultTable = ({ ProtocolGlobal }) => {
   }, [])
 
   return <section>{Table_Memo}</section>
-}
-
-export const DebugTable = () => {
-  const [lineToScroll, setLineToScroll] = useState('')
-  const scrollRef = useRef(null)
-
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-
-  useEffect(() => {
-    if (lineToScroll !== '') {
-      if (scrollRef.current) {
-        scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
-    }
-  }, [lineToScroll])
-
-  function handleNewSearch(event) {
-    setLineToScroll(event)
-  }
-
-  return (
-    <Box sx={{ position: 'relative' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'start',
-          alignItems: 'center',
-          position: 'sticky',
-          top: '2.5rem',
-          background: `${colors.primary[200]}`
-        }}
-      >
-        <Typography variant="h4">GOTO LINE: </Typography>
-        <Input_AutoFormat
-          callback={filterDecimal}
-          resolution={'TIME'}
-          tellParentValueChanged={handleNewSearch}
-          forceValueFromParent={lineToScroll}
-        />
-      </div>
-      <Box>
-        {AllCAN_MsgsExtracted_array.map((iteration, index) => {
-          const isHighlighted = index === lineToScroll - 1
-          return (
-            <div
-              key={index}
-              ref={isHighlighted ? scrollRef : null}
-              style={{
-                display: 'flex',
-                border: isHighlighted
-                  ? `4px solid ${colors.yellow[500]}`
-                  : `1px solid ${colors.primary[400]}`,
-
-                gap: '1rem',
-                padding: '0.2rem'
-              }}
-            >
-              <p> [{iteration[0]}]. </p>
-              <p style={{ color: `${colors.yellow[500]}` }}> {iteration[1]}</p>
-              <div style={{ color: `${colors.red[300]}`, display: 'flex' }}>
-                {' '}
-                {iteration[4].map((i, ii) => {
-                  return (
-                    <p
-                      key={ii + 'abc'}
-                      style={{
-                        display: 'flex'
-                      }}
-                    >
-                      {' '}
-                      {i} -
-                    </p>
-                  )
-                })}
-              </div>
-              <p style={{ color: `${colors.green[100]}` }}>-- [{iteration[2]}]</p>
-              <p style={{ color: `${colors.personal[100]}` }}>-- [{iteration[3]}]</p>
-            </div>
-          )
-        })}
-      </Box>
-    </Box>
-  )
 }

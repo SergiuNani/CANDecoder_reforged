@@ -41,12 +41,7 @@ import {
   ObjectValuesSaved_global,
   PDO_mapped_aux
 } from '../functions/CANopenFunctions'
-import {
-  DefaultTable,
-  CreateGroupedFilteredArray,
-  DebugTable,
-  TableROW_simple
-} from '../components/Table'
+import { DefaultTable, CreateGroupedFilteredArray, TableROW_simple } from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
@@ -286,7 +281,6 @@ export default Decode_CAN_LOG_Window
 
 export let globalIndex = [0] //used when there is a PDO detected and no mapping is done - then we cancel the function and will recall it with this index
 const DecodedTableOptions = ({ fileInnerText }) => {
-  const [TableOption, setTableOption] = useState('Default') //Default vs Debug
   const [isTableVisible, setisTableVisible] = useState(false)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [openPDOModal, setOpenPDOModal] = useState(false)
@@ -372,21 +366,14 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         setisTableVisible={setisTableVisible}
         isDrawerOpen={isDrawerOpen}
         setIsDrawerOpen={setIsDrawerOpen}
-        TableOption={TableOption}
-        setTableOption={setTableOption}
       />
     )
-  }, [fileInnerText, isDrawerOpen, TableOption])
+  }, [fileInnerText, isDrawerOpen])
 
   const Table_Memo = useMemo(() => {
     return (
       <Box ref={TableRefForScroll}>
-        {isTableVisible &&
-          (TableOption == 'Default' ? (
-            <DefaultTable ProtocolGlobal={ProtocolGlobal} />
-          ) : (
-            <DebugTable />
-          ))}
+        {isTableVisible && <DefaultTable ProtocolGlobal={ProtocolGlobal} />}
       </Box>
     )
   }, [isTableVisible])
@@ -424,13 +411,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   )
 }
 
-const DrawerComponent_DecodeOptions = ({
-  setisTableVisible,
-  setTableOption,
-  isDrawerOpen,
-  setIsDrawerOpen,
-  TableOption
-}) => {
+const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsDrawerOpen }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   var { Clearance } = useContext(ClearanceContext)
@@ -638,47 +619,6 @@ const DrawerComponent_DecodeOptions = ({
   const DrawerOptionsList = useMemo(() => {
     return (
       <Box sx={{ userSelect: 'none' }}>
-        {/* TABLE DISPLAY OPTIONS ----------------- */}
-        {Clearance == 44 ? (
-          <Box
-            sx={{
-              border: `2px solid ${colors.primary[400]}`,
-              borderRadius: '1rem',
-              margin: '1rem 0',
-              background: `${colors.blue[200]}`,
-              padding: '0.4rem'
-            }}
-          >
-            <p
-              style={{
-                fontSize: '1rem',
-                marginBottom: '0.5rem',
-                marginLeft: '1rem',
-                color: `${colors.yellow[500]}`
-              }}
-            >
-              Table display options:{' '}
-            </p>
-            <RadioGroup
-              row
-              onChange={(e) => {
-                setTableOption(e.target.value)
-              }}
-              value={TableOption}
-              sx={{
-                justifyContent: 'center',
-                '& .MuiSvgIcon-root': {
-                  // fontSize: '1rem'
-                  color: `${colors.green[400]}`
-                }
-              }}
-            >
-              <FormControlLabel value="Default" control={<Radio />} label="Default" />
-              <FormControlLabel value="Debug" control={<Radio />} label="Debug" />
-            </RadioGroup>
-          </Box>
-        ) : null}
-
         {/* GROUPING OPTIONS ----------------- */}
         <Box
           sx={{
@@ -991,15 +931,7 @@ const DrawerComponent_DecodeOptions = ({
         ) : null}
       </Box>
     )
-  }, [
-    TableOption,
-    groupingOptionsRender,
-    toggle,
-    messageTypeSorting,
-    CheckedAll,
-    Clearance,
-    ProtocolGlobal
-  ])
+  }, [groupingOptionsRender, toggle, messageTypeSorting, CheckedAll, Clearance, ProtocolGlobal])
   return (
     <Box className={isDrawerOpen ? 'DrawerOpened' : null} id="DrawerComponent">
       {isDrawerOpen ? (
@@ -1313,9 +1245,7 @@ const AdvancedSearchComponent = () => {
   const { isAdvancedSearchOpen, setIsAdvancedSearchOpen, SearchVsGotoLineRef } = useContext(
     Decode_CAN_LOG_WindowContext
   )
-  const { TableRefForScroll, LogDisplayRange_Sup, LogDisplayRange_Inf } = useContext(
-    DecodedTableOptionsContext
-  )
+  const { TableRefForScroll } = useContext(DecodedTableOptionsContext)
   const [checkboxAxisID, setCheckboxAxisID] = useState(false)
   const [msgNr, setMsgNr] = useState(false)
   const [object, setObject] = useState(true)
@@ -1589,7 +1519,7 @@ const AdvancedSearchComponent = () => {
             </section>
             {FilteredArray.length > 0 ? (
               FilteredArray.map((iteration) => {
-                return <TableROW_simple key={iteration.msgNr} obj={iteration} />
+                return <TableROW_simple key={iteration.msgNr} obj={iteration} type="Finder" />
               })
             ) : (
               <div style={{ color: `${colors.red[400]}` }}>{TextReturn}</div>
@@ -1605,114 +1535,108 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  function extractTimeFromDecodedArray() {
-    var TimeArray = []
-
-    function timeStringToMilliseconds(timeString) {
-      var Process = ''
-      var attachedMiliseconds = 0
-      var attachedMicroSeconds = 0
-      var attachement = ''
-      var devision = 1000
-      var [hours, minutes, seconds] = timeString.split(':').map(Number)
-      if (isNaN(seconds)) {
-        var temp = timeString.split(':')[2].split('.')
-        seconds = parseInt(temp[0])
-        if (temp[2].length == 1) devision = 10
-        attachedMiliseconds = parseInt(temp[1])
-        attachedMicroSeconds = parseInt(temp[2]) / devision
-        attachement = ` + ${attachedMiliseconds} +  ${temp[2]}/${devision}`
-      }
-      // Calculate the total milliseconds
-      const totalMilliseconds =
-        (hours * 60 * 60 + minutes * 60 + seconds) * 1000 +
-        attachedMiliseconds +
-        attachedMicroSeconds
-      Process = `${hours}*60*60 + ${minutes}*60 + ${seconds} ${attachement}`
-
-      return [totalMilliseconds, Process]
+  function timeStringToMilliseconds(timeString) {
+    var Process = ''
+    var attachedMiliseconds = 0
+    var attachedMicroSeconds = 0
+    var attachement = ''
+    var devision = 1000
+    var [hours, minutes, seconds] = timeString.split(':').map(Number)
+    if (isNaN(seconds)) {
+      var temp = timeString.split(':')[2].split('.')
+      seconds = parseInt(temp[0])
+      if (temp[2].length == 1) devision = 10
+      attachedMiliseconds = parseInt(temp[1])
+      attachedMicroSeconds = parseInt(temp[2]) / devision
+      attachement = ` + ${attachedMiliseconds} +  ${temp[2]}/${devision}`
     }
-    function ExtractTimeFromFrame(strInput, previousElement) {
-      var time = 0
-      var Proccess = ''
-      var devision = 1000
+    // Calculate the total milliseconds
+    const totalMilliseconds =
+      (hours * 60 * 60 + minutes * 60 + seconds) * 1000 + attachedMiliseconds + attachedMicroSeconds
+    Process = `${hours}*60*60 + ${minutes}*60 + ${seconds} ${attachement}`
 
-      strInput = strInput.replace(/\t/g, ' ')
-      strInput = strInput
-        .split(' ')
-        .filter((el) => el !== '')
-        .filter((el) => el.includes(':') || el.includes('.'))
-      var DoubleColumn_flag = -1
-      strInput.forEach((item, idx) => {
-        const colonCount = (item.match(/:/g) || []).length
-        if (colonCount == 2) {
-          DoubleColumn_flag = idx
-        }
-      })
-      if (DoubleColumn_flag != -1) {
-        // there is an item which has time like this : hh:mm:ss. IF there are multiple only the last one will be considered
+    return [totalMilliseconds, Process]
+  }
+  function ExtractTimeFromFrame(strInput, previousElement) {
+    var time = 0
+    var Proccess = ''
+    var devision = 1000
 
-        ;[time, Proccess] = timeStringToMilliseconds(strInput[DoubleColumn_flag])
-        if (strInput[DoubleColumn_flag].split(':')[2].length == 2) {
-          // checking for ms and us if they were not attached to the second unit
-          if (strInput[DoubleColumn_flag + 1]) {
-            // hh:mm:ss + ms + us
-            var temp = strInput[DoubleColumn_flag + 1].split('.')
-            if (temp[1].length == 1) devision = 10
-            time += parseInt(temp[0]) + parseInt(temp[1]) / devision
-            Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / ${devision}}`
-            strInput.splice(DoubleColumn_flag + 2)
-          } else {
-            //only hh:mm:ss and no ms or us
-            strInput.splice(DoubleColumn_flag + 1)
-          }
+    strInput = strInput.replace(/\t/g, ' ')
+    strInput = strInput
+      .split(' ')
+      .filter((el) => el !== '')
+      .filter((el) => el.includes(':') || el.includes('.'))
+    var DoubleColumn_flag = -1
+    strInput.forEach((item, idx) => {
+      const colonCount = (item.match(/:/g) || []).length
+      if (colonCount == 2) {
+        DoubleColumn_flag = idx
+      }
+    })
+    if (DoubleColumn_flag != -1) {
+      // there is an item which has time like this : hh:mm:ss. IF there are multiple only the last one will be considered
+
+      ;[time, Proccess] = timeStringToMilliseconds(strInput[DoubleColumn_flag])
+      if (strInput[DoubleColumn_flag].split(':')[2].length == 2) {
+        // checking for ms and us if they were not attached to the second unit
+        if (strInput[DoubleColumn_flag + 1]) {
+          // hh:mm:ss + ms + us
+          var temp = strInput[DoubleColumn_flag + 1].split('.')
+          if (temp[1].length == 1) devision = 10
+          time += parseInt(temp[0]) + parseInt(temp[1]) / devision
+          Proccess = Proccess + `+ ${temp[0]} + ${temp[1]} / ${devision}}`
+          strInput.splice(DoubleColumn_flag + 2)
         } else {
-          // hh:mm:ss.ms.us
+          //only hh:mm:ss and no ms or us
           strInput.splice(DoubleColumn_flag + 1)
         }
       } else {
-        if (strInput.length > 0) {
-          // ms.us
-
-          var temp = strInput[0].split('.')
-          if (temp[1].length == 1) devision = 10
-
-          time += parseInt(temp[0]) + parseInt(temp[1]) / devision
-          Proccess = Proccess + `${temp[0]} + ${temp[1]} / ${devision}}`
-          strInput.splice(1)
-        } else {
-          return ['-', '-', '-', '-']
-        }
+        // hh:mm:ss.ms.us
+        strInput.splice(DoubleColumn_flag + 1)
       }
+    } else {
+      if (strInput.length > 0) {
+        // ms.us
 
-      // console.log('🚀 time:', time)
-      // console.log('🚀 time:', Proccess)
-      // console.log('🚀 ~ extractTIME ~ strInput:', strInput)
-      // console.log('----------------------------------------------------')
-      var diffTime = '-'
-      if (previousElement && previousElement[0] != '-' && time != '-') {
-        diffTime = (time - previousElement[0]).toFixed(3)
+        var temp = strInput[0].split('.')
+        if (temp[1].length == 1) devision = 10
+
+        time += parseInt(temp[0]) + parseInt(temp[1]) / devision
+        Proccess = Proccess + `${temp[0]} + ${temp[1]} / ${devision}}`
+        strInput.splice(1)
+      } else {
+        return ['-', '-', '-', '-']
       }
-      return [time, diffTime, strInput, Proccess]
     }
 
-    filteredMessages_auxGlobal.forEach((iteration, indexMain) => {
-      console.log('🚀  ~ indexMain:', indexMain)
-      console.log('🚀 ~ filteredMessages_auxGlobal.forEach ~ iteration:', iteration.OriginalMessage)
-      var strIndex = iteration.OriginalMessage.match(iteration.CobID)
-      if (strIndex && strIndex.input && strIndex.index && iteration.FrameData != 'invalid') {
-        TimeArray.push(
-          ExtractTimeFromFrame(strIndex.input.slice(0, strIndex.index), TimeArray[indexMain - 1])
-        )
-      } else {
-        TimeArray.push(['-', '-', '-', '-'])
-      }
-    })
-
-    return TimeArray
+    console.log('🚀 time:', time)
+    console.log('🚀 time:', Proccess)
+    console.log('🚀 ~ extractTIME ~ strInput:', strInput)
+    console.log('----------------------------------------------------')
+    var diffTime = '-'
+    if (previousElement && previousElement[0] != '-' && time != '-') {
+      diffTime = (time - previousElement[0]).toFixed(3)
+    }
+    return [time, diffTime, strInput, Proccess]
   }
-  var TimeArray = extractTimeFromDecodedArray()
-  console.log('🚀 ~ TimeArray:', TimeArray)
+  var ArrayCopy = [...filteredMessages_auxGlobal]
+
+  ArrayCopy.forEach((iteration, indexMain) => {
+    // console.log('🚀  ~ indexMain:', indexMain)
+    // console.log('🚀 ~ filteredMessages_auxGlobal.forEach ~ iteration:', iteration.OriginalMessage)
+    var strIndex = iteration.OriginalMessage.match(iteration.CobID)
+    if (strIndex && strIndex.input && strIndex.index && iteration.FrameData != 'invalid') {
+      ArrayCopy[indexMain] = ExtractTimeFromFrame(
+        strIndex.input.slice(0, strIndex.index),
+        ArrayCopy[indexMain - 1]
+      )
+    } else {
+      ArrayCopy[indexMain] = ['-', '-', '-', '-']
+    }
+  })
+  var arrCopy = [...filteredMessages_auxGlobal]
+  console.log('🚀 ~ TimeArray:', ArrayCopy)
   return (
     <Dialog
       open={showTime}
@@ -1737,13 +1661,14 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
           {'Click on DECODE button first to apply the filters'}
         </li>
         <section>
-          {filteredMessages_auxGlobal.length > 0 ? (
-            filteredMessages_auxGlobal.map((iteration, index) => {
+          {arrCopy.length > 0 ? (
+            arrCopy.map((iteration, index) => {
               return (
                 <TableROW_simple
                   key={iteration.msgNr}
                   obj={iteration}
-                  timeInfo={TimeArray[index]}
+                  timeInfo={ArrayCopy[index]}
+                  type="Time"
                 />
               )
             })

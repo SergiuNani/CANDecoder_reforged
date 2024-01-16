@@ -37,7 +37,7 @@ const DebugScene = () => {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      event.preventDefault()
+      // event.preventDefault()
       if (event.key === '1') {
         setverifyCANopenAlgorithm(true)
       } else if (event.key === '2') {
