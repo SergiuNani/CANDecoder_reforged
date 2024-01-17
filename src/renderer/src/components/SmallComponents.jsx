@@ -187,7 +187,6 @@ export const TooltipClickable = styled(({ className, children, ...props }) => {
     if (event && event.target.closest(`.${tooltipClasses.tooltip}`)) {
       return
     }
-
     setOpen(false)
   }
 

@@ -175,21 +175,25 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
   const TypeFinder = () => {
     return (
       <>
-        <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
-        <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
-          `{obj.CobID} - {obj.FrameData}`
-        </p>
-        <p
-          style={{ color: colors.yellow[300], fontWeight: 700, minWidth: '12rem' }}
-        >{` -  ${obj.Object} -`}</p>
-        <p
-          style={{ color: colors.personal[100], fontWeight: 700, minWidth: '12rem' }}
-        >{` ${obj.Data} `}</p>
         <p
           style={{
-            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-            fontWeight: 700,
-            minWidth: '15rem'
+            color: colors.primary[600],
+            minWidth: '2rem',
+            textAlign: 'center',
+            fontWeight: '400'
+          }}
+        >
+          {obj.msgNr}{' '}
+        </p>
+        <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{`[${obj.AxisID}]`}</p>
+        <p style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}>
+          {obj.CobID} - {obj.FrameData}
+        </p>
+        <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{`${obj.Object}`}</p>
+        <p style={{ color: colors.personal[100], minWidth: '10rem' }}>{`${obj.Data}`}</p>
+        <p
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[100]
           }}
         >
           {obj.Interpretation}
@@ -201,6 +205,16 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
   const TypeTime = () => {
     return (
       <>
+        <p
+          style={{
+            color: colors.primary[600],
+            minWidth: '2rem',
+            textAlign: 'center',
+            fontWeight: '400'
+          }}
+        >
+          {obj.msgNr}{' '}
+        </p>
         <TooltipClickable
           title={
             <div>
@@ -235,16 +249,15 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         >
           {timeInfo[1] != '-' ? `${timeInfo[1]} ms` : '-'}
         </p>
-        <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{` - [${obj.AxisID}] - `}</p>
+        <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{`[${obj.AxisID}]`}</p>
         <p style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}>
-          `{obj.CobID} - {obj.FrameData}`
+          {obj.CobID} - {obj.FrameData}
         </p>
-        <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{` -  ${obj.Object} -`}</p>
-        <p style={{ color: colors.personal[100], minWidth: '10rem' }}>{` ${obj.Data} `}</p>
+        <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{`${obj.Object}`}</p>
+        <p style={{ color: colors.personal[100], minWidth: '10rem' }}>{`${obj.Data}`}</p>
         <p
           style={{
-            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-            fontWeight: 700
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[100]
           }}
         >
           {obj.Interpretation}
@@ -254,58 +267,43 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
   }
   const TypeExtraction = () => {
     return (
-      <>
-        <TooltipClickable
-          title={
-            <div>
-              <p>{obj.OriginalMessage}</p>
-              <p>{`Extracted: ${timeInfo[2]} => ${timeInfo[3]}`}</p>
-            </div>
-          }
-          arrow
-          placement="top"
-        >
+      <div style={{ fontSize: '0.9rem' }}>
+        <div style={{ display: 'flex', marginTop: '0.4rem' }}>
           <p
             style={{
-              color: colors.blue[100],
-              minWidth: '8rem',
-              textAlign: 'center',
-              cursor: 'pointer'
+              minWidth: '2rem',
+              color: `${colors.grey[200]}`
             }}
           >
-            {timeInfo[0] != '-' ? `${timeInfo[0]} ms` : '-'}
+            {obj[0]}
           </p>
-        </TooltipClickable>
-        <p
-          style={{
-            color: colors.yellow[100],
-            minWidth: '8rem',
-            textAlign: 'center',
-            fontWeight: '700'
-          }}
-        >
-          {timeInfo[1] != '-' ? `${timeInfo[1]} ms` : '-'}
+          <TooltipClickable
+            title={
+              <div>
+                <p>{obj[4].join(' - ')}</p>
+              </div>
+            }
+            arrow
+            placement="top"
+          >
+            <p
+              style={{
+                minWidth: '17rem',
+                fontWeight: '400',
+                color: `${colors.primary[600]}`,
+                cursor: 'pointer'
+              }}
+            >
+              {obj[1]}
+            </p>
+          </TooltipClickable>
+        </div>
+
+        <p style={{ display: 'flex', gap: '2rem', margin: '0.5rem 0 0.5rem 7rem' }}>
+          <p style={{ color: `${colors.green[400]}` }}>[{obj[2]}]</p>
+          <p style={{ color: `${colors.yellow[500]}` }}>[{obj[3]}]</p>
         </p>
-        <p style={{ color: colors.primary[400], minWidth: '3rem' }}> {` - [${obj.AxisID}] - `} </p>
-        <p style={{ color: colors.blue[600], minWidth: '15rem' }}>
-          `{obj.CobID} - {obj.FrameData}`
-        </p>
-        <p
-          style={{ color: colors.yellow[300], fontWeight: 700, minWidth: '12rem' }}
-        >{` -  ${obj.Object} -`}</p>
-        <p
-          style={{ color: colors.personal[100], fontWeight: 700, minWidth: '12rem' }}
-        >{` ${obj.Data} `}</p>
-        <p
-          style={{
-            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[500],
-            fontWeight: 700,
-            minWidth: '15rem'
-          }}
-        >
-          {obj.Interpretation}
-        </p>
-      </>
+      </div>
     )
   }
 
@@ -318,17 +316,6 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         fontWeight: '550'
       }}
     >
-      <p
-        style={{
-          color: colors.primary[600],
-          minWidth: '2rem',
-          textAlign: 'center',
-          fontWeight: '400'
-        }}
-      >
-        {obj.msgNr}{' '}
-      </p>
-
       {type == 'Finder' ? <TypeFinder /> : type == 'Time' ? <TypeTime /> : <TypeExtraction />}
     </section>
   )

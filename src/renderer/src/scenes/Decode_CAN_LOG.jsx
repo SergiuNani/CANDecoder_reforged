@@ -421,7 +421,8 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [showMessagesModal, setShowMessagesModal] = useState(false)
-  const [showTime, setShowTime] = useState(true)
+  const [showTime, setShowTime] = useState(false)
+  const [showExtraction, setShowExtraction] = useState(true)
   const [toggle, setToggle] = useState(false)
   const [CheckedAll, setCheckedAll] = useState(true)
 
@@ -582,7 +583,16 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
   const showTimeWindow_Memo = useMemo(() => {
     return showTime && <ShowTimeWindowComponent showTime={showTime} setShowTime={setShowTime} />
   }, [showTime])
-
+  const showExtraction_Memo = useMemo(() => {
+    return (
+      showExtraction && (
+        <ShowExtractionComponent
+          showExtraction={showExtraction}
+          setShowExtraction={setShowExtraction}
+        />
+      )
+    )
+  }, [showExtraction])
   function handleLogCUTLimits(e, name) {
     setToggle((prev) => !prev)
     e = parseInt(e)
@@ -892,7 +902,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                   }
                 }}
               >
-                Show Mapping
+                Mapping
               </ButtonTransparent>
 
               <ButtonTransparent
@@ -908,7 +918,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                   }
                 }}
               >
-                Show Messages
+                Raw Msgs
               </ButtonTransparent>
 
               <ButtonTransparent
@@ -925,6 +935,21 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                 }}
               >
                 Show Time
+              </ButtonTransparent>
+              <ButtonTransparent
+                onClick={() => {
+                  setShowExtraction(true)
+                }}
+                sx={{
+                  background: `${colors.primary1[100]}`,
+                  padding: '0.5rem',
+                  fontSize: '0.8rem',
+                  '&:hover': {
+                    background: `${colors.primary[500]}`
+                  }
+                }}
+              >
+                Show Extraction
               </ButtonTransparent>
             </Box>
           </Box>
@@ -991,6 +1016,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
               {MappingWindowforDrawer_Memo}
               {MessagesRawForDrawer_Memo}
               {showTimeWindow_Memo}
+              {showExtraction_Memo}
             </Box>
           </Box>
         </Box>
@@ -1671,6 +1697,47 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
                   type="Time"
                 />
               )
+            })
+          ) : (
+            <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
+          )}
+        </section>
+      </div>
+    </Dialog>
+  )
+}
+
+const ShowExtractionComponent = ({ showExtraction, setShowExtraction }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+  return (
+    <Dialog
+      open={showExtraction}
+      onClose={() => setShowExtraction(false)}
+      sx={{
+        '& .MuiDialog-paper': {
+          maxWidth: 'none'
+        }
+      }}
+    >
+      <div
+        style={{
+          border: `1px solid ${colors.primary[400]}`,
+          padding: '1rem',
+          background: `${colors.primary[200]}`
+        }}
+      >
+        <Typography variant="h4" sx={{ mb: '1rem' }}>
+          Extraction Process
+        </Typography>
+        <li style={{ color: `${colors.green[400]}`, marginBottom: '1rem' }}>
+          {'Click on DECODE button first to apply the filters'}
+        </li>
+
+        <section>
+          {AllCAN_MsgsExtracted_array.length > 0 ? (
+            AllCAN_MsgsExtracted_array.map((iteration, index) => {
+              return <TableROW_simple key={iteration[0]} obj={iteration} type="Extraction" />
             })
           ) : (
             <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
