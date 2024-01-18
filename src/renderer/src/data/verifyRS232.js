@@ -9730,12 +9730,12 @@ export const Hardcoded_VerifyTechnoCAN = [
     CobID: 'invalid',
     FrameData: 'invalid',
     type: 'invalid',
-    AxisID: 'invalid',
+    AxisID: 'All',
     CS: '-',
     Object: '-',
-    ObjectName: 'Can`t extract data from this row',
+    ObjectName: '-',
     Data: '-',
-    Interpretation: 'Invalid Message ',
+    Interpretation: 'Invalid Message',
     errorStatus: 'error'
   },
   {

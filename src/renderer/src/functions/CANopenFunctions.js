@@ -78,7 +78,12 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       const filterOptions = Registers_CANopen_LS.filter(
         (oneRegister) => oneRegister.Index == aux_value
       )
-
+      var Interpretation = ''
+      var decValue = hexToDec(value, 32)
+      if (obj == '6041') {
+      } else {
+        //6040
+      }
       if (filterOptions.length > 0) {
         //Register Exists
         return [

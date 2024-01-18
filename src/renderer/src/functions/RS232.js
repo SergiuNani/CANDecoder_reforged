@@ -1,7 +1,7 @@
 import { UpdateStatisticsBasedOnMessage } from './CANopen'
 import { CanLogStatistics } from './CANopen'
 import { hexToDec, decToHex, hex2bin, hex_to_ascii } from './NumberConversion'
-import { FirmwareAdrresses_F514L } from '../data/FirmwareAddresses'
+import { FirmwareAdrresses_F514L, FirmwareAddresses_FA00G } from '../data/FirmwareAddresses'
 let firmwareAddressesDynamicArray = []
 
 export function Extract_MSGs_from_text_RS232(text) {
@@ -39,6 +39,8 @@ export function getFirmwareAddressesIntoArray_RS232(fw) {
   var resultingArray = []
   if ((fw = 'F514L')) {
     initialText = FirmwareAdrresses_F514L
+  } else {
+    initialText = FirmwareAddresses_FA00G
   }
   initialText = initialText.split('\n')
   initialText.forEach((el) => {
@@ -75,8 +77,17 @@ var PreviousMessageInfo_RS232_g = {
   msgNr: null,
   storedFutureSize: null
 }
-export function CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen) {
-  getFirmwareAddressesIntoArray_RS232('F514L') // BUg in the future add more options and make it dynamic
+export function CreateDecodedArrayOfObjects_RS232(
+  AllCAN_MsgsExtracted_array,
+  setIsDrawerOpen,
+  FW_version
+) {
+  if (FW_version == 'FA00G') {
+    // for TechnoCAN
+    getFirmwareAddressesIntoArray_RS232('FA00G')
+  } else {
+    getFirmwareAddressesIntoArray_RS232('F514L')
+  }
 
   var arr = AllCAN_MsgsExtracted_array
   var ResultingArray = []

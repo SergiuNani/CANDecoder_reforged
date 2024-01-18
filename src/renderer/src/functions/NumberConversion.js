@@ -237,7 +237,11 @@ export function hex2Fixed(input) {
 }
 export function addSpacesOfTwo(inputString) {
   // Check if the input is empty or has less than 2 characters
-  if (!inputString || inputString.length < 2) {
+  if (
+    !inputString ||
+    inputString.length < 2 ||
+    ['Line', 'empty', 'invalid'].includes(inputString)
+  ) {
     return inputString
   }
 

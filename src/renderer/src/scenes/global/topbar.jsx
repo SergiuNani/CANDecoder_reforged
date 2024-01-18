@@ -63,12 +63,13 @@ const Topbar = () => {
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
 
-  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(true)
   const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
   const [expandLogin, setExpandLogin] = useState(false)
   const { setProtocolGlobal } = useContext(ProtocolGlobalContext)
   const { Clearance } = useContext(ClearanceContext)
+  const zoomLevel = useRef(1)
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.altKey && event.key === 'c') {
@@ -89,6 +90,16 @@ const Topbar = () => {
         } else if (event.key == 'F3') {
           setProtocolGlobal('RS232')
         }
+      } else if (event.ctrlKey && event.key === 'n') {
+        zoomLevel.current += 0.1
+        document.querySelector('#root').style.zoom = zoomLevel.current
+      } else if (event.ctrlKey && event.key === 'd') {
+        zoomLevel.current -= 0.1
+        document.querySelector('#root').style.zoom = zoomLevel.current
+      } else if (event.ctrlKey && event.key === '0') {
+        event.preventDefault()
+        zoomLevel.current = 1
+        document.querySelector('#root').style.zoom = zoomLevel.current
       }
     }
     window.addEventListener('keydown', handleKeyPress)
@@ -222,8 +233,14 @@ const AccordionComponent = ({ title, children, defaultExpanded, expanded }) => {
 const WorkingModeInsertPart = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const { ProtocolGlobal, setProtocolGlobal, ValidationMethod, setValidationMethod } =
-    useContext(ProtocolGlobalContext)
+  const {
+    ProtocolGlobal,
+    setProtocolGlobal,
+    ValidationMethod,
+    setValidationMethod,
+    FW_version,
+    setFW_version
+  } = useContext(ProtocolGlobalContext)
   var { Clearance } = useContext(ClearanceContext)
 
   return (
@@ -249,27 +266,56 @@ const WorkingModeInsertPart = () => {
         </RadioGroup>
         <br />
       </div>
-      {Clearance > 33 ? (
-        <div>
-          <li>Validation Method</li>
-          <RadioGroup
-            onChange={(e) => {
-              setValidationMethod(e.target.value)
-            }}
-            value={ValidationMethod}
-            sx={{
-              justifyContent: 'center',
-              ml: '1rem',
-              '& .MuiSvgIcon-root': {
-                color: `${colors.green[400]}`
-              }
-            }}
-          >
-            <FormControlLabel value="Internal" control={<Radio />} label="Internal" />
-            <FormControlLabel value="LocalStorage" control={<Radio />} label="LocalStorage" />
-          </RadioGroup>
-        </div>
-      ) : null}
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {Clearance > 22 ? (
+          <div>
+            <li>Firmware variables: </li>
+            <RadioGroup
+              onChange={(e) => {
+                setFW_version(e.target.value)
+              }}
+              value={FW_version}
+              sx={{
+                justifyContent: 'center',
+                ml: '1rem',
+                '& .MuiSvgIcon-root': {
+                  color: `${colors.green[400]}`
+                },
+                '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+                  padding: '0.3rem'
+                }
+              }}
+            >
+              <FormControlLabel value="F514L" control={<Radio />} label="F514L" />
+              <FormControlLabel value="FA00G" control={<Radio />} label="FA00G" />
+            </RadioGroup>
+          </div>
+        ) : null}
+        {Clearance > 33 ? (
+          <div>
+            <li>Validation Method</li>
+            <RadioGroup
+              onChange={(e) => {
+                setValidationMethod(e.target.value)
+              }}
+              value={ValidationMethod}
+              sx={{
+                justifyContent: 'center',
+                ml: '1rem',
+                '& .MuiSvgIcon-root': {
+                  color: `${colors.green[400]}`
+                },
+                '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+                  padding: '0.3rem'
+                }
+              }}
+            >
+              <FormControlLabel value="Internal" control={<Radio />} label="Internal" />
+              <FormControlLabel value="LocalStorage" control={<Radio />} label="LocalStorage" />
+            </RadioGroup>
+          </div>
+        ) : null}
+      </section>
     </section>
   )
 }
@@ -559,12 +605,7 @@ const DecodeCANlogOptionsInsertPart = () => {
               marginRight: '0.5rem'
             }}
           >
-            <SwitchComponent
-              option1="FreeText"
-              option2="Upload File"
-              tellParentValueChanged={setFreeTextVsCanLog}
-              freeTextVsCanLog={freeTextVsCanLog}
-            />
+            <SwitchComponent option1="FreeText" option2="Upload File" />
           </div>
           <ButtonTransparent
             sx={{

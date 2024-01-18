@@ -108,6 +108,7 @@ function MyProviders({ children }) {
     localStorage.getItem('WelcomePageStatus') === 'true'
   )
   const [ValidationMethod, setValidationMethod] = useState('Internal') // Internal -- LocalStorage
+  const [FW_version, setFW_version] = useState('F514L') // F514L -- FA00G
   //Decode CANlog Options
   const [freeTextVsCanLog, setFreeTextVsCanLog] = useState('FreeText') //CANlog --FreeText
   const [toggleFilterWindow_app, setToggleFilterWindow_app] = useState(false)
@@ -159,7 +160,9 @@ function MyProviders({ children }) {
                       ProtocolGlobal,
                       setProtocolGlobal,
                       ValidationMethod,
-                      setValidationMethod
+                      setValidationMethod,
+                      FW_version,
+                      setFW_version
                     }}
                   >
                     <FG_Context.Provider

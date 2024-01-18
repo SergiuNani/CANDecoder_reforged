@@ -60,9 +60,7 @@ const Decode_CAN_LOG_Window = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  const { freeTextVsCanLog, toggleSearchWindow_app, setFreeTextVsCanLog } = useContext(
-    DecodeCANlog_topbarOptionsContext
-  )
+  const { freeTextVsCanLog, toggleSearchWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   var { Clearance } = useContext(ClearanceContext)
   const TextAreaText_Ref = useRef()
   const Decode_CAN_LOG_ref = useRef()
@@ -286,7 +284,8 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const [openPDOModal, setOpenPDOModal] = useState(false)
   const [objectIterationPDO, setObjectIterationPDO] = useState(null)
   const [restartDecoding, setRestartDecoding] = useState(false)
-  const { ProtocolGlobal } = useContext(ProtocolGlobalContext)
+  const { ProtocolGlobal, FW_version } = useContext(ProtocolGlobalContext)
+  var { Clearance } = useContext(ClearanceContext)
   const { toggleFilterWindow_app } = useContext(DecodeCANlog_topbarOptionsContext)
   const { hideTableForceParentToggle, isAdvancedSearchOpen } = useContext(
     Decode_CAN_LOG_WindowContext
@@ -306,6 +305,12 @@ const DecodedTableOptions = ({ fileInnerText }) => {
     CutTable_Inf.current,
     CutTable_Sup.current
   ])
+
+  const [showTime, setShowTime] = useState(false)
+  const [showExtraction, setShowExtraction] = useState(false)
+  const [showMappingWindow, setShowMappingWindow] = useState(false)
+  const [showRawMsgsWindow, setShowRawMsgsWindow] = useState(false)
+
   const TableRefForScroll = useRef(null)
   // SHORTCUTS==========================
   useEffect(() => {
@@ -321,6 +326,28 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   useEffect(() => {
     setisTableVisible(false)
   }, [hideTableForceParentToggle])
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (Clearance > 11) {
+        if (event.ctrlKey && event.key === 'm') {
+          event.preventDefault()
+          setShowMappingWindow(true)
+        } else if (event.ctrlKey && event.key === 'e') {
+          event.preventDefault()
+          setShowExtraction(true)
+        } else if (event.ctrlKey && event.key === 't') {
+          event.preventDefault()
+          setShowTime(true)
+        }
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [Clearance])
+
   AllCAN_MsgsExtracted_array = useMemo(() => {
     globalIndex = [0]
     return Extract_MSGs_from_text(fileInnerText.split('\n'), ProtocolGlobal)
@@ -337,10 +364,45 @@ const DecodedTableOptions = ({ fileInnerText }) => {
       setIsDrawerOpen,
       setOpenPDOModal,
       setObjectIterationPDO,
-      ProtocolGlobal
+      ProtocolGlobal,
+      FW_version
     )
   }, [fileInnerText, restartDecoding])
 
+  const MappingWindowforDrawer_Memo = useMemo(() => {
+    return (
+      showMappingWindow && (
+        <MappingWindowforDrawer
+          showMappingWindow={showMappingWindow}
+          setShowMappingWindow={setShowMappingWindow}
+        />
+      )
+    )
+  }, [showMappingWindow])
+  const MessagesRawForDrawer_Memo = useMemo(() => {
+    return (
+      showRawMsgsWindow && (
+        <MessageWindowForDrawerComponent
+          showRawMsgsWindow={showRawMsgsWindow}
+          setShowRawMsgsWindow={setShowRawMsgsWindow}
+        />
+      )
+    )
+  }, [showRawMsgsWindow, filteredMessages_auxGlobal])
+
+  const showTimeWindow_Memo = useMemo(() => {
+    return showTime && <ShowTimeWindowComponent showTime={showTime} setShowTime={setShowTime} />
+  }, [showTime])
+  const showExtraction_Memo = useMemo(() => {
+    return (
+      showExtraction && (
+        <ShowExtractionComponent
+          showExtraction={showExtraction}
+          setShowExtraction={setShowExtraction}
+        />
+      )
+    )
+  }, [showExtraction])
   //Load PREV/NEXT buttons
 
   const DecodePDOs_Memo = useMemo(() => {
@@ -394,19 +456,23 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         CutTable_Sup,
         auxTable,
         AllCAN_MsgsExtracted_array,
-        TableRefForScroll
+        TableRefForScroll,
+        setShowTime,
+        setShowExtraction,
+        setShowMappingWindow,
+        setShowRawMsgsWindow
       }}
     >
-      {ProtocolGlobal != 'TMLCAN' ? (
-        <Box>
-          {DecodePDOs_Memo}
-          {Drawer_Memo}
-          {Table_Memo}
-          {AdvancedSearch_Memo}
-        </Box>
-      ) : (
-        <Box>TMLCAN</Box>
-      )}
+      <Box>
+        {DecodePDOs_Memo}
+        {Drawer_Memo}
+        {Table_Memo}
+        {AdvancedSearch_Memo}
+      </Box>
+      {MappingWindowforDrawer_Memo}
+      {MessagesRawForDrawer_Memo}
+      {showTimeWindow_Memo}
+      {showExtraction_Memo}
     </DecodedTableOptionsContext.Provider>
   )
 }
@@ -419,10 +485,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
   const [messageTypeSorting, setMessageTypeSorting] = useState('All')
   const [progressBarInsideDrawer, setProgressBarInsideDrawer] = useState(false)
   const [groupingOptionsRender, setGroupingOptionsRender] = useState(true)
-  const [showMappingWindow, setShowMappingWindow] = useState(false)
-  const [showMessagesModal, setShowMessagesModal] = useState(false)
-  const [showTime, setShowTime] = useState(false)
-  const [showExtraction, setShowExtraction] = useState(true)
+
   const [toggle, setToggle] = useState(false)
   const [CheckedAll, setCheckedAll] = useState(true)
 
@@ -440,7 +503,11 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
     FullLogLength,
     CutTable_Inf,
     CutTable_Sup,
-    auxTable
+    auxTable,
+    setShowTime,
+    setShowExtraction,
+    setShowMappingWindow,
+    setShowRawMsgsWindow
   } = useContext(DecodedTableOptionsContext)
 
   useEffect(() => {
@@ -558,41 +625,6 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
     return <AvailableAxes_Component />
   }, [CheckedAll])
 
-  const MappingWindowforDrawer_Memo = useMemo(() => {
-    return (
-      showMappingWindow && (
-        <MappingWindowforDrawer
-          showMappingWindow={showMappingWindow}
-          setShowMappingWindow={setShowMappingWindow}
-        />
-      )
-    )
-  }, [showMappingWindow])
-
-  const MessagesRawForDrawer_Memo = useMemo(() => {
-    return (
-      showMessagesModal && (
-        <MessageWindowForDrawerComponent
-          showMessagesModal={showMessagesModal}
-          setShowMessagesModal={setShowMessagesModal}
-        />
-      )
-    )
-  }, [showMessagesModal, filteredMessages_auxGlobal])
-
-  const showTimeWindow_Memo = useMemo(() => {
-    return showTime && <ShowTimeWindowComponent showTime={showTime} setShowTime={setShowTime} />
-  }, [showTime])
-  const showExtraction_Memo = useMemo(() => {
-    return (
-      showExtraction && (
-        <ShowExtractionComponent
-          showExtraction={showExtraction}
-          setShowExtraction={setShowExtraction}
-        />
-      )
-    )
-  }, [showExtraction])
   function handleLogCUTLimits(e, name) {
     setToggle((prev) => !prev)
     e = parseInt(e)
@@ -907,7 +939,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
 
               <ButtonTransparent
                 onClick={() => {
-                  setShowMessagesModal(true)
+                  setShowRawMsgsWindow(true)
                 }}
                 sx={{
                   background: `${colors.primary1[100]}`,
@@ -1013,10 +1045,6 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                 DECODE
               </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
-              {MappingWindowforDrawer_Memo}
-              {MessagesRawForDrawer_Memo}
-              {showTimeWindow_Memo}
-              {showExtraction_Memo}
             </Box>
           </Box>
         </Box>
@@ -1216,15 +1244,15 @@ const MappingWindowforDrawer = ({ showMappingWindow, setShowMappingWindow }) => 
     </Dialog>
   )
 }
-const MessageWindowForDrawerComponent = ({ showMessagesModal, setShowMessagesModal }) => {
+const MessageWindowForDrawerComponent = ({ showRawMsgsWindow, setShowRawMsgsWindow }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
   const textAreaRef = useRef(null)
   return (
     <Dialog
-      open={showMessagesModal}
-      onClose={() => setShowMessagesModal(false)}
+      open={showRawMsgsWindow}
+      onClose={() => setShowRawMsgsWindow(false)}
       sx={{
         '& .MuiDialog-paper': {
           maxWidth: 'none'
@@ -1636,10 +1664,6 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
       }
     }
 
-    console.log('🚀 time:', time)
-    console.log('🚀 time:', Proccess)
-    console.log('🚀 ~ extractTIME ~ strInput:', strInput)
-    console.log('----------------------------------------------------')
     var diffTime = '-'
     if (previousElement && previousElement[0] != '-' && time != '-') {
       diffTime = (time - previousElement[0]).toFixed(3)
@@ -1649,8 +1673,6 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
   var ArrayCopy = [...filteredMessages_auxGlobal]
 
   ArrayCopy.forEach((iteration, indexMain) => {
-    // console.log('🚀  ~ indexMain:', indexMain)
-    // console.log('🚀 ~ filteredMessages_auxGlobal.forEach ~ iteration:', iteration.OriginalMessage)
     var strIndex = iteration.OriginalMessage.match(iteration.CobID)
     if (strIndex && strIndex.input && strIndex.index && iteration.FrameData != 'invalid') {
       ArrayCopy[indexMain] = ExtractTimeFromFrame(
@@ -1662,7 +1684,10 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
     }
   })
   var arrCopy = [...filteredMessages_auxGlobal]
-  console.log('🚀 ~ TimeArray:', ArrayCopy)
+  if (arrCopy.length > 2000) {
+    //Prevent the app from crushing
+    arrCopy.slice(0, 2000)
+  }
   return (
     <Dialog
       open={showTime}
@@ -1683,9 +1708,15 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
         <Typography variant="h4" sx={{ mb: '1rem' }}>
           Time difference
         </Typography>
-        <li style={{ color: `${colors.green[400]}`, marginBottom: '1rem' }}>
-          {'Click on DECODE button first to apply the filters'}
-        </li>
+        <ul
+          style={{ color: `${colors.green[400]}`, margin: '0 0 1rem 1rem', listStyleType: 'disc' }}
+        >
+          <li>Click on DECODE button first to apply the filters.</li>
+          <li>
+            Only the first 2000 messages will be shown. To view the next batch, modify the "Cut the
+            Log between" option.
+          </li>
+        </ul>
         <section>
           {arrCopy.length > 0 ? (
             arrCopy.map((iteration, index) => {
@@ -1710,6 +1741,15 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
 const ShowExtractionComponent = ({ showExtraction, setShowExtraction }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  var rawMessagesCutted = []
+  filteredMessages_auxGlobal.forEach((el) => {
+    rawMessagesCutted.push(AllCAN_MsgsExtracted_array[el.msgNr - 1])
+  })
+
+  if (rawMessagesCutted.length > 1000) {
+    //Prevent the app from crushing
+    rawMessagesCutted.slice(0, 1000)
+  }
   return (
     <Dialog
       open={showExtraction}
@@ -1730,13 +1770,19 @@ const ShowExtractionComponent = ({ showExtraction, setShowExtraction }) => {
         <Typography variant="h4" sx={{ mb: '1rem' }}>
           Extraction Process
         </Typography>
-        <li style={{ color: `${colors.green[400]}`, marginBottom: '1rem' }}>
-          {'Click on DECODE button first to apply the filters'}
-        </li>
+        <ul
+          style={{ color: `${colors.green[400]}`, margin: '0 0 1rem 1rem', listStyleType: 'disc' }}
+        >
+          <li>Click on DECODE button first to apply the filters.</li>
+          <li>
+            Only the first 1000 messages will be shown. To view the next batch, modify the "Cut the
+            Log between" option.
+          </li>
+        </ul>
 
         <section>
-          {AllCAN_MsgsExtracted_array.length > 0 ? (
-            AllCAN_MsgsExtracted_array.map((iteration, index) => {
+          {rawMessagesCutted.length > 0 ? (
+            rawMessagesCutted.map((iteration, index) => {
               return <TableROW_simple key={iteration[0]} obj={iteration} type="Extraction" />
             })
           ) : (

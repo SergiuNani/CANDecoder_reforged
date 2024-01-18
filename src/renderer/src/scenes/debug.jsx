@@ -625,11 +625,9 @@ function Compare_variablesCFG_to_FWadresses_component({
 
       var name = separatedRow[0].match(/\((.*?)\)/)[1] // match string between ( )
       var address = separatedRow[1].match(/\[(.*?)\]/)[1] // match string between [ ]
-      // console.log(name + ' -- ' + address)
       fwAddresses_extract.push([name, address])
     }
   })
-  // console.log('🚀 ~ fwAddresses_extract:', fwAddresses_extract)
 
   variablesCfg_extract.forEach((varRow) => {
     var found_flag = 0
@@ -654,10 +652,6 @@ function Compare_variablesCFG_to_FWadresses_component({
     }
   })
 
-  console.log(
-    '🚀 ~ variablesCfg_extract.forEach ~ matchMaker:',
-    matchMaker.map((el) => el.join(' - '))
-  )
   // [VAR_name,address, fw_name ]
   return (
     <Dialog

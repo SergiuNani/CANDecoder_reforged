@@ -259,7 +259,6 @@ function findCobIDbasedOnLength(arr) {
       var joinedData = arr.slice(i + 1).join('')
       if (joinedData.length == hexValue * 2) {
         if (arr[i - 1] && CobID_who_dis(arr[i - 1])[0] != 'invalid') {
-          //
           return [arr[i - 1], i - 1]
         }
       }
@@ -376,10 +375,16 @@ export function CreateDecodedArrayOfObjects(
   setIsDrawerOpen,
   setOpenPDOModal,
   setObjectIterationPDO,
-  ProtocolGlobal
+  ProtocolGlobal,
+  FW_version
 ) {
   if (ProtocolGlobal == 'CANOPEN' || ProtocolGlobal == 'CAN') {
-    getFirmwareAddressesIntoArray_RS232('F514L') // for TechnoCAN
+    if (FW_version == 'FA00G') {
+      // for TechnoCAN
+      getFirmwareAddressesIntoArray_RS232('FA00G')
+    } else {
+      getFirmwareAddressesIntoArray_RS232('F514L')
+    }
 
     var arr = AllCAN_MsgsExtracted_array
     var PDOMessageToDecode
@@ -455,8 +460,14 @@ export function CreateDecodedArrayOfObjects(
           } else {
             aux_CobID[1] = axisID
           }
+        } else {
+          if (row[3] == 'empty' || row[3] == 'invalid') {
+            aux_CobID[2] = 'invalid'
+            aux_CobID[1] = 'All'
+            row[2] = 'invalid'
+            DecodedMessage = ['-', '-', '-', '-', 'Invalid Message', 'error']
+          }
         }
-
         DecodedMessage[1] = '-' //Declaring Object as nothing
       } else if (aux_CobID[2] == 'NMT_Monitoring') {
         if (row[3] == 'empty') {
@@ -476,6 +487,12 @@ export function CreateDecodedArrayOfObjects(
         if (hexToDec(DecodedMessage[0].slice(0, 2), 16) & 0x4) {
           aux_CobID[1] = 'H'.concat(aux_CobID[1])
         }
+      } else if (row[3] == 'empty' || row[3] == 'invalid') {
+        //No need to add conditions for SYNC because we wont come here if its SYNC
+        aux_CobID[2] = 'invalid'
+        aux_CobID[1] = 'All'
+        row[2] = 'invalid'
+        DecodedMessage = ['-', '-', '-', '-', 'Invalid Message', 'error']
       }
       UpdateStatisticsBasedOnMessage(aux_CobID[1], aux_CobID[2])
 
@@ -516,7 +533,7 @@ export function CreateDecodedArrayOfObjects(
     return ResultingArray
   } else if (ProtocolGlobal == 'RS232') {
     CanLogStatistics = []
-    return CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen)
+    return CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen, FW_version)
   }
 }
 

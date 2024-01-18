@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useContext } from 'react'
 import { Typography, Box, useTheme, Checkbox, FormControlLabel, IconButton } from '@mui/material'
 import PropTypes from 'prop-types'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -9,6 +9,7 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import Fade from '@mui/material/Fade'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import { CanLogStatistics } from '../functions/CANopen'
+import { DecodeCANlog_topbarOptionsContext } from '../App'
 export const Header = ({ title, subtitle }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -140,23 +141,26 @@ export const ButtonTransparent = ({ children, onClick, sx }) => {
   )
 }
 
-export const SwitchComponent = ({ option1, option2, tellParentValueChanged, freeTextVsCanLog }) => {
+export const SwitchComponent = ({ option1, option2 }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const { freeTextVsCanLog, setFreeTextVsCanLog } = useContext(DecodeCANlog_topbarOptionsContext)
 
-  const [isSwitchedOn, setIsSwitchedOn] = useState(freeTextVsCanLog === 'CANlog')
-
+  const [isSwitchedOn, setIsSwitchedOn] = useState(freeTextVsCanLog === 'FreeText')
   function handleChange() {
-    const newSwitchValue = !isSwitchedOn
-    setIsSwitchedOn(newSwitchValue)
-
-    const selectedOption = newSwitchValue ? option2 : option1
-    tellParentValueChanged(selectedOption)
+    setIsSwitchedOn((prev) => {
+      const newSwitchValue = !prev
+      const selectedOption = newSwitchValue ? 'CANlog' : 'FreeText'
+      setFreeTextVsCanLog(selectedOption)
+      return newSwitchValue
+    })
   }
 
   // Update the state when freeTextVsCanLog prop changes
   useEffect(() => {
     setIsSwitchedOn(freeTextVsCanLog === 'CANlog')
+    // setTimeout(() => {
+    // }, 120)
   }, [freeTextVsCanLog])
 
   return (

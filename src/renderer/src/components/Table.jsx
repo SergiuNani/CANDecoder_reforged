@@ -2,28 +2,32 @@ import React, { useState, useRef, useEffect, useContext, memo, useMemo } from 'r
 import { Box, Typography, useTheme } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { whatPDOisObject, whatObjectValueMeans } from '../functions/CANopenFunctions'
-import { Input_AutoFormat } from './ForumsComponents'
-import { filterDecimal, addSpacesOfTwo } from '../functions/NumberConversion'
+import { addSpacesOfTwo } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
 import { TooltipClickable, Button4 } from '../components/SmallComponents'
 import {
-  AllCAN_MsgsExtracted_array,
   filteredMessages_auxGlobal,
   DecodedTableOptionsContext,
   Decode_CAN_LOG_WindowContext
 } from '../scenes/Decode_CAN_LOG'
 import { RegisterTooltip } from './Register'
-import { ProtocolGlobalContext } from '../App'
 export let groupedFilteredArray = []
 
 export const TableROW = ({ iteration, ProtocolGlobal }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
 
-  var isRecieveTypeMessage = ['R_SDO', 'RPDO1', 'RPDO2', 'RPDO3', 'RPDO4', 'NMT'].includes(
-    iteration.type
-  )
+  var isRecieveTypeMessage = [
+    'R_SDO',
+    'RPDO1',
+    'RPDO2',
+    'RPDO3',
+    'RPDO4',
+    'NMT',
+    'GiveData',
+    'GiveData2'
+  ].includes(iteration.type)
   return (
     <table
       style={{
@@ -271,7 +275,7 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         <div style={{ display: 'flex', marginTop: '0.4rem' }}>
           <p
             style={{
-              minWidth: '2rem',
+              minWidth: '4rem',
               color: `${colors.grey[200]}`
             }}
           >
@@ -299,10 +303,10 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
           </TooltipClickable>
         </div>
 
-        <p style={{ display: 'flex', gap: '2rem', margin: '0.5rem 0 0.5rem 7rem' }}>
+        <div style={{ display: 'flex', gap: '2rem', margin: '0.5rem 0 0.5rem 7rem' }}>
           <p style={{ color: `${colors.green[400]}` }}>[{obj[2]}]</p>
           <p style={{ color: `${colors.yellow[500]}` }}>[{obj[3]}]</p>
-        </p>
+        </div>
       </div>
     )
   }

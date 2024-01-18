@@ -864,11 +864,10 @@ export const HelpShortcutPage = () => {
             <span className="primaryColor"> "Ctrl + LeftArrow" </span>
           </p>
           <p>
-            Create additional Register window :{' '}
-            <span className="primaryColor"> "Ctrl + `+` " </span>
+            Add new Register window : <span className="primaryColor"> "Ctrl + `n` " </span>
           </p>
           <p>
-            Delete one Register window : <span className="primaryColor"> "Ctrl + `-` " </span>
+            Delete one Register window : <span className="primaryColor"> "Ctrl + `d` " </span>
           </p>
 
           <br />
@@ -884,6 +883,16 @@ export const HelpShortcutPage = () => {
           <p>
             Open GOTO menu : <span className="primaryColor"> "CTRL + g " </span>
           </p>
+          <p>
+            Open Mapping menu : <span className="primaryColor"> "CTRL + m " </span>
+          </p>
+          <p>
+            Open Extraction menu : <span className="primaryColor"> "CTRL + e " </span>
+          </p>
+          <p>
+            Open Time menu : <span className="primaryColor"> "CTRL + t " </span>
+          </p>
+
           <p>
             Process the log in the TextArea or display table if Overview is opened :{' '}
             <span className="primaryColor"> " CTRL + ENTER " </span>
