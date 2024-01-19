@@ -69,6 +69,37 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
     type_Transmit_Receive = 'T'
   }
 
+  function get_CW_SW_info(obj, value) {
+    // Provide info for 6040 and 6041
+    var Interpretation = '-'
+    var decValue = hexToDec(value, 32)
+    if (obj == '6041') {
+      if (decValue & 0x4) Interpretation = 'OpEn'
+      else if (decValue & 0x2) Interpretation = 'SwOn'
+      else if (decValue & 0x1) Interpretation = 'RSwOn'
+      else if (decValue & 0x40) Interpretation = 'SwOnDis'
+      //Errors:
+      if (decValue & 0x40 && decValue & 0x7)
+        Interpretation = 'Error: bit6 and one of the bits 0-2 is set together'
+      if (decValue & 0x43 && decValue & 0x8000 && !decValue & 0x4)
+        Interpretation = 'Error: bit6-1-0 and Axison set'
+
+      if (decValue & 0x8000) Interpretation = Interpretation + ' + Axison'
+      if (decValue & 0x0400) Interpretation = Interpretation + ' + TR'
+      if (!decValue & 0x20) Interpretation = Interpretation + ' + QS'
+
+      if (decValue & 0x8) Interpretation = 'FAULT'
+    } else {
+      //6040
+      if ((decValue & 0xf) == 0xf) Interpretation = 'OpEn'
+      if ((decValue & 0x1f) == 0x1f) Interpretation = 'UPD'
+      if (decValue & 0x80) Interpretation = 'Reset Fault'
+      if (!decValue & 0x40) Interpretation = 'QuickStop'
+      if (decValue & 0x100) Interpretation = 'HALT'
+    }
+    return Interpretation
+  }
+
   //Modify 6040 -> 60401 to have the correct register when displaying in the table
   if (obj == '6040' || obj == '6041') {
     if (ObjectValuesSaved_global['6060'][axisID]) {
@@ -78,18 +109,13 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       const filterOptions = Registers_CANopen_LS.filter(
         (oneRegister) => oneRegister.Index == aux_value
       )
-      var Interpretation = ''
-      var decValue = hexToDec(value, 32)
-      if (obj == '6041') {
-      } else {
-        //6040
-      }
       if (filterOptions.length > 0) {
         //Register Exists
         return [
           ObjectValuesSaved_global['6060'][axisID],
           'neutral',
-          'adjust_StatusWord_or_ControlWord'
+          'adjust_StatusWord_or_ControlWord',
+          get_CW_SW_info(obj, value)
         ]
       }
     }
@@ -117,6 +143,12 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         msgType = 'blue'
         whatModifications = 'whatValueMeansInObj'
       }
+      break
+    case '6041':
+      TextReturn = get_CW_SW_info('6041', value)
+      break
+    case '6040':
+      TextReturn = get_CW_SW_info('6040', value)
       break
     case '1000':
       //Device Type
@@ -640,6 +672,7 @@ export function DecodeSDO(sdoType, message, axisID) {
     } else if (ObjectValueDescription[2] == 'adjust_StatusWord_or_ControlWord') {
       Object[0] = Object[0].concat(ObjectValueDescription[0])
       errorStatus = ObjectValueDescription[1] //neutral
+      interpretationInfo = ObjectValueDescription[3]
     } else if (ObjectValueDescription[2] == 'SomethingFound') {
       interpretationInfo = ObjectValueDescription[0]
       errorStatus = ObjectValueDescription[1] //random
@@ -1270,7 +1303,7 @@ export function helping_DecodePDO(cobID_array, message) {
       } else if (aux[2] == 'adjust_StatusWord_or_ControlWord') {
         aux_objects = aux_objects.concat(aux[0])
         tempError = aux[1]
-        tempInterpretation = '-'
+        tempInterpretation = aux[3]
       } else if (aux[2] == 'SomethingFound') {
         tempInterpretation = aux[0]
         tempError = aux[1]

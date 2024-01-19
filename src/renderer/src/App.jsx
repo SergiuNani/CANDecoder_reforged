@@ -15,19 +15,19 @@ export var ESM_info_LS = []
 
 import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG' //because of some useContext problems
 
-// import HomeWindow from './scenes/HomeWindow'
-// import MoreOptionsWindow from './scenes/MoreOptionsWindow'
-// import { RegisterWindow } from './scenes/global/RegisterWindow'
-// import DebugScene from './scenes/debug'
-// import EditDataWindow from './scenes/EditDataWindow'
-// import HelpWindow from './scenes/HelpWindow.jsx'
+import HomeWindow from './scenes/HomeWindow'
+import MoreOptionsWindow from './scenes/MoreOptionsWindow'
+import { RegisterWindow } from './scenes/global/RegisterWindow'
+import DebugScene from './scenes/debug'
+import EditDataWindow from './scenes/EditDataWindow'
+import HelpWindow from './scenes/HelpWindow.jsx'
 
-const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
-const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
-const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
-const DebugScene = LazyImport('./scenes/debug')
-const EditDataWindow = LazyImport('./scenes/EditDataWindow')
-const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
+// const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
+// const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
+// const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
+// const DebugScene = LazyImport('./scenes/debug')
+// const EditDataWindow = LazyImport('./scenes/EditDataWindow')
+// const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
 
 function App() {
   if (
@@ -102,7 +102,7 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [ProtocolGlobal, setProtocolGlobal] = useState('CAN') // CANOPEN --RS232 -- CAN
+  const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- CAN
   const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
   const [WelcomePage, setWelcomePage] = useState(
     localStorage.getItem('WelcomePageStatus') === 'true'

@@ -46,9 +46,10 @@ export const RegisterWindow = () => {
         if (valueInputsRef.current == windowsNumber) valueInputsRef.current = 0
         valueInputsRef.current += 1
         allValueInputs[valueInputsRef.current - 1].focus()
-      } else if (event.ctrlKey && event.key === '+') {
+      } else if (event.ctrlKey && event.key === 'n') {
+        event.preventDefault()
         IncrementWindows()
-      } else if (event.ctrlKey && event.key === '-') {
+      } else if (event.ctrlKey && event.key === 'd') {
         DecrementWindows()
       }
     }

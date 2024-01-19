@@ -37,7 +37,7 @@ export function Extract_MSGs_from_text_RS232(text) {
 export function getFirmwareAddressesIntoArray_RS232(fw) {
   var initialText = ``
   var resultingArray = []
-  if ((fw = 'F514L')) {
+  if (fw == 'F514L') {
     initialText = FirmwareAdrresses_F514L
   } else {
     initialText = FirmwareAddresses_FA00G
@@ -1190,7 +1190,7 @@ export function getOpCode_RS232(opCode, data) {
           temp3 = hexToDec(temp2, 32)
           if (temp == '02C2') {
             Data = `!RT 0x${temp2}  `
-            Interpretation = `! if Relative Time >= 0x${temp2}  [val32]`
+            Interpretation = `! if Relative Time >= 0x${temp2} = ${temp3}d  [val32]`
           }
           break
         case '81':

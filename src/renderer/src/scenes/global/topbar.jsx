@@ -63,7 +63,7 @@ const Topbar = () => {
   const colors = tokens(theme.palette.mode)
   const colorMode = useContext(ColorModeContext)
 
-  const [settingsDialogOpen, setSettingsDialogOpen] = useState(true)
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
   const [CalcVsRegDialogStatus, setCalcVsRegDialogStatus] = useState(false)
   const [CalcVsRegister, setCalcVsRegister] = useState('Register')
   const [expandLogin, setExpandLogin] = useState(false)
@@ -90,14 +90,13 @@ const Topbar = () => {
         } else if (event.key == 'F3') {
           setProtocolGlobal('RS232')
         }
-      } else if (event.ctrlKey && event.key === 'n') {
+      } else if (event.ctrlKey && event.key === '+') {
         zoomLevel.current += 0.1
         document.querySelector('#root').style.zoom = zoomLevel.current
-      } else if (event.ctrlKey && event.key === 'd') {
+      } else if (event.ctrlKey && event.key === '-') {
         zoomLevel.current -= 0.1
         document.querySelector('#root').style.zoom = zoomLevel.current
       } else if (event.ctrlKey && event.key === '0') {
-        event.preventDefault()
         zoomLevel.current = 1
         document.querySelector('#root').style.zoom = zoomLevel.current
       }

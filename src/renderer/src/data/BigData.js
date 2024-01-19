@@ -7406,12 +7406,50 @@ export const Registers_THS = [
     Index: 'DER2',
     Title: 'Detailed Error Register 2 (status, RO)',
     BitInfo: [
-      { bit: '15-7', info: 'Reserved' },
+      {
+        bit: '15',
+        zero: 'No error.',
+        one: 'Error',
+        info: 'Output frequency. The imposed speed exceeds the DUAL USE European regulation limit.'
+      },
+      {
+        bit: '14',
+        zero: 'No error.',
+        one: 'Error',
+        info: 'Polarity Error (Ins and Outs different type)'
+      },
+      { bit: '13-11', info: 'Reserved' },
+
+      {
+        bit: '10',
+        zero: 'No error.',
+        one: 'Biss ack not present',
+        info: 'Fdbk #1 sensor missing'
+      },
+      {
+        bit: '9',
+        zero: 'No error',
+        one: 'Biss data error bit',
+        info: 'Fdbk #1 data error '
+      },
+      {
+        bit: '8',
+        zero: 'No error',
+        one: 'Biss data warning bit',
+        info: 'Fdbk #1 data warning '
+      },
+      {
+        bit: '7',
+        zero: 'No error',
+        one: 'BiSS CRC error',
+        info: 'Fdbk #1 CRC error'
+      },
+
       {
         bit: '6',
         zero: 'No position wraparound',
         one: 'Position wraparound has occurred',
-        info: 'POSWRP. Position wraparound (for F514G and F515G or newer)'
+        info: 'POSWRP. Position wraparound (obsolete)'
       },
       {
         bit: '5',
@@ -7429,25 +7467,25 @@ export const Registers_THS = [
         bit: '3',
         zero: 'No error.',
         one: 'Biss ack not present',
-        info: 'BISSACKNP. Biss ack not present'
+        info: 'Fdbk #2 sensor missing'
       },
       {
         bit: '2',
         zero: 'No error',
         one: 'Biss data error bit',
-        info: 'BISSDEB. Biss data error bit'
+        info: 'Fdbk #2 data error bit'
       },
       {
         bit: '1',
         zero: 'No error',
         one: 'Biss data warning bit',
-        info: 'BISSDWB. Biss data warning bit'
+        info: 'Fdbk #2 data warning bit'
       },
       {
         bit: '0',
         zero: 'No error',
         one: 'BiSS CRC error',
-        info: 'BISSCRCERR. BiSS CRC error'
+        info: 'Fdbk #2 CRC error'
       }
     ]
   },

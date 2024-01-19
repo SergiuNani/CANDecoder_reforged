@@ -251,17 +251,6 @@ export const CompatibleMapping = {
   64: ['607A', '', '6081', '', '', '', '', '']
 }
 
-export const CompatibleMapping_NoSpace = {
-  8: ['6060'],
-  16: ['6040'],
-  24: ['6040', '100D'],
-  32: ['6041', '208E'],
-  40: ['6081', '6060'],
-  48: ['607A', '2023'],
-  56: ['607A', '6041', '6061'],
-  64: ['607A', '6081']
-}
-
 export const Mapping_objects_array = [
   '1400',
   '1400_00',

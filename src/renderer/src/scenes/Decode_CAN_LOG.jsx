@@ -50,8 +50,8 @@ export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = [] // only filtered messages
 export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
-  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
-  // const [fileInnerText, setFileInnerText] = useState('')
+  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
+  const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -926,11 +926,11 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                   setShowMappingWindow(true)
                 }}
                 sx={{
-                  background: `${colors.primary1[100]}`,
+                  background: `${colors.primary[500]}`,
                   padding: '0.5rem',
                   fontSize: '0.8rem',
                   '&:hover': {
-                    background: `${colors.primary[500]}`
+                    background: `${colors.primary[400]}`
                   }
                 }}
               >
@@ -942,11 +942,11 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                   setShowRawMsgsWindow(true)
                 }}
                 sx={{
-                  background: `${colors.primary1[100]}`,
+                  background: `${colors.primary[500]}`,
                   padding: '0.5rem',
                   fontSize: '0.8rem',
                   '&:hover': {
-                    background: `${colors.primary[500]}`
+                    background: `${colors.primary[400]}`
                   }
                 }}
               >
@@ -958,11 +958,11 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                   setShowTime(true)
                 }}
                 sx={{
-                  background: `${colors.primary1[100]}`,
+                  background: `${colors.primary[500]}`,
                   padding: '0.5rem',
                   fontSize: '0.8rem',
                   '&:hover': {
-                    background: `${colors.primary[500]}`
+                    background: `${colors.primary[400]}`
                   }
                 }}
               >
@@ -973,11 +973,11 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                   setShowExtraction(true)
                 }}
                 sx={{
-                  background: `${colors.primary1[100]}`,
+                  background: `${colors.primary[500]}`,
                   padding: '0.5rem',
                   fontSize: '0.8rem',
                   '&:hover': {
-                    background: `${colors.primary[500]}`
+                    background: `${colors.primary[400]}`
                   }
                 }}
               >

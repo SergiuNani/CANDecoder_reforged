@@ -1,7 +1,16 @@
 export var InsertTextIntoTextArea = `
+18:02:08 Bytes Write :  08 00 10 B0 05 00 11 02 28 08
+18:02:08 Bytes Read :  4F
+18:02:08 Bytes Read :  0C
+18:02:08 Bytes Read :  00 11 B4 05 00 10 02 28 00 01 00 00 11
+18:02:11 Bytes Write :  08 00 10 B0 05 00 11 A1 30 AF
+18:02:11 Bytes Read :  4F
+18:02:11 Bytes Read :  0C
+18:02:11 Bytes Read :  00 11 B4 05 00 10 A1 30 00 00 00 00 B7
+
+
 
 `
-
 var a = `
 
 10	    	16:52:02	972.167	         19.758		       128	       080	      	  1	00	  	  	  	  	  	  	  	_       	
