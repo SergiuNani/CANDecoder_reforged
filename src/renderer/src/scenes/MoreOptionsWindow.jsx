@@ -12,7 +12,8 @@ import {
   LittleEndian,
   hex_to_ascii,
   asciiToDec,
-  decToHex
+  decToHex,
+  hexToDec
 } from '../functions/NumberConversion'
 
 const MoreOptionsWindow = () => {
@@ -44,8 +45,9 @@ const DataExchangeObjectsMENU = () => {
     valueHex: '1',
     message2067: '00000000'
   })
-  const [s2064_data, setS2064_data] = useState('0000')
-  const [s2065_data, sets2065_data] = useState('00000000')
+
+  const [x2064, setx2064] = useState('0')
+  const [xWrite, setxWrite] = useState('0')
   const handleChange = (field, value) => {
     if (field == 'DataSize') {
       setFormData((prevData) => ({ ...prevData, [field]: value, valueHex: '0' }))
@@ -66,50 +68,37 @@ const DataExchangeObjectsMENU = () => {
   }, [formData])
 
   function composeMessage() {
-    let message2064 = '0'
+    var val_2064 = 0
+    var valWriteObj = ''
+    if (formData.MemoryType == 'EEPROM') {
+      val_2064 |= 0x8
+    } else if (formData.MemoryType == 'DATA') {
+      val_2064 |= 0x4
+    }
     if (formData.writeObject === '2065h') {
-      if (formData.DataSize === '16') {
-        message2064 = message2064.concat('0')
-      } else {
-        message2064 = message2064.concat('1')
+      if (formData.DataSize == '32') val_2064 |= 0x1
+      if ('true' != formData.IncrementStatus) {
+        val_2064 |= 0x80
       }
-      if (formData.MemoryType === 'EEPROM') {
-        message2064 = '00010'.concat(message2064)
-      } else if (formData.MemoryType === 'DATA') {
-        message2064 = '00001'.concat(message2064)
-      } else {
-        message2064 = '00000'.concat(message2064)
-      }
-      if (formData.IncrementStatus == 'true') {
-        message2064 = '000000000'.concat(message2064)
-      } else {
-        message2064 = '000000001'.concat(message2064)
-      }
+      val_2064 = decToHex(val_2064, 16).padStart(4, '0')
+      val_2064 = formData.address.padStart(4, '0') + val_2064
+      val_2064 = LittleEndian(val_2064)
+      setx2064(val_2064)
 
-      message2064 = LittleEndian(bin2hex(message2064).padStart(4, '0'))
-      message2064 = message2064.concat(`${LittleEndian(formData.address.padStart(4, '0'))}`)
-
-      message2064 = message2064.padStart(8, '0')
-      setS2064_data(message2064)
-
-      //2065
-      var temp = formData.valueHex.padEnd(8, '0')
-      var temp1 = LittleEndian(temp.slice(0, 4))
-      var temp2 = LittleEndian(temp.slice(4, 8))
-      temp = temp1.concat(temp2)
-      sets2065_data(temp)
+      valWriteObj = decToHex(hexToDec(formData.valueHex, 16), 16).padStart(4, '0') // remove '0012'-> '12' then pad it
+      valWriteObj = '0000' + valWriteObj
+      valWriteObj = LittleEndian(valWriteObj)
+      setxWrite(valWriteObj)
     } else {
-      if (formData.MemoryType === 'EEPROM') {
-        message2064 = '08000000'
-      } else if (formData.MemoryType === 'DATA') {
-        message2064 = '04000000'
-      } else {
-        message2064 = '00000000'
-      }
-      setS2064_data(message2064)
-      //2067
-      var temp = LittleEndian(formData.valueHex.padStart(4, '0'))
-      sets2065_data(temp.concat(LittleEndian(formData.address.padStart(4, '0'))))
+      val_2064 = decToHex(val_2064, 16).padStart(4, '0')
+      val_2064 = '0000' + val_2064
+      val_2064 = LittleEndian(val_2064)
+      setx2064(val_2064)
+
+      valWriteObj = decToHex(hexToDec(formData.valueHex, 16), 16).padStart(4, '0') // remove '0012'-> '12' then pad it
+      valWriteObj = formData.address.padStart(4, '0') + valWriteObj
+      valWriteObj = LittleEndian(valWriteObj)
+      setxWrite(valWriteObj)
     }
   }
 
@@ -197,6 +186,7 @@ const DataExchangeObjectsMENU = () => {
             />
           </div>
         </section>
+
         <section style={{ marginTop: '1rem', fontSize: '1rem' }}>
           <div style={{ display: 'flex', gap: '0.3rem', fontWeight: '700' }}>
             {/* //2064 */}
@@ -204,8 +194,8 @@ const DataExchangeObjectsMENU = () => {
             <span style={{ color: `${colors.yellow[100]}` }}>23 </span>
             <span style={{ color: `${colors.yellow[400]}` }}>6420 </span>
             <span style={{ color: `${colors.yellow[400]}` }}>00 </span>
-            <span style={{ color: `${colors.yellow[500]}` }}>{s2064_data.slice(0, 4)} </span>
-            <span style={{ color: `${colors.yellow[500]}` }}>{s2064_data.slice(4, 8)} </span>
+            <span style={{ color: `${colors.yellow[500]}` }}>{x2064.slice(0, 4)} </span>
+            <span style={{ color: `${colors.yellow[500]}` }}>{x2064.slice(4, 8)} </span>
           </div>
           <div style={{ display: 'flex', gap: '0.3rem', fontWeight: '700' }}>
             {/* //2065 2066 */}
@@ -215,8 +205,8 @@ const DataExchangeObjectsMENU = () => {
               {LittleEndian(formData.writeObject)}{' '}
             </span>
             <span style={{ color: `${colors.yellow[400]}` }}>00 </span>
-            <span style={{ color: `${colors.yellow[500]}` }}>{s2065_data.slice(0, 4)} </span>
-            <span style={{ color: `${colors.yellow[500]}` }}>{s2065_data.slice(4, 8)} </span>
+            <span style={{ color: `${colors.yellow[500]}` }}>{xWrite.slice(0, 4)} </span>
+            <span style={{ color: `${colors.yellow[500]}` }}>{xWrite.slice(4, 8)} </span>
           </div>
         </section>
       </Box>
