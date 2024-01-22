@@ -475,7 +475,7 @@ function NumberTransformationComponent() {
               margin: '0',
               padding: '0'
             },
-            '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+            '& .MuiButtonBase-root': {
               padding: '0.3rem'
             }
           }}

@@ -520,7 +520,7 @@ function RowRadioButtonsGroup({ tellParent, defaultValue, style }) {
           '& .MuiSvgIcon-root': {
             color: `${colors.green[400]}`
           },
-          '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+          '& .MuiButtonBase-root': {
             padding: '0.3rem'
           }
         }}

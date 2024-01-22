@@ -112,9 +112,10 @@ const DataExchangeObjectsMENU = () => {
         value={formData[field]}
         sx={{
           '& .MuiSvgIcon-root': {
-            color: colors.green[400]
+            color: colors.green[400],
+            padding: '0.1rem'
           },
-          '& .css-6dphjh-MuiButtonBase-root-MuiRadio-root': {
+          '& .MuiButtonBase-root': {
             padding: '0.1rem'
           },
           minWidth: '5rem'
