@@ -87,6 +87,9 @@ const DataExchangeObjectsMENU = () => {
 
       valWriteObj = decToHex(hexToDec(formData.valueHex, 16), 16).padStart(4, '0') // remove '0012'-> '12' then pad it
       valWriteObj = '0000' + valWriteObj
+      if (formData.DataSize == '32') {
+        valWriteObj = decToHex(hexToDec(formData.valueHex, 32), 32).padStart(8, '0') // remove '0012'-> '12' then pad it
+      }
       valWriteObj = LittleEndian(valWriteObj)
       setxWrite(valWriteObj)
     } else {
