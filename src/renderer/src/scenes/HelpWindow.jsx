@@ -860,14 +860,18 @@ export const HelpShortcutPage = () => {
             <span className="primaryColor"> "LeftArrow" </span>
           </p>
           <p>
+            Focus/jump between the CANopen/THS button(s) :{' '}
+            <span className="primaryColor"> "RightArrow" </span>
+          </p>
+          <p>
             Focus/jump between Register windows(s) :{' '}
-            <span className="primaryColor"> "Ctrl + LeftArrow" </span>
+            <span className="primaryColor"> "Ctrl + DownArrow" </span>
           </p>
           <p>
-            Add new Register window : <span className="primaryColor"> "Ctrl + `n` " </span>
+            Add new Register window : <span className="primaryColor"> "Alt + `+` " </span>
           </p>
           <p>
-            Delete one Register window : <span className="primaryColor"> "Ctrl + `d` " </span>
+            Delete one Register window : <span className="primaryColor"> "Alt + `-` " </span>
           </p>
 
           <br />

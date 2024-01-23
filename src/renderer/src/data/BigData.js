@@ -7314,7 +7314,18 @@ export const Registers_THS = [
     Index: 'DER',
     Title: 'Detailed Error Register (status, RO)',
     BitInfo: [
-      { bit: '15-14', info: 'Reserved' },
+      {
+        bit: '15',
+        zero: 'No error',
+        one: 'EEPROM Locked',
+        info: 'EEPROM Locked'
+      },
+      {
+        bit: '14',
+        zero: 'No error',
+        one: 'STO hardware error',
+        info: 'STO/ENA hardware error'
+      },
       {
         bit: '13',
         zero: 'No error',

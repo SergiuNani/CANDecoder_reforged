@@ -20,36 +20,40 @@ export const RegisterWindow = () => {
   const navigate = useNavigate()
 
   const [windowsNumber, setWindowsNumber] = useState(1)
-  const [ctrlTabCount, setCtrlTabCount] = useState(0)
-  const [ctrlCount, setCtrlCount] = useState(0)
   const RegisterWindowRef = useRef()
   const { setSidebarSelectedItem } = useContext(SidebarContext)
-  const valueInputsRef = useRef(0)
+  const listRef = useRef(0)
+  const registerComponentRef = useRef(0)
+  const valueRef = useRef(0)
+  const btnCANRef = useRef(0)
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'Tab') {
         event.preventDefault()
         var allValueInputs = document.querySelectorAll('.RegisterNameInput_class')
-        if (valueInputsRef.current == windowsNumber) valueInputsRef.current = 0
-        valueInputsRef.current += 1
-        allValueInputs[valueInputsRef.current - 1].focus()
-      } else if (event.ctrlKey && event.key === 'ArrowRight') {
+        if (listRef.current == windowsNumber) listRef.current = 0
+        listRef.current += 1
+        allValueInputs[listRef.current - 1].focus()
+      } else if (event.ctrlKey && event.key === 'ArrowDown') {
         event.preventDefault()
-        RegisterWindowRef.current.focus()
-        setCtrlCount((prev) => {
-          var temp = prev + 1
-          if (temp > windowsNumber) temp = 1
-          return temp
-        })
+        var allValueInputs = document.querySelectorAll('.RegisterComponent_class')
+        if (registerComponentRef.current == windowsNumber) registerComponentRef.current = 0
+        registerComponentRef.current += 1
+        allValueInputs[registerComponentRef.current - 1].focus()
       } else if (event.key === 'ArrowRight') {
         var allValueInputs = document.querySelectorAll('.RegisterValueInput_class')
-        if (valueInputsRef.current == windowsNumber) valueInputsRef.current = 0
-        valueInputsRef.current += 1
-        allValueInputs[valueInputsRef.current - 1].focus()
-      } else if (event.ctrlKey && event.key === 'n') {
+        if (valueRef.current == windowsNumber) valueRef.current = 0
+        valueRef.current += 1
+        allValueInputs[valueRef.current - 1].focus()
+      } else if (event.key === 'ArrowLeft') {
+        var allValueInputs = document.querySelectorAll('.RegisterListType_class')
+        if (btnCANRef.current == windowsNumber) btnCANRef.current = 0
+        btnCANRef.current += 1
+        allValueInputs[btnCANRef.current - 1].focus()
+      } else if (event.altKey && event.key === '+') {
         event.preventDefault()
         IncrementWindows()
-      } else if (event.ctrlKey && event.key === 'd') {
+      } else if (event.altKey && event.key === '-') {
         DecrementWindows()
       }
     }
@@ -58,7 +62,7 @@ export const RegisterWindow = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [windowsNumber, valueInputsRef])
+  }, [windowsNumber, listRef, registerComponentRef, valueRef, btnCANRef])
 
   const IncrementWindows = () => {
     if (windowsNumber > 3) return
@@ -87,9 +91,7 @@ export const RegisterWindow = () => {
           <RegisterSelectionComponent
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
-            focus={ctrlTabCount == 1 ? true : false}
             tabIndex={windowsNumber}
-            focusOnComponent={ctrlCount}
             NrWindow={1}
           />
         )}
@@ -97,9 +99,7 @@ export const RegisterWindow = () => {
           <RegisterSelectionComponent
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
-            focus={ctrlTabCount == 2 ? true : false}
             tabIndex={windowsNumber}
-            focusOnComponent={ctrlCount}
             NrWindow={2}
           />
         )}
@@ -107,9 +107,7 @@ export const RegisterWindow = () => {
           <RegisterSelectionComponent
             IncrementWindows={IncrementWindows}
             DecrementWindows={DecrementWindows}
-            focus={ctrlTabCount == 3 ? true : false}
             tabIndex={windowsNumber}
-            focusOnComponent={ctrlCount}
             NrWindow={3}
           />
         )}
@@ -124,10 +122,7 @@ export const RegisterSelectionComponent = ({
   DecrementWindows,
   ComponentHeight,
   ComponentWidth,
-  focus,
-  tabIndex,
-  focusOnComponent,
-  NrWindow
+  tabIndex
 }) => {
   const [registerSelected, setRegisterSelected] = useState(null)
   const [registerResolution, setRegisterResolution] = useState(0)
@@ -171,14 +166,6 @@ export const RegisterSelectionComponent = ({
     }
   }
 
-  useEffect(() => {
-    // ContainerParent.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    if (NrWindow == focusOnComponent) {
-      if (ContainerParent.current.children[0]) {
-        ContainerParent.current.children[0].focus()
-      }
-    }
-  }, [focusOnComponent])
   return (
     <div
       style={{
@@ -237,7 +224,6 @@ export const RegisterSelectionComponent = ({
           listType={listType}
           tellParentRegisterChanged={tellParentRegisterChanged}
           placeholder="Select"
-          focus={focus}
           className="RegisterNameInput_class"
         />
 
@@ -270,6 +256,7 @@ export const RegisterSelectionComponent = ({
             fontSize: '0.9rem',
             marginLeft: '0.5rem '
           }}
+          className="RegisterListType_class"
         >
           {listType}
         </Button>
@@ -279,7 +266,7 @@ export const RegisterSelectionComponent = ({
         </IconButton>
       </Box>
       {/* Register Painting ----------------------------------------------------*/}
-      <div ref={ContainerParent}>
+      <div>
         <RegisterComponent
           register={registerSelected}
           value={valueRegister}

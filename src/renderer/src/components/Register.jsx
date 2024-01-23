@@ -104,6 +104,7 @@ const RegisterComponent = ({
         height: ComponentHeight ? ComponentHeight : '70vh',
         background: `${colors.primary[300]}`
       }}
+      className="RegisterComponent_class"
     >
       {/* {'Index + Title  ----------------------------------------*/}
       <Box
@@ -130,7 +131,7 @@ const RegisterComponent = ({
             border: `1px solid ${colors.grey[400]}`,
             display: 'grid',
             gridTemplateColumns: '3.2rem auto 2rem',
-            borderBottom: 'none',
+            // borderBottom: 'none',
             justifyContent: 'baseline',
             alignItems: 'center',
             padding: '0.3rem',
