@@ -7,7 +7,8 @@ let firmwareAddressesDynamicArray = []
 export function Extract_MSGs_from_text_RS232(text) {
   const hexPattern = /^(0x)?[0-9a-f]+$/gi
   var ExtractedArray = text.map((row, index) => {
-    var rowSplitted = row.split(' ')
+    var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
+    var rowSplitted = row.split(FirstPatternEntireRowSplitter)
     rowSplitted = rowSplitted.filter(function (el) {
       return (
         el != null &&

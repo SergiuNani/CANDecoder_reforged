@@ -44,7 +44,7 @@ export const Verify_RS232_rawList = `
 08 10 00 89 63 02 9E 03 66 0D  //cpos = var_i1<<3
 08 10 00 89 60 02 9E 03 66 0A  //cpos = var_i1<<0
 08 10 00 89 69 02 9E 03 66 13  //cpos = var_i1<<9
-08 10 00 89 70 02 9E 03 66 1A  //cpos = var_i1<<16
+08 10 00 89 70 02 9E 03 66 1A  //cpos = var_i1<<-16
 06 10 00 89 21 02 28 EA  //apos<<=1
 06 10 00 89 2A 02 28 F3  //apos<<=10
 06 10 00 89 01 02 28 CA  //apos>>=1
@@ -242,7 +242,7 @@ export const Verify_RS232_rawList = `
 06 10 10 1E 01 03 66 AE  //calls var_i1
 
 08 10 10 71 B9 02 C2 02 28 40  //!RT apos
-0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x12
+0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x-12
 
 08 10 10 71 81 02 AE 02 28 F4 //!RU apos
 0A 10 10 70 81 02 AE 00 12 00 00 DD //!RU 0x12
@@ -274,7 +274,7 @@ export const Verify_RS232_rawList = `
 06 00 10 7D 67 02 28 24  //SEG var_i2 , APOS
 0A 10 00 91 05 03 68 78 91 34 56 AD //Checksum dont match
 08 00 10 C9 63 02 28 03 67 D8 DD //Length dont match 
-08 00 10 C9 63 02 28 03 67 D8  //PTP apos, var_i2,99
+08 00 10 C9 63 02 28 03 67 D8  //PTP apos, var_i2,-99
 08 00 10 C9 64 02 28 03 66 D8  //PTP apos, var_i1, 100
 08 10 10 25 68 00 12 00 00 C7 //var_lf =0x12
 08 00 10 71 90 02 9E 02 28 E3  // !VO cpos, apos
@@ -290,7 +290,7 @@ export const Verify_RS232_rawList = `
 04 00 10 01 02 17 /axison
 04 00 10 00 02 16 /axisoff
 04 00 10 00 20 34 /endinit
-0A 00 10 C8 37 56 78 12 34 00 55 82 //PTP 0x12345678, 0x55,55
+0A 00 10 C8 37 56 78 12 34 00 55 82 //PTP 0x12345678, 0x-55,-55
 0A 00 10 19 03 02 9E 02 A0 03 66 E1  //PVTP cpos, cspd, var_i1, 3
 0C 00 10 18 06 22 34 11 00 01 29 00 06 D1  //PVTP 0x112234, 0x129, 0x6, 6
 0C 00 10 18 06 34 56 12 00 12 56 00 06 44 //PVTP 0x123456, 0x1256, 0x6, 6

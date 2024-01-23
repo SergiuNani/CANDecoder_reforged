@@ -1596,18 +1596,28 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
     var attachement = ''
     var devision = 1000
     var [hours, minutes, seconds] = timeString.split(':').map(Number)
-    if (isNaN(seconds)) {
+    if (isNaN(seconds) || !Number.isInteger(seconds)) {
       var temp = timeString.split(':')[2].split('.')
       seconds = parseInt(temp[0])
-      if (temp[2].length == 1) devision = 10
-      attachedMiliseconds = parseInt(temp[1])
-      attachedMicroSeconds = parseInt(temp[2]) / devision
-      attachement = ` + ${attachedMiliseconds} +  ${temp[2]}/${devision}`
+      if (temp.length == 2) {
+        //case hh:mm:ss.ms
+        if (temp[1].length == 1) devision = 100
+        if (temp[1].length == 2) devision = 10
+        else devision = 1
+        attachedMiliseconds = parseInt(temp[1]) * devision
+        attachement = ` + ${temp[1]}*${devision}`
+      } else {
+        //case hh:mm:ss.ms.us
+        if (temp[2].length == 1) devision = 10
+        attachedMiliseconds = parseInt(temp[1])
+        attachedMicroSeconds = parseInt(temp[2]) / devision
+        attachement = ` + ${temp[1]} +  ${temp[2]}/${devision}`
+      }
     }
     // Calculate the total milliseconds
     const totalMilliseconds =
       (hours * 60 * 60 + minutes * 60 + seconds) * 1000 + attachedMiliseconds + attachedMicroSeconds
-    Process = `${hours}*60*60 + ${minutes}*60 + ${seconds} ${attachement}`
+    Process = `[${hours}*60*60 + ${minutes}*60 + ${seconds}]*1000 ${attachement}`
 
     return [totalMilliseconds, Process]
   }
@@ -1617,17 +1627,36 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
     var devision = 1000
 
     strInput = strInput.replace(/\t/g, ' ')
+    var FirstPatternEntireRowSplitter = /['"`,<> \s]/g
+
     strInput = strInput
-      .split(' ')
+      .split(FirstPatternEntireRowSplitter)
       .filter((el) => el !== '')
       .filter((el) => el.includes(':') || el.includes('.'))
     var DoubleColumn_flag = -1
+    var SingleColumn_flag = -1
+    var ThreeColumn_flag = -1
     strInput.forEach((item, idx) => {
       const colonCount = (item.match(/:/g) || []).length
       if (colonCount == 2) {
         DoubleColumn_flag = idx
+      } else if (colonCount == 1) {
+        SingleColumn_flag = idx
+      } else if (colonCount == 3) {
+        ThreeColumn_flag = idx
       }
     })
+
+    if (SingleColumn_flag != -1 && DoubleColumn_flag == -1) {
+      //case mm:ss.x
+      strInput[SingleColumn_flag] = '00:' + strInput[SingleColumn_flag]
+      DoubleColumn_flag = SingleColumn_flag
+    } else if (ThreeColumn_flag != -1) {
+      //13:56:21:0411
+      strInput[ThreeColumn_flag] = strInput[ThreeColumn_flag].replace(/^(.*?:.*?:.*?):/, '$1.')
+      DoubleColumn_flag = ThreeColumn_flag
+    }
+
     if (DoubleColumn_flag != -1) {
       // there is an item which has time like this : hh:mm:ss. IF there are multiple only the last one will be considered
 

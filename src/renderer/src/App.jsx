@@ -203,18 +203,18 @@ function Text2JSON_ESM_info() {
   return text
 }
 
-function LazyImport(path, namedExport) {
-  return lazy(() => {
-    const promise = import(path)
-    if (namedExport == null) {
-      return promise
-    } else {
-      return promise.then((module) => {
-        return { default: module[namedExport] }
-      })
-    }
-  })
-}
+// function LazyImport(path, namedExport) {
+//   return lazy(() => {
+//     const promise = import(path)
+//     if (namedExport == null) {
+//       return promise
+//     } else {
+//       return promise.then((module) => {
+//         return { default: module[namedExport] }
+//       })
+//     }
+//   })
+// }
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime
