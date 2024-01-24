@@ -1,17 +1,19 @@
-import { Header } from '../components/SmallComponents'
+import {
+  useTheme,
+  Box,
+  Typography,
+  Accordion,
+  AccordionDetails,
+  AccordionSummary
+} from '@mui/material'
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator'
-import { useState } from 'react'
-import { useTheme, Box } from '@mui/material'
-import { tokens } from '../theme'
-import Accordion from '@mui/material/Accordion'
 import WavingHandIcon from '@mui/icons-material/WavingHand'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import Typography from '@mui/material/Typography'
+import { Header } from '../components/SmallComponents'
+import { useState, useContext } from 'react'
+import { tokens } from '../theme'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { HelpRegister } from './global/RegisterWindow'
 import { HelpEditDataWindow } from './EditDataWindow'
-import DvrIcon from '@mui/icons-material/Dvr'
 import KeyboardIcon from '@mui/icons-material/Keyboard'
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks'
 import CreateIcon from '@mui/icons-material/Create'
@@ -19,8 +21,8 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined'
 import DecodeCANLOG from '../styles/images/DecodeCANLOG.png'
 import TableChartIcon from '@mui/icons-material/TableChart'
 import pdoDetected from '../styles/images/pdoDetected.png'
-
-const HelpWindow = () => {
+import { ClearanceContext } from '../App'
+export const HelpWindow = () => {
   return (
     <>
       <Header
@@ -784,6 +786,9 @@ export const HelpWelcomePage = () => {
 export const HelpShortcutPage = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+
+  var { Clearance } = useContext(ClearanceContext)
+
   return (
     <Box
       sx={{
@@ -810,44 +815,40 @@ export const HelpShortcutPage = () => {
             <span className="primaryColor"> "Ctrl + 3" </span>
           </p>
           <p>
-            Open Decode Log window:
-            <span className="primaryColor"> "Ctrl + 4" </span>
-          </p>
-          <p>
-            Open Extra Options window:
-            <span className="primaryColor"> "Ctrl + 5" </span>
-          </p>
-          <p>
-            Open Help window:
-            <span className="primaryColor"> "Ctrl + 6" </span>
-          </p>
-          <p>
             Open/alternate between Calculator and RegisterTool :{' '}
             <span className="primaryColor"> "Alt + c" </span>
           </p>
           <p>
-            Open Debug window to verify the Application :{' '}
-            <span className="primaryColor"> "Alt + v" </span>
-          </p>
-          <p>
             Open LogIn menu : <span className="primaryColor"> "Ctrl + l" </span>
           </p>
-          <p>
-            Change protocol (CANopen, CAN, RS232) <span className="primaryColor"> "F1" </span>,
-            <span className="primaryColor"> "F2" </span>,
-            <span className="primaryColor"> "F3" </span>
-          </p>
-          <br />
-          <li>
-            <b>Home Window shortcuts: </b>
-          </li>
-          <p>
-            Focus on the search bar : <span className="primaryColor"> "CTRL + s" </span>
-          </p>
 
+          {Clearance > 11 ? (
+            <>
+              <p>
+                Open Decode Log window:
+                <span className="primaryColor"> "Ctrl + 4" </span>
+              </p>
+              <p>
+                Open Extra Options window:
+                <span className="primaryColor"> "Ctrl + 5" </span>
+              </p>
+              <p>
+                Open Help window:
+                <span className="primaryColor"> "Ctrl + 6" </span>
+              </p>
+              <p>
+                Open Debug window to verify the Application :{' '}
+                <span className="primaryColor"> "Alt + v" </span>
+              </p>
+              <p>
+                Change protocol (CANopen, CAN, RS232) <span className="primaryColor"> "F1" </span>,
+                <span className="primaryColor"> "F2" </span>,
+                <span className="primaryColor"> "F3" </span>
+              </p>
+            </>
+          ) : null}
           <br />
-        </section>
-        <section>
+
           <li>
             <b>Register Window shortcuts: </b>
           </li>
@@ -873,7 +874,14 @@ export const HelpShortcutPage = () => {
           <p>
             Delete one Register window : <span className="primaryColor"> "Alt + `-` " </span>
           </p>
-
+        </section>
+        <section>
+          <li>
+            <b>Home Window shortcuts: </b>
+          </li>
+          <p>
+            Focus on the search bar : <span className="primaryColor"> "CTRL + s" </span>
+          </p>
           <br />
           <li>
             <b>Decode Log Window shortcuts: </b>
@@ -881,22 +889,31 @@ export const HelpShortcutPage = () => {
           <p>
             Open Overview sidebar : <span className="primaryColor"> "CTRL + ` " </span>
           </p>
-          <p>
-            Open Advanced Search : <span className="primaryColor"> "CTRL + f " </span>
-          </p>
-          <p>
-            Open GOTO menu : <span className="primaryColor"> "CTRL + g " </span>
-          </p>
-          <p>
-            Open Mapping menu : <span className="primaryColor"> "CTRL + m " </span>
-          </p>
-          <p>
-            Open Extraction menu : <span className="primaryColor"> "CTRL + e " </span>
-          </p>
-          <p>
-            Open Time menu : <span className="primaryColor"> "CTRL + t " </span>
-          </p>
 
+          {Clearance > 11 ? (
+            <>
+              <p>
+                Open Advanced Search : <span className="primaryColor"> "CTRL + f " </span>
+              </p>
+              <p>
+                Open GOTO menu : <span className="primaryColor"> "CTRL + g " </span>
+              </p>
+              <p>
+                Open Mapping menu : <span className="primaryColor"> "CTRL + m " </span>
+              </p>
+              <p>
+                Open Extraction menu : <span className="primaryColor"> "CTRL + e " </span>
+              </p>
+              <p>
+                Open Time menu : <span className="primaryColor"> "CTRL + t " </span>
+              </p>
+            </>
+          ) : null}
+          {Clearance > 33 ? (
+            <p>
+              Open CANReal Generator: <span className="primaryColor"> "CTRL + q " </span>
+            </p>
+          ) : null}
           <p>
             Process the log in the TextArea or display table if Overview is opened :{' '}
             <span className="primaryColor"> " CTRL + ENTER " </span>

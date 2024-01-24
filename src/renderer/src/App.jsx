@@ -15,19 +15,19 @@ export var ESM_info_LS = []
 
 import Decode_CAN_LOG_Window from './scenes/Decode_CAN_LOG' //because of some useContext problems
 
-import HomeWindow from './scenes/HomeWindow'
-import MoreOptionsWindow from './scenes/MoreOptionsWindow'
-import { RegisterWindow } from './scenes/global/RegisterWindow'
-import DebugScene from './scenes/debug'
-import EditDataWindow from './scenes/EditDataWindow'
-import HelpWindow from './scenes/HelpWindow.jsx'
+// import HomeWindow from './scenes/HomeWindow'
+// import MoreOptionsWindow from './scenes/MoreOptionsWindow'
+// import { RegisterWindow } from './scenes/global/RegisterWindow'
+// import DebugScene from './scenes/debug'
+// import EditDataWindow from './scenes/EditDataWindow'
+// import HelpWindow from './scenes/HelpWindow.jsx'
 
-// const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
-// const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
-// const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
-// const DebugScene = LazyImport('./scenes/debug')
-// const EditDataWindow = LazyImport('./scenes/EditDataWindow')
-// const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
+const HomeWindow = LazyImport('./scenes/HomeWindow.jsx')
+const MoreOptionsWindow = LazyImport('./scenes/MoreOptionsWindow.jsx')
+const RegisterWindow = LazyImport('./scenes/global/RegisterWindow', 'RegisterWindow')
+const DebugScene = LazyImport('./scenes/debug')
+const EditDataWindow = LazyImport('./scenes/EditDataWindow')
+const HelpWindow = LazyImport('./scenes/HelpWindow.jsx')
 
 function App() {
   if (
@@ -203,18 +203,18 @@ function Text2JSON_ESM_info() {
   return text
 }
 
-// function LazyImport(path, namedExport) {
-//   return lazy(() => {
-//     const promise = import(path)
-//     if (namedExport == null) {
-//       return promise
-//     } else {
-//       return promise.then((module) => {
-//         return { default: module[namedExport] }
-//       })
-//     }
-//   })
-// }
+function LazyImport(path, namedExport) {
+  return lazy(() => {
+    const promise = import(path)
+    if (namedExport == null) {
+      return promise
+    } else {
+      return promise.then((module) => {
+        return { default: module[namedExport] }
+      })
+    }
+  })
+}
 var diffTime = 0
 function logProfilerData(id, phase, actualTime, baseTime, startTime, commitTime, interactions) {
   diffTime += commitTime - startTime

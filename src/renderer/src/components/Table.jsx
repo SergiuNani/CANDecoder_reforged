@@ -311,6 +311,36 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
     )
   }
 
+  const TypeCANReal = () => {
+    return (
+      <>
+        <p
+          style={{
+            color: colors.primary[600],
+            minWidth: '2rem',
+            textAlign: 'center',
+            fontWeight: '400'
+          }}
+        >
+          {obj.msgNr}{' '}
+        </p>
+        <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{`[${obj.AxisID}]`}</p>
+        <p style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}>
+          {obj.CobID} - {obj.FrameData}
+        </p>
+        <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{`${obj.Object}`}</p>
+        <p style={{ color: colors.personal[100], minWidth: '10rem' }}>{`${obj.Data}`}</p>
+        <p
+          style={{
+            color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[100]
+          }}
+        >
+          {obj.Interpretation}
+        </p>
+      </>
+    )
+  }
+
   return (
     <section
       style={{
@@ -320,7 +350,15 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         fontWeight: '550'
       }}
     >
-      {type == 'Finder' ? <TypeFinder /> : type == 'Time' ? <TypeTime /> : <TypeExtraction />}
+      {type == 'Finder' ? (
+        <TypeFinder />
+      ) : type == 'Time' ? (
+        <TypeTime />
+      ) : type == 'Extraction' ? (
+        <TypeExtraction />
+      ) : type == 'CANReal' ? (
+        <TypeCANReal />
+      ) : null}
     </section>
   )
 }

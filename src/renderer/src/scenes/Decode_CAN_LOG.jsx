@@ -43,6 +43,7 @@ import {
 } from '../functions/CANopenFunctions'
 import { DefaultTable, CreateGroupedFilteredArray, TableROW_simple } from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
+import { CANRealComponent } from '../components/CANReal'
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
 export let MessagesDecoded_ArrayOfObjects = []
@@ -50,8 +51,8 @@ export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = [] // only filtered messages
 export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
-  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
-  const [fileInnerText, setFileInnerText] = useState('')
+  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
+  // const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -310,6 +311,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const [showExtraction, setShowExtraction] = useState(false)
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [showRawMsgsWindow, setShowRawMsgsWindow] = useState(false)
+  const [showCANReal, setShowCANReal] = useState(false)
 
   const TableRefForScroll = useRef(null)
   // SHORTCUTS==========================
@@ -339,6 +341,11 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         } else if (event.ctrlKey && event.key === 't') {
           event.preventDefault()
           setShowTime(true)
+        } else if (event.ctrlKey && event.key === 'q') {
+          if (Clearance > 33) {
+            //Only for me
+            setShowCANReal(true)
+          }
         }
       }
     }
@@ -403,7 +410,12 @@ const DecodedTableOptions = ({ fileInnerText }) => {
       )
     )
   }, [showExtraction])
-  //Load PREV/NEXT buttons
+
+  const showCANReal_Memo = useMemo(() => {
+    return (
+      showCANReal && <CANRealComponent showCANReal={showCANReal} setShowCANReal={setShowCANReal} />
+    )
+  }, [showCANReal])
 
   const DecodePDOs_Memo = useMemo(() => {
     return (
@@ -460,7 +472,8 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         setShowTime,
         setShowExtraction,
         setShowMappingWindow,
-        setShowRawMsgsWindow
+        setShowRawMsgsWindow,
+        setShowCANReal
       }}
     >
       <Box>
@@ -473,6 +486,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
       {MessagesRawForDrawer_Memo}
       {showTimeWindow_Memo}
       {showExtraction_Memo}
+      {showCANReal_Memo}
     </DecodedTableOptionsContext.Provider>
   )
 }
@@ -507,7 +521,8 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
     setShowTime,
     setShowExtraction,
     setShowMappingWindow,
-    setShowRawMsgsWindow
+    setShowRawMsgsWindow,
+    setShowCANReal
   } = useContext(DecodedTableOptionsContext)
 
   useEffect(() => {
@@ -1045,6 +1060,15 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                 DECODE
               </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
+              {Clearance > 33 ? (
+                <Button3
+                  onClick={() => {
+                    setShowCANReal(true)
+                  }}
+                >
+                  CANReal
+                </Button3>
+              ) : null}
             </Box>
           </Box>
         </Box>
