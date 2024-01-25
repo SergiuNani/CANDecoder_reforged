@@ -462,10 +462,10 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         var addy = LittleEndian(value.slice(4, 8))
 
         TextReturn = `Write,  0x${addy}h <- ${value2write}h , ${memType} `
-        break
       } else {
         TextReturn = `There is no recorded instance of object 0x2064h`
       }
+      break
     case '2069':
       value = LittleEndian(value)
       var startAddy = LittleEndian(value.slice(0, 4))

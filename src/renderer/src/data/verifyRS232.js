@@ -748,8 +748,8 @@ export const Hardcoded_VerifyRS232 = [
   {
     msgNr: 1,
     OriginalMessage: '-',
-    CobID: 'EmptYy',
-    FrameData: 'LineE',
+    CobID: 'Empty',
+    FrameData: 'Line',
     type: '-',
     AxisID: 'All',
     CS: '-',
@@ -1391,7 +1391,7 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 47,
-    OriginalMessage: '08 10 00 89 70 02 9E 03 66 1A  //cpos = var_i1<<16',
+    OriginalMessage: '08 10 00 89 70 02 9E 03 66 1A  //cpos = var_i1<<-16',
     CobID: 'RW=?',
     FrameData: '0810008970029E03661A',
     type: 'Normal',
@@ -4176,7 +4176,7 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 245,
-    OriginalMessage: '0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x12',
+    OriginalMessage: '0A 10 10 70 B9 02 C2 00 12 00 00 29  //!RT 0x-12',
     CobID: 'RW=?',
     FrameData: '0A101070B902C20012000029',
     type: 'Normal',
@@ -4185,7 +4185,7 @@ export const Hardcoded_VerifyRS232 = [
     Object: '-',
     ObjectName: '-',
     Data: '!RT 0x00000012  ',
-    Interpretation: '! if Relative Time >= 0x00000012  [val32]',
+    Interpretation: '! if Relative Time >= 0x00000012 = 18d  [val32]',
     errorStatus: '-'
   },
   {
@@ -4624,7 +4624,7 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 277,
-    OriginalMessage: '08 00 10 C9 63 02 28 03 67 D8  //PTP apos, var_i2,99',
+    OriginalMessage: '08 00 10 C9 63 02 28 03 67 D8  //PTP apos, var_i2,-99',
     CobID: 'RW=?',
     FrameData: '080010C96302280367D8',
     type: 'Normal',
@@ -4848,7 +4848,7 @@ export const Hardcoded_VerifyRS232 = [
   },
   {
     msgNr: 293,
-    OriginalMessage: '0A 00 10 C8 37 56 78 12 34 00 55 82 //PTP 0x12345678, 0x55,55',
+    OriginalMessage: '0A 00 10 C8 37 56 78 12 34 00 55 82 //PTP 0x12345678, 0x-55,-55',
     CobID: 'RW=?',
     FrameData: '0A0010C83756781234005582',
     type: 'Normal',
@@ -6006,8 +6006,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'B405',
     Object: 1,
     ObjectName: '-',
-    Data: '0x0228 == ABBA5A5B | DM  ',
-    Interpretation: 'APOS == ABBA5A5B == 1515913768d | DM [?V32 - TakeData]',
+    Data: '0x0228 == 0xABBA5A5B | DM  ',
+    Interpretation: 'APOS == 0xABBA5A5B == -1413850533d | DM [?V32 - TakeData]',
     errorStatus: '-'
   },
   {
@@ -6062,8 +6062,8 @@ export const Hardcoded_VerifyRS232 = [
     CS: 'B405',
     Object: 3,
     ObjectName: '-',
-    Data: '0x0228 == 12345678 | DM  ',
-    Interpretation: 'APOS == 12345678 == 1450705448d | DM [?V32 - TakeData]',
+    Data: '0x0228 == 0x12345678 | DM  ',
+    Interpretation: 'APOS == 0x12345678 == 305419896d | DM [?V32 - TakeData]',
     errorStatus: '-'
   },
   {
@@ -9609,7 +9609,7 @@ export const Hardcoded_VerifyTechnoCAN = [
     Object: '-',
     ObjectName: '-',
     Data: '!RT 0x12345678  ',
-    Interpretation: '! if Relative Time >= 0x12345678  [val32]',
+    Interpretation: '! if Relative Time >= 0x12345678 = 305419896d  [val32]',
     errorStatus: 'neutral'
   },
   {

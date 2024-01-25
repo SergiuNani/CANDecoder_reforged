@@ -77,7 +77,7 @@ const Sidebar = () => {
       } else if (event.ctrlKey && event.key === '6') {
         setSidebarSelectedItem('Help')
         navigate('/Help')
-      } else if (event.altKey && event.key === 'v' && Clearance > 33) {
+      } else if (event.key === 'F4' && Clearance > 33) {
         setSidebarSelectedItem('Debug')
         navigate('/DebugScene')
       } else if (event.ctrlKey && event.key === 's') {

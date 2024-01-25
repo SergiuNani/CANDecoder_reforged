@@ -341,7 +341,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
         } else if (event.ctrlKey && event.key === 't') {
           event.preventDefault()
           setShowTime(true)
-        } else if (event.ctrlKey && event.key === 'q') {
+        } else if (event.ctrlKey && event.key === 'q' && !showCANReal) {
           if (Clearance > 33) {
             //Only for me
             setShowCANReal(true)

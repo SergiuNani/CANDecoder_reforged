@@ -527,7 +527,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -555,7 +555,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60401',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -569,7 +569,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -597,7 +597,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040FE',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -611,7 +611,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6041 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -639,7 +639,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60408',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -653,7 +653,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60418 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -681,7 +681,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60401',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -695,7 +695,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -723,7 +723,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -737,7 +737,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6041 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -765,7 +765,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60401',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -779,7 +779,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -807,7 +807,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -821,7 +821,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6041 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -863,7 +863,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60401',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -877,7 +877,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -905,7 +905,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60401',
     ObjectName: 'Controlword',
     Data: '5504',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -919,7 +919,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / - / -',
+    Interpretation: '1427199236 IU / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -3139,7 +3139,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '000F',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3447,7 +3447,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60407',
     ObjectName: 'Controlword',
     Data: '001F',
-    Interpretation: '-',
+    Interpretation: 'UPD',
     errorStatus: 'neutral'
   },
   {
@@ -3671,7 +3671,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60407',
     ObjectName: 'Controlword',
     Data: '001F',
-    Interpretation: '-',
+    Interpretation: 'UPD',
     errorStatus: 'neutral'
   },
   {
@@ -3741,7 +3741,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60407',
     ObjectName: 'Controlword',
     Data: '000F',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3839,7 +3839,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60407',
     ObjectName: 'Controlword',
     Data: '004F',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3993,7 +3993,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60407',
     ObjectName: 'Controlword',
     Data: '005F',
-    Interpretation: '-',
+    Interpretation: 'UPD',
     errorStatus: 'neutral'
   },
   {
@@ -4652,7 +4652,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '1502',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4666,7 +4666,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '1500',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4778,7 +4778,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '1500',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4792,7 +4792,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '1502',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4806,7 +4806,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '1502',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4820,7 +4820,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '1505',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4834,7 +4834,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '150F',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4848,7 +4848,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '4500',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4862,7 +4862,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040',
     ObjectName: 'Controlword',
     Data: '4502',
-    Interpretation: '-',
+    Interpretation: 'HALT',
     errorStatus: 'neutral'
   },
   {
@@ -4988,7 +4988,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040 / #x100D',
     ObjectName: 'Controlword / Life time factor',
     Data: '0350 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'HALT / -',
     errorStatus: 'neutral'
   },
   {
@@ -5879,7 +5879,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040 / #x100D',
     ObjectName: 'Controlword / Life time factor',
     Data: '4503 / 85',
-    Interpretation: '- / -',
+    Interpretation: 'HALT / -',
     errorStatus: 'neutral'
   },
   {
@@ -5893,7 +5893,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040 / #x100D',
     ObjectName: 'Controlword / Life time factor',
     Data: '4503 / 85',
-    Interpretation: '- / -',
+    Interpretation: 'HALT / -',
     errorStatus: 'neutral'
   },
   {
@@ -5907,7 +5907,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6040 / #x100D',
     ObjectName: 'Controlword / Life time factor',
     Data: '8545 / 11',
-    Interpretation: '- / -',
+    Interpretation: 'HALT / -',
     errorStatus: 'neutral'
   },
   {
@@ -6623,7 +6623,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2067',
     ObjectName: 'Write data at specified address',
     Data: '036A1234',
-    Interpretation: 'Write,  0x036Ah <- 1234h , Memory range : 0x1234h - 0x036Ah ',
+    Interpretation: 'There is no recorded instance of object 0x2064h',
     errorStatus: 'random'
   },
   {
@@ -6801,6 +6801,715 @@ export const Hardcoded_VerifyCANopenValidityArray = [
   },
   {
     msgNr: 441,
+    OriginalMessage: '201 0F 00',
+    CobID: '201',
+    FrameData: '0F00',
+    type: 'RPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '000F',
+    Interpretation: 'OpEn',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 442,
+    OriginalMessage: '201 1F 00',
+    CobID: '201',
+    FrameData: '1F00',
+    type: 'RPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '001F',
+    Interpretation: 'UPD',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 443,
+    OriginalMessage: '201 80 00',
+    CobID: '201',
+    FrameData: '8000',
+    type: 'RPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0080',
+    Interpretation: 'Reset Fault',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 444,
+    OriginalMessage: '201 00 01',
+    CobID: '201',
+    FrameData: '0001',
+    type: 'RPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0100',
+    Interpretation: 'HALT',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 445,
+    OriginalMessage: '201 9F 00',
+    CobID: '201',
+    FrameData: '9F00',
+    type: 'RPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '009F',
+    Interpretation: 'Reset Fault',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 446,
+    OriginalMessage: '201 1F 01',
+    CobID: '201',
+    FrameData: '1F01',
+    type: 'RPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '011F',
+    Interpretation: 'HALT',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 447,
+    OriginalMessage: '602 - 23 1B 20 00 00 00 02 00',
+    CobID: '602',
+    FrameData: '231B200000000200',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '23',
+    Object: '#x201B',
+    ObjectName: 'CAM table offset',
+    Data: '00020000',
+    Interpretation: 131072,
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 448,
+    OriginalMessage: '602 - 23 1B 20 00 00 00 00 00',
+    CobID: '602',
+    FrameData: '231B200000000000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '23',
+    Object: '#x201B',
+    ObjectName: 'CAM table offset',
+    Data: '00000000',
+    Interpretation: '-',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 449,
+    OriginalMessage:
+      '10\t    \t13:22:50\t938.120\t          0.252\t\t       386\t       182\t      \t  2\t31\t06\t  \t  \t  \t  \t  \t  \t1_      \t',
+    CobID: '182',
+    FrameData: '3106',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0631',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 450,
+    OriginalMessage: '-',
+    CobID: 'Empty',
+    FrameData: 'Line',
+    type: '-',
+    AxisID: 'All',
+    CS: '-',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: '-',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 451,
+    OriginalMessage:
+      '1\t    \t13:22:49\t505.619\t       2516.619\t\t         0\t       000\t      \t  2\t81\t00\t  \t  \t  \t  \t  \t  \t_      \t',
+    CobID: '000',
+    FrameData: '8100',
+    type: 'NMT',
+    AxisID: 'All',
+    CS: '81',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'All Axes - Reset Node',
+    errorStatus: 'blue'
+  },
+  {
+    msgNr: 452,
+    OriginalMessage:
+      '2\t    \t13:22:49\t539.725\t         34.106\t\t      1793\t       701\t      \t  1\t00\t  \t  \t  \t  \t  \t  \t  \t_       \t',
+    CobID: '701',
+    FrameData: '00',
+    type: 'NMT_M',
+    AxisID: 1,
+    CS: '00',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'Boot Up',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 453,
+    OriginalMessage:
+      '3\t    \t13:22:49\t630.740\t         91.015\t\t      1794\t       702\t      \t  1\t00\t  \t  \t  \t  \t  \t  \t  \t_       \t',
+    CobID: '702',
+    FrameData: '00',
+    type: 'NMT_M',
+    AxisID: 2,
+    CS: '00',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'Boot Up',
+    errorStatus: '-'
+  },
+  {
+    msgNr: 454,
+    OriginalMessage:
+      '4\t    \t13:22:50\t278.072\t        647.332\t\t         0\t       000\t      \t  2\t01\t00\t  \t  \t  \t  \t  \t  \t__      \t',
+    CobID: '000',
+    FrameData: '0100',
+    type: 'NMT',
+    AxisID: 'All',
+    CS: '01',
+    Object: '-',
+    ObjectName: '-',
+    Data: '-',
+    Interpretation: 'All Axes - Start Remote Node',
+    errorStatus: 'blue'
+  },
+  {
+    msgNr: 455,
+    OriginalMessage:
+      '5\t    \t13:22:50\t278.282\t          0.210\t\t       385\t       181\t      \t  2\t50\t06\t  \t  \t  \t  \t  \t  \tP_      \t',
+    CobID: '181',
+    FrameData: '5006',
+    type: 'TPDO1',
+    AxisID: 1,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0650',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 456,
+    OriginalMessage:
+      '6\t    \t13:22:50\t278.416\t          0.134\t\t       386\t       182\t      \t  2\t50\t06\t  \t  \t  \t  \t  \t  \tP_      \t',
+    CobID: '182',
+    FrameData: '5006',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0650',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 457,
+    OriginalMessage:
+      '7\t    \t13:22:50\t278.570\t          0.154\t\t       641\t       281\t      \t  3\t50\t06\t00\t  \t  \t  \t  \t  \tP__     \t',
+    CobID: '281',
+    FrameData: '500600',
+    type: 'TPDO2',
+    AxisID: 1,
+    CS: 2,
+    Object: '#x6040 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '0650 / 00',
+    Interpretation: '- / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 458,
+    OriginalMessage:
+      '8\t    \t13:22:50\t278.722\t          0.152\t\t       642\t       282\t      \t  3\t50\t06\t00\t  \t  \t  \t  \t  \tP__     \t',
+    CobID: '282',
+    FrameData: '500600',
+    type: 'TPDO2',
+    AxisID: 2,
+    CS: 2,
+    Object: '#x6040 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '0650 / 00',
+    Interpretation: '- / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 459,
+    OriginalMessage:
+      '9\t    \t13:22:50\t937.868\t        659.146\t\t       514\t       202\t      \t  2\t06\t00\t  \t  \t  \t  \t  \t  \t__      \t',
+    CobID: '202',
+    FrameData: '0600',
+    type: 'RPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0006',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 460,
+    OriginalMessage:
+      '10\t    \t13:22:50\t938.120\t          0.252\t\t       386\t       182\t      \t  2\t31\t06\t  \t  \t  \t  \t  \t  \t1_      \t',
+    CobID: '182',
+    FrameData: '3106',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0631',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 461,
+    OriginalMessage:
+      '11\t    \t13:22:50\t938.272\t          0.152\t\t       642\t       282\t      \t  3\t31\t07\t00\t  \t  \t  \t  \t  \t1__     \t',
+    CobID: '282',
+    FrameData: '310700',
+    type: 'TPDO2',
+    AxisID: 2,
+    CS: 2,
+    Object: '#x6040 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '0731 / 00',
+    Interpretation: 'HALT / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 462,
+    OriginalMessage:
+      '12\t    \t13:22:50\t967.709\t         29.437\t\t       386\t       182\t      \t  2\t31\t06\t  \t  \t  \t  \t  \t  \t1_      \t',
+    CobID: '182',
+    FrameData: '3106',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0631',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 463,
+    OriginalMessage:
+      '13\t    \t13:22:50\t967.860\t          0.151\t\t       642\t       282\t      \t  3\t31\t06\t00\t  \t  \t  \t  \t  \t1__     \t',
+    CobID: '282',
+    FrameData: '310600',
+    type: 'TPDO2',
+    AxisID: 2,
+    CS: 2,
+    Object: '#x6040 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '0631 / 00',
+    Interpretation: '- / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 464,
+    OriginalMessage:
+      '14\t    \t13:22:51\t570.160\t        602.300\t\t       514\t       202\t      \t  2\t07\t00\t  \t  \t  \t  \t  \t  \t__      \t',
+    CobID: '202',
+    FrameData: '0700',
+    type: 'RPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0007',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 465,
+    OriginalMessage:
+      '15\t    \t13:22:51\t570.374\t          0.214\t\t       386\t       182\t      \t  2\t33\t06\t  \t  \t  \t  \t  \t  \t3_      \t',
+    CobID: '182',
+    FrameData: '3306',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '0633',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 466,
+    OriginalMessage:
+      '16\t    \t13:22:51\t570.526\t          0.152\t\t       642\t       282\t      \t  3\t33\t06\t00\t  \t  \t  \t  \t  \t3__     \t',
+    CobID: '282',
+    FrameData: '330600',
+    type: 'TPDO2',
+    AxisID: 2,
+    CS: 2,
+    Object: '#x6040 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '0633 / 00',
+    Interpretation: '- / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 467,
+    OriginalMessage:
+      '17\t    \t13:22:52\t034.912\t        464.386\t\t       514\t       202\t      \t  2\t0F\t00\t  \t  \t  \t  \t  \t  \t__      \t',
+    CobID: '202',
+    FrameData: '0F00',
+    type: 'RPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x6040',
+    ObjectName: 'Controlword',
+    Data: '000F',
+    Interpretation: 'OpEn',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 468,
+    OriginalMessage:
+      '18\t    \t13:22:52\t526.024\t        491.112\t\t      1538\t       602\t      \t  8\t2B\t1D\t20\t00\t01\t00\t00\t00\t+_______\t',
+    CobID: '602',
+    FrameData: '2B1D200001000000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '2B',
+    Object: '#x201D',
+    ObjectName: 'External reference type',
+    Data: '0001',
+    Interpretation:
+      'On-line.\n    In case of External Reference Position / Speed / Torque Modes, select this option in \n    order to read the reference from the object 201C, External Online Reference\n    In case of Electronic Gearing and Camming Position Modes, select this option in \n    order to read the master position received from a master drive via communication\n    (object 201Eh).',
+    errorStatus: 'blue'
+  },
+  {
+    msgNr: 469,
+    OriginalMessage:
+      '19\t    \t13:22:52\t526.314\t          0.290\t\t      1410\t       582\t      \t  8\t60\t1D\t20\t00\t00\t00\t00\t00\t_______\t',
+    CobID: '582',
+    FrameData: '601D200000000000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '60',
+    Object: '#x201D',
+    ObjectName: 'External reference type',
+    Data: '-',
+    Interpretation: 'Writing in #x201D - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 470,
+    OriginalMessage:
+      '20\t    \t13:22:53\t142.268\t        615.954\t\t      1538\t       602\t      \t  8\t2B\t19\t20\t00\t5D\t78\t00\t00\t+___]x__\t',
+    CobID: '602',
+    FrameData: '2B1920005D780000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '2B',
+    Object: '#x2019',
+    ObjectName: 'CAM table load address',
+    Data: '785D',
+    Interpretation: 'Cam table load address : 0x785D',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 471,
+    OriginalMessage:
+      '21\t    \t13:22:53\t145.064\t          2.796\t\t      1410\t       582\t      \t  8\t60\t19\t20\t00\t00\t00\t00\t00\t_______\t',
+    CobID: '582',
+    FrameData: '6019200000000000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '60',
+    Object: '#x2019',
+    ObjectName: 'CAM table load address',
+    Data: '-',
+    Interpretation: 'Writing in #x2019 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 472,
+    OriginalMessage:
+      '22\t    \t13:22:53\t584.150\t        439.086\t\t      1538\t       602\t      \t  8\t2B\t1A\t20\t00\t08\tFF\t00\t00\t+____ÿ__\t',
+    CobID: '602',
+    FrameData: '2B1A200008FF0000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '2B',
+    Object: '#x201A',
+    ObjectName: 'CAM table run address',
+    Data: 'FF08',
+    Interpretation: 'Cam table run address : 0xFF08',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 473,
+    OriginalMessage:
+      '23\t    \t13:22:53\t584.432\t          0.282\t\t      1410\t       582\t      \t  8\t60\t1A\t20\t00\t00\t00\t00\t00\t_______\t',
+    CobID: '582',
+    FrameData: '601A200000000000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '60',
+    Object: '#x201A',
+    ObjectName: 'CAM table run address',
+    Data: '-',
+    Interpretation: 'Writing in #x201A - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 474,
+    OriginalMessage:
+      '24\t    \t13:22:54\t095.464\t        511.032\t\t      1538\t       602\t      \t  8\t2F\t60\t60\t00\t01\t00\t00\t00\t/_þ___\t',
+    CobID: '602',
+    FrameData: '2F60600001000000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '2F',
+    Object: '#x6060',
+    ObjectName: 'Modes of operation',
+    Data: '01',
+    Interpretation: 'Profile Position Mode',
+    errorStatus: 'blue'
+  },
+  {
+    msgNr: 475,
+    OriginalMessage:
+      '25\t    \t13:22:54\t095.743\t          0.279\t\t      1410\t       582\t      \t  8\t60\t60\t60\t00\t00\t00\t00\t00\t_____\t',
+    CobID: '582',
+    FrameData: '6060600000000000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '60',
+    Object: '#x6060',
+    ObjectName: 'Modes of operation',
+    Data: '-',
+    Interpretation: 'Writing in #x6060 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 476,
+    OriginalMessage:
+      '26\t    \t13:22:54\t275.949\t        180.206\t\t       386\t       182\t      \t  2\t37\t82\t  \t  \t  \t  \t  \t  \t7‚      \t',
+    CobID: '182',
+    FrameData: '3782',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x60401',
+    ObjectName: 'Controlword',
+    Data: '8237',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 477,
+    OriginalMessage:
+      '27\t    \t13:22:54\t276.099\t          0.150\t\t       642\t       282\t      \t  3\t37\t82\tFE\t  \t  \t  \t  \t  \t7‚þ     \t',
+    CobID: '282',
+    FrameData: '3782FE',
+    type: 'TPDO2',
+    AxisID: 2,
+    CS: 2,
+    Object: '#x60401 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '8237 / FE',
+    Interpretation: '- / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 478,
+    OriginalMessage:
+      '28\t    \t13:22:54\t305.592\t         29.493\t\t       386\t       182\t      \t  2\t37\t86\t  \t  \t  \t  \t  \t  \t7†      \t',
+    CobID: '182',
+    FrameData: '3786',
+    type: 'TPDO1',
+    AxisID: 2,
+    CS: 1,
+    Object: '#x60401',
+    ObjectName: 'Controlword',
+    Data: '8637',
+    Interpretation: '-',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 479,
+    OriginalMessage:
+      '29\t    \t13:22:54\t305.741\t          0.149\t\t       642\t       282\t      \t  3\t37\t86\tFE\t  \t  \t  \t  \t  \t7†þ     \t',
+    CobID: '282',
+    FrameData: '3786FE',
+    type: 'TPDO2',
+    AxisID: 2,
+    CS: 2,
+    Object: '#x60401 / #x100D',
+    ObjectName: 'Controlword / Life time factor',
+    Data: '8637 / FE',
+    Interpretation: '- / -',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 480,
+    OriginalMessage:
+      '30\t    \t13:22:54\t796.611\t        490.870\t\t      1538\t       602\t      \t  8\t23\t12\t20\t00\t01\t00\t00\t00\t#_______\t',
+    CobID: '602',
+    FrameData: '2312200001000000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '23',
+    Object: '#x2012',
+    ObjectName: 'Master resolution',
+    Data: '00000001',
+    Interpretation: '1 IU',
+    errorStatus: 'blue'
+  },
+  {
+    msgNr: 481,
+    OriginalMessage:
+      '31\t    \t13:22:54\t796.919\t          0.308\t\t      1410\t       582\t      \t  8\t60\t12\t20\t00\t00\t00\t00\t00\t_______\t',
+    CobID: '582',
+    FrameData: '6012200000000000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '60',
+    Object: '#x2012',
+    ObjectName: 'Master resolution',
+    Data: '-',
+    Interpretation: 'Writing in #x2012 - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 482,
+    OriginalMessage:
+      '32\t    \t13:22:55\t344.157\t        547.238\t\t      1538\t       602\t      \t  8\t23\t1B\t20\t00\t00\t00\t00\t00\t#_______\t',
+    CobID: '602',
+    FrameData: '231B200000000000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '23',
+    Object: '#x201B',
+    ObjectName: 'CAM table offset',
+    Data: '00000000',
+    Interpretation: '-',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 483,
+    OriginalMessage:
+      '33\t    \t13:22:55\t344.437\t          0.280\t\t      1410\t       582\t      \t  8\t60\t1B\t20\t00\t00\t00\t00\t00\t_______\t',
+    CobID: '582',
+    FrameData: '601B200000000000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '60',
+    Object: '#x201B',
+    ObjectName: 'CAM table offset',
+    Data: '-',
+    Interpretation: 'Writing in #x201B - OK ',
+    errorStatus: 'perfect'
+  },
+  {
+    msgNr: 484,
+    OriginalMessage:
+      '34\t    \t13:22:58\t403.479\t       3059.042\t\t      1538\t       602\t      \t  8\t23\t6B\t20\t00\t00\t00\t01\t00\t#k______\t',
+    CobID: '602',
+    FrameData: '236B200000000100',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '23',
+    Object: '#x206B',
+    ObjectName: 'CAM input scaling factor',
+    Data: '00010000',
+    Interpretation: 1,
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 485,
+    OriginalMessage: '582 4b 41 60 00 37 86 00 00 ',
+    CobID: '582',
+    FrameData: '4b41600037860000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '4B',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
+    Data: '8637',
+    Interpretation: 'OpEn + Axison + TR',
+    errorStatus: 'neutral'
+  },
+  {
+    msgNr: 486,
+    OriginalMessage: '582 40 41 60 00 37 86 00 00 ',
+    CobID: '582',
+    FrameData: '4041600037860000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '40',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
+    Data: '00008637',
+    Interpretation: '40 is a Command Specifier only for R_SDO',
+    errorStatus: 'error'
+  },
+  {
+    msgNr: 487,
+    OriginalMessage:
+      '24\t    \t13:22:54\t095.464\t        511.032\t\t      1538\t       602\t      \t  8\t2F\t60\t60\t00\tFE\t00\t00\t00\t/_þ___\t',
+    CobID: '602',
+    FrameData: '2F606000FE000000',
+    type: 'R_SDO',
+    AxisID: 2,
+    CS: '2F',
+    Object: '#x6060',
+    ObjectName: 'Modes of operation',
+    Data: 'FE',
+    Interpretation: 'Manufacturer specific – Electronic Camming Position Mode',
+    errorStatus: 'blue'
+  },
+  {
+    msgNr: 488,
+    OriginalMessage: '582 4b 41 60 00 37 86 00 00 ',
+    CobID: '582',
+    FrameData: '4b41600037860000',
+    type: 'T_SDO',
+    AxisID: 2,
+    CS: '4B',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
+    Data: '8637',
+    Interpretation: 'OpEn + Axison + TR',
+    errorStatus: 'random'
+  },
+  {
+    msgNr: 489,
     OriginalMessage: '-',
     CobID: 'Empty',
     FrameData: 'Line',

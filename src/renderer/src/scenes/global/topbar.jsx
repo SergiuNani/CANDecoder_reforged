@@ -99,6 +99,9 @@ const Topbar = () => {
       } else if (event.ctrlKey && event.key === '0') {
         zoomLevel.current = 1
         document.querySelector('#root').style.zoom = zoomLevel.current
+      } else if (event.ctrlKey && event.key === 'w') {
+        //Stop exiting the app
+        event.preventDefault()
       }
     }
     window.addEventListener('keydown', handleKeyPress)
