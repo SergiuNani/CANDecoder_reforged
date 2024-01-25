@@ -100,3 +100,8 @@
   zoom: '2';
   border: '3px solid reds';
 }
+.CheckBoxClass {
+  font-family: system-ui, sans-serif;
+  /* padding: 0.2rem; */
+  color: red;
+}

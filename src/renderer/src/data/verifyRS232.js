@@ -748,8 +748,8 @@ export const Hardcoded_VerifyRS232 = [
   {
     msgNr: 1,
     OriginalMessage: '-',
-    CobID: 'Empty',
-    FrameData: 'Line',
+    CobID: 'EmptYy',
+    FrameData: 'LineE',
     type: '-',
     AxisID: 'All',
     CS: '-',

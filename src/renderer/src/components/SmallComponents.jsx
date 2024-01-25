@@ -231,7 +231,7 @@ export const TooltipClickable = styled(({ className, children, ...props }) => {
   }
 })
 
-export function Checkbox_Component({ label, checked, onChange }) {
+export function Checkbox_Component({ label, checked, onChange, sx }) {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   return (
@@ -253,7 +253,8 @@ export function Checkbox_Component({ label, checked, onChange }) {
               },
               margin: '0',
               padding: '0.1rem 0 0 0',
-              paddingBottom: '0.3rem'
+              paddingBottom: '0.3rem',
+              ...sx
             }}
             onChange={onChange}
           />

@@ -1,4 +1,13 @@
 export var InsertTextIntoTextArea = `
+08 10 00 B0 04 00 21 02 34 23 
+ 0A 00 21 B4 04 01 60 02 34 56 78 48 
+
+08 10 00 B0 05 00 21 02 B2 A2 
+0C 00 21 B4 05 01 60 02 B2 56 78 12 34 0F
+20:05:53 Bytes Write :  08 00 10 B0 05 00 11 02 B2 92
+20:05:53 Bytes Read :  4F
+20:05:53 Bytes Read :  0C
+20:05:53 Bytes Read :  00 11 B4 05 00 10 02 B2 00 00 00 00 9A
 205 4585
 USB-to-CAN V2 compact  CAN-1	1,515	158.67	      	185	6	33 06 BC 00 00 00	3.....
 USB-to-CAN V2 compact  CAN-1	1,522	158.789	      	185	6	33 06 BD 00 00 00	3.....

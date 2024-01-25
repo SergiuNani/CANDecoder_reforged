@@ -42,11 +42,13 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   )
 }
 
+function setSidebarSelectedItem() {}
+var sidebarSelectedItem = 'Home'
 const Sidebar = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [isCollapsed, setIsCollapsed] = useState(true)
-  const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
+  // const { sidebarSelectedItem, setSidebarSelectedItem } = useContext(SidebarContext)
   var { Clearance } = useContext(ClearanceContext)
   const { setShortcutTrigger_g } = useContext(AppContext)
 

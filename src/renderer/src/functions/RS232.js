@@ -1731,7 +1731,8 @@ export function getOpCode_RS232(opCode, data) {
       if (mask) {
         rez = 32
         temp2 = data.slice(12, 16) + data.slice(8, 12)
-        temp3 = val32_2d
+        temp3 = hexToDec(temp2, 32) + 'd'
+        temp2 = '0x' + temp2
       } else {
         rez = 16
         temp2 = val16_3

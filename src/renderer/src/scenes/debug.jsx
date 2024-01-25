@@ -315,11 +315,13 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
       errorStatus = 'errorLength'
     } else {
       MessagesDecoded.forEach((oneObjectMessage, index) => {
+        var allDif = []
         for (const key in oneObjectMessage) {
           if (key != 'msgNr') {
             if (oneObjectMessage[key] != hardcodedArray[index][key]) {
-              ReturnText.push(
+              allDif.push(
                 <div
+                  key={index + oneObjectMessage[key]}
                   style={{
                     border: `1px solid ${colors.grey[100]}`,
                     marginBottom: '0.5rem',
@@ -360,11 +362,27 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
                   </div>
                 </div>
               )
-              return (errorStatus = 'error')
+              errorStatus = 'error'
             }
           }
         }
+        if (allDif.length > 0) {
+          ReturnText.push(
+            <section
+              key={`section-${index}`}
+              style={{
+                border: `1px solid ${colors.grey[100]}`,
+                display: 'flex',
+                padding: '0.5rem'
+              }}
+            >
+              {allDif}
+            </section>
+          )
+        }
       })
+      console.log('🚀 ~ MessagesDecoded.forEach ~ ReturnText:', ReturnText)
+      console.log('🚀 ~ MessagesDecoded.forEach ~ ReturnText:', ReturnText)
     }
   }
 
@@ -420,7 +438,7 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
                 style={{
                   display: 'grid',
                   gridTemplateColumns:
-                    errorStatus != 'NoArrayInLocalStorage' ? 'repeat(3, 1fr)' : null,
+                    errorStatus != 'NoArrayInLocalStorage' ? 'repeat(1, 1fr)' : null,
                   gap: '0.5rem'
                 }}
               >

@@ -5,7 +5,7 @@ import { whatPDOisObject, whatObjectValueMeans } from '../functions/CANopenFunct
 import { addSpacesOfTwo } from '../functions/NumberConversion'
 import { verifyValidityOfMappingGroup, verifyRepetitiveGroup } from '../functions/CANopen'
 import { tokens } from '../theme'
-import { TooltipClickable, Button4 } from '../components/SmallComponents'
+import { TooltipClickable, Button4, Checkbox_Component } from '../components/SmallComponents'
 import {
   filteredMessages_auxGlobal,
   DecodedTableOptionsContext,
@@ -312,8 +312,20 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
   }
 
   const TypeCANReal = () => {
+    function handleCheckboxChange(e) {
+      if (e.target.checked) {
+        e.target.closest('div').classList.add('IncludeLine')
+      } else {
+        e.target.closest('div').classList.remove('IncludeLine')
+      }
+    }
+
     return (
-      <>
+      <div className="IncludeLine" style={{ display: 'flex', margin: '0.2rem' }}>
+        <label className="CheckBoxClass">
+          <input type="checkbox" name="checkbox" onChange={handleCheckboxChange} defaultChecked />
+        </label>
+
         <p
           style={{
             color: colors.primary[600],
@@ -325,7 +337,10 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
           {obj.msgNr}{' '}
         </p>
         <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{`[${obj.AxisID}]`}</p>
-        <p style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}>
+        <p
+          style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}
+          className="cobID"
+        >
           {obj.CobID} - {obj.FrameData}
         </p>
         <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{`${obj.Object}`}</p>
@@ -337,7 +352,7 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         >
           {obj.Interpretation}
         </p>
-      </>
+      </div>
     )
   }
 
