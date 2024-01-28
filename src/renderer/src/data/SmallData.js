@@ -2,9 +2,9 @@
 //PDO_mapped
 //CanLogStatistics
 export let GroupingOptionsForMessages = {
-  Mapping: true,
-  Modes: true,
-  Repetitive: true
+  Mapping: false,
+  Modes: false,
+  Repetitive: false
 }
 
 export const ObjectDescriptions = {
@@ -242,8 +242,8 @@ export var DefaultPDOs = {
 
 export const CompatibleMapping = {
   8: ['6060', '', '', '', '', '', '', ''],
-  16: ['6040', '', '', '', '', '', '', ''],
-  24: ['6040', '', '100D', '', '', '', '', ''],
+  16: ['6041', '', '', '', '', '', '', ''],
+  24: ['6041', '', '100D', '', '', '', '', ''],
   32: ['6085', '', '', '', '', '', '', ''],
   40: ['6081', '', '6060', '', '', '', '', ''],
   48: ['607A', '', '2023', '', '', '', '', ''],

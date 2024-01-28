@@ -36,6 +36,7 @@ export const HelpWindow = () => {
 
 function ControlledAccordions() {
   const [expanded, setExpanded] = useState('')
+  var { Clearance } = useContext(ClearanceContext)
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -75,6 +76,7 @@ function ControlledAccordions() {
           subtitle=" This menu allows a quick search for any Register and it`s visualization"
           body={<HelpRegister />}
         />
+
         <AccordionComponent
           expanded={expanded}
           panelNR="4"
@@ -84,24 +86,29 @@ function ControlledAccordions() {
           subtitle=" This menu allows the editing of any Register or Object"
           body={<HelpEditDataWindow />}
         />
-        <AccordionComponent
-          expanded={expanded}
-          panelNR="5"
-          handleChange={handleChange}
-          icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
-          title="Decode LOG Menu"
-          subtitle=" This menu allows the decodification of a log file"
-          body={<HelpDecodeCanMenu />}
-        />
-        <AccordionComponent
-          expanded={expanded}
-          panelNR="6"
-          handleChange={handleChange}
-          icon={<DragIndicatorIcon sx={{ zoom: 1.2 }} />}
-          title="More Options Menu"
-          subtitle=" This menu allows access to additional tools"
-          body={<HelpMoreOptionsWindow />}
-        />
+
+        {Clearance > 1 ? (
+          <AccordionComponent
+            expanded={expanded}
+            panelNR="5"
+            handleChange={handleChange}
+            icon={<TableChartIcon sx={{ zoom: 1.2 }} />}
+            title="Decode LOG Menu"
+            subtitle=" This menu allows the decodification of a log file"
+            body={<HelpDecodeCanMenu />}
+          />
+        ) : null}
+        {Clearance > 11 ? (
+          <AccordionComponent
+            expanded={expanded}
+            panelNR="6"
+            handleChange={handleChange}
+            icon={<DragIndicatorIcon sx={{ zoom: 1.2 }} />}
+            title="More Options Menu"
+            subtitle=" This menu allows access to additional tools"
+            body={<HelpMoreOptionsWindow />}
+          />
+        ) : null}
         <AccordionComponent
           expanded={expanded}
           panelNR="7"
@@ -822,7 +829,7 @@ export const HelpShortcutPage = () => {
             Open LogIn menu : <span className="primaryColor"> "Ctrl + l" </span>
           </p>
 
-          {Clearance > 11 ? (
+          {Clearance > 22 ? (
             <>
               <p>
                 Open Decode Log window:
@@ -836,15 +843,18 @@ export const HelpShortcutPage = () => {
                 Open Help window:
                 <span className="primaryColor"> "Ctrl + 6" </span>
               </p>
-              <p>
-                Open Debug window to verify the Application :{' '}
-                <span className="primaryColor"> "Alt + v" </span>
-              </p>
+
               <p>
                 Change protocol (CANopen, CAN, RS232) <span className="primaryColor"> "F1" </span>,
                 <span className="primaryColor"> "F2" </span>,
                 <span className="primaryColor"> "F3" </span>
               </p>
+              {Clearance == 44 ? (
+                <p>
+                  Open Debug window to verify the Application :{' '}
+                  <span className="primaryColor"> "F4" </span>
+                </p>
+              ) : null}
             </>
           ) : null}
           <br />
@@ -909,11 +919,7 @@ export const HelpShortcutPage = () => {
               </p>
             </>
           ) : null}
-          {Clearance > 33 ? (
-            <p>
-              Open CANReal Generator: <span className="primaryColor"> "CTRL + q " </span>
-            </p>
-          ) : null}
+
           <p>
             Process the log in the TextArea or display table if Overview is opened :{' '}
             <span className="primaryColor"> " CTRL + ENTER " </span>
@@ -925,6 +931,11 @@ export const HelpShortcutPage = () => {
           <p>
             Focus on TextArea : <span className="primaryColor"> " CTRL + TAB " </span>
           </p>
+          {Clearance > 33 ? (
+            <p>
+              Open CANReal Generator: <span className="primaryColor"> "CTRL + q " </span>
+            </p>
+          ) : null}
         </section>
       </ul>
     </Box>

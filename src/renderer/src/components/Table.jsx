@@ -339,16 +339,24 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         <p style={{ color: colors.primary[400], minWidth: '4rem' }}>{`[${obj.AxisID}]`}</p>
         <p
           style={{ color: colors.blue[600], minWidth: '11rem', fontWeight: '400' }}
-          className="cobID"
+          className="cobID_CANreal"
         >
           {obj.CobID} - {obj.FrameData}
         </p>
-        <p style={{ color: colors.yellow[300], minWidth: '12rem' }}>{`${obj.Object}`}</p>
-        <p style={{ color: colors.personal[100], minWidth: '10rem' }}>{`${obj.Data}`}</p>
+
+        <p
+          style={{ color: colors.yellow[300], minWidth: '12rem' }}
+          className="obj_CANreal"
+        >{`${obj.Object}`}</p>
+        <p
+          style={{ color: colors.personal[100], minWidth: '10rem' }}
+          className="obj_value_CANreal"
+        >{`${obj.Data}`}</p>
         <p
           style={{
             color: obj.errorStatus === 'error' ? colors.red[600] : colors.yellow[100]
           }}
+          className="interp_CANreal"
         >
           {obj.Interpretation}
         </p>

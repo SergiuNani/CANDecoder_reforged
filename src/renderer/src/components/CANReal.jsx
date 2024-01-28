@@ -5,6 +5,7 @@ import { filteredMessages_auxGlobal } from '../scenes/Decode_CAN_LOG'
 import { TableROW_simple } from './Table'
 import { ButtonTransparent } from './SmallComponents'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import { hexToDec } from '../functions/NumberConversion'
 var GeneratedText = ''
 
 export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
@@ -19,10 +20,84 @@ export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
   function handleGenerateCANReal() {
     var Array = []
     var CheckedMsgs = document.getElementById('CANReal_TableID').querySelectorAll('.IncludeLine')
-    CheckedMsgs.forEach((el) => {
-      Array.push(el.querySelector('.cobID').innerText)
+    // CheckedMsgs = [begginingEl, ...CheckedMsgs]
+    CheckedMsgs.forEach((el, index) => {
+      index = index + 1
+      var finalStringRow = ''
+      var [cobID, message] = el.querySelector('.cobID_CANreal').innerText.split('-')
+      cobID = cobID.trim()
+      var cobID_dec = hexToDec(cobID, 32).toString()
+      message = message.trim()
+      var dataString = ''
+
+      message.match(/.{1,2}/g).forEach((byte) => {
+        dataString += byte + '\t'
+      })
+      var obj = el.querySelector('.obj_CANreal').innerText
+      if (obj.slice(0, 2) == '#x') obj = obj.slice(2)
+      else if (obj == '-') obj = ''
+      var obj_value = el.querySelector('.obj_value_CANreal').innerText
+      var interpretation = el.querySelector('.interp_CANreal').innerText
+      finalStringRow =
+        ' '.repeat(12 - index.toString().length) +
+        index +
+        '\t' +
+        ' ' +
+        '\t' +
+        ' ' +
+        '\t' +
+        ' ' +
+        '\t' +
+        ' '.repeat(14) +
+        '0' +
+        '\t' +
+        obj +
+        '\t' +
+        ' '.repeat(10 - cobID_dec.length) +
+        cobID_dec +
+        '\t' +
+        cobID.padStart(8, '0') +
+        '\t' +
+        ' ' +
+        '\t' +
+        ' ' +
+        ' ' +
+        message.length / 2 +
+        '\t' +
+        dataString
+
+      Array.push(finalStringRow)
     })
-    GeneratedText = Array.join('\n')
+    var firstRow =
+      ' '.repeat(11) +
+      '0' +
+      '\t' +
+      ' ' +
+      '\t' +
+      ' ' +
+      '\t' +
+      ' ' +
+      '\t' +
+      ' '.repeat(14) +
+      '0' +
+      '\t' +
+      '\t' +
+      ' '.repeat(9) +
+      '0' +
+      '\t' +
+      '00000000' +
+      '\t' +
+      ' ' +
+      '\t' +
+      ' ' +
+      ' ' +
+      '0' +
+      '\t' +
+      ('00' + '\t').repeat(8)
+    Array = [firstRow, ...Array]
+    var tempText = Array.join('\n')
+
+    GeneratedText = initStr + '\n' + tempText
     setShowGeneratedText(true)
   }
   useEffect(() => {
@@ -110,6 +185,10 @@ export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
     </Dialog>
   )
 }
+
+var initStr = `[--] ----------------------------------------------
+[--] CANreal Send List
+[--] ----------------------------------------------`
 const CANRealComponent_2 = ({ showGeneratedText, setShowGeneratedText }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
@@ -119,12 +198,7 @@ const CANRealComponent_2 = ({ showGeneratedText, setShowGeneratedText }) => {
     TextAreaText_Ref.current.select()
     navigator.clipboard.writeText(TextAreaText_Ref.current.value)
   }
-  useEffect(() => {
-    //TODO: remove in the future
-    setTimeout(() => {
-      handleCopyClipboard()
-    }, 500)
-  }, [])
+
   return (
     <Dialog
       open={showGeneratedText}
@@ -150,6 +224,17 @@ const CANRealComponent_2 = ({ showGeneratedText, setShowGeneratedText }) => {
             <ContentCopyIcon />
           </IconButton>
         </div>
+        <ul
+          style={{ color: `${colors.green[400]}`, margin: '0 0 1rem 1rem', listStyleType: 'disc' }}
+        >
+          <li>
+            Extention:{' '}
+            <span style={{ color: `${colors.red[400]}`, fontWeight: 700, fontSize: '1rem' }}>
+              .cspsl
+            </span>
+          </li>
+          <li>In CANreal: Send -- Load List </li>
+        </ul>
         <textarea
           ref={TextAreaText_Ref}
           id="TextAreaCANReal"

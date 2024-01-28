@@ -1213,8 +1213,8 @@ export let SetAllPDOsEMPTY = [0]
 export function DecodeOnePDOmsg(cobID_array, message) {
   const CompatibleMapping_NoSpace1 = {
     8: ['6060'],
-    16: ['6040'],
-    24: ['6040', '100D'],
+    16: ['6041'],
+    24: ['6041', '100D'],
     32: ['6041', '208E'],
     40: ['6081', '6060'],
     48: ['607A', '2023'],

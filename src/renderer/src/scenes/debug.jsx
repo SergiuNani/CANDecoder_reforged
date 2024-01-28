@@ -381,8 +381,6 @@ const DialogVerifyAlgorithmComponent = ({ openState, setOpenState, protocol }) =
           )
         }
       })
-      console.log('🚀 ~ MessagesDecoded.forEach ~ ReturnText:', ReturnText)
-      console.log('🚀 ~ MessagesDecoded.forEach ~ ReturnText:', ReturnText)
     }
   }
 
@@ -674,7 +672,7 @@ function Compare_variablesCFG_to_FWadresses_component({
   return (
     <Dialog
       open={compareVarcfg_vs_fwVars}
-      onClose={() => setCompareVarcfg_vs_fwVars(false)} //TODO : turn false
+      onClose={() => setCompareVarcfg_vs_fwVars(false)}
       sx={{
         '& .MuiDialog-paper': {
           maxWidth: 'none'

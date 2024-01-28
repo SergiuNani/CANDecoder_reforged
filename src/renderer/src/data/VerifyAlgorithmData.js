@@ -524,10 +524,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -552,10 +552,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -594,10 +594,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x6040FE',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -636,10 +636,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x60408',
-    ObjectName: 'Controlword',
+    Object: '#x60418',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -678,10 +678,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -720,10 +720,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -762,10 +762,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -804,10 +804,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -860,10 +860,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -902,10 +902,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 31,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -3108,10 +3108,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0006',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3122,10 +3122,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0007',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3136,10 +3136,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '000F',
-    Interpretation: 'OpEn',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -3444,10 +3444,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '001F',
-    Interpretation: 'UPD',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -3668,10 +3668,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '001F',
-    Interpretation: 'UPD',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -3710,10 +3710,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '0006',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3724,10 +3724,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '0007',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -3738,10 +3738,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '000F',
-    Interpretation: 'OpEn',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -3836,10 +3836,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '004F',
-    Interpretation: 'OpEn',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -3990,10 +3990,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 6,
     CS: 1,
-    Object: '#x60407',
-    ObjectName: 'Controlword',
+    Object: '#x60417',
+    ObjectName: 'Statusword',
     Data: '005F',
-    Interpretation: 'UPD',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -4621,10 +4621,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4635,10 +4635,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4649,10 +4649,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '1502',
-    Interpretation: 'HALT',
+    Interpretation: 'SwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4663,10 +4663,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '1500',
-    Interpretation: 'HALT',
+    Interpretation: '- + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4677,10 +4677,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4691,10 +4691,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4705,10 +4705,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4719,10 +4719,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4733,10 +4733,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4747,10 +4747,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4761,10 +4761,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '7415',
-    Interpretation: '-',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4775,10 +4775,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '1500',
-    Interpretation: 'HALT',
+    Interpretation: '- + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4789,10 +4789,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '1502',
-    Interpretation: 'HALT',
+    Interpretation: 'SwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4803,10 +4803,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '1502',
-    Interpretation: 'HALT',
+    Interpretation: 'SwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4817,10 +4817,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '1505',
-    Interpretation: 'HALT',
+    Interpretation: 'OpEn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4831,10 +4831,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '150F',
-    Interpretation: 'HALT',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -4845,10 +4845,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '4500',
-    Interpretation: 'HALT',
+    Interpretation: '- + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4859,10 +4859,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 5,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '4502',
-    Interpretation: 'HALT',
+    Interpretation: 'SwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -4985,10 +4985,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0350 / 00',
-    Interpretation: 'HALT / -',
+    Interpretation: 'SwOnDis / -',
     errorStatus: 'neutral'
   },
   {
@@ -4999,10 +4999,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0231',
-    Interpretation: '-',
+    Interpretation: 'RSwOn',
     errorStatus: 'neutral'
   },
   {
@@ -5013,10 +5013,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0231 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'RSwOn / -',
     errorStatus: 'neutral'
   },
   {
@@ -5341,10 +5341,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 3,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0250',
-    Interpretation: '-',
+    Interpretation: 'SwOnDis',
     errorStatus: 'neutral'
   },
   {
@@ -5356,10 +5356,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0250 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'SwOnDis / -',
     errorStatus: 'neutral'
   },
   {
@@ -5876,10 +5876,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '4503 / 85',
-    Interpretation: 'HALT / -',
+    Interpretation: 'SwOn + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -5890,10 +5890,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '4503 / 85',
-    Interpretation: 'HALT / -',
+    Interpretation: 'SwOn + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -5904,10 +5904,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '8545 / 11',
-    Interpretation: 'HALT / -',
+    Interpretation: 'Error: bit6 and one of the bits 0-2 is set together + Axison + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -6807,10 +6807,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '000F',
-    Interpretation: 'OpEn',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -6821,10 +6821,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '001F',
-    Interpretation: 'UPD',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -6835,10 +6835,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0080',
-    Interpretation: 'Reset Fault',
+    Interpretation: '-',
     errorStatus: 'neutral'
   },
   {
@@ -6849,10 +6849,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0100',
-    Interpretation: 'HALT',
+    Interpretation: '-',
     errorStatus: 'neutral'
   },
   {
@@ -6863,10 +6863,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '009F',
-    Interpretation: 'Reset Fault',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -6877,10 +6877,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '011F',
-    Interpretation: 'HALT',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -6920,10 +6920,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0631',
-    Interpretation: '-',
+    Interpretation: 'RSwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7009,10 +7009,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 1,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0650',
-    Interpretation: '-',
+    Interpretation: 'SwOnDis + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7024,10 +7024,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0650',
-    Interpretation: '-',
+    Interpretation: 'SwOnDis + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7039,10 +7039,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 1,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0650 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'SwOnDis + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -7054,10 +7054,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 2,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0650 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'SwOnDis + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -7069,10 +7069,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0006',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -7084,10 +7084,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0631',
-    Interpretation: '-',
+    Interpretation: 'RSwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7099,10 +7099,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 2,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0731 / 00',
-    Interpretation: 'HALT / -',
+    Interpretation: 'RSwOn + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -7114,10 +7114,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0631',
-    Interpretation: '-',
+    Interpretation: 'RSwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7129,10 +7129,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 2,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0631 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'RSwOn + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -7144,10 +7144,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0007',
-    Interpretation: '-',
+    Interpretation: 'OpEn',
     errorStatus: 'neutral'
   },
   {
@@ -7159,10 +7159,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '0633',
-    Interpretation: '-',
+    Interpretation: 'SwOn + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7174,10 +7174,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 2,
     CS: 2,
-    Object: '#x6040 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x6041 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '0633 / 00',
-    Interpretation: '- / -',
+    Interpretation: 'SwOn + TR / -',
     errorStatus: 'neutral'
   },
   {
@@ -7189,10 +7189,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'RPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x6040',
-    ObjectName: 'Controlword',
+    Object: '#x6041',
+    ObjectName: 'Statusword',
     Data: '000F',
-    Interpretation: 'OpEn',
+    Interpretation: 'FAULT',
     errorStatus: 'neutral'
   },
   {
@@ -7325,10 +7325,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '8237',
-    Interpretation: '-',
+    Interpretation: 'OpEn + Axison',
     errorStatus: 'neutral'
   },
   {
@@ -7340,10 +7340,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 2,
     CS: 2,
-    Object: '#x60401 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x60411 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '8237 / FE',
-    Interpretation: '- / -',
+    Interpretation: 'OpEn + Axison / -',
     errorStatus: 'neutral'
   },
   {
@@ -7355,10 +7355,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO1',
     AxisID: 2,
     CS: 1,
-    Object: '#x60401',
-    ObjectName: 'Controlword',
+    Object: '#x60411',
+    ObjectName: 'Statusword',
     Data: '8637',
-    Interpretation: '-',
+    Interpretation: 'OpEn + Axison + TR',
     errorStatus: 'neutral'
   },
   {
@@ -7370,10 +7370,10 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     type: 'TPDO2',
     AxisID: 2,
     CS: 2,
-    Object: '#x60401 / #x100D',
-    ObjectName: 'Controlword / Life time factor',
+    Object: '#x60411 / #x100D',
+    ObjectName: 'Statusword / Life time factor',
     Data: '8637 / FE',
-    Interpretation: '- / -',
+    Interpretation: 'OpEn + Axison + TR / -',
     errorStatus: 'neutral'
   },
   {
