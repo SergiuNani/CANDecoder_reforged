@@ -176,9 +176,19 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expa
           background: `${colors.primary[200]}`
         }}
       >
-        <Typography variant="h4" sx={{ mb: '1rem' }}>
-          Application Settings
-        </Typography>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: '0 1rem 0 0'
+          }}
+        >
+          <Typography variant="h4">Application Settings</Typography>
+          <Typography variant="h3" sx={{ color: `${colors.yellow[500]}`, fontWeight: '700' }}>
+            V1.0
+          </Typography>
+        </div>
         {Clearance > 22 ? (
           <AccordionComponent
             title="Working Mode"

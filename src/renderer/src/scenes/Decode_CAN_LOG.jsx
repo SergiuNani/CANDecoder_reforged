@@ -1737,9 +1737,9 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
     }
   })
   var arrCopy = [...filteredMessages_auxGlobal]
-  if (arrCopy.length > 2000) {
+  if (arrCopy.length > 1000) {
     //Prevent the app from crushing
-    arrCopy.slice(0, 2000)
+    arrCopy = arrCopy.slice(0, 1000)
   }
   return (
     <Dialog
@@ -1766,7 +1766,7 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
         >
           <li>Click on DECODE button first to apply the filters.</li>
           <li>
-            Only the first 2000 messages will be shown. To view the next batch, modify the "Cut the
+            Only the first 1000 messages will be shown. To view the next batch, modify the "Cut the
             Log between" option.
           </li>
         </ul>
@@ -1801,7 +1801,7 @@ const ShowExtractionComponent = ({ showExtraction, setShowExtraction }) => {
 
   if (rawMessagesCutted.length > 1000) {
     //Prevent the app from crushing
-    rawMessagesCutted.slice(0, 1000)
+    rawMessagesCutted = rawMessagesCutted.slice(0, 1000)
   }
   return (
     <Dialog
