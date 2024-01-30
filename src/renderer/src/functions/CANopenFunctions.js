@@ -156,6 +156,33 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         if (value == '00060192') TextReturn = `60192h for iPOS family`
       }
       break
+    case '1002':
+      //SW+ SRH
+      if (type_Transmit_Receive == 'T') {
+        var Interpretation = '-'
+        var decValue = hexToDec(value, 32)
+        if (decValue & 0x4) Interpretation = 'OpEn'
+        else if (decValue & 0x2) Interpretation = 'SwOn'
+        else if (decValue & 0x1) Interpretation = 'RSwOn'
+        else if (decValue & 0x40) Interpretation = 'SwOnDis'
+        //Errors:
+        if (decValue & 0x40 && decValue & 0x7)
+          Interpretation = 'Error: bit6 and one of the bits 0-2 is set together'
+        if (decValue & 0x43 && decValue & 0x8000 && !decValue & 0x4)
+          Interpretation = 'Error: bit6-1-0 and Axison set'
+
+        if (decValue & 0x8000) Interpretation = Interpretation + ' + Axison'
+        if (decValue & 0x0400) Interpretation = Interpretation + ' + TR'
+        if (!decValue & 0x20) Interpretation = Interpretation + ' + QS'
+        if (decValue & 0x200000) Interpretation = Interpretation + ' + Autorun'
+
+        if (decValue & 0x8) Interpretation = 'FAULT'
+        if (decValue & 0x80000000) Interpretation += '+ Fault_bit31'
+        if (decValue & 0x400000) Interpretation += ' +LSP'
+        if (decValue & 0x800000) Interpretation += ' +LSN'
+        TextReturn = Interpretation
+      }
+      break
     case '1018_04':
       //Serial Number
       if (type == 'T_SDO') {

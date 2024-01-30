@@ -175,7 +175,19 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
 export const TableROW_simple = ({ obj, timeInfo, type }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-
+  var isRecieveTypeMessage = 0
+  if (obj.type) {
+    isRecieveTypeMessage = [
+      'R_SDO',
+      'RPDO1',
+      'RPDO2',
+      'RPDO3',
+      'RPDO4',
+      'NMT',
+      'GiveData',
+      'GiveData2'
+    ].includes(obj.type)
+  }
   const TypeFinder = () => {
     return (
       <>
@@ -211,10 +223,10 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
       <>
         <p
           style={{
-            color: colors.primary[600],
+            color: isRecieveTypeMessage ? colors.primary[400] : colors.primary[600],
             minWidth: '2rem',
-            textAlign: 'center',
-            fontWeight: '400'
+            textAlign: 'center'
+            // fontWeight: isRecieveTypeMessage ? '700' : '400'
           }}
         >
           {obj.msgNr}{' '}
@@ -369,8 +381,10 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
       style={{
         display: 'flex',
         width: '100%',
+        fontWeight: '550',
         borderBottom: `1px solid ${colors.grey[400]}`,
-        fontWeight: '550'
+        padding: '0.2rem',
+        borderLeft: isRecieveTypeMessage ? `3px solid ${colors.primary[400]}` : null
       }}
     >
       {type == 'Finder' ? (

@@ -1733,8 +1733,8 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1002',
     ObjectName: 'Manufacturer status register',
     Data: '021F0250',
-    Interpretation: 'Read: #x1002 -> 021F0250h',
-    errorStatus: 'neutral'
+    Interpretation: 'SwOnDis',
+    errorStatus: 'random'
   },
   {
     msgNr: 90,

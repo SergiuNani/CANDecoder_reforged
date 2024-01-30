@@ -44,6 +44,7 @@ import {
 import { DefaultTable, CreateGroupedFilteredArray, TableROW_simple } from '../components/Table'
 import { GroupingOptionsForMessages } from '../data/SmallData'
 import { CANRealComponent } from '../components/CANReal'
+import HomeWindow from './HomeWindow'
 export var Decode_CAN_LOG_WindowContext = createContext()
 export var DecodedTableOptionsContext = createContext()
 export let MessagesDecoded_ArrayOfObjects = []
@@ -312,6 +313,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
   const [showMappingWindow, setShowMappingWindow] = useState(false)
   const [showRawMsgsWindow, setShowRawMsgsWindow] = useState(false)
   const [showCANReal, setShowCANReal] = useState(false)
+  const [showHomeWindow, setShowHomeWindow] = useState(false)
 
   const TableRefForScroll = useRef(null)
   // SHORTCUTS==========================
@@ -345,6 +347,11 @@ const DecodedTableOptions = ({ fileInnerText }) => {
           if (Clearance > 33) {
             //Only for me
             setShowCANReal(true)
+          }
+        } else if (event.ctrlKey && event.key === 'h') {
+          if (Clearance > 33) {
+            //Only for me
+            setShowHomeWindow(true)
           }
         }
       }
@@ -416,6 +423,13 @@ const DecodedTableOptions = ({ fileInnerText }) => {
       showCANReal && <CANRealComponent showCANReal={showCANReal} setShowCANReal={setShowCANReal} />
     )
   }, [showCANReal])
+  const showHomeWindow_Memo = useMemo(() => {
+    return (
+      showHomeWindow && (
+        <HomeComponent showHomeWindow={showHomeWindow} setShowHomeWindow={setShowHomeWindow} />
+      )
+    )
+  }, [showHomeWindow])
 
   const DecodePDOs_Memo = useMemo(() => {
     return (
@@ -487,6 +501,7 @@ const DecodedTableOptions = ({ fileInnerText }) => {
       {showTimeWindow_Memo}
       {showExtraction_Memo}
       {showCANReal_Memo}
+      {showHomeWindow_Memo}
     </DecodedTableOptionsContext.Provider>
   )
 }
@@ -1727,6 +1742,15 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
 
   ArrayCopy.forEach((iteration, indexMain) => {
     var strIndex = iteration.OriginalMessage.match(iteration.CobID)
+    if (iteration.CobID.length <= 2) {
+      //possible wrong match because we can have NMT = 0
+      var sortedRow = iteration.OriginalMessage.split(/['"`,<> \s]/g)
+      strIndex = sortedRow.indexOf(iteration.CobID)
+      strIndex = {
+        input: sortedRow.slice(0, strIndex).join(' '),
+        index: sortedRow.slice(0, strIndex).join(' ').length
+      }
+    }
     if (strIndex && strIndex.input && strIndex.index && iteration.FrameData != 'invalid') {
       ArrayCopy[indexMain] = ExtractTimeFromFrame(
         strIndex.input.slice(0, strIndex.index),
@@ -1753,12 +1777,12 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
     >
       <div
         style={{
-          border: `1px solid ${colors.primary[400]}`,
+          border: `2px solid ${colors.yellow[500]}`,
           padding: '1rem',
           background: `${colors.primary[200]}`
         }}
       >
-        <Typography variant="h4" sx={{ mb: '1rem' }}>
+        <Typography variant="h3" sx={{ mb: '1rem' }}>
           Time difference
         </Typography>
         <ul
@@ -1842,6 +1866,38 @@ const ShowExtractionComponent = ({ showExtraction, setShowExtraction }) => {
             <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
           )}
         </section>
+      </div>
+    </Dialog>
+  )
+}
+
+const HomeComponent = ({ showHomeWindow, setShowHomeWindow }) => {
+  const theme = useTheme()
+  const colors = tokens(theme.palette.mode)
+
+  return (
+    <Dialog
+      open={showHomeWindow}
+      onClose={() => setShowHomeWindow(false)}
+      sx={{
+        '& .MuiDialog-paper': {
+          maxWidth: 'none'
+        },
+        width: '100%',
+        height: '100vh'
+        // margin: '10rem'
+      }}
+    >
+      <div
+        style={{
+          border: `2px solid ${colors.yellow[500]}`,
+          padding: '1rem',
+          background: `${colors.primary[200]}`,
+          padding: '1rem',
+          height: '130vh'
+        }}
+      >
+        <HomeWindow />
       </div>
     </Dialog>
   )

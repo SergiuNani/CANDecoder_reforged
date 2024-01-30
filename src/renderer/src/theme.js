@@ -15,7 +15,8 @@ export const tokens = (mode) => ({
         primary1: {
           100: '#202528',
           200: '#a1a4ab',
-          300: '#2D4356'
+          300: '#2D4356',
+          400: '#1974D2'
         },
         green: {
           100: '#41F1B6',
@@ -63,7 +64,8 @@ export const tokens = (mode) => ({
         personal: {
           100: '#e27c7c',
           200: '#466964',
-          300: '#6cd4c5'
+          300: '#6cd4c5',
+          400: '#6cd4c5'
         }
       }
     : {

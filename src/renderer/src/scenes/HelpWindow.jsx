@@ -932,9 +932,14 @@ export const HelpShortcutPage = () => {
             Focus on TextArea : <span className="primaryColor"> " CTRL + TAB " </span>
           </p>
           {Clearance > 33 ? (
-            <p>
-              Open CANReal Generator: <span className="primaryColor"> "CTRL + q " </span>
-            </p>
+            <>
+              <p>
+                Open CANReal Generator: <span className="primaryColor"> "CTRL + q " </span>
+              </p>
+              <p>
+                Open Home menu: <span className="primaryColor"> "CTRL + h " </span>
+              </p>
+            </>
           ) : null}
         </section>
       </ul>
