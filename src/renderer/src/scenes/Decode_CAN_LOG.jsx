@@ -1891,7 +1891,6 @@ const HomeComponent = ({ showHomeWindow, setShowHomeWindow }) => {
       <div
         style={{
           border: `2px solid ${colors.yellow[500]}`,
-          padding: '1rem',
           background: `${colors.primary[200]}`,
           padding: '1rem',
           height: '130vh'
