@@ -129,13 +129,14 @@ export const RegisterSelectionComponent = ({
   const [valueRegister, setValueRegister] = useState('')
   const [listType, setListType] = useState('CANopen')
   const [inputType, setInputType] = useState('HEX')
+  const stopResetValueofInputFromParent = useRef(false)
   // This is added because of the useEffect of the Input_AutoFormat component
   const [valueRegister4Child, setValueRegister4Child] = useState('')
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
-  const ContainerParent = useRef()
   function handleChangeListType() {
+    stopResetValueofInputFromParent.current = false
     setRegisterSelected(null)
     setValueRegister('')
     if (listType == 'CANopen') setListType('TECHNOSOFT')
@@ -148,7 +149,23 @@ export const RegisterSelectionComponent = ({
   }
 
   function tellParentRegisterChanged(register) {
-    //this will be a child prop
+    stopResetValueofInputFromParent.current = false
+    //Child Reports on a register change. Also it can change the Reg list
+    var RegIndex = parseInt(register.Index[0])
+    if (isNaN(parseInt(RegIndex))) {
+      //THS registers
+      if (listType == 'CANopen') {
+        stopResetValueofInputFromParent.current = true
+        setListType('TECHNOSOFT')
+      }
+    } else {
+      //CANopen
+      if (listType == 'TECHNOSOFT') {
+        stopResetValueofInputFromParent.current = true
+        setListType('CANopen')
+      }
+    }
+
     setRegisterSelected(register)
     setRegisterResolution(parseInt(getMaxNumberFromStringRange(register.BitInfo[0].bit) + 1))
     setValueRegister('')
@@ -169,21 +186,16 @@ export const RegisterSelectionComponent = ({
   return (
     <div
       style={{
-        // display: 'flex',
         border: `3px solid  ${colors.grey[200]}`,
         padding: '0 0.3rem 0.4rem 0.3rem ',
         borderRadius: '1rem',
         width: ComponentWidth ? ComponentWidth : '27.5rem',
-        // maxHeight: '44vh',
-        // overflow: 'auto',
         backgroundColor: `${colors.primary[200]}`
       }}
     >
       {/* Title and CloseBTS ----------------------------------------------------*/}
       <Box
         style={{
-          // display: 'flex',
-          // justifyContent: 'space-between',
           margin: '1rem 0.5rem',
           position: 'relative'
         }}
@@ -194,7 +206,6 @@ export const RegisterSelectionComponent = ({
             position: 'absolute',
             right: 0,
             top: 0,
-
             '&:hover': { color: `${colors.red[500]}` }
           }}
         >
@@ -204,7 +215,6 @@ export const RegisterSelectionComponent = ({
           variant="h4"
           sx={{
             color: `${colors.grey[100]}`
-            // textAlign: 'center'
           }}
         >
           Register Bit Representation
@@ -223,16 +233,15 @@ export const RegisterSelectionComponent = ({
           type={listType == 'CANopen' ? '1' : '2'}
           listType={listType}
           tellParentRegisterChanged={tellParentRegisterChanged}
+          stopResetValueofInputFromParent={stopResetValueofInputFromParent.current}
           placeholder="Select"
           className="RegisterNameInput_class"
         />
 
         <Button
           sx={{
-            // border: '1px solid yellow',
             color: `${colors.grey[100]}`,
             fontSize: '0.9rem'
-            // marginLeft: '1rem'
           }}
           onClick={handleInputTypeChange}
         >
@@ -268,6 +277,7 @@ export const RegisterSelectionComponent = ({
       {/* Register Painting ----------------------------------------------------*/}
       <div>
         <RegisterComponent
+          key={registerSelected}
           register={registerSelected}
           value={valueRegister}
           allowClickBox={true}

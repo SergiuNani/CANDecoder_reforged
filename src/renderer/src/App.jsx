@@ -72,18 +72,18 @@ function App() {
           <main style={{ flexGrow: 1, position: 'relative', height: '100%' }}>
             <Topbar />
             <DrawerComponent title="Color Palatte" component={<ColorsComponent />} />
-            <Suspense fallback={<div>Loading...</div>}>
-              <Routes>
-                <Route path="/" element={<HomeWindow />} />
-                <Route path="/Home" element={<HomeWindow />} />
-                <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
-                <Route path="/MoreOptionsWindow" element={<MoreOptionsWindow />} />
-                <Route path="/Registers" element={<RegisterWindow />} />
-                <Route path="/DebugScene" element={<DebugScene />} />
-                <Route path="/EditDataWindow" element={<EditDataWindow />} />
-                <Route path="/Help" element={<HelpWindow />} />
-              </Routes>
-            </Suspense>
+            {/* <Suspense fallback={<div>Loading...</div>}> */}
+            <Routes>
+              <Route path="/" element={<HomeWindow />} />
+              <Route path="/Home" element={<HomeWindow />} />
+              <Route path="/Decode_CAN_LOG" element={<Decode_CAN_LOG_Window />} />
+              <Route path="/MoreOptionsWindow" element={<MoreOptionsWindow />} />
+              <Route path="/Registers" element={<RegisterWindow />} />
+              <Route path="/DebugScene" element={<DebugScene />} />
+              <Route path="/EditDataWindow" element={<EditDataWindow />} />
+              <Route path="/Help" element={<HelpWindow />} />
+            </Routes>
+            {/* </Suspense> */}
           </main>
         </div>
       </HashRouter>
@@ -115,7 +115,7 @@ function MyProviders({ children }) {
   const [sidebarSelectedItem, setSidebarSelectedItem] = useState('Home')
   const [fullRot_IU, setFullRot_IU] = useState(2000)
   const [slowLoop, setSlowLoop] = useState(1)
-  const [ProtocolGlobal, setProtocolGlobal] = useState('CANOPEN') // CANOPEN --RS232 -- CAN
+  const [ProtocolGlobal, setProtocolGlobal] = useState('CAN') // CANOPEN --RS232 -- CAN
   const [Clearance, setClearance] = useState(localStorage.getItem('Timer'))
   const [WelcomePage, setWelcomePage] = useState(
     localStorage.getItem('WelcomePageStatus') === 'true'

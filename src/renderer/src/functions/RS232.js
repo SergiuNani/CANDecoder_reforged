@@ -1823,6 +1823,32 @@ export function getOpCode_RS232(opCode, data) {
       Interpretation = `Write protect/unprotect EEPROM ${mask}`
 
       break
+
+    case 'DA':
+      if (lastByteDec & 0x10) {
+        //Checksum - bit 4 set
+
+        if (lastByteDec & 0x40) {
+          //bit6 set
+          mask = 'SPI'
+        } else {
+          //bit6 unset
+          mask = 'PM'
+        }
+        if (data.length > 4) {
+          //Give command
+          temp = getAxisID_RS232(data.slice(0, 4).split(''))
+          SenderMain = temp
+          Data = `Checksum ${val16_2}, ${val16_3} | [${mask}]`
+          Interpretation = `Checksum ${V16S}, ${V16S_2} | [${mask}]`
+        } else {
+          //Take command
+          Data = `Checksum response: ${val16_1}`
+          Interpretation = `Checksum response: ${val16_1}== ${val16_1d}`
+        }
+      }
+
+      break
     default:
       shortArressingMessages()
       break

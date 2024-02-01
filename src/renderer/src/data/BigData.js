@@ -2575,7 +2575,7 @@ export const Objects_collection = [
         },
         {
           Index: '#x607D_01',
-          Name: 'Min position limit',
+          Name: 'Software limit switch NEG',
           BitSize: 32,
           Info: {
             DefaultData: 2147483648
@@ -2583,7 +2583,7 @@ export const Objects_collection = [
         },
         {
           Index: '#x607D_02',
-          Name: 'Max position limit',
+          Name: 'Software limit switch POZ',
           BitSize: 32,
           Info: {
             DefaultData: 2147483647

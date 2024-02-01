@@ -101,7 +101,7 @@ export function DecodeTCANglobal(cobID_array, message) {
         LittleEndian(message.slice(0, 4))
       Data = `0x${time}h us`
       time = hexToDec(time, 64)
-      Interpretation = `${time}d us`
+      Interpretation = `${time} us`
       break
   }
 

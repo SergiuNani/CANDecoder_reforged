@@ -207,6 +207,7 @@ export function AutocompleteInput_RegisterList({
   tellParentRegisterChanged,
   extendStyle = false,
   resetValueofInputFromParent,
+  stopResetValueofInputFromParent,
   focus,
   width,
   className
@@ -222,7 +223,6 @@ export function AutocompleteInput_RegisterList({
 
   const [inputValue, setInputValue] = useState('')
   const [filteredOptions, setFilteredOptions] = useState([])
-  const [selectedOption, setSelectedOption] = useState(null)
   const [isFocused, setIsFocused] = useState(false)
   const [selectedOptionIndex, setSelectedOptionIndex] = useState(-1)
 
@@ -232,7 +232,9 @@ export function AutocompleteInput_RegisterList({
 
   useEffect(() => {
     //Reset the input value based on the CANopen vs THS toggle
-    setInputValue('')
+    if (!stopResetValueofInputFromParent) {
+      setInputValue('')
+    }
   }, [listType, resetValueofInputFromParent])
 
   useEffect(() => {
@@ -241,12 +243,32 @@ export function AutocompleteInput_RegisterList({
     }
   }, [focus])
 
-  const filterOptions = (value) => {
-    return options.filter((option) =>
-      Object.values(option).some((propertyValue) =>
-        propertyValue.toString().toLowerCase().includes(value.toLowerCase())
-      )
-    )
+  const filterOptions = (value, whoCalled) => {
+    var CANRegResult = Registers_CANopen_LS.filter((option) => {
+      return option.Index.toUpperCase().match(value.toUpperCase())
+    })
+    var THSRegResults = Registers_THS_LS.filter((option) => {
+      return option.Index.toUpperCase().match(value.toUpperCase())
+    })
+    if (whoCalled == 'InputChange') {
+      if (CANRegResult.length == 1 && CANRegResult[0].Index.toLowerCase() == value.toLowerCase()) {
+        //the user typed the perfect name
+        handleOptionClick(CANRegResult[0])
+        return []
+      } else if (
+        THSRegResults.length == 1 &&
+        THSRegResults[0].Index.toLowerCase() == value.toLowerCase()
+      ) {
+        handleOptionClick(THSRegResults[0])
+        return []
+      }
+    }
+    if (type == '1') {
+      // Generic search
+      return CANRegResult
+    } else {
+      return THSRegResults
+    }
   }
 
   const handleInputChange = (event) => {
@@ -254,20 +276,19 @@ export function AutocompleteInput_RegisterList({
     setInputValue(value)
     setSelectedOptionIndex(-1) // Reset selected option index
     // Filter options based on input value
-    const filtered = filterOptions(value)
+    const filtered = filterOptions(value, 'InputChange')
     setFilteredOptions(filtered)
   }
 
   const handleOptionClick = (option) => {
     setInputValue(option.Index || '')
-    setSelectedOption(option)
     tellParentRegisterChanged(option)
     setFilteredOptions([])
   }
 
   const handleFocus = () => {
     setIsFocused(true)
-    setFilteredOptions(filterOptions(inputValue)) // Show all options when focused
+    setFilteredOptions(filterOptions(inputValue, 'blur')) // Show all options when focused
   }
 
   const handleBlur = () => {

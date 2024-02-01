@@ -183,6 +183,14 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         TextReturn = Interpretation
       }
       break
+
+    case '1013':
+      //Serial Number
+      if (type == 'T_SDO') {
+        TextReturn = `${hexToDec(value, 64)} us`
+      }
+      break
+
     case '1018_04':
       //Serial Number
       if (type == 'T_SDO') {

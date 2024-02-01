@@ -25,6 +25,9 @@ const RegisterComponent = ({
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const RegisterBodyRef = useRef()
+  useEffect(() => {
+    RegisterBodyRef.current.scrollTo(0, 0)
+  }, [register])
 
   const resolution = getMaxNumberFromStringRange(register.BitInfo[0].bit)
 
