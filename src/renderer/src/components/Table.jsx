@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext, memo, useMemo } from 'react'
-import { Box, Typography, useTheme } from '@mui/material'
+import { Box, Typography, useTheme, Dialog } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { whatPDOisObject, whatObjectValueMeans } from '../functions/CANopenFunctions'
 import { addSpacesOfTwo } from '../functions/NumberConversion'
@@ -45,7 +45,9 @@ export const TableROW = ({ iteration, ProtocolGlobal }) => {
           style={{
             borderBottom: `1px solid ${colors.grey[300]}`,
             background: isRecieveTypeMessage ? `${colors.blue[200]}` : 'inherit',
-            borderLeft: isRecieveTypeMessage ? `0.3rem solid ${colors.primary[400]}` : 'inherit'
+            borderLeft: isRecieveTypeMessage
+              ? `0.3rem solid ${colors.primary[400]}`
+              : `0.3rem solid transparent`
           }}
         >
           <td
@@ -219,14 +221,71 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
   }
 
   const TypeTime = () => {
+    const [showTimeDiff, setShowTimeDiff] = useState(false)
+    const [textObject, setTextObject] = useState({
+      firstMsgsNr: '',
+      secondMsgsNr: '',
+      firstValue: 0,
+      secondValue: 0,
+      diff_ms: 0,
+      diff_us: 0,
+      diff_s: 0,
+      diff_m: 0,
+      diff_h: 0
+    })
+    function handleCheckboxChange(e) {
+      if (e.target.checked) {
+        var allLinesSelected = document.querySelectorAll('.LineSelected')
+        if (allLinesSelected.length > 1) {
+          allLinesSelected.forEach((el) => {
+            el.classList.remove('LineSelected')
+            el.querySelector('label input').checked = false
+          })
+        } else if (allLinesSelected.length == 1) {
+          // we have two checks
+          var foundCheckboxNr = parseInt(allLinesSelected[0].children[1].innerText)
+          var foundCheckboxValue = parseFloat(
+            allLinesSelected[0].children[2].innerText.split(' ')[0]
+          )
+          var currentCheckboxNr = parseInt(e.target.closest('div').children[1].innerText)
+          var currentCheckboxValue = parseFloat(
+            e.target.closest('div').children[2].innerText.split(' ')[0]
+          )
+          var firstTime =
+            currentCheckboxNr > foundCheckboxNr ? foundCheckboxValue : currentCheckboxValue
+          var lastTime =
+            currentCheckboxNr > foundCheckboxNr ? currentCheckboxValue : foundCheckboxValue
+          var diff = (lastTime - firstTime).toFixed(3)
+
+          setTextObject({
+            firstMsgsNr: '',
+            secondMsgsNr: '',
+            firstValue: firstTime,
+            secondValue: lastTime,
+            diff_ms: diff,
+            diff_us: diff * 1000,
+            diff_s: diff / 1000,
+            diff_m: diff / 1000 / 60,
+            diff_h: diff / 1000 / 3600
+          })
+          setShowTimeDiff(true)
+        }
+        e.target.closest('div').classList.add('LineSelected')
+      } else {
+        e.target.closest('div').classList.remove('LineSelected')
+      }
+    }
+    console.log(textObject.secondValue)
     return (
-      <>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <label>
+          <input type="checkbox" name="checkbox" onChange={handleCheckboxChange} />
+        </label>
         <p
           style={{
             color: isRecieveTypeMessage ? colors.primary[400] : colors.primary[600],
             minWidth: '2rem',
             textAlign: 'center'
-            // fontWeight: isRecieveTypeMessage ? '700' : '400'
           }}
         >
           {obj.msgNr}{' '}
@@ -278,7 +337,42 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         >
           {obj.Interpretation}
         </p>
-      </>
+
+        <Dialog
+          open={showTimeDiff}
+          onClose={() => setShowTimeDiff(false)}
+          sx={{
+            '& .MuiDialog-paper': {
+              maxWidth: 'none'
+            },
+            width: '100%',
+            height: '100vh'
+          }}
+        >
+          <div
+            style={{
+              border: `2px solid ${colors.yellow[500]}`,
+              background: `${colors.primary[200]}`,
+              padding: '1rem',
+              fontSize: '1.2rem'
+            }}
+          >
+            <p
+              style={{
+                fontSize: '2rem',
+                color: `${colors.primary[400]}`
+              }}
+            >
+              {textObject.secondValue} - {textObject.firstValue} = {textObject.diff_ms} ms{' '}
+            </p>
+            <br />
+            <p>{textObject.diff_us} us</p>
+            <p>{textObject.diff_s} sec</p>
+            <p>{textObject.diff_m} min</p>
+            <p>{textObject.diff_h} hours</p>
+          </div>
+        </Dialog>
+      </div>
     )
   }
   const TypeExtraction = () => {
@@ -334,7 +428,7 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
 
     return (
       <div className="IncludeLine" style={{ display: 'flex', margin: '0.2rem' }}>
-        <label className="CheckBoxClass">
+        <label>
           <input type="checkbox" name="checkbox" onChange={handleCheckboxChange} defaultChecked />
         </label>
 
@@ -384,7 +478,9 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         fontWeight: '550',
         borderBottom: `1px solid ${colors.grey[400]}`,
         padding: '0.2rem',
-        borderLeft: isRecieveTypeMessage ? `3px solid ${colors.primary[400]}` : null
+        borderLeft: isRecieveTypeMessage
+          ? `3px solid ${colors.primary[400]}`
+          : `3px solid transparent`
       }}
     >
       {type == 'Finder' ? (
