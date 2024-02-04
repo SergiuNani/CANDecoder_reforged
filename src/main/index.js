@@ -16,7 +16,7 @@ function createWindow() {
       sandbox: false
     }
   })
-
+  mainWindow.setFullScreen(true)
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
