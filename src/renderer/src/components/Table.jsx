@@ -275,7 +275,6 @@ export const TableROW_simple = ({ obj, timeInfo, type }) => {
         e.target.closest('div').classList.remove('LineSelected')
       }
     }
-    console.log(textObject.secondValue)
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <label>

@@ -32,9 +32,6 @@ const DebugScene = () => {
   const [verifyTechnoCAN, setVerifyTechnoCAN] = useState(false)
   const [fileInnerText, setFileInnerText] = useState('')
   const [showCompareExistingVsFileObjects, setshowCompareExistingVsFileObjects] = useState(false)
-  const [compareVarcfg_vs_fwVars, setCompareVarcfg_vs_fwVars] = useState(false)
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
 
   useEffect(() => {
     const handleKeyPress = (event) => {
@@ -143,24 +140,7 @@ const DebugScene = () => {
           />
         </Button>
       </section>
-      {/* //Variables.cfg vs Fw addresss ========================*/}
-      <section
-        style={{
-          display: 'flex',
-          gap: '2rem',
-          alignItems: 'center',
-          margin: '2rem 0'
-        }}
-      >
-        <Typography variant="h4">Variables.cfg vs Fw address: </Typography>
-        <Button2
-          onClick={() => {
-            setCompareVarcfg_vs_fwVars(true)
-          }}
-        >
-          Show differences
-        </Button2>
-      </section>
+
       {verifyCANopenAlgorithm && (
         <DialogVerifyAlgorithmComponent
           openState={verifyCANopenAlgorithm}
@@ -188,12 +168,6 @@ const DebugScene = () => {
           showCompareExistingVsFileObjects={showCompareExistingVsFileObjects}
           setshowCompareExistingVsFileObjects={setshowCompareExistingVsFileObjects}
           fileInnerText={fileInnerText}
-        />
-      )}
-      {compareVarcfg_vs_fwVars && (
-        <Compare_variablesCFG_to_FWadresses_component
-          compareVarcfg_vs_fwVars={compareVarcfg_vs_fwVars}
-          setCompareVarcfg_vs_fwVars={setCompareVarcfg_vs_fwVars}
         />
       )}
     </>
@@ -608,92 +582,5 @@ export const ColorsComponent = () => {
         <div>{secondHalf}</div>
       </Box>
     </Box>
-  )
-}
-
-//-------------THS TESTS ------------------------------------
-
-function Compare_variablesCFG_to_FWadresses_component({
-  compareVarcfg_vs_fwVars,
-  setCompareVarcfg_vs_fwVars
-}) {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  var variablesCfg_extract = []
-  var fwAddresses_extract = []
-  var matchMaker = []
-
-  var tempArray = FirmwareAddresses_FA00G.split('\n')
-  tempArray.forEach((el) => {
-    if (el != '') {
-      var elSplitted = el.split(/\s+/g)
-      var elSplittedFiltered = elSplitted.filter((el) => {
-        return el != ''
-      })
-      variablesCfg_extract.push(elSplittedFiltered)
-    }
-  })
-  var tempArray = FW_actualAddresses_FA00G.split('\n')
-
-  tempArray.forEach((el) => {
-    if (el.match('LSW_ADDRESS_OF')) {
-      var separatedRow = el.split('//')
-
-      var name = separatedRow[0].match(/\((.*?)\)/)[1] // match string between ( )
-      var address = separatedRow[1].match(/\[(.*?)\]/)[1] // match string between [ ]
-      fwAddresses_extract.push([name, address])
-    }
-  })
-
-  variablesCfg_extract.forEach((varRow) => {
-    var found_flag = 0
-    for (const fwRow of fwAddresses_extract) {
-      var varAddy = varRow[2].toUpperCase()
-      if (varAddy.slice(0, 3) == '@0X') varAddy = varAddy.slice(3)
-      if (varAddy.length == 3) varAddy = '0' + varAddy
-      var fwAddy = fwRow[1].toUpperCase()
-      if (fwAddy.slice(0, 2) == '0X') fwAddy = fwAddy.slice(2)
-      if (fwAddy.length == 3) fwAddy = '0' + fwAddy
-
-      if (varAddy == fwAddy) {
-        found_flag = 1
-        matchMaker.push([varRow[1], varAddy, fwRow[0]])
-        break
-      }
-    }
-
-    if (!found_flag) {
-      //if false
-      matchMaker.push([varRow[1], varAddy, '-'])
-    }
-  })
-
-  // [VAR_name,address, fw_name ]
-  return (
-    <Dialog
-      open={compareVarcfg_vs_fwVars}
-      onClose={() => setCompareVarcfg_vs_fwVars(false)}
-      sx={{
-        '& .MuiDialog-paper': {
-          maxWidth: 'none'
-        }
-      }}
-    >
-      <section
-        style={{
-          background: `${colors.primary[200]}`,
-          padding: '1rem',
-          border: `2px solid ${colors.primary[400]}`
-        }}
-      >
-        {matchMaker.map((el, idx) => (
-          <div key={idx} style={{ display: 'flex', gap: '2rem' }}>
-            <p style={{ color: `${colors.primary[500]}`, minWidth: '6rem' }}>{el[0]}</p>
-            <p style={{ color: `${colors.green[100]}`, minWidth: '6rem' }}>{el[1]}</p>
-            <p style={{ color: `${colors.blue[500]}`, minWidth: '6rem' }}>{el[2]}</p>
-          </div>
-        ))}
-      </section>
-    </Dialog>
   )
 }
