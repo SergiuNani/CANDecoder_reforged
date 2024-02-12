@@ -10,13 +10,14 @@ function createWindow() {
     height: 670,
     show: false,
     autoHideMenuBar: true,
+    // fullscreen: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
-  mainWindow.setFullScreen(true)
+  mainWindow.maximize()
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
@@ -34,7 +35,6 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.

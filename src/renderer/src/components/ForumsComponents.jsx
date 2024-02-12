@@ -251,14 +251,11 @@ export function AutocompleteInput_RegisterList({
       return option.Index.toUpperCase().match(value.toUpperCase())
     })
     if (whoCalled == 'InputChange') {
-      if (CANRegResult.length == 1 && CANRegResult[0].Index.toLowerCase() == value.toLowerCase()) {
+      if (CANRegResult[0] && CANRegResult[0].Index.toLowerCase() == value.toLowerCase()) {
         //the user typed the perfect name
         handleOptionClick(CANRegResult[0])
         return []
-      } else if (
-        THSRegResults.length == 1 &&
-        THSRegResults[0].Index.toLowerCase() == value.toLowerCase()
-      ) {
+      } else if (THSRegResults[0] && THSRegResults[0].Index.toLowerCase() == value.toLowerCase()) {
         handleOptionClick(THSRegResults[0])
         return []
       }
