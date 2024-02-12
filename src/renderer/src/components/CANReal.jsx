@@ -6,20 +6,23 @@ import { TableROW_simple } from './Table'
 import { ButtonTransparent } from './SmallComponents'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { hexToDec } from '../functions/NumberConversion'
+import { Input_AutoFormat } from './ForumsComponents'
 var GeneratedText = ''
 
 export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
   const [showGeneratedText, setShowGeneratedText] = useState(false)
+  const useTimeOffset = useRef(true)
+  const timeOffset = useRef('150')
 
   var arrCopy = [...filteredMessages_auxGlobal]
   const MasterMessages = ['R_SDO', 'RPDO1', 'RPDO2', 'RPDO3', 'RPDO4', 'NMT']
   arrCopy = arrCopy.filter((el) => MasterMessages.includes(el.type))
-
   function handleGenerateCANReal() {
     var Array = []
     var CheckedMsgs = document.getElementById('CANReal_TableID').querySelectorAll('.IncludeLine')
+    var nextMessageDelay_flag = false
     // CheckedMsgs = [begginingEl, ...CheckedMsgs]
     CheckedMsgs.forEach((el, index) => {
       index = index + 1
@@ -38,18 +41,33 @@ export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
       else if (obj == '-') obj = ''
       var obj_value = el.querySelector('.obj_value_CANreal').innerText
       var interpretation = el.querySelector('.interp_CANreal').innerText
+      var timeOffsetActual = ' '.repeat(14) + '0'
+      if (useTimeOffset.current) {
+        timeOffsetActual = ' '.repeat(15 - parseInt(timeOffset.current.length)) + timeOffset.current
+
+        if (nextMessageDelay_flag) {
+          timeOffsetActual = ' '.repeat(11) + '3010'
+          nextMessageDelay_flag = false
+        }
+        if (obj.match('6040')) {
+          var indeX = obj.split(' / ').findIndex((el) => el.match('6040'))
+          var CW_value = obj_value.split(' / ')[indeX]
+          if ((hexToDec(CW_value, 16) & 0x1f) == 0x0f) {
+            nextMessageDelay_flag = true
+          }
+        }
+      }
       finalStringRow =
         ' '.repeat(12 - index.toString().length) +
         index +
         '\t' +
-        ' ' +
+        'b' +
         '\t' +
         ' ' +
         '\t' +
         ' ' +
         '\t' +
-        ' '.repeat(14) +
-        '0' +
+        timeOffsetActual +
         '\t' +
         obj +
         '\t' +
@@ -156,6 +174,41 @@ export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
           <Typography variant="h4" sx={{ mb: '1rem' }}>
             CANReal Generator
           </Typography>
+          {/* <Input_AutoFormat callback=''/> */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}
+          >
+            <label>
+              <input
+                type="checkbox"
+                name="checkbox"
+                onChange={() => {
+                  useTimeOffset.current = !useTimeOffset.current
+                }}
+                defaultChecked={useTimeOffset.current}
+              />
+            </label>
+            <p>Time offset:</p>
+
+            <Input_AutoFormat
+              callback="filterDecimal"
+              resolution={16}
+              blockValueReset
+              tellParentValueChanged={(value) => {
+                timeOffset.current = value
+              }}
+              forceValueFromParent={'150'}
+              height="2rem"
+              width="5rem"
+              center
+            />
+            <p>ms</p>
+          </div>
           <ButtonTransparent
             sx={{
               zoom: 1.3,
