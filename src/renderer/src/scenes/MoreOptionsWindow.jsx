@@ -270,6 +270,7 @@ const XMLfinder = () => {
             }}
             forceValueFromParent={xmlVersion}
             center
+            width="10rem"
           />
         </div>
       </section>
