@@ -7709,7 +7709,10 @@ export const Registers_THS = [
         one: 'Axis On',
         info: 'AXISST. Axis status'
       },
-      { bit: '12', info: 'Reserved' },
+      {
+        bit: '12',
+        info: 'Marks that at least one correction has been performed for SOL + Load Sensor'
+      },
       {
         bit: '11',
         zero: 'No event set, or programmed event not occurred yet',
