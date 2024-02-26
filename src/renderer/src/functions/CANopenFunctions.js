@@ -16,7 +16,8 @@ import {
   EMCYcodes,
   SDO_abortCodes,
   Mapping_objects_array_basedOnType,
-  ObjectDescriptions
+  ObjectDescriptions,
+  TrendTrackerObjects
 } from '../data/SmallData'
 import { Registers_CANopen_LS } from '../App'
 
@@ -50,7 +51,8 @@ export var ObjectValuesSaved_global = {
   '2064_addrInc': [],
   '2064_addrSize': [],
   2069: [],
-  6064: []
+  6064: [],
+  '607A': []
 }
 
 export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
@@ -176,6 +178,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         if (decValue & 0x8000) Interpretation = Interpretation + ' + Axison'
         if (decValue & 0x0400) Interpretation = Interpretation + ' + TR'
         if (!decValue & 0x20) Interpretation = Interpretation + ' + QS'
+        if (decValue & 0x100) Interpretation = Interpretation + ' + CALLS'
         if (decValue & 0x200000) Interpretation = Interpretation + ' + Autorun'
 
         if (decValue & 0x8) Interpretation = 'FAULT'
@@ -688,7 +691,7 @@ export function DecodeSDO(sdoType, message, axisID) {
   var FG_typeObject = whatFG_isObject(Object[0])
 
   if (FG_typeObject && errorStatus == 'neutral') {
-    var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message, Object[0])
+    var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message, Object[0], axisID)
     interpretationInfo = checkForFG[0]
     errorStatus = checkForFG[1] // blue or neutral
   }
@@ -917,7 +920,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
   return [interpretation, errorStatus, data]
 }
 
-function Check_SDOmsg_forFG(FG_typeObject, value, object) {
+function Check_SDOmsg_forFG(FG_typeObject, value, object, axisID) {
   var interpretationInfo = ''
   var errorStatus = 'neutral'
   const conversionParams = {
@@ -937,8 +940,26 @@ function Check_SDOmsg_forFG(FG_typeObject, value, object) {
 
   const conversionType = conversionParams[FG_DisplayVSApplied_1][FG_typeObject]
 
+  function CalcDiff(prev, value_initial) {
+    var Trend = ''
+    if (prev) {
+      var diff = value_initial - prev
+      if (Math.abs(diff) >= TrendTrackerObjects.difference) {
+        if (diff > 0) {
+          if (TrendTrackerObjects.showValue) Trend = `"+ ${diff}" `
+          else Trend = ' ↑ '
+        } else {
+          if (TrendTrackerObjects.showValue) Trend = `"- ${diff}" `
+          else Trend = ' ↓ '
+        }
+      }
+    }
+    return Trend
+  }
+
   if (conversionType) {
     let value_initial
+    let Trend = ''
     if (FG_DisplayVSApplied_1 == 'Display') {
       value_initial = UnitsConvertor(
         conversionType.converter(value, 32),
@@ -949,12 +970,24 @@ function Check_SDOmsg_forFG(FG_typeObject, value, object) {
     } else {
       value_initial = conversionType.converter(value, 32)
     }
-    if (object.slice(0, 2) == '#x') {
-      object = object.slice(2)
+    if (TrendTrackerObjects.status == 'Enabled') {
+      if (object.slice(0, 2) == '#x') {
+        object = object.slice(2)
+      }
+      value_initial = parseFloat(value_initial)
+      switch (object) {
+        case '6064':
+        case '607A':
+          if (TrendTrackerObjects[object]) {
+            var prev = ObjectValuesSaved_global[object][axisID]
+            Trend = CalcDiff(prev, value_initial)
+            ObjectValuesSaved_global[object][axisID] = value_initial
+            break
+          }
+      }
     }
-    console.log('🚀 ~ Check_SDOmsg_forFG ~ object:', object)
 
-    interpretationInfo = `${value_initial} ${conversionType.display}`
+    interpretationInfo = `${value_initial} ${conversionType.display} ${Trend}`
     errorStatus = 'blue'
   }
 
@@ -1325,7 +1358,12 @@ export function helping_DecodePDO(cobID_array, message) {
     var tempInterpretation, tempError, typeFct
     if (FG_typeObject) {
       // Factor Group
-      ;[tempInterpretation, tempError] = Check_SDOmsg_forFG(FG_typeObject, obj_msg, objectIndex)
+      ;[tempInterpretation, tempError] = Check_SDOmsg_forFG(
+        FG_typeObject,
+        obj_msg,
+        objectIndex,
+        cobID_array[1]
+      )
     } else {
       //Maybe we have info on the object or we do something with 6060 6041 and 6040
 

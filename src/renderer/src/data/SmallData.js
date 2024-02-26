@@ -7,10 +7,13 @@ export let GroupingOptionsForMessages = {
   Repetitive: false
 }
 export let TrendTrackerObjects = {
-  6064: false,
-  '607A': true,
+  status: 'Enabled', //Enabled, Disabled
+  difference: 150,
+  showValue: true,
+  6064: true,
+  '607A': false,
   '606C': false,
-  6081: true
+  6081: false
 }
 export const ObjectDescriptions = {
   6060: {

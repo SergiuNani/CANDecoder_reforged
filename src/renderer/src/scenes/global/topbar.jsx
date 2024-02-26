@@ -33,7 +33,11 @@ import {
   hexToDec,
   asciiToDec
 } from '../../functions/NumberConversion'
-import { SwitchComponent, ButtonTransparent } from '../../components/SmallComponents'
+import {
+  SwitchComponent,
+  ButtonTransparent,
+  Checkbox_Component
+} from '../../components/SmallComponents'
 import SearchIcon from '@mui/icons-material/Search'
 import {
   FG_units_pos_rot,
@@ -42,7 +46,8 @@ import {
   FG_units_spd_lin,
   FG_units_pos_lin,
   FG_units_acc_lin,
-  FG_units_time
+  FG_units_time,
+  TrendTrackerObjects
 } from '../../data/SmallData'
 export let FG_OptionsObject_1 = {
   FG_Display_POS: 'IU',
@@ -173,7 +178,8 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expa
         style={{
           border: `1px solid ${colors.primary[400]}`,
           padding: '1rem',
-          background: `${colors.primary[200]}`
+          background: `${colors.primary[200]}`,
+          fontSize: '1rem'
         }}
       >
         <div
@@ -186,7 +192,7 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expa
         >
           <Typography variant="h4">Application Settings</Typography>
           <Typography variant="h3" sx={{ color: `${colors.yellow[500]}`, fontWeight: '700' }}>
-            V1.1
+            V1.2
           </Typography>
         </div>
         {Clearance > 22 ? (
@@ -197,7 +203,12 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expa
           />
         ) : null}
         <AccordionComponent title="General Settings" children={<GeneralSettingsInsertPart />} />
-        <AccordionComponent title="Factor Group" children={<FactorGroupInsertPart />} />
+
+        <AccordionComponent
+          title="CANlog Settings"
+          children={<CANlogSettingsPart />}
+          expanded={true}
+        />
         <AccordionComponent
           title="Authentication"
           children={<AutenthificationDialog expandLogin={expandLogin} />}
@@ -406,13 +417,18 @@ const GeneralSettingsInsertPart = () => {
   )
 }
 
-const FactorGroupInsertPart = () => {
+const CANlogSettingsPart = () => {
   const theme = useTheme()
   const colors = tokens(theme.palette.mode)
+  const [TrendTrackerStatus, setTrendTrackerStatus] = useState(TrendTrackerObjects.status)
+  const [toggleRender, setToggleRender] = useState(true)
   const [delayedUseEffect, setDelayedUseEffect] = useState(false)
   const { FG_DisplayVSApplied, setFG_DisplayVSApplied, FG_OptionsObject, setFG_OptionsObject } =
     useContext(FG_Context)
   var { loadType } = useContext(AppContext)
+  var ArrayOfTrendTrakerObjects = Object.keys(TrendTrackerObjects).filter(
+    (el) => !['showValue', 'status', 'difference'].includes(el)
+  )
 
   function handleAnyInputChange(value, title) {
     if (title == 'POS') {
@@ -474,96 +490,204 @@ const FactorGroupInsertPart = () => {
   useEffect(() => {
     setDelayedUseEffect(true)
   }, [])
+
+  function handleTrendTrackerCheckboxes(e) {
+    var option = e.target.closest('label').innerText
+    var state = e.target.checked
+    for (const prop in TrendTrackerObjects) {
+      if (prop == option) {
+        TrendTrackerObjects[prop] = state
+      }
+    }
+    setToggleRender((prev) => !prev)
+  }
   return (
     <section style={{ padding: '1rem' }}>
-      <li>Select "Applied Factor Group" only when it's enabled in the drive as well.</li>
-
-      <RadioGroup
-        // row
-        onChange={(e) => {
-          setFG_DisplayVSApplied(e.target.value)
-          FG_DisplayVSApplied_1 = e.target.value
-        }}
-        value={FG_DisplayVSApplied}
-        sx={{
-          justifyContent: 'center',
-          mt: '1rem',
-          '& .MuiSvgIcon-root': {
-            // fontSize: '1rem'
-            color: `${colors.green[400]}`
-          }
+      <section
+        style={{
+          marginBottom: '1rem',
+          borderBottom: `1px solid ${colors.yellow[400]}`
         }}
       >
-        <FormControlLabel value="Display" control={<Radio />} label="Display Factor Group" />
-        {/* DISPLAY FACTOR GROUP -------------------------------------- */}
         <div
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}
         >
-          <Input_ChooseOption
-            title="POS"
-            array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
-            tellParentOptionChanged={handleAnyInputChange}
-            parentForceValue={FG_OptionsObject.FG_Display_POS}
-            variant
-          />
-          <Input_ChooseOption
-            title="SPD"
-            array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
-            tellParentOptionChanged={handleAnyInputChange}
-            parentForceValue={FG_OptionsObject.FG_Display_SPD}
-            variant
-          />
-          <Input_ChooseOption
-            title="ACC"
-            array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
-            tellParentOptionChanged={handleAnyInputChange}
-            parentForceValue={FG_OptionsObject.FG_Display_ACC}
-            variant
-          />
-          <Input_ChooseOption
-            title="TIME"
-            array={FG_units_time}
-            tellParentOptionChanged={handleAnyInputChange}
-            parentForceValue={FG_OptionsObject.FG_Display_TIME}
-            variant
-          />
-        </div>
-        <FormControlLabel value="Applied" control={<Radio />} label="Applied Factor Group" />
-        {/* APPLIED FACTOR GROUP---------------------------- */}
+          <li>Trend Tracker: </li>
 
-        <div
-          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
-        >
-          <Input_ChooseOption
-            title="POS"
-            array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
-            tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentForceValue={FG_OptionsObject.FG_Applied_POS}
-            variant
-          />
-          <Input_ChooseOption
-            title="SPD"
-            array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
-            tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentForceValue={FG_OptionsObject.FG_Applied_SPD}
-            variant
-          />
-          <Input_ChooseOption
-            title="ACC"
-            array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
-            tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentForceValue={FG_OptionsObject.FG_Applied_ACC}
-            variant
-          />
-          <Input_ChooseOption
-            title="TIME"
-            array={FG_units_time}
-            tellParentOptionChanged={handleAppliedFG_inputChange}
-            parentForceValue={FG_OptionsObject.FG_Applied_TIME}
-            variant
+          <Checkbox_Component
+            label={TrendTrackerStatus}
+            onChange={() => {
+              if (TrendTrackerStatus == 'Enabled') {
+                setTrendTrackerStatus('Disabled')
+                TrendTrackerObjects.status = 'Disabled'
+              } else {
+                setTrendTrackerStatus('Enabled')
+                TrendTrackerObjects.status = 'Enabled'
+              }
+            }}
+            checked={TrendTrackerStatus == 'Enabled'}
           />
         </div>
-      </RadioGroup>
+        {TrendTrackerStatus == 'Enabled' && (
+          <section
+            style={{
+              marginLeft: '2rem',
+              padding: '1rem 0'
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'start',
+                gap: '0.5rem',
+                alignItems: 'center'
+                // zoom: 1.1
+              }}
+            >
+              {ArrayOfTrendTrakerObjects.map((el, index) => {
+                return (
+                  <Checkbox_Component
+                    key={index}
+                    label={el}
+                    onChange={handleTrendTrackerCheckboxes}
+                    checked={TrendTrackerObjects[el]}
+                  />
+                )
+              })}
+            </div>
+
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '1rem'
+              }}
+            >
+              <Typography variant="h6">Notify if difference exceeds: </Typography>
+              <Input_AutoFormat
+                callback={filterDecimal}
+                resolution={'TIME'}
+                tellParentValueChanged={(e) => {
+                  TrendTrackerObjects.difference = e
+                }}
+                forceValueFromParent={TrendTrackerObjects.difference}
+                background={colors.blue[200]}
+                border={`2px solid ${colors.blue[500]}`}
+                width="5rem"
+                center
+                padding="0.2rem"
+                blockValueReset
+              />
+            </div>
+            <div>
+              <Checkbox_Component
+                label="Instead of arrows show subtracted value"
+                onChange={() => {
+                  if (TrendTrackerObjects.showValue) {
+                    TrendTrackerObjects.showValue = false
+                  } else TrendTrackerObjects.showValue = true
+                  setToggleRender((prev) => !prev)
+                }}
+                checked={TrendTrackerObjects.showValue}
+              />
+            </div>
+          </section>
+        )}
+      </section>
+
+      <div>
+        <li>Select "Applied Factor Group" only when it's enabled in the drive as well.</li>
+
+        <RadioGroup
+          // row
+          onChange={(e) => {
+            setFG_DisplayVSApplied(e.target.value)
+            FG_DisplayVSApplied_1 = e.target.value
+          }}
+          value={FG_DisplayVSApplied}
+          sx={{
+            justifyContent: 'center',
+            mt: '1rem',
+            '& .MuiSvgIcon-root': {
+              // fontSize: '1rem'
+              color: `${colors.green[400]}`
+            }
+          }}
+        >
+          <FormControlLabel value="Display" control={<Radio />} label="Display Factor Group" />
+          {/* DISPLAY FACTOR GROUP -------------------------------------- */}
+          <div
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
+          >
+            <Input_ChooseOption
+              title="POS"
+              array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
+              tellParentOptionChanged={handleAnyInputChange}
+              parentForceValue={FG_OptionsObject.FG_Display_POS}
+              variant
+            />
+            <Input_ChooseOption
+              title="SPD"
+              array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
+              tellParentOptionChanged={handleAnyInputChange}
+              parentForceValue={FG_OptionsObject.FG_Display_SPD}
+              variant
+            />
+            <Input_ChooseOption
+              title="ACC"
+              array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
+              tellParentOptionChanged={handleAnyInputChange}
+              parentForceValue={FG_OptionsObject.FG_Display_ACC}
+              variant
+            />
+            <Input_ChooseOption
+              title="TIME"
+              array={FG_units_time}
+              tellParentOptionChanged={handleAnyInputChange}
+              parentForceValue={FG_OptionsObject.FG_Display_TIME}
+              variant
+            />
+          </div>
+          <FormControlLabel value="Applied" control={<Radio />} label="Applied Factor Group" />
+          {/* APPLIED FACTOR GROUP---------------------------- */}
+
+          <div
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}
+          >
+            <Input_ChooseOption
+              title="POS"
+              array={loadType == 'ROTARY' ? FG_units_pos_rot : FG_units_pos_lin}
+              tellParentOptionChanged={handleAppliedFG_inputChange}
+              parentForceValue={FG_OptionsObject.FG_Applied_POS}
+              variant
+            />
+            <Input_ChooseOption
+              title="SPD"
+              array={loadType == 'ROTARY' ? FG_units_spd_rot : FG_units_spd_lin}
+              tellParentOptionChanged={handleAppliedFG_inputChange}
+              parentForceValue={FG_OptionsObject.FG_Applied_SPD}
+              variant
+            />
+            <Input_ChooseOption
+              title="ACC"
+              array={loadType == 'ROTARY' ? FG_units_acc_rot : FG_units_acc_lin}
+              tellParentOptionChanged={handleAppliedFG_inputChange}
+              parentForceValue={FG_OptionsObject.FG_Applied_ACC}
+              variant
+            />
+            <Input_ChooseOption
+              title="TIME"
+              array={FG_units_time}
+              tellParentOptionChanged={handleAppliedFG_inputChange}
+              parentForceValue={FG_OptionsObject.FG_Applied_TIME}
+              variant
+            />
+          </div>
+        </RadioGroup>
+      </div>
     </section>
   )
 }
