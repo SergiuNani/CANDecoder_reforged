@@ -49,7 +49,8 @@ export var ObjectValuesSaved_global = {
   '2064_memoryType': [],
   '2064_addrInc': [],
   '2064_addrSize': [],
-  2069: []
+  2069: [],
+  6064: []
 }
 
 export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
@@ -87,6 +88,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       if (decValue & 0x8000) Interpretation = Interpretation + ' + Axison'
       if (decValue & 0x0400) Interpretation = Interpretation + ' + TR'
       if (!decValue & 0x20) Interpretation = Interpretation + ' + QS'
+      if (decValue & 0x100) Interpretation = Interpretation + ' + CALLS'
 
       if (decValue & 0x8) Interpretation = 'FAULT'
     } else {
@@ -686,7 +688,7 @@ export function DecodeSDO(sdoType, message, axisID) {
   var FG_typeObject = whatFG_isObject(Object[0])
 
   if (FG_typeObject && errorStatus == 'neutral') {
-    var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message)
+    var checkForFG = Check_SDOmsg_forFG(FG_typeObject, aux_message, Object[0])
     interpretationInfo = checkForFG[0]
     errorStatus = checkForFG[1] // blue or neutral
   }
@@ -915,7 +917,7 @@ function Check_SDOmsg_ForErrors(sdoType, CS, data, ObjectSize, ObjectIndex, full
   return [interpretation, errorStatus, data]
 }
 
-function Check_SDOmsg_forFG(FG_typeObject, value) {
+function Check_SDOmsg_forFG(FG_typeObject, value, object) {
   var interpretationInfo = ''
   var errorStatus = 'neutral'
   const conversionParams = {
@@ -947,6 +949,10 @@ function Check_SDOmsg_forFG(FG_typeObject, value) {
     } else {
       value_initial = conversionType.converter(value, 32)
     }
+    if (object.slice(0, 2) == '#x') {
+      object = object.slice(2)
+    }
+    console.log('🚀 ~ Check_SDOmsg_forFG ~ object:', object)
 
     interpretationInfo = `${value_initial} ${conversionType.display}`
     errorStatus = 'blue'
@@ -1319,7 +1325,7 @@ export function helping_DecodePDO(cobID_array, message) {
     var tempInterpretation, tempError, typeFct
     if (FG_typeObject) {
       // Factor Group
-      ;[tempInterpretation, tempError] = Check_SDOmsg_forFG(FG_typeObject, obj_msg)
+      ;[tempInterpretation, tempError] = Check_SDOmsg_forFG(FG_typeObject, obj_msg, objectIndex)
     } else {
       //Maybe we have info on the object or we do something with 6060 6041 and 6040
 

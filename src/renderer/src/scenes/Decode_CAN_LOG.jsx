@@ -42,7 +42,7 @@ import {
   PDO_mapped_aux
 } from '../functions/CANopenFunctions'
 import { DefaultTable, CreateGroupedFilteredArray, TableROW_simple } from '../components/Table'
-import { GroupingOptionsForMessages } from '../data/SmallData'
+import { GroupingOptionsForMessages, TrendTrackerObjects } from '../data/SmallData'
 import { CANRealComponent } from '../components/CANReal'
 import HomeWindow from './HomeWindow'
 export var Decode_CAN_LOG_WindowContext = createContext()
@@ -688,6 +688,9 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
       })
     })
   }
+
+  var ArrayOfTrendTrakerObjects = Object.keys(TrendTrackerObjects)
+
   const DrawerOptionsList = useMemo(() => {
     return (
       <Box sx={{ userSelect: 'none' }}>
@@ -735,6 +738,47 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
               onChange={handleGroupingOptions}
               checked={GroupingOptionsForMessages.Repetitive}
             />
+          </div>
+        </Box>
+        {/* Trend Tracker ----------------- */}
+        <Box
+          sx={{
+            border: `2px solid ${colors.primary[400]}`,
+            borderRadius: '1rem',
+            margin: '1rem 0',
+            background: `${colors.blue[200]}`,
+            padding: '0.4rem'
+          }}
+        >
+          <p
+            style={{
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+              marginLeft: '1rem',
+              color: `${colors.yellow[500]}`
+            }}
+          >
+            Trend Tracker:{' '}
+          </p>
+          <div
+            style={{
+              display: 'flex',
+              // flexDirection: 'column',
+              alignItems: 'start',
+              marginLeft: '2rem',
+              gap: '0.5rem'
+            }}
+          >
+            {ArrayOfTrendTrakerObjects.map((el, index) => {
+              return (
+                <Checkbox_Component
+                  key={index}
+                  label={el}
+                  onChange={handleGroupingOptions}
+                  checked={TrendTrackerObjects[el]}
+                />
+              )
+            })}
           </div>
         </Box>
 

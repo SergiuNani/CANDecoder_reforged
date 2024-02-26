@@ -6,7 +6,12 @@ export let GroupingOptionsForMessages = {
   Modes: false,
   Repetitive: false
 }
-
+export let TrendTrackerObjects = {
+  6064: false,
+  '607A': true,
+  '606C': false,
+  6081: true
+}
 export const ObjectDescriptions = {
   6060: {
     '-5': 'Manufacturer specific – External Reference Torque Mode1',
