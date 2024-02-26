@@ -1822,12 +1822,12 @@ export const Objects_collection = [
         },
         {
           Index: '#x208F_01',
-          Name: 'Device profile defined inputs',
+          Name: 'Device profile digital inputs',
           BitSize: 8
         },
         {
           Index: '#x208F_02',
-          Name: 'Manufacturer specific inputs',
+          Name: 'Manufacturer specific digital inputs',
           BitSize: 8
         }
       ]
