@@ -2,9 +2,9 @@
 //PDO_mapped
 //CanLogStatistics
 export let GroupingOptionsForMessages = {
-  Mapping: false,
-  Modes: false,
-  Repetitive: false
+  Mapping: true,
+  Modes: true,
+  Repetitive: true
 }
 export let TrendTrackerObjects = {
   status: 'Enabled', //Enabled, Disabled

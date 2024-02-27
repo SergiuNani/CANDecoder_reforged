@@ -91,6 +91,7 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
       if (decValue & 0x0400) Interpretation = Interpretation + ' + TR'
       if (!decValue & 0x20) Interpretation = Interpretation + ' + QS'
       if (decValue & 0x100) Interpretation = Interpretation + ' + CALLS'
+      if (decValue & 0x800) Interpretation = Interpretation + ' + LS'
 
       if (decValue & 0x8) Interpretation = 'FAULT'
     } else {
@@ -179,6 +180,8 @@ export function whatObjectValueMeans(obj, value, objectSize, type, axisID, CS) {
         if (decValue & 0x0400) Interpretation = Interpretation + ' + TR'
         if (!decValue & 0x20) Interpretation = Interpretation + ' + QS'
         if (decValue & 0x100) Interpretation = Interpretation + ' + CALLS'
+        if (decValue & 0x800) Interpretation = Interpretation + ' + LS'
+
         if (decValue & 0x200000) Interpretation = Interpretation + ' + Autorun'
 
         if (decValue & 0x8) Interpretation = 'FAULT'

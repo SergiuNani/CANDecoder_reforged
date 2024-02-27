@@ -5878,6 +5878,76 @@ export const Registers_CANopen = [
         info: '16 bit start address of the checksum'
       }
     ]
+  },
+
+  {
+    Index: '208F_01',
+    Title: 'Digital inputs',
+    BitInfo: [
+      {
+        bit: '7-4',
+        info: 'Reserved '
+      },
+      {
+        bit: '3',
+        zero: 'Interlock (Drive enable/ STO input) activated; drive may apply power to motor',
+        one: 'Interlock (Drive enable/ STO input) deactivated; drive may not apply power to motor. Enter Switch on disabled state.'
+      },
+      {
+        bit: '2',
+        zero: 'Home switch input status is low',
+        one: 'Home switch input status is high'
+      },
+      {
+        bit: '1',
+        zero: 'Positive limit switch is inactive',
+        one: 'Positive limit switch is active'
+      },
+      {
+        bit: '0',
+        zero: 'Negative limit switch is inactive',
+        one: 'Negative limit switch is active'
+      }
+    ]
+  },
+
+  {
+    Index: '208F_02',
+    Title: 'Digital inputs (Manuf specific)',
+    BitInfo: [
+      {
+        bit: '7',
+        info: 'IN7 status '
+      },
+      {
+        bit: '6',
+        info: 'IN6 status '
+      },
+      {
+        bit: '5',
+        info: 'IN5 status '
+      },
+      {
+        bit: '4',
+        info: 'IN4 status '
+      },
+      {
+        bit: '3',
+        info: 'IN3 status '
+      },
+      {
+        bit: '2',
+        info: 'IN2 status '
+      },
+      {
+        bit: '1',
+        info: 'IN1 status '
+      },
+      {
+        bit: '0',
+        info: 'IN0 status '
+      }
+    ]
   }
 ]
 
