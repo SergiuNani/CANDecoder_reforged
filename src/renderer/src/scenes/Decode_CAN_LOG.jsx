@@ -124,8 +124,8 @@ const Decode_CAN_LOG_Window = () => {
         if (!isAdvancedSearchOpen) {
           if (
             !Decode_CAN_LOG_ref.current
-              .querySelector('#DrawerComponent')
-              .classList.contains('DrawerOpened')
+            .querySelector('#DrawerComponent')
+            .classList.contains('DrawerOpened')
           ) {
             //Open Drawer, hide table
             if (freeTextVsCanLog == 'FreeText') {
@@ -138,6 +138,7 @@ const Decode_CAN_LOG_Window = () => {
         }
       } else if (event.ctrlKey && event.key === 'Tab') {
         TextAreaText_Ref.current.focus()
+        TextAreaText_Ref.current.select()
       } else if (event.ctrlKey && event.key === 'f' && Clearance > 11) {
         if (SearchVsGotoLineRef.current == 'Search') {
           setIsAdvancedSearchOpen((prev) => !prev)
@@ -238,37 +239,37 @@ const Decode_CAN_LOG_Window = () => {
             </IconButton>
           </section>
         ) : (
-          <section
-            //UPLOAD A FILE SECTION
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              border: `1px solid  ${colors.primary[400]}`,
-              padding: '1rem'
-            }}
-          >
-            <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-              Upload file
-              {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
-              <input
-                type="file"
-                style={{
-                  clip: 'rect(0 0 0 0)',
-                  clipPath: 'inset(50%)',
-                  height: 1,
-                  overflow: 'hidden',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  whiteSpace: 'nowrap',
-                  width: 1
-                }}
-                onChange={handleFileUpload}
-              />
-            </Button>
-          </section>
-        )}
+            <section
+              //UPLOAD A FILE SECTION
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                border: `1px solid  ${colors.primary[400]}`,
+                padding: '1rem'
+              }}
+            >
+              <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
+                Upload file
+                {/* <VisuallyHiddenInput type="file" onChange={handleFileUpload} /> */}
+                <input
+                  type="file"
+                  style={{
+                    clip: 'rect(0 0 0 0)',
+                    clipPath: 'inset(50%)',
+                    height: 1,
+                    overflow: 'hidden',
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    whiteSpace: 'nowrap',
+                    width: 1
+                  }}
+                  onChange={handleFileUpload}
+                />
+              </Button>
+            </section>
+          )}
 
         {/* TABLE ----------------------------------------- */}
         {TableAndDrawerComponent}
@@ -579,7 +580,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
       return // Skip the first render on mount
     } else if (
       isDrawerOpen ||
-      shortcutToDecodeMessages_whoCalled.current == 'NextPrevMsgsButtons'
+        shortcutToDecodeMessages_whoCalled.current == 'NextPrevMsgsButtons'
     ) {
       handleDECODE() // BUG - this is not working with StrictMode
     }
@@ -1131,8 +1132,8 @@ const AvailableAxes_Component = () => {
       const allPropsAreTheSameState = Object.keys(CanLogStatistics[arrayIndex]).every((prop) => {
         return (
           prop === 'Axis' ||
-          prop === propToChange ||
-          CanLogStatistics[arrayIndex][prop][1] !== currentCheckboxState
+            prop === propToChange ||
+            CanLogStatistics[arrayIndex][prop][1] !== currentCheckboxState
         )
       })
 
@@ -1392,7 +1393,7 @@ const AdvancedSearchComponent = () => {
       var potentialGroup = Table_NRs[index].closest('table').parentElement.parentElement
       if (
         potentialGroup.classList.contains('GroupBody') &&
-        potentialGroup.style.display == 'none'
+          potentialGroup.style.display == 'none'
       ) {
         potentialGroup.parentElement.scrollIntoView({
           behavior: 'smooth',
@@ -1454,16 +1455,16 @@ const AdvancedSearchComponent = () => {
       window.removeEventListener('keydown', handleKeyPress)
     }
   }, [
-    object,
-    objectName,
-    msgNr,
-    checkboxAxisID,
-    CobID,
-    interpretation,
-    dataFilter,
-    useFilteredArray,
-    gotoLineStatus
-  ])
+      object,
+      objectName,
+      msgNr,
+      checkboxAxisID,
+      CobID,
+      interpretation,
+      dataFilter,
+      useFilteredArray,
+      gotoLineStatus
+    ])
 
   return (
     <section>
@@ -1622,8 +1623,8 @@ const AdvancedSearchComponent = () => {
                 return <TableROW_simple key={iteration.msgNr} obj={iteration} type="Finder" />
               })
             ) : (
-              <div style={{ color: `${colors.red[400]}` }}>{TextReturn}</div>
-            )}
+                <div style={{ color: `${colors.red[400]}` }}>{TextReturn}</div>
+              )}
           </div>
         </Dialog>
       )}
@@ -1814,8 +1815,8 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
               )
             })
           ) : (
-            <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
-          )}
+              <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
+            )}
         </section>
       </div>
     </Dialog>
@@ -1870,8 +1871,8 @@ const ShowExtractionComponent = ({ showExtraction, setShowExtraction }) => {
               return <TableROW_simple key={iteration[0]} obj={iteration} type="Extraction" />
             })
           ) : (
-            <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
-          )}
+              <div style={{ color: `${colors.red[400]}` }}>{'Empty Array'}</div>
+            )}
         </section>
       </div>
     </Dialog>

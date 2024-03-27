@@ -7,6 +7,7 @@ import { ButtonTransparent } from './SmallComponents'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { hexToDec } from '../functions/NumberConversion'
 import { Input_AutoFormat } from './ForumsComponents'
+import DownloadIcon from '@mui/icons-material/Download';
 var GeneratedText = ''
 
 export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
@@ -118,6 +119,7 @@ export const CANRealComponent = ({ showCANReal, setShowCANReal }) => {
     GeneratedText = initStr + '\n' + tempText
     setShowGeneratedText(true)
   }
+
   useEffect(() => {
     const handleKeyPress = (event) => {
       if (event.ctrlKey && event.key === 'q') {
@@ -247,9 +249,11 @@ const CANRealComponent_2 = ({ showGeneratedText, setShowGeneratedText }) => {
   const colors = tokens(theme.palette.mode)
   const TextAreaText_Ref = useRef()
 
-  function handleCopyClipboard() {
-    TextAreaText_Ref.current.select()
-    navigator.clipboard.writeText(TextAreaText_Ref.current.value)
+  function handleDownloadFile() {
+    // TextAreaText_Ref.current.select()
+    // navigator.clipboard.writeText(TextAreaText_Ref.current.value)
+    console.log(TextAreaText_Ref.current.value)
+    DownloadFile("UrWelcome.cspsl",TextAreaText_Ref.current.value)
   }
 
   return (
@@ -273,8 +277,8 @@ const CANRealComponent_2 = ({ showGeneratedText, setShowGeneratedText }) => {
           <Typography variant="h4" sx={{ mb: '1rem' }}>
             CANReal Generator Result
           </Typography>
-          <IconButton sx={{ zoom: 1.5 }} onClick={handleCopyClipboard}>
-            <ContentCopyIcon />
+          <IconButton sx={{ zoom: 1.5 }} onClick={handleDownloadFile}>
+            <DownloadIcon/>
           </IconButton>
         </div>
         <ul
@@ -306,43 +310,15 @@ const CANRealComponent_2 = ({ showGeneratedText, setShowGeneratedText }) => {
   )
 }
 
-
 export function DownloadFile(filename, text) {
-  text ="aa"
-  filename ="test.txt"
-  console.log("AAAAAA")
   var element = document.createElement('a');
 
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
   element.setAttribute('download', filename);
-
   element.style.display = 'none';
   document.body.appendChild(element);
-
   element.click();
-
   document.body.removeChild(element);
 }
 
 
-function download(filename, text) {
-var element = document.createElement('a');
-element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-element.setAttribute('download', filename);
-
-element.style.display = 'none';
-document.body.appendChild(element);
-
-element.click();
-
-document.body.removeChild(element);
-}
-
-// Start file download.
-document.getElementById("dwn-btn").addEventListener("click", function(){
-// Generate download of hello.txt file with some content
-var text = document.getElementById("text-val").value;
-var filename = "hello.txt";
-
-download(filename, text);
-}, false);

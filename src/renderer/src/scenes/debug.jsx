@@ -26,7 +26,6 @@ import {
 } from '../data/verifyRS232'
 import { ProtocolGlobalContext } from '../App'
 import { FirmwareAddresses_FA00G, FW_actualAddresses_FA00G } from '../data/FirmwareAddresses'
-import { DownloadFile } from '../components/CANReal'
 const DebugScene = () => {
   const [verifyCANopenAlgorithm, setverifyCANopenAlgorithm] = useState(false)
   const [verifyRS232, setVerifyRS232] = useState(false)
@@ -146,10 +145,6 @@ const DebugScene = () => {
 
 {/* Flowing components */}
 
-
-      <Button2 onClick={DownloadFile}>
-        We here baby
-      </Button2>
       {verifyCANopenAlgorithm && (
         <DialogVerifyAlgorithmComponent
           openState={verifyCANopenAlgorithm}
