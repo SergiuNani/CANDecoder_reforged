@@ -192,7 +192,7 @@ export function SettingsDialog({ settingsDialogOpen, setSettingsDialogOpen, expa
         >
           <Typography variant="h4">Application Settings</Typography>
           <Typography variant="h3" sx={{ color: `${colors.yellow[500]}`, fontWeight: '700' }}>
-            V1.2
+            V1.3
           </Typography>
         </div>
         {Clearance > 22 ? (

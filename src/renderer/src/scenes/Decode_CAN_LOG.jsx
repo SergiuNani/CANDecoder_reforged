@@ -52,8 +52,8 @@ export let AllCAN_MsgsExtracted_array = []
 export let filteredMessages_auxGlobal = [] // only filtered messages
 export let filteredMessages_g = [] // includes the the filtered messages and its cut
 const Decode_CAN_LOG_Window = () => {
-  const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
-  // const [fileInnerText, setFileInnerText] = useState('')
+  // const [fileInnerText, setFileInnerText] = useState(InsertTextIntoTextArea) //Load LOG from withing project
+  const [fileInnerText, setFileInnerText] = useState('')
   const [hideTableForceParentToggle, sethideTableForceParentToggle] = useState(false)
   const [shortcutToDecodeMessages, setShortcutToDecodeMessages] = useState(false)
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
@@ -345,12 +345,12 @@ const DecodedTableOptions = ({ fileInnerText }) => {
           event.preventDefault()
           setShowTime(true)
         } else if (event.ctrlKey && event.key === 'q' && !showCANReal) {
-          if (Clearance > 33) {
+          if (Clearance > 22) {
             //Only for me
             setShowCANReal(true)
           }
         } else if (event.ctrlKey && event.key === 'h') {
-          if (Clearance > 33) {
+          if (Clearance > 22) {
             //Only for me
             setShowHomeWindow(true)
           }
@@ -1083,7 +1083,7 @@ const DrawerComponent_DecodeOptions = ({ setisTableVisible, isDrawerOpen, setIsD
                 DECODE
               </Button3>
               {progressBarInsideDrawer && <CircularProgress />}
-              {Clearance > 33 ? (
+              {Clearance > 22 ? (
                 <Button3
                   onClick={() => {
                     setShowCANReal(true)
