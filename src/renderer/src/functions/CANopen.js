@@ -533,7 +533,11 @@ export function CreateDecodedArrayOfObjects(
     return ResultingArray
   } else if (ProtocolGlobal == 'RS232') {
     CanLogStatistics = []
-    return CreateDecodedArrayOfObjects_RS232(AllCAN_MsgsExtracted_array, setIsDrawerOpen, FW_version)
+    return CreateDecodedArrayOfObjects_RS232(
+      AllCAN_MsgsExtracted_array,
+      setIsDrawerOpen,
+      FW_version
+    )
   }
 }
 
