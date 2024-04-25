@@ -1773,6 +1773,8 @@ const ShowTimeWindowComponent = ({ showTime, setShowTime }) => {
     //Prevent the app from crushing
     arrCopy = arrCopy.slice(0, 1000)
   }
+  console.log(arrCopy)
+  console.log(ArrayCopy)
   return (
     <Dialog
       open={showTime}
