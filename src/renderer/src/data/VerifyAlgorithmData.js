@@ -527,7 +527,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -555,7 +555,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60411',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -569,7 +569,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -597,7 +597,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -611,7 +611,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6041 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -639,7 +639,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60418',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -653,7 +653,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60418 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -681,7 +681,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60411',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -695,7 +695,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -723,7 +723,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -737,7 +737,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6041 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -765,7 +765,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60411',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -779,7 +779,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -807,7 +807,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -821,7 +821,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6041 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -863,7 +863,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60411',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -877,7 +877,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -905,7 +905,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x60411',
     ObjectName: 'Statusword',
     Data: '5504',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -919,7 +919,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x60411 / #x6061',
     ObjectName: 'Target position / Statusword / Modes of operation display',
     Data: '55115504 / 9988 / 22',
-    Interpretation: '1427199236 IU / FAULT / -',
+    Interpretation: '1427199236 IU  / FAULT / -',
     errorStatus: 'blue'
   },
   {
@@ -989,7 +989,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1017',
     ObjectName: 'Producer Heartbeat Time',
     Data: '03E8',
-    Interpretation: '1000 ms',
+    Interpretation: '1000 ms ',
     errorStatus: 'blue'
   },
   {
@@ -1793,7 +1793,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6064',
     ObjectName: 'Position actual value',
     Data: '00000000',
-    Interpretation: '0 IU',
+    Interpretation: '0 IU ',
     errorStatus: 'blue'
   },
   {
@@ -3601,7 +3601,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2079',
     ObjectName: 'Interpolated position initial position',
     Data: '000003E8',
-    Interpretation: '1000 IU',
+    Interpretation: '1000 IU ',
     errorStatus: 'blue'
   },
   {
@@ -3895,7 +3895,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2079',
     ObjectName: 'Interpolated position initial position',
     Data: '00000000',
-    Interpretation: '0 IU',
+    Interpretation: '0 IU ',
     errorStatus: 'blue'
   },
   {
@@ -4652,7 +4652,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '1502',
-    Interpretation: 'SwOn + TR',
+    Interpretation: 'SwOn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4666,7 +4666,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '1500',
-    Interpretation: '- + TR',
+    Interpretation: '- + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4778,7 +4778,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '1500',
-    Interpretation: '- + TR',
+    Interpretation: '- + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4792,7 +4792,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '1502',
-    Interpretation: 'SwOn + TR',
+    Interpretation: 'SwOn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4806,7 +4806,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '1502',
-    Interpretation: 'SwOn + TR',
+    Interpretation: 'SwOn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4820,7 +4820,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '1505',
-    Interpretation: 'OpEn + TR',
+    Interpretation: 'OpEn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4848,7 +4848,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '4500',
-    Interpretation: '- + TR',
+    Interpretation: '- + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4862,7 +4862,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '4502',
-    Interpretation: 'SwOn + TR',
+    Interpretation: 'SwOn + TR + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -4988,7 +4988,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041 / #x100D',
     ObjectName: 'Statusword / Life time factor',
     Data: '0350 / 00',
-    Interpretation: 'SwOnDis / -',
+    Interpretation: 'SwOnDis + CALLS / -',
     errorStatus: 'neutral'
   },
   {
@@ -5044,7 +5044,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6081',
     ObjectName: 'Profile velocity',
     Data: '85854512',
-    Interpretation: '-31354.73019 IU',
+    Interpretation: '-31354.73019 IU ',
     errorStatus: 'blue'
   },
   {
@@ -5072,7 +5072,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6081',
     ObjectName: 'Profile velocity',
     Data: '74985612',
-    Interpretation: '29848.33621 IU',
+    Interpretation: '29848.33621 IU ',
     errorStatus: 'blue'
   },
   {
@@ -5255,7 +5255,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x2023',
     ObjectName: 'Target position / Time jerk',
     Data: '00BC0633 / 0000',
-    Interpretation: '12322355 IU / 0 ms',
+    Interpretation: '12322355 IU  / 0 ms ',
     errorStatus: 'blue'
   },
   {
@@ -5270,7 +5270,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1017',
     ObjectName: 'Producer Heartbeat Time',
     Data: '00C8',
-    Interpretation: '200 ms',
+    Interpretation: '200 ms ',
     errorStatus: 'blue'
   },
   {
@@ -5473,7 +5473,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x607A / #x6081',
     ObjectName: 'Target position / Profile velocity',
     Data: '00000000 / 00000000',
-    Interpretation: '0 IU / 0 IU',
+    Interpretation: '0 IU  / 0 IU ',
     errorStatus: 'blue'
   },
   {
@@ -5809,7 +5809,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x1017',
     ObjectName: 'Producer Heartbeat Time',
     Data: '0000',
-    Interpretation: '0 ms',
+    Interpretation: '0 ms ',
     errorStatus: 'blue'
   },
   {
@@ -5879,7 +5879,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041 / #x100D',
     ObjectName: 'Statusword / Life time factor',
     Data: '4503 / 85',
-    Interpretation: 'SwOn + TR / -',
+    Interpretation: 'SwOn + TR + CALLS / -',
     errorStatus: 'neutral'
   },
   {
@@ -5893,7 +5893,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041 / #x100D',
     ObjectName: 'Statusword / Life time factor',
     Data: '4503 / 85',
-    Interpretation: 'SwOn + TR / -',
+    Interpretation: 'SwOn + TR + CALLS / -',
     errorStatus: 'neutral'
   },
   {
@@ -5907,7 +5907,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041 / #x100D',
     ObjectName: 'Statusword / Life time factor',
     Data: '8545 / 11',
-    Interpretation: 'Error: bit6 and one of the bits 0-2 is set together + Axison + TR / -',
+    Interpretation: 'Error: bit6 and one of the bits 0-2 is set together + Axison + TR + CALLS / -',
     errorStatus: 'neutral'
   },
   {
@@ -6852,7 +6852,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041',
     ObjectName: 'Statusword',
     Data: '0100',
-    Interpretation: '-',
+    Interpretation: '- + CALLS',
     errorStatus: 'neutral'
   },
   {
@@ -7102,7 +7102,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x6041 / #x100D',
     ObjectName: 'Statusword / Life time factor',
     Data: '0731 / 00',
-    Interpretation: 'RSwOn + TR / -',
+    Interpretation: 'RSwOn + TR + CALLS / -',
     errorStatus: 'neutral'
   },
   {
@@ -7388,7 +7388,7 @@ export const Hardcoded_VerifyCANopenValidityArray = [
     Object: '#x2012',
     ObjectName: 'Master resolution',
     Data: '00000001',
-    Interpretation: '1 IU',
+    Interpretation: '1 IU ',
     errorStatus: 'blue'
   },
   {
