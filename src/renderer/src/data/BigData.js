@@ -6067,7 +6067,9 @@ export const Registers_THS = [
       },
       {
         bit: '14',
-        info: 'Reserved'
+        info: 'Reference generator',
+        zero: 'Old RefGen',
+        one: 'New RefGen'
       },
       {
         bit: '13',
